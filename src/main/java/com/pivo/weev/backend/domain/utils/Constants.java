@@ -13,4 +13,10 @@ public final class Constants {
     public static final String AUTHENTICATION_PRINCIPAL_NOT_FOUND_ERROR = "authentication.principal.not.found";
     public static final String AUTHORIZATION_TOKEN_NOT_FOUND_ERROR = "authorization.token.not.found";
   }
+
+  @UtilityClass
+  public static final class EncryptionPatterns {
+
+    public static final String PRIVATE_KEY_MASK_SYMBOLS = "###";
+  }
 }

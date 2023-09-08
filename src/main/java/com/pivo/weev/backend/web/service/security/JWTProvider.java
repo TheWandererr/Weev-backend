@@ -7,7 +7,6 @@ import static org.apache.commons.lang3.StringUtils.SPACE;
 
 import com.pivo.weev.backend.web.model.auth.LoginDetails;
 import com.pivo.weev.backend.web.utils.Constants.Api;
-import com.pivo.weev.backend.common.utils.CollectionUtils;
 import com.pivo.weev.backend.web.utils.Constants.Claims;
 import com.pivo.weev.backend.web.utils.Constants.JWTModes;
 import java.time.Instant;
@@ -47,7 +46,7 @@ public class JWTProvider {
   private Jwt generateToken(LoginDetails loginDetails, int expiresAtAmount, TemporalUnit expiresAtUnit, String mode) {
     Instant now = Instant.now();
     String scope = JWTModes.ACCESS.equals(mode)
-        ? CollectionUtils.collect(loginDetails.getAuthenticationAuthorities(), SimpleGrantedAuthority::getAuthority, Collectors.joining(SPACE))
+        ? collect(loginDetails.getAuthenticationAuthorities(), SimpleGrantedAuthority::getAuthority, Collectors.joining(SPACE))
         : mode;
     JwtClaimsSet claimsSet = JwtClaimsSet.builder()
                                          .subject(loginDetails.getUsername())
