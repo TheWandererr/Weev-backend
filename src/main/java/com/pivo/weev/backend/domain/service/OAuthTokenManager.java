@@ -12,7 +12,7 @@ import com.pivo.weev.backend.dao.model.common.SequencedPersistable;
 import com.pivo.weev.backend.dao.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
 import com.pivo.weev.backend.domain.mapping.OAuthTokenDetailsJpaMapper;
 import com.pivo.weev.backend.domain.model.OAuthTokenDetails;
-import com.pivo.weev.backend.web.model.auth.LoginDetails;
+import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import com.pivo.weev.backend.common.utils.CollectionUtils;
 import jakarta.transaction.Transactional;
 import java.util.List;

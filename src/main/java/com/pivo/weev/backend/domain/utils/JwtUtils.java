@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.utils;
 
-import com.pivo.weev.backend.web.utils.Constants.Claims;
+import com.pivo.weev.backend.rest.utils.Constants.Claims;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.oauth2.jwt.Jwt;
 

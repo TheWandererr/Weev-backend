@@ -1,6 +1,6 @@
 package com.pivo.weev.backend;
 
-import com.pivo.weev.backend.web.utils.Constants.Configs;
+import com.pivo.weev.backend.rest.utils.Constants.Configs;
 import jakarta.annotation.PostConstruct;
 import java.util.TimeZone;
 import org.springframework.boot.SpringApplication;

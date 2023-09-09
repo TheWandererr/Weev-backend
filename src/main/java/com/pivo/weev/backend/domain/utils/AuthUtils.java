@@ -5,7 +5,7 @@ import static com.pivo.weev.backend.domain.utils.Constants.Errors.AUTHENTICATION
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
-import com.pivo.weev.backend.web.model.auth.LoginDetails;
+import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import com.pivo.weev.backend.common.utils.CollectionUtils;
 import java.util.Collection;
 import java.util.Optional;
