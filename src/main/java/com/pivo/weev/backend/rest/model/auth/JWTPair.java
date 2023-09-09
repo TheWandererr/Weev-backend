@@ -12,4 +12,12 @@ public class JWTPair {
 
   private final Jwt accessToken;
   private final Jwt refreshToken;
+
+  public String getAccessTokenValue() {
+    return accessToken.getTokenValue();
+  }
+
+  public String getRefreshTokenValue() {
+    return refreshToken.getTokenValue();
+  }
 }

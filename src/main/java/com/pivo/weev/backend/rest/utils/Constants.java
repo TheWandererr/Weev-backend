@@ -65,7 +65,7 @@ public class Constants {
   public static final class ErrorMessages {
 
     public static final String PERMISSION_DENIED = "permission denied";
-    public static final String TOKEN_REVOKED = "revoked";
+    public static final String INVALID_TOKEN = "invalid token";
     public static final String MISSING_COOKIE = "required cookie is missing";
     public static final String AUTHENTICATION_CREDENTIALS = "bad credentials";
   }

@@ -2,12 +2,11 @@ package com.pivo.weev.backend.dao.specification.builder;
 
 
 import static com.pivo.weev.backend.dao.specification.builder.UserJpaSpecificationBuilder.UsernameType.ANY;
-import static com.pivo.weev.backend.dao.specification.engine.specification.SimpleSpecifications.equal;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.pivo.weev.backend.dao.model.UserJpa;
-import com.pivo.weev.backend.dao.specification.engine.specification.SpecificationBuilder;
 import com.pivo.weev.backend.dao.specification.engine.specification.SimpleSpecifications;
+import com.pivo.weev.backend.dao.specification.engine.specification.SpecificationBuilder;
 import com.pivo.weev.backend.dao.utils.Constants.Paths;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;

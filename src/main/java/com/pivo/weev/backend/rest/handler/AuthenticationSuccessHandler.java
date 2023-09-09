@@ -6,14 +6,16 @@ import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pivo.weev.backend.domain.model.OAuthTokenDetails;
 import com.pivo.weev.backend.domain.service.OAuthTokenManager;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.mapping.OAuthTokenDetailsMapper;
 import com.pivo.weev.backend.rest.model.auth.JWTPair;
+import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
+import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import com.pivo.weev.backend.rest.model.response.LoginResponse;
 import com.pivo.weev.backend.rest.service.AuthService;
-import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,14 +44,28 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 
   private void handleSuccessLogin(HttpServletResponse response, Authentication authentication) throws IOException {
     try {
-      JWTPair jwtPair = authService.generateToken(authentication);
-      oAuthTokenManager.saveTokenDetails(getMapper(OAuthTokenDetailsMapper.class).map(getLoginDetails(authentication), jwtPair));
-      LoginResponse loginResponse = new LoginResponse(jwtPair.getAccessToken().getTokenValue(), jwtPair.getRefreshToken().getTokenValue());
+      LoginDetails loginDetails = getLoginDetails(authentication);
+      JWTPair jwtPair = authService.generateTokens(authentication);
+      updateTokenDetails(loginDetails, jwtPair);
+      LoginResponse loginResponse = new LoginResponse(jwtPair.getAccessTokenValue(), jwtPair.getRefreshTokenValue());
       writeResponse(loginResponse, response, OK, restResponseMapper);
     } catch (Exception exception) {
       LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
       BaseResponse loginResponse = new BaseResponse(ResponseMessage.UNAUTHORIZED);
       writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);
+    }
+  }
+
+  private void updateTokenDetails(LoginDetails loginDetails, JWTPair jwtPair) {
+    boolean updated = oAuthTokenManager.updateTokenDetails(
+        loginDetails.getUserId(),
+        loginDetails.getDeviceId(),
+        loginDetails.getSerial(),
+        jwtPair.getRefreshToken().getExpiresAt()
+    );
+    if (!updated) {
+      OAuthTokenDetails tokenDetails = getMapper(OAuthTokenDetailsMapper.class).map(loginDetails, jwtPair);
+      oAuthTokenManager.saveTokenDetails(tokenDetails);
     }
   }
 }

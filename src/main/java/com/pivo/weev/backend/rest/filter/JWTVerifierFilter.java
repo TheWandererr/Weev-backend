@@ -1,8 +1,11 @@
 package com.pivo.weev.backend.rest.filter;
 
-import static com.pivo.weev.backend.domain.utils.JwtUtils.getDeviceId;
 import static com.pivo.weev.backend.domain.utils.JwtUtils.getSerial;
 import static com.pivo.weev.backend.domain.utils.JwtUtils.getUserId;
+import static com.pivo.weev.backend.domain.utils.JwtUtils.getDeviceId;
+import static com.pivo.weev.backend.rest.utils.Constants.Api.LOGIN_URI;
+import static com.pivo.weev.backend.rest.utils.Constants.Api.REFRESH_URI;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessages.INVALID_TOKEN;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getAuthorizationValue;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 import static java.util.Objects.isNull;
@@ -15,8 +18,7 @@ import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.model.error.Error;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
-import com.pivo.weev.backend.rest.utils.Constants.Api;
-import com.pivo.weev.backend.rest.utils.Constants.ErrorMessages;
+import com.pivo.weev.backend.rest.utils.HttpServletUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +30,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @AllArgsConstructor
@@ -46,18 +49,24 @@ public class JWTVerifierFilter extends OncePerRequestFilter {
       filterChain.doFilter(request, response);
       return;
     } else {
-      Jwt jwt = jwtDecoder.decode(getAuthorizationValue(request));
-      OAuthTokenDetailsJpa tokenDetails = oAuthTokenDetailsRepository.findByUserIdAndDeviceId(getUserId(jwt), getDeviceId(jwt));
-      if (isNull(tokenDetails)) {
-        handleUnauthorized(response);
-        return;
-      }
-      if (!StringUtils.equals(getSerial(jwt), tokenDetails.getSerial())) {
-        handleUnauthorized(response);
-        return;
-      }
-      if (!StringUtils.equals(getDeviceId(jwt), tokenDetails.getDeviceId())) {
-        handleUnauthorized(response);
+      try {
+        Jwt jwt = jwtDecoder.decode(getAuthorizationValue(request));
+        OAuthTokenDetailsJpa tokenDetails = oAuthTokenDetailsRepository.findByUserIdAndDeviceId(getUserId(jwt), getDeviceId(jwt));
+        if (isNull(tokenDetails)) {
+          handleUnauthorized(response, null);
+          return;
+        }
+        if (!StringUtils.equals(getSerial(jwt), tokenDetails.getSerial())) {
+          handleUnauthorized(response, null);
+          return;
+        }
+        String cookieDeviceId = HttpServletUtils.getDeviceId(request).orElse(null);
+        if (!StringUtils.equals(cookieDeviceId, tokenDetails.getDeviceId())) {
+          handleUnauthorized(response, null);
+          return;
+        }
+      } catch (JwtException jwtException) {
+        handleUnauthorized(response, jwtException.getMessage());
         return;
       }
     }
@@ -66,15 +75,15 @@ public class JWTVerifierFilter extends OncePerRequestFilter {
 
   private boolean isSkipRequest(HttpServletRequest request) {
     if (HttpMethod.GET.matches(request.getMethod())) {
-      return !request.getRequestURI().endsWith(Api.REFRESH_URI);
+      return !request.getRequestURI().endsWith(REFRESH_URI);
     }
-    return request.getRequestURI().endsWith(Api.LOGIN_URI);
+    return request.getRequestURI().endsWith(LOGIN_URI);
   }
 
-  private void handleUnauthorized(HttpServletResponse response) throws IOException {
-    Error error = errorFactory.unauthorized(ErrorMessages.TOKEN_REVOKED);
+  private void handleUnauthorized(HttpServletResponse response, String failure) throws IOException {
+    Error error = errorFactory.unauthorized(INVALID_TOKEN);
     BaseResponse errorResponse = new BaseResponse(error, ResponseMessage.UNAUTHORIZED);
-    logger.error(applicationLoggingHelper.buildLoggingError(errorResponse, null, false));
+    logger.error(applicationLoggingHelper.buildLoggingError(errorResponse, failure, false));
     writeResponse(errorResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);
   }
 }

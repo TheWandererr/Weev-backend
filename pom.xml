@@ -25,6 +25,7 @@
     <not-yet-commons-ssl.version>0.3.11</not-yet-commons-ssl.version>
     <nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
     <mapstruct.version>1.5.5.Final</mapstruct.version>
+    <hibernate.version>6.2.0.Final</hibernate.version>
   </properties>
 
   <dependencies>
@@ -113,6 +114,17 @@
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct</artifactId>
       <version>${mapstruct.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>${hibernate.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-spatial</artifactId>
+      <version>${hibernate.version}</version>
     </dependency>
   </dependencies>
 

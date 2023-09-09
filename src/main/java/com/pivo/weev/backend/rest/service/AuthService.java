@@ -2,6 +2,7 @@ package com.pivo.weev.backend.rest.service;
 
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getAuthenticationDetails;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getLoginDetails;
+import static com.pivo.weev.backend.domain.utils.Constants.Errors.AUTHORIZATION_TOKEN_NOT_FOUND_ERROR;
 
 import com.pivo.weev.backend.domain.service.OAuthTokenManager;
 import com.pivo.weev.backend.rest.model.auth.JWTPair;
@@ -10,6 +11,7 @@ import com.pivo.weev.backend.rest.service.security.JWTProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -30,12 +32,12 @@ public class AuthService {
     this.jwtDecoder = jwtDecoder;
   }
 
-  public JWTPair generateToken(Authentication authentication) {
+  public JWTPair generateTokens(Authentication authentication) {
     LoginDetails loginDetails = getLoginDetails(authentication);
-    return generateToken(loginDetails);
+    return generateTokens(loginDetails);
   }
 
-  private JWTPair generateToken(LoginDetails loginDetails) {
+  private JWTPair generateTokens(LoginDetails loginDetails) {
     Jwt accessToken = jwtProvider.provideAccessToken(loginDetails);
     Jwt refreshToken = jwtProvider.provideRefreshToken(loginDetails);
     return new JWTPair(accessToken, refreshToken);
@@ -45,8 +47,17 @@ public class AuthService {
     Jwt jwt = jwtDecoder.decode(token);
     String username = jwt.getSubject();
     LoginDetails loginDetails = (LoginDetails) loginDetailsService.loadUserByUsername(username);
-    oAuthTokenManager.updateTokenDetails(loginDetails);
-    return generateToken(loginDetails);
+    JWTPair jwtPair = generateTokens(loginDetails);
+    boolean updated = oAuthTokenManager.updateTokenDetails(
+        loginDetails.getUserId(),
+        loginDetails.getDeviceId(),
+        loginDetails.getSerial(),
+        jwtPair.getRefreshToken().getExpiresAt()
+    );
+    if (!updated) {
+      throw new AuthorizationServiceException(AUTHORIZATION_TOKEN_NOT_FOUND_ERROR);
+    }
+    return jwtPair;
   }
 
   public void logout() {
