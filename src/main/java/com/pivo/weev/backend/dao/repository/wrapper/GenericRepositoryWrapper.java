@@ -1,6 +1,5 @@
 package com.pivo.weev.backend.dao.repository.wrapper;
 
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.dao.exception.ResourceNotFoundException;
@@ -63,12 +62,6 @@ public abstract class GenericRepositoryWrapper<PK extends Serializable, E extend
 
   public List<E> findAll(Specification<E> specification) {
     return repository.findAll(specification);
-  }
-
-  public void checkNotExists(Specification<E> specification) {
-    if (isExists(specification)) {
-      throw new RuntimeException(alreadyExists());
-    }
   }
 
   public void checkNotExists(Example<E> example, Function<String, ? extends RuntimeException> throwable) {

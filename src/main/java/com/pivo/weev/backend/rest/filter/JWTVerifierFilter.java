@@ -5,7 +5,7 @@ import static com.pivo.weev.backend.domain.utils.JwtUtils.getUserId;
 import static com.pivo.weev.backend.domain.utils.JwtUtils.getDeviceId;
 import static com.pivo.weev.backend.rest.utils.Constants.Api.LOGIN_URI;
 import static com.pivo.weev.backend.rest.utils.Constants.Api.REFRESH_URI;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessages.INVALID_TOKEN;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.INVALID_TOKEN;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getAuthorizationValue;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 import static java.util.Objects.isNull;

@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.handler;
 
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.AUTHENTICATION_FAILED_ERROR;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.UNAUTHORIZED;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +35,7 @@ public class AuthenticationFailureHandler implements org.springframework.securit
   }
 
   private void handleFailedLogin(HttpServletResponse response, AuthenticationException exception) throws IOException {
-    Error error = errorFactory.create(AUTHENTICATION_FAILED_ERROR, exception.getMessage());
+    Error error = errorFactory.create(UNAUTHORIZED, exception.getMessage());
     BaseResponse loginResponse = new BaseResponse(error, ResponseMessage.UNAUTHORIZED);
     LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
     writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);

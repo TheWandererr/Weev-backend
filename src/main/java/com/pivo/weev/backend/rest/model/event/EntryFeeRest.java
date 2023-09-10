@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class EntryFeeRest {
 
-  @DecimalMin(value = "0.01", message = "incorrect amount")
+  @DecimalMin(value = "0.01", message = "incorrect.fee.amount")
   private BigDecimal fee;
   private String currency;
 }

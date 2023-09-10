@@ -9,5 +9,6 @@ public class Constants {
   public static final class Symbols {
 
     public static final String DASH = "-";
+    public static final String DOT = ".";
   }
 }

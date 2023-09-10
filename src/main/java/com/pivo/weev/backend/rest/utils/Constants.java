@@ -55,20 +55,22 @@ public class Constants {
   @UtilityClass
   public static final class ErrorCodes {
 
-    public static final String AUTHENTICATION_FAILED_ERROR = "authentication.failed";
+
     public static final String PERMISSIONS_ERROR = "not.enough.permissions";
-    public static final String AUTHORIZATION_REQUIRED_ERROR = "unauthorized";
+    public static final String UNAUTHORIZED = "unauthorized";
     public static final String FORBIDDEN_ERROR = "forbidden";
+    public static final String VALIDATION_FAILED = "validation.failed";
   }
 
   @UtilityClass
-  public static final class ErrorMessages {
+  public static final class ErrorMessageCodes {
 
-    public static final String PERMISSION_DENIED = "permission denied";
-    public static final String INVALID_TOKEN = "invalid token";
-    public static final String MISSING_COOKIE = "required cookie is missing";
-    public static final String AUTHENTICATION_CREDENTIALS = "bad credentials";
+    public static final String INVALID_TOKEN = "invalid.token";
+    public static final String MISSING_COOKIE = "missing.cookie";
+    public static final String AUTHENTICATION_FAILED = "authentication.failed";
+    public static final String NOT_ENOUGH_PERMISSIONS = "not.enough.permissions";
   }
+
 
   @UtilityClass
   public static final class ResponseDetails {

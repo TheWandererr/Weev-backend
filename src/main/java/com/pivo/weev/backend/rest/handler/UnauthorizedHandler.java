@@ -32,7 +32,7 @@ public class UnauthorizedHandler implements AuthenticationEntryPoint {
   @Override
   public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
       throws IOException, ServletException {
-    Error error = errorFactory.create(ErrorCodes.AUTHORIZATION_REQUIRED_ERROR, authException.getMessage());
+    Error error = errorFactory.create(ErrorCodes.UNAUTHORIZED, authException.getMessage());
     BaseResponse loginResponse = new BaseResponse(error, ResponseMessage.UNAUTHORIZED);
     LOGGER.error(applicationLoggingHelper.buildLoggingError(authException, null, false));
     writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);

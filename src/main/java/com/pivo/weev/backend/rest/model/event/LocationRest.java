@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class LocationRest {
 
-  @NotBlank(message = "must be not blank")
+  @NotBlank(message = "must.be.not.blank")
   private String country;
   private String state;
   private String city;
@@ -18,8 +18,8 @@ public class LocationRest {
   private String block;
   private String building;
   private String flat;
-  @NotNull(message = "must be not null")
+  @NotNull(message = "must.be.not.blank")
   private Double lng;
-  @NotNull(message = "must be not null")
+  @NotNull(message = "must.be.not.blank")
   private Double ltd;
 }

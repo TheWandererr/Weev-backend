@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.rest.model.request;
 
+import com.pivo.weev.backend.rest.model.common.LocalizedDateTime;
 import com.pivo.weev.backend.rest.model.event.EntryFeeRest;
 import com.pivo.weev.backend.rest.model.event.LocationRest;
 import com.pivo.weev.backend.rest.model.event.RestrictionsRest;
@@ -17,22 +18,25 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class EventSaveRequest {
 
-  @Size(min = 3, max = 120, message = "length must be between 3 and 120")
-  @NotBlank(message = "must be not blank")
+  @Size(min = 3, max = 120, message = "incorrect.header.length")
+  @NotBlank(message = "must.be.not.blank")
   private String header;
-  @NotBlank(message = "unsupported category")
+  @NotBlank(message = "unsupported.category")
   private String category;
-  @NotBlank(message = "unsupported subcategory")
+  @NotBlank(message = "unsupported.subcategory")
   private String subcategory;
-  @NotNull(message = "must be not null")
+  @NotNull(message = "must.be.not.blank")
   @Valid
   private LocationRest location;
-  @Min(value = 1, message = "must be more than 0")
+  @Min(value = 1, message = "incorrect.members.limit")
   private Integer membersLimit;
-  @Size(max = 255, message = "length out of bound")
-  @NullableNotBlank(message = "must be null or not blank")
+  @Size(max = 255, message = "length.out.of.bound")
+  @NullableNotBlank(message = "must.be.null.or.not.blank")
   private String description;
   private MultipartFile photo;
   private EntryFeeRest entryFee;
   private RestrictionsRest restrictions;
+  @NotNull(message = "must.be.not.null")
+  private LocalizedDateTime localStartDateTime;
+  private LocalizedDateTime localEndDateTime;
 }
