@@ -1,8 +1,8 @@
 package com.pivo.weev.backend.rest.model.auth;
 
 import static com.pivo.weev.backend.domain.utils.Constants.EncryptionPatterns.PRIVATE_KEY_MASK_SYMBOLS;
-import static com.pivo.weev.backend.domain.utils.Constants.Errors.PKCS8_KEY_MASKED_VALUE_NOT_FOUND_ERROR;
-import static com.pivo.weev.backend.domain.utils.Constants.Errors.PKCS8_KEY_PASSPHRASE_NOT_FOUND_ERROR;
+import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.PKCS8_KEY_MASKED_VALUE_NOT_FOUND_ERROR;
+import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.PKCS8_KEY_PASSPHRASE_NOT_FOUND_ERROR;
 import static org.apache.commons.lang3.StringUtils.replaceChars;
 
 import jakarta.annotation.PostConstruct;
@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties("env.encryption.pks8")
+@ConfigurationProperties("encryption.pks8")
 @Setter
 public class PKCS8KeyProperties {
 

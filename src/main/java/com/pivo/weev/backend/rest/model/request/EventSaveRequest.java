@@ -7,6 +7,7 @@ import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.INVALID_EVEN
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.LENGTH_OUT_OF_BOUND;
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK;
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.MUST_BE_NOT_NULL;
+import static java.util.Objects.isNull;
 
 import com.pivo.weev.backend.rest.model.event.EntryFeeRest;
 import com.pivo.weev.backend.rest.model.event.LocationRest;
@@ -50,6 +51,15 @@ public class EventSaveRequest {
   private LocalDateTime localStartDateTime;
   @NotBlank(message = MUST_BE_NOT_BLANK)
   private String startTimeZoneId;
+  @NotNull(message = MUST_BE_NOT_NULL)
   private LocalDateTime localEndDateTime;
+  @NotBlank(message = MUST_BE_NOT_BLANK)
   private String endTimeZoneId;
+
+  public RestrictionsRest getRestrictions() {
+    if (isNull(restrictions)) {
+      restrictions = new RestrictionsRest();
+    }
+    return restrictions;
+  }
 }

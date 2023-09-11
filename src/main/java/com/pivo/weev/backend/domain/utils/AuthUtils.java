@@ -1,12 +1,12 @@
 package com.pivo.weev.backend.domain.utils;
 
-import static com.pivo.weev.backend.common.utils.CollectionUtils.selectToList;
-import static com.pivo.weev.backend.domain.utils.Constants.Errors.AUTHENTICATION_PRINCIPAL_NOT_FOUND_ERROR;
+import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.AUTHENTICATION_PRINCIPAL_NOT_FOUND_ERROR;
+import static com.pivo.weev.backend.rest.utils.Constants.Claims.USER_ID;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
-import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import com.pivo.weev.backend.common.utils.CollectionUtils;
+import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import java.util.Collection;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
@@ -47,7 +47,8 @@ public class AuthUtils {
   public static Collection<SimpleGrantedAuthority> getGrantedAuthorities() {
     return ofNullable(getAuthentication())
         .map(Authentication::getAuthorities)
-        .map(authorities -> CollectionUtils.selectToList(authorities, SimpleGrantedAuthority.class::isInstance, SimpleGrantedAuthority.class::cast))
+        .map(authorities -> CollectionUtils.selectToList(authorities, SimpleGrantedAuthority.class::isInstance,
+            SimpleGrantedAuthority.class::cast))
         .orElse(emptyList());
   }
 
@@ -57,5 +58,10 @@ public class AuthUtils {
         .filter(Jwt.class::isInstance)
         .map(Jwt.class::cast)
         .orElseThrow(() -> new AuthorizationServiceException(AUTHENTICATION_PRINCIPAL_NOT_FOUND_ERROR));
+  }
+
+  public static Long getUserId() {
+    return getAuthenticationDetails()
+        .getClaim(USER_ID);
   }
 }

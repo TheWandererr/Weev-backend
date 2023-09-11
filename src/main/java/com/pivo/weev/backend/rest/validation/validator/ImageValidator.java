@@ -2,7 +2,7 @@ package com.pivo.weev.backend.rest.validation.validator;
 
 import static com.pivo.weev.backend.rest.utils.Constants.FileMediaTypes.IMAGE;
 import static java.util.Objects.isNull;
-import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.pivo.weev.backend.common.utils.IOUtils;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
@@ -34,7 +34,7 @@ public class ImageValidator implements ConstraintValidator<ValidImage, Multipart
     }
     try {
       String mediaType = IOUtils.getMediaType(file);
-      if (!equalsIgnoreCase(mediaType, IMAGE)) {
+      if (isBlank(mediaType) || !mediaType.startsWith(IMAGE)) {
         return false;
       }
     } catch (IOException exception) {

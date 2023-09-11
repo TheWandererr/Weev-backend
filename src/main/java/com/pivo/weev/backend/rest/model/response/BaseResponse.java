@@ -10,45 +10,27 @@ import com.pivo.weev.backend.rest.model.error.Error;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @JsonInclude(NON_EMPTY)
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class BaseResponse {
 
   private Error error;
   private ResponseMessage message;
   private Map<String, Object> details;
 
-  public BaseResponse(ResponseMessage message) {
-    this.message = message;
+  public BaseResponse(Error error, ResponseMessage responseMessage) {
+    this(error, responseMessage, null);
   }
 
-  protected BaseResponse(BaseResponse copy) {
-    this.message = copy.message;
-    this.error = copy.error;
-    this.details = copy.details;
-  }
-
-  public BaseResponse(Error error, ResponseMessage message) {
-    this(error, message, null);
-  }
-
-  public Error getError() {
-    return error;
-  }
-
-  public void setError(Error error) {
-    this.error = error;
-  }
-
-  public ResponseMessage getMessage() {
-    return message;
-  }
-
-  public void setMessage(ResponseMessage message) {
-    this.message = message;
+  public BaseResponse(ResponseMessage responseMessage) {
+    this(null, responseMessage, null);
   }
 
   public Map<String, Object> getDetails() {
@@ -56,10 +38,6 @@ public class BaseResponse {
       details = new HashMap<>();
     }
     return details;
-  }
-
-  public void setDetails(Map<String, Object> details) {
-    this.details = details;
   }
 
   public enum ResponseMessage {

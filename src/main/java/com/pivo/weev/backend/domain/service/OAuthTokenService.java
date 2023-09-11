@@ -6,9 +6,9 @@ import static java.util.Objects.isNull;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.common.utils.CollectionUtils;
-import com.pivo.weev.backend.dao.model.auth.OAuthTokenDetailsJpa;
-import com.pivo.weev.backend.dao.model.common.SequencedPersistable;
-import com.pivo.weev.backend.dao.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
+import com.pivo.weev.backend.jpa.model.auth.OAuthTokenDetailsJpa;
+import com.pivo.weev.backend.jpa.model.common.SequencedPersistable;
+import com.pivo.weev.backend.jpa.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
 import com.pivo.weev.backend.domain.mapping.OAuthTokenDetailsJpaMapper;
 import com.pivo.weev.backend.domain.model.auth.OAuthTokenDetails;
 import jakarta.transaction.Transactional;

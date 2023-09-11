@@ -26,6 +26,8 @@
     <nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
     <mapstruct.version>1.5.5.Final</mapstruct.version>
     <hibernate.version>6.2.0.Final</hibernate.version>
+    <cloudinary.version>1.34.0</cloudinary.version>
+    <jackson-jsr310.version>2.15.2</jackson-jsr310.version>
   </properties>
 
   <dependencies>
@@ -129,6 +131,16 @@
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-spatial</artifactId>
       <version>${hibernate.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cloudinary</groupId>
+      <artifactId>cloudinary-http44</artifactId>
+      <version>${cloudinary.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>${jackson-jsr310.version}</version>
     </dependency>
   </dependencies>
 

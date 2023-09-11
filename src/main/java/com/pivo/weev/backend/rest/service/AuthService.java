@@ -2,7 +2,7 @@ package com.pivo.weev.backend.rest.service;
 
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getAuthenticationDetails;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getLoginDetails;
-import static com.pivo.weev.backend.domain.utils.Constants.Errors.AUTHORIZATION_TOKEN_NOT_FOUND_ERROR;
+import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.AUTHORIZATION_TOKEN_NOT_FOUND_ERROR;
 
 import com.pivo.weev.backend.domain.service.OAuthTokenService;
 import com.pivo.weev.backend.rest.model.auth.JWTPair;

@@ -11,8 +11,8 @@ import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +26,7 @@ public class EventsController {
 
   @PostMapping
   @ResponseStatus(value = CREATED)
-  public BaseResponse createEvent(@Valid @RequestBody EventSaveRequest request) {
+  public BaseResponse createEvent(@Valid @ModelAttribute EventSaveRequest request) {
     Event sample = getMapper(EventMapper.class).map(request);
     eventsService.saveEvent(sample);
     return new BaseResponse(ResponseMessage.CREATED);
