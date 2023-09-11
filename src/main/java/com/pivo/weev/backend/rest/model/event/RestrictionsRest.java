@@ -8,5 +8,5 @@ import lombok.Setter;
 public class RestrictionsRest {
 
   private Boolean joinAfterStartAllowed;
-  private Boolean privy;
+  private Boolean joinByRequest;
 }

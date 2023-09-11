@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.dao.model;
+package com.pivo.weev.backend.dao.model.auth;
 
 import com.pivo.weev.backend.dao.model.common.SequencedPersistable;
 import com.pivo.weev.backend.dao.utils.Constants.Columns;

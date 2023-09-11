@@ -6,11 +6,11 @@ import static java.util.Objects.isNull;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.common.utils.CollectionUtils;
-import com.pivo.weev.backend.dao.model.OAuthTokenDetailsJpa;
+import com.pivo.weev.backend.dao.model.auth.OAuthTokenDetailsJpa;
 import com.pivo.weev.backend.dao.model.common.SequencedPersistable;
 import com.pivo.weev.backend.dao.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
 import com.pivo.weev.backend.domain.mapping.OAuthTokenDetailsJpaMapper;
-import com.pivo.weev.backend.domain.model.OAuthTokenDetails;
+import com.pivo.weev.backend.domain.model.auth.OAuthTokenDetails;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
@@ -26,9 +26,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @EnableScheduling
-public class OAuthTokenManager {
+public class OAuthTokenService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(OAuthTokenManager.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(OAuthTokenService.class);
 
   private final OAuthTokenDetailsRepositoryWrapper oAuthTokenDetailsRepository;
 

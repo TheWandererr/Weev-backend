@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.dao.repository.wrapper;
 
-import com.pivo.weev.backend.dao.model.UserJpa;
+import com.pivo.weev.backend.dao.model.user.UserJpa;
 import com.pivo.weev.backend.dao.repository.IUserRepository;
 import com.pivo.weev.backend.dao.model.common.ResourceName;
 import org.springframework.stereotype.Component;

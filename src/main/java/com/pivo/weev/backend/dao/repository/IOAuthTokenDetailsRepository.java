@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.dao.repository;
 
-import com.pivo.weev.backend.dao.model.OAuthTokenDetailsJpa;
+import com.pivo.weev.backend.dao.model.auth.OAuthTokenDetailsJpa;
 import java.time.Instant;
 import java.util.List;
 

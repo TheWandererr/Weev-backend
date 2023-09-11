@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.dao.model;
+package com.pivo.weev.backend.dao.model.user;
 
 import com.pivo.weev.backend.dao.model.common.SequencedPersistable;
 import jakarta.persistence.Entity;

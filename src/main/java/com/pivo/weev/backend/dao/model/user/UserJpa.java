@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.dao.model;
+package com.pivo.weev.backend.dao.model.user;
 
 import static com.pivo.weev.backend.dao.utils.Constants.Columns.USER_EMAIL;
 import static com.pivo.weev.backend.dao.utils.Constants.Columns.USER_NAME;

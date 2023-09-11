@@ -8,7 +8,7 @@ import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getCurrentReques
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-import com.pivo.weev.backend.dao.model.UserJpa;
+import com.pivo.weev.backend.dao.model.user.UserJpa;
 import com.pivo.weev.backend.dao.repository.wrapper.UserRepositoryWrapper;
 import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import com.pivo.weev.backend.rest.utils.HttpServletUtils;

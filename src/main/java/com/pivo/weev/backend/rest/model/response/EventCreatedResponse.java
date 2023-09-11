@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EventCreatedResponse extends BaseResponse{
+public class EventCreatedResponse extends BaseResponse {
+
 
 }

@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.model;
+package com.pivo.weev.backend.domain.model.auth;
 
 import java.time.Instant;
 import lombok.Getter;

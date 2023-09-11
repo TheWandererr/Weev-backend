@@ -2,7 +2,7 @@ package com.pivo.weev.backend.dao.repository.wrapper;
 
 import static com.pivo.weev.backend.dao.model.common.ResourceName.OAUTH_TOKEN_DETAILS;
 
-import com.pivo.weev.backend.dao.model.OAuthTokenDetailsJpa;
+import com.pivo.weev.backend.dao.model.auth.OAuthTokenDetailsJpa;
 import com.pivo.weev.backend.dao.repository.IOAuthTokenDetailsRepository;
 import java.time.Instant;
 import java.util.List;

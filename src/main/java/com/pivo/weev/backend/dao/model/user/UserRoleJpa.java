@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.dao.model;
+package com.pivo.weev.backend.dao.model.user;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static java.util.Objects.isNull;

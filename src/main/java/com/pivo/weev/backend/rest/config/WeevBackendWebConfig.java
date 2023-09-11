@@ -21,7 +21,7 @@ import com.nimbusds.jose.jwk.RSAKey.Builder;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.pivo.weev.backend.domain.service.OAuthTokenManager;
+import com.pivo.weev.backend.domain.service.OAuthTokenService;
 import com.pivo.weev.backend.dao.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
 import com.pivo.weev.backend.rest.error.ErrorFactory;
 import com.pivo.weev.backend.rest.filter.JWTVerifierFilter;
@@ -74,7 +74,7 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
   private final AuthService authService;
   private final RSAKeyService rsaKeyService;
   private final OAuthTokenDetailsRepositoryWrapper oAuthTokenDetailsRepository;
-  private final OAuthTokenManager oauthTokenManager;
+  private final OAuthTokenService oauthTokenService;
   private final ErrorFactory errorFactory;
 
   @Bean
@@ -121,7 +121,7 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
                       restResponseMapper,
                       applicationLoggingHelper,
                       authService,
-                      oauthTokenManager)
+                      oauthTokenService)
                   )
                   .failureHandler(
                       new AuthenticationFailureHandler(restResponseMapper, applicationLoggingHelper, errorFactory))

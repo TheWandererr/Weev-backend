@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.mapping;
 
-import com.pivo.weev.backend.domain.model.OAuthTokenDetails;
+import com.pivo.weev.backend.domain.model.auth.OAuthTokenDetails;
 import com.pivo.weev.backend.rest.model.auth.JWTPair;
 import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import org.mapstruct.Mapper;

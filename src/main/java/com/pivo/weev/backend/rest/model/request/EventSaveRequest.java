@@ -1,15 +1,24 @@
 package com.pivo.weev.backend.rest.model.request;
 
-import com.pivo.weev.backend.rest.model.common.LocalizedDateTime;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.INVALID_EVENT_CATEGORY;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.INVALID_EVENT_HEADER;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.INVALID_EVENT_MEMBERS_AMOUNT;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.INVALID_EVENT_SUBCATEGORY;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.LENGTH_OUT_OF_BOUND;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.MUST_BE_NOT_NULL;
+
 import com.pivo.weev.backend.rest.model.event.EntryFeeRest;
 import com.pivo.weev.backend.rest.model.event.LocationRest;
 import com.pivo.weev.backend.rest.model.event.RestrictionsRest;
 import com.pivo.weev.backend.rest.validation.annotation.NullableNotBlank;
+import com.pivo.weev.backend.rest.validation.annotation.ValidImage;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,25 +27,29 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class EventSaveRequest {
 
-  @Size(min = 3, max = 120, message = "incorrect.header.length")
-  @NotBlank(message = "must.be.not.blank")
+  @Size(min = 3, max = 120, message = INVALID_EVENT_HEADER)
+  @NotBlank(message = MUST_BE_NOT_BLANK)
   private String header;
-  @NotBlank(message = "unsupported.category")
+  @NotBlank(message = INVALID_EVENT_CATEGORY)
   private String category;
-  @NotBlank(message = "unsupported.subcategory")
+  @NotBlank(message = INVALID_EVENT_SUBCATEGORY)
   private String subcategory;
-  @NotNull(message = "must.be.not.blank")
+  @NotNull(message = MUST_BE_NOT_NULL)
   @Valid
   private LocationRest location;
-  @Min(value = 1, message = "incorrect.members.limit")
+  @Min(value = 1, message = INVALID_EVENT_MEMBERS_AMOUNT)
   private Integer membersLimit;
-  @Size(max = 255, message = "length.out.of.bound")
-  @NullableNotBlank(message = "must.be.null.or.not.blank")
+  @Size(max = 255, message = LENGTH_OUT_OF_BOUND)
+  @NullableNotBlank
   private String description;
+  @ValidImage
   private MultipartFile photo;
   private EntryFeeRest entryFee;
   private RestrictionsRest restrictions;
-  @NotNull(message = "must.be.not.null")
-  private LocalizedDateTime localStartDateTime;
-  private LocalizedDateTime localEndDateTime;
+  @NotNull(message = MUST_BE_NOT_NULL)
+  private LocalDateTime localStartDateTime;
+  @NotBlank(message = MUST_BE_NOT_BLANK)
+  private String startTimeZoneId;
+  private LocalDateTime localEndDateTime;
+  private String endTimeZoneId;
 }

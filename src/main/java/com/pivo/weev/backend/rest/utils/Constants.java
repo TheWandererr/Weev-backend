@@ -56,10 +56,20 @@ public class Constants {
   public static final class ErrorCodes {
 
 
-    public static final String PERMISSIONS_ERROR = "not.enough.permissions";
+    public static final String PERMISSIONS = "not.enough.permissions";
     public static final String UNAUTHORIZED = "unauthorized";
-    public static final String FORBIDDEN_ERROR = "forbidden";
+    public static final String FORBIDDEN = "forbidden";
     public static final String VALIDATION_FAILED = "validation.failed";
+    public static final String MUST_BE_NOT_NULL = "must.be.not.null";
+    public static final String MUST_BE_NOT_BLANK = "must.be.not.blank";
+    public static final String MUST_BE_NULL_OR_NOT_BLANK = "must.be.null.or.not.blank";
+    public static final String INVALID_EVENT_HEADER = "incorrect.header.length";
+    public static final String INVALID_EVENT_CATEGORY = "unsupported.category";
+    public static final String INVALID_EVENT_SUBCATEGORY = "unsupported.subcategory";
+    public static final String INVALID_EVENT_MEMBERS_AMOUNT = "incorrect.members.limit";
+    public static final String LENGTH_OUT_OF_BOUND = "length.out.of.bound";
+    public static final String INCORRECT_FEE_AMOUNT = "incorrect.fee.amount";
+    public static final String UNSUPPORTED_FILE = "unsupported file";
   }
 
   @UtilityClass
@@ -93,5 +103,11 @@ public class Constants {
 
     public static final String ACCESS = "access";
     public static final String REFRESH = "refresh";
+  }
+
+  @UtilityClass
+  public static final class FileMediaTypes {
+
+    public static final String IMAGE = "image";
   }
 }
