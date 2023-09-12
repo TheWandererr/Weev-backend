@@ -25,7 +25,7 @@ public class EventsValidationService {
       throw new ReasonableException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
     }
     Instant endInstant = toInstant(validatable.getLocalEndDateTime(), validatable.getEndTimeZoneId());
-    if (endInstant.isBefore(startInstant)) {
+    if (endInstant.isBefore(startInstant) || endInstant.equals(startInstant)) {
       throw new ReasonableException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_END_DATE_TIME));
     }
   }

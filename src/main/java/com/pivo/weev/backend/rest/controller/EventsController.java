@@ -4,7 +4,7 @@ import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import com.pivo.weev.backend.domain.model.event.Event;
-import com.pivo.weev.backend.domain.service.EventsService;
+import com.pivo.weev.backend.domain.service.EventsOperatingService;
 import com.pivo.weev.backend.rest.mapping.EventMapper;
 import com.pivo.weev.backend.rest.model.request.EventSaveRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class EventsController {
 
-  private final EventsService eventsService;
+  private final EventsOperatingService eventsOperatingService;
 
   @PostMapping
   @ResponseStatus(value = CREATED)
   public BaseResponse createEvent(@Valid @ModelAttribute EventSaveRequest request) {
     Event sample = getMapper(EventMapper.class).map(request);
-    eventsService.saveEvent(sample);
+    eventsOperatingService.saveEvent(sample);
     return new BaseResponse(ResponseMessage.CREATED);
   }
 }

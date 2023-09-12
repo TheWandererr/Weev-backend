@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class EventsService {
+public class EventsOperatingService {
 
   private final LocationRepositoryWrapper locationRepository;
   private final EventRepositoryWrapper eventRepository;

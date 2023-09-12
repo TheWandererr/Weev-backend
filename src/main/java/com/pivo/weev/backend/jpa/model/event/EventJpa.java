@@ -8,7 +8,7 @@ import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.jpa.model.common.ModerationStatus;
-import com.pivo.weev.backend.jpa.model.common.SequencedPersistable;
+import com.pivo.weev.backend.jpa.model.common.ModifiableJpa;
 import com.pivo.weev.backend.jpa.model.user.UserJpa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -30,7 +30,7 @@ import lombok.Setter;
 @SequenceGenerator(sequenceName = "event_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
-public class EventJpa extends SequencedPersistable<Long> {
+public class EventJpa extends ModifiableJpa<Long> {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "creator_id")

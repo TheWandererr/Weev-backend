@@ -7,6 +7,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.locationtech.jts.geom.Point;
 
 @Entity
 @Table(name = "locations")
@@ -31,8 +32,5 @@ public class LocationJpa extends SequencedPersistable<Long> {
   private String building;
   @Column
   private String flat;
-  @Column(unique = true)
-  private Double lng;
-  @Column(unique = true)
-  private Double ltd;
+  private Point point;
 }
