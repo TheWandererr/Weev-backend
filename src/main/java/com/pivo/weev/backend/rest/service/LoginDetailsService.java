@@ -1,15 +1,15 @@
 package com.pivo.weev.backend.rest.service;
 
-import static com.pivo.weev.backend.dao.specification.builder.UserJpaSpecificationBuilder.UsernameType.ANY;
-import static com.pivo.weev.backend.dao.specification.builder.UserJpaSpecificationBuilder.buildUserSearchSpecification;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessages.AUTHENTICATION_CREDENTIALS;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessages.MISSING_COOKIE;
+import static com.pivo.weev.backend.jpa.specification.builder.UserJpaSpecificationBuilder.UsernameType.ANY;
+import static com.pivo.weev.backend.jpa.specification.builder.UserJpaSpecificationBuilder.buildUserSearchSpecification;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.AUTHENTICATION_FAILED;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.MISSING_COOKIE;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getCurrentRequest;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-import com.pivo.weev.backend.dao.model.UserJpa;
-import com.pivo.weev.backend.dao.repository.wrapper.UserRepositoryWrapper;
+import com.pivo.weev.backend.jpa.model.user.UserJpa;
+import com.pivo.weev.backend.jpa.repository.wrapper.UserRepositoryWrapper;
 import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import com.pivo.weev.backend.rest.utils.HttpServletUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +36,7 @@ public class LoginDetailsService implements UserDetailsService {
     Specification<UserJpa> specification = buildUserSearchSpecification(formattedUsername, ANY);
     return userRepository.find(specification)
                          .map(userJpa -> LoginDetails.from(userJpa, formattedUsername, deviceId, httpServletRequest.getRequestURI()))
-                         .orElseThrow(() -> new UsernameNotFoundException(AUTHENTICATION_CREDENTIALS));
+                         .orElseThrow(() -> new UsernameNotFoundException(AUTHENTICATION_FAILED));
   }
 
   private String getDeviceId(HttpServletRequest httpServletRequest) {

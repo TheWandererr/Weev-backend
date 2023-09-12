@@ -3,7 +3,7 @@ package com.pivo.weev.backend.rest.model.auth;
 import static com.pivo.weev.backend.common.utils.CollectionUtils.mapToList;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
-import com.pivo.weev.backend.dao.model.UserJpa;
+import com.pivo.weev.backend.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.common.utils.CollectionUtils;
 import java.util.Collection;
 import java.util.List;

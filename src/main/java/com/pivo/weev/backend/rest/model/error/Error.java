@@ -1,20 +1,13 @@
 package com.pivo.weev.backend.rest.model.error;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public class Error {
 
   private final String errorCode;
-  private final String message;
+  private final String messageCode;
 
-  public Error(String errorCode, String message) {
-    this.errorCode = errorCode;
-    this.message = message;
-  }
-
-  public String getErrorCode() {
-    return errorCode;
-  }
-
-  public String getMessage() {
-    return message;
-  }
 }

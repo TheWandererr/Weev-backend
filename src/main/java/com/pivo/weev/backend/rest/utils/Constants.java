@@ -55,20 +55,35 @@ public class Constants {
   @UtilityClass
   public static final class ErrorCodes {
 
-    public static final String AUTHENTICATION_FAILED_ERROR = "authentication.failed";
-    public static final String PERMISSIONS_ERROR = "not.enough.permissions";
-    public static final String AUTHORIZATION_REQUIRED_ERROR = "unauthorized";
-    public static final String FORBIDDEN_ERROR = "forbidden";
+
+    public static final String PERMISSIONS = "not.enough.permissions";
+    public static final String UNAUTHORIZED = "unauthorized";
+    public static final String FORBIDDEN = "forbidden";
+    public static final String VALIDATION_FAILED = "validation.failed";
+    public static final String NOT_FOUND = "not.found";
+    public static final String MUST_BE_NOT_NULL = "must.be.not.null";
+    public static final String MUST_BE_NOT_BLANK = "must.be.not.blank";
+    public static final String MUST_BE_NULL_OR_NOT_BLANK = "must.be.null.or.not.blank";
+    public static final String INVALID_EVENT_HEADER = "incorrect.header.length";
+    public static final String INVALID_EVENT_CATEGORY = "unsupported.category";
+    public static final String INVALID_EVENT_SUBCATEGORY = "unsupported.subcategory";
+    public static final String INVALID_EVENT_MEMBERS_AMOUNT = "incorrect.members.limit";
+    public static final String LENGTH_OUT_OF_BOUND = "length.out.of.bound";
+    public static final String INCORRECT_FEE_AMOUNT = "incorrect.fee.amount";
+    public static final String UNSUPPORTED_FILE = "unsupported.file";
+    public static final String FLOW_INTERRUPTED_ERROR = "flow.interrupted.error";
   }
 
   @UtilityClass
-  public static final class ErrorMessages {
+  public static final class ErrorMessageCodes {
 
-    public static final String PERMISSION_DENIED = "permission denied";
-    public static final String INVALID_TOKEN = "invalid token";
-    public static final String MISSING_COOKIE = "required cookie is missing";
-    public static final String AUTHENTICATION_CREDENTIALS = "bad credentials";
+    public static final String INVALID_TOKEN = "invalid.token";
+    public static final String MISSING_COOKIE = "missing.cookie";
+    public static final String AUTHENTICATION_FAILED = "authentication.failed";
+    public static final String NOT_ENOUGH_PERMISSIONS = "not.enough.permissions";
+    public static final String FLOW_INTERRUPTED = "flow.interrupted";
   }
+
 
   @UtilityClass
   public static final class ResponseDetails {
@@ -91,5 +106,17 @@ public class Constants {
 
     public static final String ACCESS = "access";
     public static final String REFRESH = "refresh";
+  }
+
+  @UtilityClass
+  public static final class FileMediaTypes {
+
+    public static final String IMAGE = "image";
+  }
+
+  @UtilityClass
+  public static final class DateTimePatterns {
+
+    public static final String DEFAULT_LOCAL_DATE_TIME_PATTERN = "yyyy-dd-MM HH:mm";
   }
 }

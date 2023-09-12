@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.rest.config;
 
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 import static com.pivo.weev.backend.rest.utils.Constants.Api.LOGIN_URL;
 import static com.pivo.weev.backend.rest.utils.Constants.Authorities.WRITE;
@@ -15,14 +16,15 @@ import static org.springframework.security.config.http.SessionCreationPolicy.NEV
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey.Builder;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.pivo.weev.backend.domain.service.OAuthTokenManager;
-import com.pivo.weev.backend.dao.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
+import com.pivo.weev.backend.domain.service.OAuthTokenService;
+import com.pivo.weev.backend.jpa.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
 import com.pivo.weev.backend.rest.error.ErrorFactory;
 import com.pivo.weev.backend.rest.filter.JWTVerifierFilter;
 import com.pivo.weev.backend.rest.handler.AccessDeniedHandler;
@@ -74,7 +76,7 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
   private final AuthService authService;
   private final RSAKeyService rsaKeyService;
   private final OAuthTokenDetailsRepositoryWrapper oAuthTokenDetailsRepository;
-  private final OAuthTokenManager oauthTokenManager;
+  private final OAuthTokenService oauthTokenService;
   private final ErrorFactory errorFactory;
 
   @Bean
@@ -121,7 +123,7 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
                       restResponseMapper,
                       applicationLoggingHelper,
                       authService,
-                      oauthTokenManager)
+                      oauthTokenService)
                   )
                   .failureHandler(
                       new AuthenticationFailureHandler(restResponseMapper, applicationLoggingHelper, errorFactory))
@@ -195,6 +197,8 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
     ObjectMapper mapper = new ObjectMapper();
     mapper.setSerializationInclusion(Include.NON_NULL);
     mapper.configure(FAIL_ON_EMPTY_BEANS, false);
+    mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
+    mapper.registerModule(new JavaTimeModule());
     return mapper;
   }
 

@@ -52,7 +52,8 @@ public class ApplicationLoggingHelper {
   private LogMessage buildLogMessage(HttpServletRequest request, BaseResponse baseResponse, String failure, boolean includeBody) {
     LogMessage message = LogMessage.fromRequest(request, includeBody);
     message.getDetails().putAll(baseResponse.getDetails());
-    ofNullable(baseResponse.getError()).ifPresent(error -> message.getDetails().put(error.getErrorCode(), error.getMessage()));
+    ofNullable(baseResponse.getError())
+        .ifPresent(error -> message.getDetails().put(error.getErrorCode(), error.getMessageCode()));
     message.setFailure(failure);
     return message;
   }

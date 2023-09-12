@@ -1,5 +1,7 @@
 package com.pivo.weev.backend.rest.model.event;
 
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -9,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class LocationRest {
 
-  @NotBlank(message = "must be not blank")
+  @NotBlank(message = MUST_BE_NOT_BLANK)
   private String country;
   private String state;
   private String city;
@@ -18,8 +20,8 @@ public class LocationRest {
   private String block;
   private String building;
   private String flat;
-  @NotNull(message = "must be not null")
+  @NotNull(message = MUST_BE_NOT_BLANK)
   private Double lng;
-  @NotNull(message = "must be not null")
+  @NotNull(message = MUST_BE_NOT_BLANK)
   private Double ltd;
 }

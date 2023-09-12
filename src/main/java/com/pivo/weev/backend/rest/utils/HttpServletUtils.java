@@ -16,7 +16,7 @@ import static org.springframework.security.oauth2.core.OAuth2AccessToken.TokenTy
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pivo.weev.backend.common.utils.ArrayUtils;
 import com.pivo.weev.backend.common.utils.CollectionUtils;
-import com.pivo.weev.backend.domain.utils.Constants.Errors;
+import com.pivo.weev.backend.domain.utils.Constants.ErrorCodes;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.utils.Constants.Cookies;
 import jakarta.servlet.ServletOutputStream;
@@ -154,7 +154,7 @@ public class HttpServletUtils {
                                             .map(HttpServletUtils::parseAuthorizationToken)
                                             .filter(StringUtils::isNotBlank)
                                             .orElseThrow(
-                                                () -> new AuthorizationServiceException(Errors.AUTHORIZATION_TOKEN_NOT_FOUND_ERROR));
+                                                () -> new AuthorizationServiceException(ErrorCodes.AUTHORIZATION_TOKEN_NOT_FOUND_ERROR));
   }
 
   private static String parseAuthorizationToken(String authorizationValue) {

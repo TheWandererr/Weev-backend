@@ -31,7 +31,7 @@ public class AccessDeniedHandler implements org.springframework.security.web.acc
   @Override
   public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
       throws IOException, ServletException {
-    Error error = errorFactory.create(ErrorCodes.PERMISSIONS_ERROR, accessDeniedException.getMessage());
+    Error error = errorFactory.create(ErrorCodes.PERMISSIONS, accessDeniedException.getMessage());
     BaseResponse loginResponse = new BaseResponse(error, ResponseMessage.FORBIDDEN);
     LOGGER.error(applicationLoggingHelper.buildLoggingError(accessDeniedException, null, false));
     writeResponse(loginResponse, response, HttpStatus.FORBIDDEN, restResponseMapper);

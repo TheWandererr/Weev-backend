@@ -6,8 +6,8 @@ import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pivo.weev.backend.domain.model.OAuthTokenDetails;
-import com.pivo.weev.backend.domain.service.OAuthTokenManager;
+import com.pivo.weev.backend.domain.model.auth.OAuthTokenDetails;
+import com.pivo.weev.backend.domain.service.OAuthTokenService;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.mapping.OAuthTokenDetailsMapper;
 import com.pivo.weev.backend.rest.model.auth.JWTPair;
@@ -34,7 +34,7 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
   private final ObjectMapper restResponseMapper;
   private final ApplicationLoggingHelper applicationLoggingHelper;
   private final AuthService authService;
-  private final OAuthTokenManager oAuthTokenManager;
+  private final OAuthTokenService oAuthTokenService;
 
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
@@ -57,7 +57,7 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
   }
 
   private void updateTokenDetails(LoginDetails loginDetails, JWTPair jwtPair) {
-    boolean updated = oAuthTokenManager.updateTokenDetails(
+    boolean updated = oAuthTokenService.updateTokenDetails(
         loginDetails.getUserId(),
         loginDetails.getDeviceId(),
         loginDetails.getSerial(),
@@ -65,7 +65,7 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
     );
     if (!updated) {
       OAuthTokenDetails tokenDetails = getMapper(OAuthTokenDetailsMapper.class).map(loginDetails, jwtPair);
-      oAuthTokenManager.saveTokenDetails(tokenDetails);
+      oAuthTokenService.saveTokenDetails(tokenDetails);
     }
   }
 }

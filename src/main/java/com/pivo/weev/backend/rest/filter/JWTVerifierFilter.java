@@ -5,14 +5,14 @@ import static com.pivo.weev.backend.domain.utils.JwtUtils.getUserId;
 import static com.pivo.weev.backend.domain.utils.JwtUtils.getDeviceId;
 import static com.pivo.weev.backend.rest.utils.Constants.Api.LOGIN_URI;
 import static com.pivo.weev.backend.rest.utils.Constants.Api.REFRESH_URI;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessages.INVALID_TOKEN;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.INVALID_TOKEN;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getAuthorizationValue;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 import static java.util.Objects.isNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pivo.weev.backend.dao.model.OAuthTokenDetailsJpa;
-import com.pivo.weev.backend.dao.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
+import com.pivo.weev.backend.jpa.model.auth.OAuthTokenDetailsJpa;
+import com.pivo.weev.backend.jpa.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
 import com.pivo.weev.backend.rest.error.ErrorFactory;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.model.error.Error;
