@@ -9,7 +9,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class DateTimeUtils {
 
-  public Instant toInstant(LocalDateTime localDateTime, String localTimeZoneId) {
+  public static Instant toInstant(LocalDateTime localDateTime, String localTimeZoneId) {
     ZoneOffset offset = getOffset(localDateTime, localTimeZoneId);
     return localDateTime.toInstant(offset);
   }

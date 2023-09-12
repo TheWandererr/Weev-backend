@@ -3,7 +3,6 @@ package com.pivo.weev.backend.domain.service;
 import static com.pivo.weev.backend.common.utils.CollectionUtils.findFirst;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.SUBCATEGORY_NOT_FOUND_ERROR;
-import static com.pivo.weev.backend.jpa.model.common.ModerationStatus.ON_MODERATION;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -14,7 +13,6 @@ import com.pivo.weev.backend.domain.model.event.Event;
 import com.pivo.weev.backend.domain.model.event.Location;
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
 import com.pivo.weev.backend.domain.service.validation.EventsValidationService;
-import com.pivo.weev.backend.domain.utils.AuthUtils;
 import com.pivo.weev.backend.integration.client.cloudinary.model.Image;
 import com.pivo.weev.backend.integration.service.cloudinary.CloudinaryService;
 import com.pivo.weev.backend.jpa.model.common.CloudResourceJpa;
@@ -66,7 +64,6 @@ public class EventsService {
     eventJpa.setCategory(retrieveCategory(sample));
     eventJpa.setSubcategory(retrieveSubcategory(eventJpa.getCategory(), sample));
     eventJpa.setPhoto(uploadPhoto(sample));
-    eventJpa.setModerationStatus(ON_MODERATION);
     UserJpa creator = userRepository.fetch(getUserId());
     eventJpa.setCreator(creator);
     return eventJpa;

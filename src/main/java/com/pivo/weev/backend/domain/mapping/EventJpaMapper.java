@@ -15,8 +15,10 @@ public interface EventJpaMapper {
   @Mapping(target = "category", ignore = true)
   @Mapping(target = "subcategory", ignore = true)
   @Mapping(target = "moderatedBy", ignore = true)
+  @Mapping(target = "creator", ignore = true)
   @Mapping(target = "utcStartDateTime", expression = "java(DateTimeUtils.toInstant(source.getLocalStartDateTime(), source.getStartTimeZoneId()))")
   @Mapping(target = "utcEndDateTime", expression = "java(DateTimeUtils.toInstant(source.getLocalEndDateTime(), source.getEndTimeZoneId()))")
   @Mapping(target = "reminded", constant = "false")
+  @Mapping(target = "moderationStatus", constant = "ON_MODERATION")
   EventJpa map(Event source);
 }
