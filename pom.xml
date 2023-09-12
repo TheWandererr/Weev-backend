@@ -28,6 +28,8 @@
     <hibernate.version>6.2.0.Final</hibernate.version>
     <cloudinary.version>1.34.0</cloudinary.version>
     <jackson-jsr310.version>2.15.2</jackson-jsr310.version>
+    <timeshape.version>2022g.17</timeshape.version>
+    <lombok.version>1.18.16</lombok.version>
   </properties>
 
   <dependencies>
@@ -68,7 +70,9 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <optional>true</optional>
+      <optional>false</optional>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -141,6 +145,11 @@
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
       <version>${jackson-jsr310.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.iakovlev</groupId>
+      <artifactId>timeshape</artifactId>
+      <version>${timeshape.version}</version>
     </dependency>
   </dependencies>
 

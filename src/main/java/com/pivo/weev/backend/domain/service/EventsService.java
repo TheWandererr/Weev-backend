@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.service;
 
 import static com.pivo.weev.backend.common.utils.CollectionUtils.findFirst;
+import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.SUBCATEGORY_NOT_FOUND_ERROR;
 import static com.pivo.weev.backend.jpa.model.common.ModerationStatus.ON_MODERATION;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
@@ -12,6 +13,8 @@ import com.pivo.weev.backend.domain.mapping.LocationJpaMapper;
 import com.pivo.weev.backend.domain.model.event.Event;
 import com.pivo.weev.backend.domain.model.event.Location;
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
+import com.pivo.weev.backend.domain.service.validation.EventsValidationService;
+import com.pivo.weev.backend.domain.utils.AuthUtils;
 import com.pivo.weev.backend.integration.client.cloudinary.model.Image;
 import com.pivo.weev.backend.integration.service.cloudinary.CloudinaryService;
 import com.pivo.weev.backend.jpa.model.common.CloudResourceJpa;
@@ -19,10 +22,13 @@ import com.pivo.weev.backend.jpa.model.event.CategoryJpa;
 import com.pivo.weev.backend.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.jpa.model.event.LocationJpa;
 import com.pivo.weev.backend.jpa.model.event.SubcategoryJpa;
+import com.pivo.weev.backend.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.jpa.repository.wrapper.EventCategoryRepositoryWrapper;
 import com.pivo.weev.backend.jpa.repository.wrapper.EventRepositoryWrapper;
 import com.pivo.weev.backend.jpa.repository.wrapper.LocationRepositoryWrapper;
+import com.pivo.weev.backend.jpa.repository.wrapper.UserRepositoryWrapper;
 import jakarta.transaction.Transactional;
+import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,13 +39,25 @@ public class EventsService {
   private final LocationRepositoryWrapper locationRepository;
   private final EventRepositoryWrapper eventRepository;
   private final EventCategoryRepositoryWrapper eventCategoryRepository;
+  private final UserRepositoryWrapper userRepository;
+
   private final CloudinaryService cloudinaryService;
+  private final EventsValidationService eventsValidationService;
+  private final TimeZoneService timeZoneService;
 
   @Transactional
   public void saveEvent(Event sample) {
-    // validate date time and etc. TODO
+    setTimeZones(sample);
+    eventsValidationService.validate(sample);
     EventJpa jpaEvent = preparePersistableEvent(sample);
     eventRepository.save(jpaEvent);
+  }
+
+  private void setTimeZones(Event sample) {
+    Location location = sample.getLocation();
+    ZoneId zoneId = timeZoneService.getZoneId(location.getLtd(), location.getLng());
+    sample.setStartTimeZoneId(zoneId.getId());
+    sample.setEndTimeZoneId(zoneId.getId());
   }
 
   private EventJpa preparePersistableEvent(Event sample) {
@@ -49,6 +67,8 @@ public class EventsService {
     eventJpa.setSubcategory(retrieveSubcategory(eventJpa.getCategory(), sample));
     eventJpa.setPhoto(uploadPhoto(sample));
     eventJpa.setModerationStatus(ON_MODERATION);
+    UserJpa creator = userRepository.fetch(getUserId());
+    eventJpa.setCreator(creator);
     return eventJpa;
   }
 

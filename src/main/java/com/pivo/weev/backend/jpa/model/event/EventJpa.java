@@ -9,10 +9,12 @@ import static java.util.Objects.nonNull;
 import com.pivo.weev.backend.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.jpa.model.common.ModerationStatus;
 import com.pivo.weev.backend.jpa.model.common.SequencedPersistable;
+import com.pivo.weev.backend.jpa.model.user.UserJpa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -30,6 +32,9 @@ import lombok.Setter;
 @Setter
 public class EventJpa extends SequencedPersistable<Long> {
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "creator_id")
+  private UserJpa creator;
   @Column(nullable = false, name = EVENT_HEADER)
   private String header;
   @ManyToOne(optional = false)

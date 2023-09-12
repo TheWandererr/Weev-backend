@@ -14,11 +14,21 @@ public final class Constants {
     public static final String AUTHORIZATION_TOKEN_NOT_FOUND_ERROR = "authorization.token.not.found";
     public static final String CLOUD_OPERATION_ERROR = "cloud.uploading.failed";
     public static final String SUBCATEGORY_NOT_FOUND_ERROR = "subcategory.not.found";
+    public static final String TIME_ZONE_ID_NOT_FOUND_ERROR = "time.zone.id.not.recognized";
+
+    public static final String FIELD_VALIDATION_FAILED_ERROR_PATTERN = "%s.incorrect";
   }
 
   @UtilityClass
   public static final class EncryptionPatterns {
 
     public static final String PRIVATE_KEY_MASK_SYMBOLS = "###";
+  }
+
+  @UtilityClass
+  public static final class ValidatableFields {
+
+    public static final String LOCAL_START_DATE_TIME = "localStartDateTime";
+    public static final String LOCAL_END_DATE_TIME = "localEndDateTime";
   }
 }

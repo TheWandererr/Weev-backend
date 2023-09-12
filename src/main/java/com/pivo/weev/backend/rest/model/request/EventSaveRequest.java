@@ -49,12 +49,8 @@ public class EventSaveRequest {
   private RestrictionsRest restrictions;
   @NotNull(message = MUST_BE_NOT_NULL)
   private LocalDateTime localStartDateTime;
-  @NotBlank(message = MUST_BE_NOT_BLANK)
-  private String startTimeZoneId;
   @NotNull(message = MUST_BE_NOT_NULL)
   private LocalDateTime localEndDateTime;
-  @NotBlank(message = MUST_BE_NOT_BLANK)
-  private String endTimeZoneId;
 
   public RestrictionsRest getRestrictions() {
     if (isNull(restrictions)) {
