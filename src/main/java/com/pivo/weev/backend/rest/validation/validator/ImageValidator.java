@@ -30,7 +30,7 @@ public class ImageValidator implements ConstraintValidator<ValidImage, Multipart
     @Override
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
         if (isNull(file)) {
-            return false;
+            return true;
         }
         try {
             String mediaType = IOUtils.getMediaType(file);
