@@ -3,11 +3,8 @@ package com.pivo.weev.backend.domain.service.files;
 import static com.pivo.weev.backend.common.utils.IOUtils.getFormat;
 import static com.pivo.weev.backend.domain.utils.Constants.CompressingParams.MAX_SCALING;
 import static com.pivo.weev.backend.domain.utils.Constants.CompressingParams.SCALE_MAPPING;
-import static com.pivo.weev.backend.domain.utils.Constants.CompressingParams.WATERMARK_RESOURCE;
 import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.FILE_COMPRESSING_ERROR;
 import static java.util.Optional.ofNullable;
-import static javax.imageio.ImageIO.read;
-import static net.coobird.thumbnailator.geometry.Positions.BOTTOM_RIGHT;
 import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
@@ -17,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map.Entry;
+import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +22,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@RequiredArgsConstructor
 public class FilesCompressingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FilesCompressingService.class);
 
     private final ApplicationLoggingHelper loggingHelper;
-    private final BufferedImage watermark;
-
-    public FilesCompressingService(ApplicationLoggingHelper loggingHelper) throws IOException {
-        this.loggingHelper = loggingHelper;
-        this.watermark = read(WATERMARK_RESOURCE.getInputStream());
-    }
 
     public Image compress(MultipartFile file) {
         try {
@@ -53,7 +46,6 @@ public class FilesCompressingService {
         return Thumbnails.of(inputStream)
                          .scale(scale)
                          .outputQuality(1)
-                         .watermark(BOTTOM_RIGHT, watermark, 0.3f)
                          .asBufferedImage();
     }
 

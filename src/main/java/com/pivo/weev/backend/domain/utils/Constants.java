@@ -3,7 +3,6 @@ package com.pivo.weev.backend.domain.utils;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import lombok.experimental.UtilityClass;
-import org.springframework.core.io.ClassPathResource;
 
 @UtilityClass
 public final class Constants {
@@ -40,8 +39,6 @@ public final class Constants {
     public static final class CompressingParams {
 
         public static final Double MAX_SCALING = 0.2;
-        public static final String OUTPUT_FILE_NAME = "compressed_image";
-        public static final ClassPathResource WATERMARK_RESOURCE = new ClassPathResource("static/watermark.png");
         public static final Map<Long, Double> SCALE_MAPPING;
 
         static {
