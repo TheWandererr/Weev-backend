@@ -9,12 +9,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class WeevBackendLoader {
 
-  public static void main(String[] args) {
-    SpringApplication.run(WeevBackendLoader.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(WeevBackendLoader.class, args);
+    }
 
-  @PostConstruct
-  public void setTimeZone() {
-    TimeZone.setDefault(Configs.APPLICATION_TIMEZONE);
-  }
+    @PostConstruct
+    public void setTimeZone() {
+        TimeZone.setDefault(Configs.APPLICATION_TIMEZONE);
+    }
 }

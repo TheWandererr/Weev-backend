@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class EventCategoryRepositoryWrapper extends GenericRepositoryWrapper<Long, CategoryJpa, IEventCategoryRepository> {
 
-  protected EventCategoryRepositoryWrapper(IEventCategoryRepository repository) {
-    super(repository, EVENT_CATEGORY);
-  }
+    protected EventCategoryRepositoryWrapper(IEventCategoryRepository repository) {
+        super(repository, EVENT_CATEGORY);
+    }
 
-  public CategoryJpa fetchByName(String name) {
-    return repository.findByName(name)
-                     .orElseThrow(() -> new ResourceNotFoundException(notFound()));
-  }
+    public CategoryJpa fetchByName(String name) {
+        return repository.findByName(name)
+                         .orElseThrow(() -> new ResourceNotFoundException(notFound()));
+    }
 }

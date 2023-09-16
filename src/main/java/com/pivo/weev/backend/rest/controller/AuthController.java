@@ -20,19 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-  private final AuthService authService;
+    private final AuthService authService;
 
-  @GetMapping("/refresh")
-  @PreAuthorize("hasAnyAuthority('SCOPE_refresh')")
-  public LoginResponse refreshToken(HttpServletRequest httpServletRequest) {
-    String token = getAuthorizationValue(httpServletRequest);
-    JWTPair jwtPair = authService.refreshAuthentication(token);
-    return new LoginResponse(jwtPair.getAccessToken().getTokenValue(), jwtPair.getRefreshToken().getTokenValue());
-  }
+    @GetMapping("/refresh")
+    @PreAuthorize("hasAnyAuthority('SCOPE_refresh')")
+    public LoginResponse refreshToken(HttpServletRequest httpServletRequest) {
+        String token = getAuthorizationValue(httpServletRequest);
+        JWTPair jwtPair = authService.refreshAuthentication(token);
+        return new LoginResponse(jwtPair.getAccessToken().getTokenValue(), jwtPair.getRefreshToken().getTokenValue());
+    }
 
-  @PostMapping("/logout")
-  public BaseResponse logout() {
-    authService.logout();
-    return new BaseResponse(ResponseMessage.SUCCESS);
-  }
+    @PostMapping("/logout")
+    public BaseResponse logout() {
+        authService.logout();
+        return new BaseResponse(ResponseMessage.SUCCESS);
+    }
 }

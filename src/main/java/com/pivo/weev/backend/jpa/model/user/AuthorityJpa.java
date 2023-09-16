@@ -14,5 +14,5 @@ import lombok.Setter;
 @Setter
 public class AuthorityJpa extends SequencedPersistable<Long> {
 
-  private String value;
+    private String value;
 }

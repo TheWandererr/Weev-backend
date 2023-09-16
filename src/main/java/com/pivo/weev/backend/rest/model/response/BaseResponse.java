@@ -21,51 +21,51 @@ import lombok.Setter;
 @Setter
 public class BaseResponse {
 
-  private Error error;
-  private ResponseMessage message;
-  private Map<String, Object> details;
+    private Error error;
+    private ResponseMessage message;
+    private Map<String, Object> details;
 
-  public BaseResponse(Error error, ResponseMessage responseMessage) {
-    this(error, responseMessage, null);
-  }
-
-  public BaseResponse(ResponseMessage responseMessage) {
-    this(null, responseMessage, null);
-  }
-
-  public Map<String, Object> getDetails() {
-    if (isNull(details)) {
-      details = new HashMap<>();
+    public BaseResponse(Error error, ResponseMessage responseMessage) {
+        this(error, responseMessage, null);
     }
-    return details;
-  }
 
-  public enum ResponseMessage {
-    SUCCESS,
-    CREATED,
-    UNAUTHORIZED,
-    ERROR,
-    FORBIDDEN,
-    TOO_MANY_REQUESTS
-  }
+    public BaseResponse(ResponseMessage responseMessage) {
+        this(null, responseMessage, null);
+    }
 
-  @JsonIgnore
-  public boolean isFailed() {
-    return nonNull(error);
-  }
+    public Map<String, Object> getDetails() {
+        if (isNull(details)) {
+            details = new HashMap<>();
+        }
+        return details;
+    }
 
-  @JsonIgnore
-  public boolean isUnauthorized() {
-    return ResponseMessage.UNAUTHORIZED == message;
-  }
+    public enum ResponseMessage {
+        SUCCESS,
+        CREATED,
+        UNAUTHORIZED,
+        ERROR,
+        FORBIDDEN,
+        TOO_MANY_REQUESTS
+    }
 
-  @JsonIgnore
-  public boolean isForbidden() {
-    return ResponseMessage.FORBIDDEN == message;
-  }
+    @JsonIgnore
+    public boolean isFailed() {
+        return nonNull(error);
+    }
 
-  @JsonIgnore
-  public boolean isTooManyRequests() {
-    return ResponseMessage.TOO_MANY_REQUESTS == message;
-  }
+    @JsonIgnore
+    public boolean isUnauthorized() {
+        return ResponseMessage.UNAUTHORIZED == message;
+    }
+
+    @JsonIgnore
+    public boolean isForbidden() {
+        return ResponseMessage.FORBIDDEN == message;
+    }
+
+    @JsonIgnore
+    public boolean isTooManyRequests() {
+        return ResponseMessage.TOO_MANY_REQUESTS == message;
+    }
 }

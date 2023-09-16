@@ -13,8 +13,8 @@ import lombok.Setter;
 @Setter
 public class EntryFeeRest {
 
-  @DecimalMin(value = "0.01", message = INCORRECT_FEE_AMOUNT)
-  private BigDecimal amount;
-  @NotBlank(message = MUST_BE_NOT_BLANK)
-  private String currency;
+    @DecimalMin(value = "0.01", message = INCORRECT_FEE_AMOUNT)
+    private BigDecimal amount;
+    @NotBlank(message = MUST_BE_NOT_BLANK)
+    private String currency;
 }

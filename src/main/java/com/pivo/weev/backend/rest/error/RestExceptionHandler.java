@@ -38,74 +38,74 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice(annotations = {Service.class, Component.class, RestController.class})
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-  private final ErrorFactory errorFactory;
-  private final ApplicationLoggingHelper applicationLoggingHelper;
+    private final ErrorFactory errorFactory;
+    private final ApplicationLoggingHelper applicationLoggingHelper;
 
-  @ExceptionHandler(value = Exception.class)
-  public ResponseEntity<BaseResponse> handleException(Exception exception) {
-    BaseResponse body = new BaseResponse(null, ResponseMessage.ERROR, Map.of(ResponseDetails.REASON, exception.getMessage()));
-    logger.error(applicationLoggingHelper.buildLoggingError(body, null));
-    return ResponseEntity.internalServerError()
-                         .body(body);
-  }
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<BaseResponse> handleException(Exception exception) {
+        BaseResponse body = new BaseResponse(null, ResponseMessage.ERROR, Map.of(ResponseDetails.REASON, exception.getMessage()));
+        logger.error(applicationLoggingHelper.buildLoggingError(body, null));
+        return ResponseEntity.internalServerError()
+                             .body(body);
+    }
 
-  @ExceptionHandler(value = AccessDeniedException.class)
-  public ResponseEntity<BaseResponse> handleAccessDeniedException(AccessDeniedException accessDeniedException) {
-    Error error = errorFactory.forbidden();
-    BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
-    logger.error(applicationLoggingHelper.buildLoggingError(body, accessDeniedException.getMessage()));
-    return ResponseEntity.status(FORBIDDEN)
-                         .body(body);
-  }
+    @ExceptionHandler(value = AccessDeniedException.class)
+    public ResponseEntity<BaseResponse> handleAccessDeniedException(AccessDeniedException accessDeniedException) {
+        Error error = errorFactory.forbidden();
+        BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
+        logger.error(applicationLoggingHelper.buildLoggingError(body, accessDeniedException.getMessage()));
+        return ResponseEntity.status(FORBIDDEN)
+                             .body(body);
+    }
 
-  @ExceptionHandler(value = {MissingCookieException.class, InvalidCookieException.class})
-  public ResponseEntity<BaseResponse> handleMissingCookieException(RuntimeException runtimeException) {
-    Error error = errorFactory.forbidden();
-    BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
-    logger.error(applicationLoggingHelper.buildLoggingError(body, runtimeException.getMessage()));
-    return ResponseEntity.status(FORBIDDEN)
-                         .body(body);
-  }
+    @ExceptionHandler(value = {MissingCookieException.class, InvalidCookieException.class})
+    public ResponseEntity<BaseResponse> handleMissingCookieException(RuntimeException runtimeException) {
+        Error error = errorFactory.forbidden();
+        BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
+        logger.error(applicationLoggingHelper.buildLoggingError(body, runtimeException.getMessage()));
+        return ResponseEntity.status(FORBIDDEN)
+                             .body(body);
+    }
 
-  @ExceptionHandler(value = InternalAuthenticationServiceException.class)
-  public ResponseEntity<BaseResponse> handleInternalAuthenticationServiceException(InternalAuthenticationServiceException exception) {
-    Error error = errorFactory.unauthorized(exception.getMessage());
-    BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
-    logger.error(applicationLoggingHelper.buildLoggingError(body, exception.getMessage()));
-    return ResponseEntity.status(UNAUTHORIZED)
-                         .body(body);
-  }
+    @ExceptionHandler(value = InternalAuthenticationServiceException.class)
+    public ResponseEntity<BaseResponse> handleInternalAuthenticationServiceException(InternalAuthenticationServiceException exception) {
+        Error error = errorFactory.unauthorized(exception.getMessage());
+        BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
+        logger.error(applicationLoggingHelper.buildLoggingError(body, exception.getMessage()));
+        return ResponseEntity.status(UNAUTHORIZED)
+                             .body(body);
+    }
 
-  @Override
-  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
-                                                                HttpHeaders headers,
-                                                                HttpStatusCode status,
-                                                                WebRequest request) {
-    String messageCode = ofNullable(exception.getBindingResult().getFieldError())
-        .map(error -> StringUtils.join(error.getField(), DOT, error.getDefaultMessage()))
-        .orElse(null);
-    Error error = errorFactory.create(VALIDATION_FAILED, messageCode);
-    BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
-    logger.error(applicationLoggingHelper.buildLoggingError(body, null));
-    return ResponseEntity.badRequest()
-                         .body(body);
-  }
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatusCode status,
+                                                                  WebRequest request) {
+        String messageCode = ofNullable(exception.getBindingResult().getFieldError())
+                .map(error -> StringUtils.join(error.getField(), DOT, error.getDefaultMessage()))
+                .orElse(null);
+        Error error = errorFactory.create(VALIDATION_FAILED, messageCode);
+        BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
+        logger.error(applicationLoggingHelper.buildLoggingError(body, null));
+        return ResponseEntity.badRequest()
+                             .body(body);
+    }
 
-  @ExceptionHandler(value = {ResourceNotFoundException.class})
-  public ResponseEntity<BaseResponse> handleResourceNotFoundException(ResourceNotFoundException resourceNotFoundException) {
-    Error error = errorFactory.create(NOT_FOUND, resourceNotFoundException.getMessage());
-    BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
-    logger.error(applicationLoggingHelper.buildLoggingError(body, null));
-    return ResponseEntity.badRequest()
-                         .body(body);
-  }
+    @ExceptionHandler(value = {ResourceNotFoundException.class})
+    public ResponseEntity<BaseResponse> handleResourceNotFoundException(ResourceNotFoundException resourceNotFoundException) {
+        Error error = errorFactory.create(NOT_FOUND, resourceNotFoundException.getMessage());
+        BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
+        logger.error(applicationLoggingHelper.buildLoggingError(body, null));
+        return ResponseEntity.badRequest()
+                             .body(body);
+    }
 
-  @ExceptionHandler(value = {ReasonableException.class})
-  public ResponseEntity<BaseResponse> handleReasonableException(ReasonableException reasonableException) {
-    Error error = errorFactory.create(reasonableException.getErrorCode(), FLOW_INTERRUPTED);
-    BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR, reasonableException.buildDetails());
-    logger.error(applicationLoggingHelper.buildLoggingError(body, null));
-    return ResponseEntity.status(reasonableException.getHttpStatus())
-                         .body(body);
-  }
+    @ExceptionHandler(value = {ReasonableException.class})
+    public ResponseEntity<BaseResponse> handleReasonableException(ReasonableException reasonableException) {
+        Error error = errorFactory.create(reasonableException.getErrorCode(), FLOW_INTERRUPTED);
+        BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR, reasonableException.buildDetails());
+        logger.error(applicationLoggingHelper.buildLoggingError(body, null));
+        return ResponseEntity.status(reasonableException.getHttpStatus())
+                             .body(body);
+    }
 }

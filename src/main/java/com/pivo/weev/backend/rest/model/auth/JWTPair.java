@@ -10,14 +10,14 @@ import org.springframework.security.oauth2.jwt.Jwt;
 @AllArgsConstructor
 public class JWTPair {
 
-  private final Jwt accessToken;
-  private final Jwt refreshToken;
+    private final Jwt accessToken;
+    private final Jwt refreshToken;
 
-  public String getAccessTokenValue() {
-    return accessToken.getTokenValue();
-  }
+    public String getAccessTokenValue() {
+        return accessToken.getTokenValue();
+    }
 
-  public String getRefreshTokenValue() {
-    return refreshToken.getTokenValue();
-  }
+    public String getRefreshTokenValue() {
+        return refreshToken.getTokenValue();
+    }
 }

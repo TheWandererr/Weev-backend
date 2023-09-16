@@ -23,18 +23,18 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 @RequiredArgsConstructor
 public class UnauthorizedHandler implements AuthenticationEntryPoint {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(UnauthorizedHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UnauthorizedHandler.class);
 
-  private final ObjectMapper restResponseMapper;
-  private final ApplicationLoggingHelper applicationLoggingHelper;
-  private final ErrorFactory errorFactory;
+    private final ObjectMapper restResponseMapper;
+    private final ApplicationLoggingHelper applicationLoggingHelper;
+    private final ErrorFactory errorFactory;
 
-  @Override
-  public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
-      throws IOException, ServletException {
-    Error error = errorFactory.create(ErrorCodes.UNAUTHORIZED, authException.getMessage());
-    BaseResponse loginResponse = new BaseResponse(error, ResponseMessage.UNAUTHORIZED);
-    LOGGER.error(applicationLoggingHelper.buildLoggingError(authException, null, false));
-    writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);
-  }
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
+            throws IOException, ServletException {
+        Error error = errorFactory.create(ErrorCodes.UNAUTHORIZED, authException.getMessage());
+        BaseResponse loginResponse = new BaseResponse(error, ResponseMessage.UNAUTHORIZED);
+        LOGGER.error(applicationLoggingHelper.buildLoggingError(authException, null, false));
+        writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);
+    }
 }

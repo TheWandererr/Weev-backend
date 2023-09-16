@@ -6,5 +6,5 @@ import org.locationtech.jts.geom.Point;
 
 public interface ILocationRepository extends IGenericRepository<Long, LocationJpa> {
 
-  Optional<LocationJpa> findByPoint(Point point);
+    Optional<LocationJpa> findByPoint(Point point);
 }

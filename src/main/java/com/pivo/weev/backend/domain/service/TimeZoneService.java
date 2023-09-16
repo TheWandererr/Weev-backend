@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class TimeZoneService {
 
-  private static final TimeZoneEngine TIME_ZONE_ENGINE = TimeZoneEngine.initialize();
+    private static final TimeZoneEngine TIME_ZONE_ENGINE = TimeZoneEngine.initialize();
 
-  public ZoneId getZoneId(double latitude, double longitude) {
-    return TIME_ZONE_ENGINE.query(latitude, longitude)
-                           .orElseThrow(() -> new ReasonableException(TIME_ZONE_ID_NOT_FOUND_ERROR));
-  }
+    public ZoneId getZoneId(double latitude, double longitude) {
+        return TIME_ZONE_ENGINE.query(latitude, longitude)
+                               .orElseThrow(() -> new ReasonableException(TIME_ZONE_ID_NOT_FOUND_ERROR));
+    }
 }

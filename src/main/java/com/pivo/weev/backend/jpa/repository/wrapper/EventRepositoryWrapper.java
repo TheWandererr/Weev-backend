@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EventRepositoryWrapper extends GenericRepositoryWrapper<Long, EventJpa, IEventRepository> {
 
-  protected EventRepositoryWrapper(IEventRepository repository) {
-    super(repository, EVENT);
-  }
+    protected EventRepositoryWrapper(IEventRepository repository) {
+        super(repository, EVENT);
+    }
 }

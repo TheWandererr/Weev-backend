@@ -11,12 +11,12 @@ import org.mapstruct.Named;
 @Mapper
 public interface LocationJpaMapper {
 
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "point", source = "source", qualifiedByName = "createPoint")
-  LocationJpa map(Location source);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "point", source = "source", qualifiedByName = "createPoint")
+    LocationJpa map(Location source);
 
-  @Named("createPoint")
-  default Point createPoint(Location source) {
-    return CustomGeometryFactory.createPoint(source.getLng(), source.getLtd());
-  }
+    @Named("createPoint")
+    default Point createPoint(Location source) {
+        return CustomGeometryFactory.createPoint(source.getLng(), source.getLtd());
+    }
 }

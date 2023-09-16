@@ -9,66 +9,66 @@ import java.util.List;
 
 public class CriteriaParams<E> {
 
-  private List<CriteriaJoin> joins;
-  private List<CriteriaGet> gets;
-  private E criteriaValue;
-  private Class<E> criteriaClass;
+    private List<CriteriaJoin> joins;
+    private List<CriteriaGet> gets;
+    private E criteriaValue;
+    private Class<E> criteriaClass;
 
-  public CriteriaParams() {
-  }
-
-  public CriteriaParams(List<CriteriaJoin> joins, List<CriteriaGet> gets) {
-    this.joins = joins;
-    this.gets = gets;
-  }
-
-  public List<CriteriaJoin> getJoins() {
-    if (isNull(joins)) {
-      joins = new ArrayList<>();
+    public CriteriaParams() {
     }
-    return joins;
-  }
 
-  public List<CriteriaGet> getGets() {
-    if (isNull(gets)) {
-      gets = new ArrayList<>();
+    public CriteriaParams(List<CriteriaJoin> joins, List<CriteriaGet> gets) {
+        this.joins = joins;
+        this.gets = gets;
     }
-    return gets;
-  }
 
-  public E getCriteriaValue() {
-    return criteriaValue;
-  }
+    public List<CriteriaJoin> getJoins() {
+        if (isNull(joins)) {
+            joins = new ArrayList<>();
+        }
+        return joins;
+    }
 
-  public Class<E> getCriteriaClass() {
-    return criteriaClass;
-  }
+    public List<CriteriaGet> getGets() {
+        if (isNull(gets)) {
+            gets = new ArrayList<>();
+        }
+        return gets;
+    }
 
-  public void setJoins(List<CriteriaJoin> joins) {
-    this.joins = joins;
-  }
+    public E getCriteriaValue() {
+        return criteriaValue;
+    }
 
-  public void setGets(List<CriteriaGet> gets) {
-    this.gets = gets;
-  }
+    public Class<E> getCriteriaClass() {
+        return criteriaClass;
+    }
 
-  public void setCriteriaValue(E criteriaValue) {
-    this.criteriaValue = criteriaValue;
-  }
+    public void setJoins(List<CriteriaJoin> joins) {
+        this.joins = joins;
+    }
 
-  public void setCriteriaClass(Class<E> criteriaClass) {
-    this.criteriaClass = criteriaClass;
-  }
+    public void setGets(List<CriteriaGet> gets) {
+        this.gets = gets;
+    }
 
-  public boolean hasOperations() {
-    return !CollectionUtils.isEmpty(joins) || !CollectionUtils.isEmpty(gets);
-  }
+    public void setCriteriaValue(E criteriaValue) {
+        this.criteriaValue = criteriaValue;
+    }
 
-  public boolean hasValue() {
-    return nonNull(criteriaValue) && nonNull(criteriaClass);
-  }
+    public void setCriteriaClass(Class<E> criteriaClass) {
+        this.criteriaClass = criteriaClass;
+    }
 
-  public boolean isSuitableForExpression() {
-    return hasOperations() && hasValue();
-  }
+    public boolean hasOperations() {
+        return !CollectionUtils.isEmpty(joins) || !CollectionUtils.isEmpty(gets);
+    }
+
+    public boolean hasValue() {
+        return nonNull(criteriaValue) && nonNull(criteriaClass);
+    }
+
+    public boolean isSuitableForExpression() {
+        return hasOperations() && hasValue();
+    }
 }

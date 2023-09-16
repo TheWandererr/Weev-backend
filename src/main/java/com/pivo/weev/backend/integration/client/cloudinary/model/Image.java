@@ -8,14 +8,14 @@ import lombok.Setter;
 @Setter
 public class Image {
 
-  @JsonProperty("secure_url")
-  private String url;
-  @JsonProperty("public_id")
-  private String publicId;
-  @JsonProperty("asset_id")
-  private String assetId;
-  private Integer height;
-  private Integer width;
-  private String format;
-  private String signature;
+    @JsonProperty("secure_url")
+    private String url;
+    @JsonProperty("public_id")
+    private String publicId;
+    @JsonProperty("asset_id")
+    private String assetId;
+    private Integer height;
+    private Integer width;
+    private String format;
+    private String signature;
 }

@@ -22,22 +22,22 @@ import org.springframework.security.core.AuthenticationException;
 @RequiredArgsConstructor
 public class AuthenticationFailureHandler implements org.springframework.security.web.authentication.AuthenticationFailureHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationFailureHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationFailureHandler.class);
 
-  private final ObjectMapper restResponseMapper;
-  private final ApplicationLoggingHelper applicationLoggingHelper;
-  private final ErrorFactory errorFactory;
+    private final ObjectMapper restResponseMapper;
+    private final ApplicationLoggingHelper applicationLoggingHelper;
+    private final ErrorFactory errorFactory;
 
-  @Override
-  public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
-      throws IOException, ServletException {
-    handleFailedLogin(response, exception);
-  }
+    @Override
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
+            throws IOException, ServletException {
+        handleFailedLogin(response, exception);
+    }
 
-  private void handleFailedLogin(HttpServletResponse response, AuthenticationException exception) throws IOException {
-    Error error = errorFactory.create(UNAUTHORIZED, exception.getMessage());
-    BaseResponse loginResponse = new BaseResponse(error, ResponseMessage.UNAUTHORIZED);
-    LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
-    writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);
-  }
+    private void handleFailedLogin(HttpServletResponse response, AuthenticationException exception) throws IOException {
+        Error error = errorFactory.create(UNAUTHORIZED, exception.getMessage());
+        BaseResponse loginResponse = new BaseResponse(error, ResponseMessage.UNAUTHORIZED);
+        LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
+        writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);
+    }
 }

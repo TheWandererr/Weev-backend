@@ -28,34 +28,34 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class EventSaveRequest {
 
-  @Size(min = 3, max = 120, message = INVALID_EVENT_HEADER)
-  @NotBlank(message = MUST_BE_NOT_BLANK)
-  private String header;
-  @NotBlank(message = INVALID_EVENT_CATEGORY)
-  private String category;
-  @NotBlank(message = INVALID_EVENT_SUBCATEGORY)
-  private String subcategory;
-  @NotNull(message = MUST_BE_NOT_NULL)
-  @Valid
-  private LocationRest location;
-  @Min(value = 1, message = INVALID_EVENT_MEMBERS_AMOUNT)
-  private Integer membersLimit;
-  @Size(max = 255, message = LENGTH_OUT_OF_BOUND)
-  @NullableNotBlank
-  private String description;
-  @ValidImage
-  private MultipartFile photo;
-  private EntryFeeRest entryFee;
-  private RestrictionsRest restrictions;
-  @NotNull(message = MUST_BE_NOT_NULL)
-  private LocalDateTime localStartDateTime;
-  @NotNull(message = MUST_BE_NOT_NULL)
-  private LocalDateTime localEndDateTime;
+    @Size(min = 3, max = 120, message = INVALID_EVENT_HEADER)
+    @NotBlank(message = MUST_BE_NOT_BLANK)
+    private String header;
+    @NotBlank(message = INVALID_EVENT_CATEGORY)
+    private String category;
+    @NotBlank(message = INVALID_EVENT_SUBCATEGORY)
+    private String subcategory;
+    @NotNull(message = MUST_BE_NOT_NULL)
+    @Valid
+    private LocationRest location;
+    @Min(value = 1, message = INVALID_EVENT_MEMBERS_AMOUNT)
+    private Integer membersLimit;
+    @Size(max = 255, message = LENGTH_OUT_OF_BOUND)
+    @NullableNotBlank
+    private String description;
+    @ValidImage
+    private MultipartFile photo;
+    private EntryFeeRest entryFee;
+    private RestrictionsRest restrictions;
+    @NotNull(message = MUST_BE_NOT_NULL)
+    private LocalDateTime localStartDateTime;
+    @NotNull(message = MUST_BE_NOT_NULL)
+    private LocalDateTime localEndDateTime;
 
-  public RestrictionsRest getRestrictions() {
-    if (isNull(restrictions)) {
-      restrictions = new RestrictionsRest();
+    public RestrictionsRest getRestrictions() {
+        if (isNull(restrictions)) {
+            restrictions = new RestrictionsRest();
+        }
+        return restrictions;
     }
-    return restrictions;
-  }
 }

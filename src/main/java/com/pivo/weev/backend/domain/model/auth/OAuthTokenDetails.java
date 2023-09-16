@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 public class OAuthTokenDetails {
 
-  private Long userId;
-  private String deviceId;
-  private String serial;
-  private Instant expiresAt;
+    private Long userId;
+    private String deviceId;
+    private String serial;
+    private Instant expiresAt;
 
 }

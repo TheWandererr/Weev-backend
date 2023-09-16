@@ -32,44 +32,44 @@ import lombok.Setter;
 @Setter
 public class EventJpa extends ModifiableJpa<Long> {
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "creator_id")
-  private UserJpa creator;
-  @Column(nullable = false, name = EVENT_HEADER)
-  private String header;
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "category_id")
-  private CategoryJpa category;
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "subcategory_id")
-  private SubcategoryJpa subcategory;
-  @ManyToOne(fetch = LAZY, cascade = ALL, optional = false)
-  @JoinColumn(name = "location_id")
-  private LocationJpa location;
-  @Embedded
-  private EntryFeeJpa entryFee;
-  private Integer membersLimit;
-  @Column(columnDefinition = "TEXT")
-  private String description;
-  @OneToOne(cascade = ALL, orphanRemoval = true)
-  @JoinColumn(name = "photo_cloud_resource_id")
-  private CloudResourceJpa photo;
-  private Boolean reminded;
-  private Long moderatedBy;
-  @OneToOne(fetch = LAZY, cascade = ALL, optional = false)
-  private RestrictionsJpa restrictions;
-  private LocalDateTime localStartDateTime;
-  private String startTimeZoneId;
-  private Instant utcStartDateTime;
-  private LocalDateTime localEndDateTime;
-  private String endTimeZoneId;
-  private Instant utcEndDateTime;
-  @Column
-  @Enumerated(STRING)
-  private ModerationStatus moderationStatus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator_id")
+    private UserJpa creator;
+    @Column(nullable = false, name = EVENT_HEADER)
+    private String header;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "category_id")
+    private CategoryJpa category;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "subcategory_id")
+    private SubcategoryJpa subcategory;
+    @ManyToOne(fetch = LAZY, cascade = ALL, optional = false)
+    @JoinColumn(name = "location_id")
+    private LocationJpa location;
+    @Embedded
+    private EntryFeeJpa entryFee;
+    private Integer membersLimit;
+    @Column(columnDefinition = "TEXT")
+    private String description;
+    @OneToOne(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "photo_cloud_resource_id")
+    private CloudResourceJpa photo;
+    private Boolean reminded;
+    private Long moderatedBy;
+    @OneToOne(fetch = LAZY, cascade = ALL, optional = false)
+    private RestrictionsJpa restrictions;
+    private LocalDateTime localStartDateTime;
+    private String startTimeZoneId;
+    private Instant utcStartDateTime;
+    private LocalDateTime localEndDateTime;
+    private String endTimeZoneId;
+    private Instant utcEndDateTime;
+    @Column
+    @Enumerated(STRING)
+    private ModerationStatus moderationStatus;
 
-  public boolean hasRestrictions() {
-    return nonNull(restrictions);
-  }
+    public boolean hasRestrictions() {
+        return nonNull(restrictions);
+    }
 
 }

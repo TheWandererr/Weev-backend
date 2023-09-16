@@ -14,6 +14,6 @@ import lombok.Setter;
 @Setter
 public class RestrictionsJpa extends SequencedPersistable<Long> {
 
-  private Boolean joinAfterStartDisallowed;
-  private Boolean joinByRequest;
+    private Boolean joinAfterStartDisallowed;
+    private Boolean joinByRequest;
 }

@@ -41,129 +41,129 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @UtilityClass
 public class HttpServletUtils {
 
-  private static final Set<String> HIDDEN_HEADERS_NAMES = Set.of(COOKIE.toLowerCase());
-  private static final Set<String> IP_ADDRESS_HEADERS = Set.of(
-      "X-Forwarded-For",
-      "Proxy-Client-IP",
-      "WL-Proxy-Client-IP",
-      "HTTP_X_FORWARDED_FOR",
-      "HTTP_X_FORWARDED",
-      "HTTP_X_CLUSTER_CLIENT_IP",
-      "HTTP_CLIENT_IP",
-      "HTTP_FORWARDED_FOR",
-      "HTTP_FORWARDED",
-      "HTTP_VIA",
-      "REMOTE_ADDR"
-  );
+    private static final Set<String> HIDDEN_HEADERS_NAMES = Set.of(COOKIE.toLowerCase());
+    private static final Set<String> IP_ADDRESS_HEADERS = Set.of(
+            "X-Forwarded-For",
+            "Proxy-Client-IP",
+            "WL-Proxy-Client-IP",
+            "HTTP_X_FORWARDED_FOR",
+            "HTTP_X_FORWARDED",
+            "HTTP_X_CLUSTER_CLIENT_IP",
+            "HTTP_CLIENT_IP",
+            "HTTP_FORWARDED_FOR",
+            "HTTP_FORWARDED",
+            "HTTP_VIA",
+            "REMOTE_ADDR"
+    );
 
-  public static HttpServletRequest getCurrentRequest() {
-    return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-  }
-
-  public static Map<String, String> getRequestParams() {
-    return getRequestParams(getCurrentRequest());
-  }
-
-  public static Map<String, String> getRequestParams(HttpServletRequest request) {
-    return stream(request.getParameterMap().entrySet()).collect(toMap(Entry::getKey, entry -> first(entry.getValue()).orElse(EMPTY)));
-  }
-
-  public static Optional<String> getHeader(String name) {
-    return getHeader(getCurrentRequest(), name);
-  }
-
-  public static Optional<String> getHeader(HttpServletRequest request, String name) {
-    return ofNullable(request.getHeader(name)).filter(StringUtils::isNotBlank);
-  }
-
-  private static String getHeader(HttpServletRequest request, String name, String defaultValue) {
-    return getHeader(request, name).orElseGet(() -> defaultValue);
-  }
-
-  public static Optional<String> getCookie(String name) {
-    return getCookie(getCurrentRequest(), name);
-  }
-
-  public static Optional<String> getCookie(HttpServletRequest request, String name) {
-    return findFirst(request.getCookies(), cookie -> name.equals(cookie.getName())).map(Cookie::getValue);
-  }
-
-  public static Map<String, String> getCookies() {
-    return getCookies(getCurrentRequest());
-  }
-
-  public static Optional<String> getDeviceId() {
-    return getDeviceId(getCurrentRequest());
-  }
-
-  public static Optional<String> getDeviceId(HttpServletRequest request) {
-    return getCookie(request, Cookies.DEVICE_ID);
-  }
-
-  public static Map<String, String> getCookies(HttpServletRequest request) {
-    List<Cookie> cookies = ArrayUtils.toList(request.getCookies());
-    return CollectionUtils.collect(cookies, toMap(Cookie::getName, Cookie::getValue));
-  }
-
-  public static String getIpAddressValue() {
-    final HttpServletRequest currentRequest = getCurrentRequest();
-    return getIpAddressValue(currentRequest);
-  }
-
-  public static String getIpAddressValue(HttpServletRequest request) {
-    return ofNullable(request.getRemoteAddr())
-        .orElseGet(() -> map(IP_ADDRESS_HEADERS, request::getHeader).filter(Objects::nonNull).findFirst().orElse(null));
-  }
-
-  public static Map<String, String> collectHeaders() {
-    HttpServletRequest request = getCurrentRequest();
-    return collectHeaders(request);
-  }
-
-  public static Map<String, String> collectHeaders(HttpServletRequest request) {
-    return CollectionUtils.collect(Collections.list(request.getHeaderNames()), toMap(name -> name, request::getHeader));
-  }
-
-  public static Map<String, String> collectPublicHeaders() {
-    Map<String, String> publicHeaders = collectHeaders();
-    HIDDEN_HEADERS_NAMES.forEach(publicHeaders::remove);
-    return publicHeaders;
-  }
-
-  public static Map<String, String> collectPublicHeaders(HttpServletRequest request) {
-    Map<String, String> publicHeaders = collectHeaders(request);
-    HIDDEN_HEADERS_NAMES.forEach(publicHeaders::remove);
-    return publicHeaders;
-  }
-
-  public static void writeResponse(BaseResponse source, HttpServletResponse destination, HttpStatus status, ObjectMapper writer)
-      throws IOException {
-    destination.setContentType(APPLICATION_JSON_VALUE);
-    destination.setStatus(status.value());
-    try (ServletOutputStream outputStream = destination.getOutputStream()) {
-      writer.writeValue(outputStream, source);
+    public static HttpServletRequest getCurrentRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     }
-  }
 
-  public static String getAuthorizationValue() {
-    return getAuthorizationValue(getCurrentRequest());
-  }
-
-  public static String getAuthorizationValue(HttpServletRequest request) {
-    return getHeader(request, AUTHORIZATION).or(() -> getCookie(request, AUTHORIZATION))
-                                            .map(HttpServletUtils::parseAuthorizationToken)
-                                            .filter(StringUtils::isNotBlank)
-                                            .orElseThrow(
-                                                () -> new AuthorizationServiceException(ErrorCodes.AUTHORIZATION_TOKEN_NOT_FOUND_ERROR));
-  }
-
-  private static String parseAuthorizationToken(String authorizationValue) {
-    if (isBlank(authorizationValue)) {
-      return null;
+    public static Map<String, String> getRequestParams() {
+        return getRequestParams(getCurrentRequest());
     }
-    return authorizationValue.startsWith(BEARER.getValue())
-        ? authorizationValue.substring(BEARER.getValue().length())
-        : authorizationValue;
-  }
+
+    public static Map<String, String> getRequestParams(HttpServletRequest request) {
+        return stream(request.getParameterMap().entrySet()).collect(toMap(Entry::getKey, entry -> first(entry.getValue()).orElse(EMPTY)));
+    }
+
+    public static Optional<String> getHeader(String name) {
+        return getHeader(getCurrentRequest(), name);
+    }
+
+    public static Optional<String> getHeader(HttpServletRequest request, String name) {
+        return ofNullable(request.getHeader(name)).filter(StringUtils::isNotBlank);
+    }
+
+    private static String getHeader(HttpServletRequest request, String name, String defaultValue) {
+        return getHeader(request, name).orElseGet(() -> defaultValue);
+    }
+
+    public static Optional<String> getCookie(String name) {
+        return getCookie(getCurrentRequest(), name);
+    }
+
+    public static Optional<String> getCookie(HttpServletRequest request, String name) {
+        return findFirst(request.getCookies(), cookie -> name.equals(cookie.getName())).map(Cookie::getValue);
+    }
+
+    public static Map<String, String> getCookies() {
+        return getCookies(getCurrentRequest());
+    }
+
+    public static Optional<String> getDeviceId() {
+        return getDeviceId(getCurrentRequest());
+    }
+
+    public static Optional<String> getDeviceId(HttpServletRequest request) {
+        return getCookie(request, Cookies.DEVICE_ID);
+    }
+
+    public static Map<String, String> getCookies(HttpServletRequest request) {
+        List<Cookie> cookies = ArrayUtils.toList(request.getCookies());
+        return CollectionUtils.collect(cookies, toMap(Cookie::getName, Cookie::getValue));
+    }
+
+    public static String getIpAddressValue() {
+        final HttpServletRequest currentRequest = getCurrentRequest();
+        return getIpAddressValue(currentRequest);
+    }
+
+    public static String getIpAddressValue(HttpServletRequest request) {
+        return ofNullable(request.getRemoteAddr())
+                .orElseGet(() -> map(IP_ADDRESS_HEADERS, request::getHeader).filter(Objects::nonNull).findFirst().orElse(null));
+    }
+
+    public static Map<String, String> collectHeaders() {
+        HttpServletRequest request = getCurrentRequest();
+        return collectHeaders(request);
+    }
+
+    public static Map<String, String> collectHeaders(HttpServletRequest request) {
+        return CollectionUtils.collect(Collections.list(request.getHeaderNames()), toMap(name -> name, request::getHeader));
+    }
+
+    public static Map<String, String> collectPublicHeaders() {
+        Map<String, String> publicHeaders = collectHeaders();
+        HIDDEN_HEADERS_NAMES.forEach(publicHeaders::remove);
+        return publicHeaders;
+    }
+
+    public static Map<String, String> collectPublicHeaders(HttpServletRequest request) {
+        Map<String, String> publicHeaders = collectHeaders(request);
+        HIDDEN_HEADERS_NAMES.forEach(publicHeaders::remove);
+        return publicHeaders;
+    }
+
+    public static void writeResponse(BaseResponse source, HttpServletResponse destination, HttpStatus status, ObjectMapper writer)
+            throws IOException {
+        destination.setContentType(APPLICATION_JSON_VALUE);
+        destination.setStatus(status.value());
+        try (ServletOutputStream outputStream = destination.getOutputStream()) {
+            writer.writeValue(outputStream, source);
+        }
+    }
+
+    public static String getAuthorizationValue() {
+        return getAuthorizationValue(getCurrentRequest());
+    }
+
+    public static String getAuthorizationValue(HttpServletRequest request) {
+        return getHeader(request, AUTHORIZATION).or(() -> getCookie(request, AUTHORIZATION))
+                                                .map(HttpServletUtils::parseAuthorizationToken)
+                                                .filter(StringUtils::isNotBlank)
+                                                .orElseThrow(
+                                                        () -> new AuthorizationServiceException(ErrorCodes.AUTHORIZATION_TOKEN_NOT_FOUND_ERROR));
+    }
+
+    private static String parseAuthorizationToken(String authorizationValue) {
+        if (isBlank(authorizationValue)) {
+            return null;
+        }
+        return authorizationValue.startsWith(BEARER.getValue())
+                ? authorizationValue.substring(BEARER.getValue().length())
+                : authorizationValue;
+    }
 
 }

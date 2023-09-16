@@ -14,9 +14,9 @@ import org.hibernate.validator.constraints.Length;
 @Setter
 public class EntryFeeJpa {
 
-  @Column
-  private BigDecimal amount;
-  @Length(max = 10)
-  @Column(length = 10)
-  private String currency;
+    @Column
+    private BigDecimal amount;
+    @Length(max = 10)
+    @Column(length = 10)
+    private String currency;
 }

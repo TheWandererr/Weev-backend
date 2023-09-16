@@ -5,5 +5,5 @@ import java.util.Optional;
 
 public interface IEventCategoryRepository extends IGenericRepository<Long, CategoryJpa> {
 
-  Optional<CategoryJpa> findByName(String name);
+    Optional<CategoryJpa> findByName(String name);
 }

@@ -18,29 +18,29 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ImageValidator implements ConstraintValidator<ValidImage, MultipartFile> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ImageValidator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImageValidator.class);
 
-  private final ApplicationLoggingHelper loggingHelper;
+    private final ApplicationLoggingHelper loggingHelper;
 
-  @Override
-  public void initialize(ValidImage constraintAnnotation) {
-    ConstraintValidator.super.initialize(constraintAnnotation);
-  }
-
-  @Override
-  public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
-    if (isNull(file)) {
-      return false;
+    @Override
+    public void initialize(ValidImage constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
     }
-    try {
-      String mediaType = IOUtils.getMediaType(file);
-      if (isBlank(mediaType) || !mediaType.startsWith(IMAGE)) {
-        return false;
-      }
-    } catch (IOException exception) {
-      LOGGER.error(loggingHelper.buildLoggingError(exception, null));
-      return false;
+
+    @Override
+    public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
+        if (isNull(file)) {
+            return false;
+        }
+        try {
+            String mediaType = IOUtils.getMediaType(file);
+            if (isBlank(mediaType) || !mediaType.startsWith(IMAGE)) {
+                return false;
+            }
+        } catch (IOException exception) {
+            LOGGER.error(loggingHelper.buildLoggingError(exception, null));
+            return false;
+        }
+        return true;
     }
-    return true;
-  }
 }

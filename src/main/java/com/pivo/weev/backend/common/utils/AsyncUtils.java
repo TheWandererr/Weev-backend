@@ -12,9 +12,9 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class AsyncUtils {
 
-  public static <S, R> List<R> supplyAll(List<S> payload, Function<S, R> execution, Executor executor) {
-    return map(payload, object -> supplyAsync(() -> execution.apply(object), executor))
-        .map(CompletableFuture::join)
-        .toList();
-  }
+    public static <S, R> List<R> supplyAll(List<S> payload, Function<S, R> execution, Executor executor) {
+        return map(payload, object -> supplyAsync(() -> execution.apply(object), executor))
+                .map(CompletableFuture::join)
+                .toList();
+    }
 }

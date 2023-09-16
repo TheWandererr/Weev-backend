@@ -21,8 +21,8 @@ import lombok.Setter;
 @Setter
 public class CategoryJpa extends SequencedPersistable<Long> {
 
-  @Column(name = EVENT_CATEGORY_NAME, unique = true)
-  private String name;
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<SubcategoryJpa> subcategories;
+    @Column(name = EVENT_CATEGORY_NAME, unique = true)
+    private String name;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<SubcategoryJpa> subcategories;
 }

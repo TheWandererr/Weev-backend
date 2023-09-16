@@ -19,9 +19,9 @@ import lombok.Setter;
 @Setter
 public class SubcategoryJpa extends SequencedPersistable<Long> {
 
-  @Column(name = EVENT_SUBCATEGORY_NAME, unique = true)
-  private String name;
-  @ManyToOne
-  @JoinColumn(name = "category_id")
-  private CategoryJpa category;
+    @Column(name = EVENT_SUBCATEGORY_NAME, unique = true)
+    private String name;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private CategoryJpa category;
 }

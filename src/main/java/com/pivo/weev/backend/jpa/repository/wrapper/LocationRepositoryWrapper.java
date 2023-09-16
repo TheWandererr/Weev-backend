@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class LocationRepositoryWrapper extends GenericRepositoryWrapper<Long, LocationJpa, ILocationRepository> {
 
-  protected LocationRepositoryWrapper(ILocationRepository repository) {
-    super(repository, LOCATION);
-  }
+    protected LocationRepositoryWrapper(ILocationRepository repository) {
+        super(repository, LOCATION);
+    }
 
-  public Optional<LocationJpa> findByCoordinates(Double lng, Double ltd) {
-    Point point = createPoint(lng, ltd);
-    return repository.findByPoint(point);
-  }
+    public Optional<LocationJpa> findByCoordinates(Double lng, Double ltd) {
+        Point point = createPoint(lng, ltd);
+        return repository.findByPoint(point);
+    }
 }

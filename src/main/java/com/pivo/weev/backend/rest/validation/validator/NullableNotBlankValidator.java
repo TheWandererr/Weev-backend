@@ -9,13 +9,13 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class NullableNotBlankValidator implements ConstraintValidator<NullableNotBlank, String> {
 
-  @Override
-  public void initialize(NullableNotBlank constraintAnnotation) {
-    ConstraintValidator.super.initialize(constraintAnnotation);
-  }
+    @Override
+    public void initialize(NullableNotBlank constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
+    }
 
-  @Override
-  public boolean isValid(String value, ConstraintValidatorContext context) {
-    return isNull(value) || isNotBlank(value);
-  }
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        return isNull(value) || isNotBlank(value);
+    }
 }

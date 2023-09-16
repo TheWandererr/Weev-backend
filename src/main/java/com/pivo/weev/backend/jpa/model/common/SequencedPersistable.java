@@ -12,23 +12,23 @@ import java.io.Serializable;
 @MappedSuperclass
 public class SequencedPersistable<PK extends Serializable> implements Entity {
 
-  @Id
-  @GeneratedValue(strategy = SEQUENCE, generator = "sequence_generator")
-  @Column(nullable = false, unique = true)
-  protected PK id;
+    @Id
+    @GeneratedValue(strategy = SEQUENCE, generator = "sequence_generator")
+    @Column(nullable = false, unique = true)
+    protected PK id;
 
-  public SequencedPersistable() {
-  }
+    public SequencedPersistable() {
+    }
 
-  public SequencedPersistable(PK id) {
-    this.id = id;
-  }
+    public SequencedPersistable(PK id) {
+        this.id = id;
+    }
 
-  public PK getId() {
-    return id;
-  }
+    public PK getId() {
+        return id;
+    }
 
-  public void setId(PK id) {
-    this.id = id;
-  }
+    public void setId(PK id) {
+        this.id = id;
+    }
 }

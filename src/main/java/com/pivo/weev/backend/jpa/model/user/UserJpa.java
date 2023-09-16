@@ -28,25 +28,25 @@ import org.hibernate.validator.constraints.Length;
 @Setter
 public class UserJpa extends ModifiableJpa<Long> {
 
-  @NotBlank
-  @Length(max = 120)
-  @Column(length = 120, name = USER_NAME, nullable = false)
-  private String name;
-  @NotBlank
-  @Length(max = 20)
-  @Column(length = 20, name = USER_NICKNAME, unique = true, nullable = false)
-  private String nickname;
-  @NotBlank
-  @Column(name = USER_PASSWORD, nullable = false)
-  private String password;
-  @Length(max = 80)
-  @Column(length = 80, name = USER_EMAIL, unique = true)
-  private String email;
-  @Length(max = 20)
-  @Column(length = 20, name = USER_PHONE_NUMBER, unique = true)
-  private String phoneNumber;
-  @OneToOne(cascade = ALL)
-  @JoinColumn(name = "role_id")
-  private UserRoleJpa role;
-  private Boolean active;
+    @NotBlank
+    @Length(max = 120)
+    @Column(length = 120, name = USER_NAME, nullable = false)
+    private String name;
+    @NotBlank
+    @Length(max = 20)
+    @Column(length = 20, name = USER_NICKNAME, unique = true, nullable = false)
+    private String nickname;
+    @NotBlank
+    @Column(name = USER_PASSWORD, nullable = false)
+    private String password;
+    @Length(max = 80)
+    @Column(length = 80, name = USER_EMAIL, unique = true)
+    private String email;
+    @Length(max = 20)
+    @Column(length = 20, name = USER_PHONE_NUMBER, unique = true)
+    private String phoneNumber;
+    @OneToOne(cascade = ALL)
+    @JoinColumn(name = "role_id")
+    private UserRoleJpa role;
+    private Boolean active;
 }

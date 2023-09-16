@@ -12,18 +12,18 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class CloudinaryProperties {
 
-  private static final Map<Object, Object> UPLOAD_PARAMS = Map.of(
-      "use_filename", false,
-      "unique_filename", true,
-      "resource_type", "image"
-  );
+    private static final Map<Object, Object> UPLOAD_PARAMS = Map.of(
+            "use_filename", false,
+            "unique_filename", true,
+            "resource_type", "image"
+    );
 
-  private String apiKey;
-  private String apiSecret;
-  private String cloudName;
+    private String apiKey;
+    private String apiSecret;
+    private String cloudName;
 
-  public Map<Object, Object> getUploadParams() {
-    return UPLOAD_PARAMS;
-  }
+    public Map<Object, Object> getUploadParams() {
+        return UPLOAD_PARAMS;
+    }
 
 }

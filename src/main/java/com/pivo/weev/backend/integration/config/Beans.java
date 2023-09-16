@@ -11,12 +11,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Beans {
 
-  @Bean
-  public ObjectMapper mapper() {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.setSerializationInclusion(Include.NON_NULL);
-    mapper.configure(FAIL_ON_EMPTY_BEANS, false);
-    mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
-    return mapper;
-  }
+    @Bean
+    public ObjectMapper mapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(Include.NON_NULL);
+        mapper.configure(FAIL_ON_EMPTY_BEANS, false);
+        mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return mapper;
+    }
 }

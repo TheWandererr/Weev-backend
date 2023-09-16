@@ -16,23 +16,23 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class PKCS8KeyProperties {
 
-  @NotBlank(message = PKCS8_KEY_MASKED_VALUE_NOT_FOUND_ERROR)
-  private String maskedPrivateKey;
+    @NotBlank(message = PKCS8_KEY_MASKED_VALUE_NOT_FOUND_ERROR)
+    private String maskedPrivateKey;
 
-  private String privateKey;
-  @NotBlank(message = PKCS8_KEY_PASSPHRASE_NOT_FOUND_ERROR)
-  private String passphrase;
+    private String privateKey;
+    @NotBlank(message = PKCS8_KEY_PASSPHRASE_NOT_FOUND_ERROR)
+    private String passphrase;
 
-  @PostConstruct
-  public void initPrivateKey() {
-    privateKey = replaceChars(maskedPrivateKey, PRIVATE_KEY_MASK_SYMBOLS, "\n");
-  }
+    @PostConstruct
+    public void initPrivateKey() {
+        privateKey = replaceChars(maskedPrivateKey, PRIVATE_KEY_MASK_SYMBOLS, "\n");
+    }
 
-  public String getPrivateKey() {
-    return privateKey;
-  }
+    public String getPrivateKey() {
+        return privateKey;
+    }
 
-  public String getPassphrase() {
-    return passphrase;
-  }
+    public String getPassphrase() {
+        return passphrase;
+    }
 }

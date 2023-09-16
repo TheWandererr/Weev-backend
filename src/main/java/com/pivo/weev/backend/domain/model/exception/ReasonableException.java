@@ -13,19 +13,19 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class ReasonableException extends RuntimeException {
 
-  private final String errorCode;
-  private final String reason;
-  private final HttpStatus httpStatus;
+    private final String errorCode;
+    private final String reason;
+    private final HttpStatus httpStatus;
 
-  public ReasonableException(String errorCode) {
-    this(errorCode, null, BAD_REQUEST);
-  }
-
-  public Map<String, Object> buildDetails() {
-    Map<String, Object> details = new HashMap<>();
-    if (isNotBlank(reason)) {
-      details.put("reason", reason);
+    public ReasonableException(String errorCode) {
+        this(errorCode, null, BAD_REQUEST);
     }
-    return details;
-  }
+
+    public Map<String, Object> buildDetails() {
+        Map<String, Object> details = new HashMap<>();
+        if (isNotBlank(reason)) {
+            details.put("reason", reason);
+        }
+        return details;
+    }
 }

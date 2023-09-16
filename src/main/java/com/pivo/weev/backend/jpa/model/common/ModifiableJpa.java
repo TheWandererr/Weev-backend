@@ -17,11 +17,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Setter
 public class ModifiableJpa<PK extends Serializable> extends SequencedPersistable<PK> {
 
-  @CreationTimestamp
-  @Column(name = CREATED_DATE)
-  private Instant createdDate;
+    @CreationTimestamp
+    @Column(name = CREATED_DATE)
+    private Instant createdDate;
 
-  @UpdateTimestamp
-  @Column(name = MODIFIED_DATE)
-  private Instant modifiedDate;
+    @UpdateTimestamp
+    @Column(name = MODIFIED_DATE)
+    private Instant modifiedDate;
 }

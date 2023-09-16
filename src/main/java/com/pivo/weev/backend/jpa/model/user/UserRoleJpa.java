@@ -23,16 +23,16 @@ import lombok.Setter;
 @Setter
 public class UserRoleJpa extends SequencedPersistable<Long> {
 
-  @Column
-  private String name;
-  @OneToMany(fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
-  @JoinColumn(name = "role_id", nullable = false)
-  private Set<AuthorityJpa> authorities;
+    @Column
+    private String name;
+    @OneToMany(fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Set<AuthorityJpa> authorities;
 
-  public Set<AuthorityJpa> getAuthorities() {
-    if (isNull(authorities)) {
-      authorities = new HashSet<>();
+    public Set<AuthorityJpa> getAuthorities() {
+        if (isNull(authorities)) {
+            authorities = new HashSet<>();
+        }
+        return authorities;
     }
-    return authorities;
-  }
 }

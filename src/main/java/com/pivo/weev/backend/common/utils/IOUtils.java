@@ -20,38 +20,38 @@ import org.springframework.web.multipart.MultipartFile;
 @UtilityClass
 public class IOUtils {
 
-  private static final Tika TIKA = new Tika();
+    private static final Tika TIKA = new Tika();
 
-  public static Path getPath(URL url) throws URISyntaxException {
-    return Paths.get(url.toURI());
-  }
+    public static Path getPath(URL url) throws URISyntaxException {
+        return Paths.get(url.toURI());
+    }
 
-  public static String readInputStream(InputStream inputStream, Charset charset) throws IOException {
-    return new String(inputStream.readAllBytes(), charset);
-  }
+    public static String readInputStream(InputStream inputStream, Charset charset) throws IOException {
+        return new String(inputStream.readAllBytes(), charset);
+    }
 
-  public static String readInputStream(InputStream inputStream) throws TikaException, IOException {
-    return TIKA.parseToString(inputStream);
-  }
+    public static String readInputStream(InputStream inputStream) throws TikaException, IOException {
+        return TIKA.parseToString(inputStream);
+    }
 
-  public static InputStream getInputStream(String string) {
-    return new ByteArrayInputStream(getBytes(string));
-  }
+    public static InputStream getInputStream(String string) {
+        return new ByteArrayInputStream(getBytes(string));
+    }
 
-  public static byte[] getBytes(String value) {
-    return value.getBytes(StandardCharsets.UTF_8);
-  }
+    public static byte[] getBytes(String value) {
+        return value.getBytes(StandardCharsets.UTF_8);
+    }
 
-  public static boolean isNotEmpty(MultipartFile file) {
-    return ofNullable(file).filter(not(MultipartFile::isEmpty)).isPresent();
-  }
+    public static boolean isNotEmpty(MultipartFile file) {
+        return ofNullable(file).filter(not(MultipartFile::isEmpty)).isPresent();
+    }
 
-  public static boolean isEmpty(MultipartFile file) {
-    return !isNotEmpty(file);
-  }
+    public static boolean isEmpty(MultipartFile file) {
+        return !isNotEmpty(file);
+    }
 
-  public static String getMediaType(MultipartFile file) throws IOException {
-    byte[] fileBytes = file.getBytes();
-    return TIKA.detect(fileBytes);
-  }
+    public static String getMediaType(MultipartFile file) throws IOException {
+        byte[] fileBytes = file.getBytes();
+        return TIKA.detect(fileBytes);
+    }
 }

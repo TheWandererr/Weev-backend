@@ -29,43 +29,43 @@ import org.springframework.security.core.Authentication;
 @RequiredArgsConstructor
 public class AuthenticationSuccessHandler implements org.springframework.security.web.authentication.AuthenticationSuccessHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationSuccessHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationSuccessHandler.class);
 
-  private final ObjectMapper restResponseMapper;
-  private final ApplicationLoggingHelper applicationLoggingHelper;
-  private final AuthService authService;
-  private final OAuthTokenService oAuthTokenService;
+    private final ObjectMapper restResponseMapper;
+    private final ApplicationLoggingHelper applicationLoggingHelper;
+    private final AuthService authService;
+    private final OAuthTokenService oAuthTokenService;
 
-  @Override
-  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-      throws IOException, ServletException {
-    handleSuccessLogin(response, authentication);
-  }
-
-  private void handleSuccessLogin(HttpServletResponse response, Authentication authentication) throws IOException {
-    try {
-      LoginDetails loginDetails = getLoginDetails(authentication);
-      JWTPair jwtPair = authService.generateTokens(authentication);
-      updateTokenDetails(loginDetails, jwtPair);
-      LoginResponse loginResponse = new LoginResponse(jwtPair.getAccessTokenValue(), jwtPair.getRefreshTokenValue());
-      writeResponse(loginResponse, response, OK, restResponseMapper);
-    } catch (Exception exception) {
-      LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
-      BaseResponse loginResponse = new BaseResponse(ResponseMessage.UNAUTHORIZED);
-      writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);
+    @Override
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+            throws IOException, ServletException {
+        handleSuccessLogin(response, authentication);
     }
-  }
 
-  private void updateTokenDetails(LoginDetails loginDetails, JWTPair jwtPair) {
-    boolean updated = oAuthTokenService.updateTokenDetails(
-        loginDetails.getUserId(),
-        loginDetails.getDeviceId(),
-        loginDetails.getSerial(),
-        jwtPair.getRefreshToken().getExpiresAt()
-    );
-    if (!updated) {
-      OAuthTokenDetails tokenDetails = getMapper(OAuthTokenDetailsMapper.class).map(loginDetails, jwtPair);
-      oAuthTokenService.saveTokenDetails(tokenDetails);
+    private void handleSuccessLogin(HttpServletResponse response, Authentication authentication) throws IOException {
+        try {
+            LoginDetails loginDetails = getLoginDetails(authentication);
+            JWTPair jwtPair = authService.generateTokens(authentication);
+            updateTokenDetails(loginDetails, jwtPair);
+            LoginResponse loginResponse = new LoginResponse(jwtPair.getAccessTokenValue(), jwtPair.getRefreshTokenValue());
+            writeResponse(loginResponse, response, OK, restResponseMapper);
+        } catch (Exception exception) {
+            LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
+            BaseResponse loginResponse = new BaseResponse(ResponseMessage.UNAUTHORIZED);
+            writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);
+        }
     }
-  }
+
+    private void updateTokenDetails(LoginDetails loginDetails, JWTPair jwtPair) {
+        boolean updated = oAuthTokenService.updateTokenDetails(
+                loginDetails.getUserId(),
+                loginDetails.getDeviceId(),
+                loginDetails.getSerial(),
+                jwtPair.getRefreshToken().getExpiresAt()
+        );
+        if (!updated) {
+            OAuthTokenDetails tokenDetails = getMapper(OAuthTokenDetailsMapper.class).map(loginDetails, jwtPair);
+            oAuthTokenService.saveTokenDetails(tokenDetails);
+        }
+    }
 }

@@ -4,14 +4,14 @@ import java.io.Serializable;
 
 public abstract class CriteriaOperation implements Serializable {
 
-  private final String fieldName;
+    private final String fieldName;
 
-  protected CriteriaOperation(String fieldName) {
-    this.fieldName = fieldName;
-  }
+    protected CriteriaOperation(String fieldName) {
+        this.fieldName = fieldName;
+    }
 
-  public String getFieldName() {
-    return fieldName;
-  }
+    public String getFieldName() {
+        return fieldName;
+    }
 
 }

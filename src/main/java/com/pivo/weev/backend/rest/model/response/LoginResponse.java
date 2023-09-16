@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class LoginResponse extends BaseResponse {
 
-  private final String accessToken;
-  private final String refreshToken;
+    private final String accessToken;
+    private final String refreshToken;
 }

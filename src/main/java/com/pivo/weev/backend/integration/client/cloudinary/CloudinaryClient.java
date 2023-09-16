@@ -19,34 +19,34 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class CloudinaryClient {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CloudinaryClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CloudinaryClient.class);
 
-  private final CloudinaryProperties cloudinaryProperties;
-  private final Cloudinary api;
-  private final ObjectMapper mapper;
+    private final CloudinaryProperties cloudinaryProperties;
+    private final Cloudinary api;
+    private final ObjectMapper mapper;
 
-  public CloudinaryClient(CloudinaryProperties cloudinaryProperties, @Qualifier("mapper") ObjectMapper mapper) {
-    this.mapper = mapper;
-    LOGGER.info("Client Initialization is started");
-    this.cloudinaryProperties = cloudinaryProperties;
-    final Map<String, Object> config = Map.of(
-        "cloud_name", cloudinaryProperties.getCloudName(),
-        "api_key", cloudinaryProperties.getApiKey(),
-        "api_secret", cloudinaryProperties.getApiSecret(),
-        "secure", true
-    );
-    this.api = new Cloudinary(config);
-    LOGGER.info("Client Initialization is finished");
-  }
-
-  public Image upload(MultipartFile file) {
-    try {
-      Object response = api.uploader()
-                           .upload(file.getBytes(), cloudinaryProperties.getUploadParams());
-      return mapper.convertValue(response, Image.class);
-    } catch (IOException exception) {
-      String reason = ofNullable(exception.getCause()).map(Throwable::getMessage).orElse(null);
-      throw new ReasonableException(CLOUD_OPERATION_ERROR, reason, NOT_ACCEPTABLE);
+    public CloudinaryClient(CloudinaryProperties cloudinaryProperties, @Qualifier("mapper") ObjectMapper mapper) {
+        this.mapper = mapper;
+        LOGGER.info("Client Initialization is started");
+        this.cloudinaryProperties = cloudinaryProperties;
+        final Map<String, Object> config = Map.of(
+                "cloud_name", cloudinaryProperties.getCloudName(),
+                "api_key", cloudinaryProperties.getApiKey(),
+                "api_secret", cloudinaryProperties.getApiSecret(),
+                "secure", true
+        );
+        this.api = new Cloudinary(config);
+        LOGGER.info("Client Initialization is finished");
     }
-  }
+
+    public Image upload(MultipartFile file) {
+        try {
+            Object response = api.uploader()
+                                 .upload(file.getBytes(), cloudinaryProperties.getUploadParams());
+            return mapper.convertValue(response, Image.class);
+        } catch (IOException exception) {
+            String reason = ofNullable(exception.getCause()).map(Throwable::getMessage).orElse(null);
+            throw new ReasonableException(CLOUD_OPERATION_ERROR, reason, NOT_ACCEPTABLE);
+        }
+    }
 }

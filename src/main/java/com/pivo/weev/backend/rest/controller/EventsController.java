@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class EventsController {
 
-  private final EventsOperatingService eventsOperatingService;
+    private final EventsOperatingService eventsOperatingService;
 
-  @PostMapping
-  @ResponseStatus(value = CREATED)
-  public BaseResponse createEvent(@Valid @ModelAttribute EventSaveRequest request) {
-    Event sample = getMapper(EventMapper.class).map(request);
-    eventsOperatingService.saveEvent(sample);
-    return new BaseResponse(ResponseMessage.CREATED);
-  }
+    @PostMapping
+    @ResponseStatus(value = CREATED)
+    public BaseResponse createEvent(@Valid @ModelAttribute EventSaveRequest request) {
+        Event sample = getMapper(EventMapper.class).map(request);
+        eventsOperatingService.saveEvent(sample);
+        return new BaseResponse(ResponseMessage.CREATED);
+    }
 }

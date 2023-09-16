@@ -11,17 +11,17 @@ import lombok.Setter;
 @Setter
 public class LocationRest {
 
-  @NotBlank(message = MUST_BE_NOT_BLANK)
-  private String country;
-  private String state;
-  private String city;
-  private String street;
-  private String road;
-  private String block;
-  private String building;
-  private String flat;
-  @NotNull(message = MUST_BE_NOT_BLANK)
-  private Double lng;
-  @NotNull(message = MUST_BE_NOT_BLANK)
-  private Double ltd;
+    @NotBlank(message = MUST_BE_NOT_BLANK)
+    private String country;
+    private String state;
+    private String city;
+    private String street;
+    private String road;
+    private String block;
+    private String building;
+    private String flat;
+    @NotNull(message = MUST_BE_NOT_BLANK)
+    private Double lng;
+    @NotNull(message = MUST_BE_NOT_BLANK)
+    private Double ltd;
 }

@@ -9,11 +9,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ValidationResult {
 
-  private boolean valid;
-  private String errorMessageCode;
+    private boolean valid;
+    private String errorMessageCode;
 
-  public static ValidationResult failed(String errorMessageCode) {
-    return new ValidationResult(false, errorMessageCode);
-  }
+    public static ValidationResult failed(String errorMessageCode) {
+        return new ValidationResult(false, errorMessageCode);
+    }
 
 }

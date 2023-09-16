@@ -12,14 +12,14 @@ import org.mapstruct.Named;
 @Mapper
 public interface EventMapper {
 
-  @Mapping(target = "membersLimit", source = "source", qualifiedByName = "getMembersLimit")
-  @Mapping(target = "startTimeZoneId", ignore = true)
-  @Mapping(target = "endTimeZoneId", ignore = true)
-  Event map(EventSaveRequest source);
+    @Mapping(target = "membersLimit", source = "source", qualifiedByName = "getMembersLimit")
+    @Mapping(target = "startTimeZoneId", ignore = true)
+    @Mapping(target = "endTimeZoneId", ignore = true)
+    Event map(EventSaveRequest source);
 
-  @Named("getMembersLimit")
-  default int getMembersLimit(EventSaveRequest source) {
-    Integer membersLimit = source.getMembersLimit();
-    return isNull(membersLimit) ? INFINITY : membersLimit;
-  }
+    @Named("getMembersLimit")
+    default int getMembersLimit(EventSaveRequest source) {
+        Integer membersLimit = source.getMembersLimit();
+        return isNull(membersLimit) ? INFINITY : membersLimit;
+    }
 }

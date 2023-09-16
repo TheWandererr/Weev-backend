@@ -7,14 +7,14 @@ import lombok.Setter;
 @Setter
 public class Location {
 
-  private String country;
-  private String state;
-  private String city;
-  private String street;
-  private String road;
-  private String block;
-  private String building;
-  private String flat;
-  private Double lng;
-  private Double ltd;
+    private String country;
+    private String state;
+    private String city;
+    private String street;
+    private String road;
+    private String block;
+    private String building;
+    private String flat;
+    private Double lng;
+    private Double ltd;
 }

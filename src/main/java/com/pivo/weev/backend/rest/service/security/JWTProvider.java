@@ -27,38 +27,38 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class JWTProvider {
 
-  private JwtEncoder jwtEncoder;
+    private JwtEncoder jwtEncoder;
 
-  @Autowired
-  @Lazy
-  public void setJwtEncoder(JwtEncoder jwtEncoder) {
-    this.jwtEncoder = jwtEncoder;
-  }
+    @Autowired
+    @Lazy
+    public void setJwtEncoder(JwtEncoder jwtEncoder) {
+        this.jwtEncoder = jwtEncoder;
+    }
 
-  public Jwt provideAccessToken(LoginDetails loginDetails) {
-    return generateToken(loginDetails, 30, MINUTES, JWTModes.ACCESS);
-  }
+    public Jwt provideAccessToken(LoginDetails loginDetails) {
+        return generateToken(loginDetails, 30, MINUTES, JWTModes.ACCESS);
+    }
 
-  public Jwt provideRefreshToken(LoginDetails loginDetails) {
-    return generateToken(loginDetails, 7, DAYS, JWTModes.REFRESH);
-  }
+    public Jwt provideRefreshToken(LoginDetails loginDetails) {
+        return generateToken(loginDetails, 7, DAYS, JWTModes.REFRESH);
+    }
 
-  private Jwt generateToken(LoginDetails loginDetails, int expiresAtAmount, TemporalUnit expiresAtUnit, String mode) {
-    Instant now = Instant.now();
-    String scope = JWTModes.ACCESS.equals(mode)
-        ? collect(loginDetails.getAuthenticationAuthorities(), SimpleGrantedAuthority::getAuthority, Collectors.joining(SPACE))
-        : mode;
-    JwtClaimsSet claimsSet = JwtClaimsSet.builder()
-                                         .subject(loginDetails.getUsername())
-                                         .audience(List.of(Api.PREFIX))
-                                         .issuer(loginDetails.getIssuer())
-                                         .issuedAt(now)
-                                         .expiresAt(now.plus(expiresAtAmount, expiresAtUnit))
-                                         .claim(Claims.DEVICE_ID, loginDetails.getDeviceId())
-                                         .claim(Claims.USER_ID, loginDetails.getUserId())
-                                         .claim(Claims.SCOPE, scope)
-                                         .claim(Claims.SERIAL, loginDetails.getSerial())
-                                         .build();
-    return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet));
-  }
+    private Jwt generateToken(LoginDetails loginDetails, int expiresAtAmount, TemporalUnit expiresAtUnit, String mode) {
+        Instant now = Instant.now();
+        String scope = JWTModes.ACCESS.equals(mode)
+                ? collect(loginDetails.getAuthenticationAuthorities(), SimpleGrantedAuthority::getAuthority, Collectors.joining(SPACE))
+                : mode;
+        JwtClaimsSet claimsSet = JwtClaimsSet.builder()
+                                             .subject(loginDetails.getUsername())
+                                             .audience(List.of(Api.PREFIX))
+                                             .issuer(loginDetails.getIssuer())
+                                             .issuedAt(now)
+                                             .expiresAt(now.plus(expiresAtAmount, expiresAtUnit))
+                                             .claim(Claims.DEVICE_ID, loginDetails.getDeviceId())
+                                             .claim(Claims.USER_ID, loginDetails.getUserId())
+                                             .claim(Claims.SCOPE, scope)
+                                             .claim(Claims.SERIAL, loginDetails.getSerial())
+                                             .build();
+        return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet));
+    }
 }

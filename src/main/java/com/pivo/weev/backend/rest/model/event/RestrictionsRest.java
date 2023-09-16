@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class RestrictionsRest {
 
-  private Boolean joinAfterStartDisallowed;
-  private Boolean joinByRequest;
+    private Boolean joinAfterStartDisallowed;
+    private Boolean joinByRequest;
 }

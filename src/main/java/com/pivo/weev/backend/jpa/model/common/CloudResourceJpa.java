@@ -14,14 +14,14 @@ import lombok.Setter;
 @Setter
 public class CloudResourceJpa extends SequencedPersistable<Long> {
 
-  @Column(unique = true, nullable = false)
-  private String externalId;
-  @Column(unique = true, nullable = false)
-  private String url;
-  private Integer height;
-  private Integer width;
-  private String format;
-  @Column(nullable = false)
-  private Long authorId;
-  private String signature;
+    @Column(unique = true, nullable = false)
+    private String externalId;
+    @Column(unique = true, nullable = false)
+    private String url;
+    private Integer height;
+    private Integer width;
+    private String format;
+    @Column(nullable = false)
+    private Long authorId;
+    private String signature;
 }

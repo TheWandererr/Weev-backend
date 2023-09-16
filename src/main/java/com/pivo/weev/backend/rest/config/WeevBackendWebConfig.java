@@ -72,138 +72,138 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 @RequiredArgsConstructor
 public class WeevBackendWebConfig implements WebMvcConfigurer {
 
-  private final LoginDetailsService loginDetailsService;
-  private final AuthService authService;
-  private final RSAKeyService rsaKeyService;
-  private final OAuthTokenDetailsRepositoryWrapper oAuthTokenDetailsRepository;
-  private final OAuthTokenService oauthTokenService;
-  private final ErrorFactory errorFactory;
+    private final LoginDetailsService loginDetailsService;
+    private final AuthService authService;
+    private final RSAKeyService rsaKeyService;
+    private final OAuthTokenDetailsRepositoryWrapper oAuthTokenDetailsRepository;
+    private final OAuthTokenService oauthTokenService;
+    private final ErrorFactory errorFactory;
 
-  @Bean
-  public RequestContextListener requestContextListener() {
-    return new RequestContextListener();
-  }
+    @Bean
+    public RequestContextListener requestContextListener() {
+        return new RequestContextListener();
+    }
 
-  @Bean
-  public LocaleResolver serviceLocaleResolver() {
-    SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
-    sessionLocaleResolver.setDefaultLocale(LocaleUtils.getDefaultLocale());
-    return sessionLocaleResolver;
-  }
+    @Bean
+    public LocaleResolver serviceLocaleResolver() {
+        SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
+        sessionLocaleResolver.setDefaultLocale(LocaleUtils.getDefaultLocale());
+        return sessionLocaleResolver;
+    }
 
-  @Bean
-  public LocaleChangeInterceptor localeChangeInterceptor() {
-    LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-    localeChangeInterceptor.setParamName("lang");
-    return localeChangeInterceptor;
-  }
+    @Bean
+    public LocaleChangeInterceptor localeChangeInterceptor() {
+        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        localeChangeInterceptor.setParamName("lang");
+        return localeChangeInterceptor;
+    }
 
-  @Override
-  public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(localeChangeInterceptor());
-  }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(localeChangeInterceptor());
+    }
 
-  @Override
-  public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-    configurer.defaultContentTypeStrategy(new FixedContentNegotiationStrategy(APPLICATION_JSON));
-    configurer.ignoreAcceptHeader(true);
-  }
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer.defaultContentTypeStrategy(new FixedContentNegotiationStrategy(APPLICATION_JSON));
+        configurer.ignoreAcceptHeader(true);
+    }
 
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http,
-                                         JwtDecoder jwtDecoder,
-                                         ObjectMapper restResponseMapper,
-                                         ApplicationLoggingHelper applicationLoggingHelper)
-      throws Exception {
-    http.formLogin(customizer ->
-        customizer.loginProcessingUrl(LOGIN_URL)
-                  .usernameParameter(USERNAME)
-                  .passwordParameter(PASSWORD)
-                  .successHandler(new AuthenticationSuccessHandler(
-                      restResponseMapper,
-                      applicationLoggingHelper,
-                      authService,
-                      oauthTokenService)
-                  )
-                  .failureHandler(
-                      new AuthenticationFailureHandler(restResponseMapper, applicationLoggingHelper, errorFactory))
-                  .permitAll()
-    );
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           JwtDecoder jwtDecoder,
+                                           ObjectMapper restResponseMapper,
+                                           ApplicationLoggingHelper applicationLoggingHelper)
+            throws Exception {
+        http.formLogin(customizer ->
+                               customizer.loginProcessingUrl(LOGIN_URL)
+                                         .usernameParameter(USERNAME)
+                                         .passwordParameter(PASSWORD)
+                                         .successHandler(new AuthenticationSuccessHandler(
+                                                 restResponseMapper,
+                                                 applicationLoggingHelper,
+                                                 authService,
+                                                 oauthTokenService)
+                                         )
+                                         .failureHandler(
+                                                 new AuthenticationFailureHandler(restResponseMapper, applicationLoggingHelper, errorFactory))
+                                         .permitAll()
+        );
 
-    http.authorizeHttpRequests(customizer ->
-        customizer.requestMatchers(GET).permitAll()
-                  .requestMatchers(POST).hasAnyAuthority(WRITE)
-                  .requestMatchers(PUT).hasAnyAuthority(WRITE)
-                  .requestMatchers(DELETE).hasAnyRole(WRITE)
-    );
+        http.authorizeHttpRequests(customizer ->
+                                           customizer.requestMatchers(GET).permitAll()
+                                                     .requestMatchers(POST).hasAnyAuthority(WRITE)
+                                                     .requestMatchers(PUT).hasAnyAuthority(WRITE)
+                                                     .requestMatchers(DELETE).hasAnyRole(WRITE)
+        );
 
-    http.sessionManagement(customizer -> customizer.sessionCreationPolicy(NEVER));
+        http.sessionManagement(customizer -> customizer.sessionCreationPolicy(NEVER));
 
-    http.exceptionHandling(customizer ->
-        customizer.accessDeniedHandler(new AccessDeniedHandler(restResponseMapper, applicationLoggingHelper, errorFactory))
-                  .authenticationEntryPoint(new UnauthorizedHandler(restResponseMapper, applicationLoggingHelper, errorFactory))
-    );
+        http.exceptionHandling(customizer ->
+                                       customizer.accessDeniedHandler(new AccessDeniedHandler(restResponseMapper, applicationLoggingHelper, errorFactory))
+                                                 .authenticationEntryPoint(new UnauthorizedHandler(restResponseMapper, applicationLoggingHelper, errorFactory))
+        );
 
-    http.oauth2ResourceServer(customizer -> customizer.jwt(withDefaults()));
+        http.oauth2ResourceServer(customizer -> customizer.jwt(withDefaults()));
 
-    http.addFilterBefore(
-        new JWTVerifierFilter(errorFactory, restResponseMapper, applicationLoggingHelper, jwtDecoder, oAuthTokenDetailsRepository),
-        UsernamePasswordAuthenticationFilter.class
-    );
+        http.addFilterBefore(
+                new JWTVerifierFilter(errorFactory, restResponseMapper, applicationLoggingHelper, jwtDecoder, oAuthTokenDetailsRepository),
+                UsernamePasswordAuthenticationFilter.class
+        );
 
-    http.cors(AbstractHttpConfigurer::disable);
-    http.csrf(AbstractHttpConfigurer::disable);
+        http.cors(AbstractHttpConfigurer::disable);
+        http.csrf(AbstractHttpConfigurer::disable);
 
-    return http.build();
-  }
+        return http.build();
+    }
 
-  @Bean
-  public BCryptPasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder(12);
-  }
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
+    }
 
-  @Bean
-  public AuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder) {
-    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-    authProvider.setUserDetailsService(loginDetailsService);
-    authProvider.setPasswordEncoder(passwordEncoder);
-    return authProvider;
-  }
+    @Bean
+    public AuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(loginDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder);
+        return authProvider;
+    }
 
-  @Bean
-  public AuthenticationManager authenticationManager(AuthenticationProvider authenticationProvider) {
-    return new ProviderManager(authenticationProvider);
-  }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationProvider authenticationProvider) {
+        return new ProviderManager(authenticationProvider);
+    }
 
-  @Bean
-  public JwtDecoder jwtDecoder() {
-    return NimbusJwtDecoder.withPublicKey(rsaKeyService.getPublicKey())
-                           .jwtProcessorCustomizer(customizer -> customizer.setJWTClaimsSetVerifier(new JWTClaimsVerifier()))
-                           .build();
-  }
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        return NimbusJwtDecoder.withPublicKey(rsaKeyService.getPublicKey())
+                               .jwtProcessorCustomizer(customizer -> customizer.setJWTClaimsSetVerifier(new JWTClaimsVerifier()))
+                               .build();
+    }
 
-  @Bean
-  public JwtEncoder jwtEncoder() {
-    JWK jwk = new Builder(rsaKeyService.getPublicKey())
-        .privateKey(rsaKeyService.getPrivateKey())
-        .build();
-    JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-    return new NimbusJwtEncoder(jwks);
-  }
+    @Bean
+    public JwtEncoder jwtEncoder() {
+        JWK jwk = new Builder(rsaKeyService.getPublicKey())
+                .privateKey(rsaKeyService.getPrivateKey())
+                .build();
+        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
+        return new NimbusJwtEncoder(jwks);
+    }
 
-  @Bean
-  @Primary
-  public ObjectMapper restResponseMapper() {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.setSerializationInclusion(Include.NON_NULL);
-    mapper.configure(FAIL_ON_EMPTY_BEANS, false);
-    mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
-    mapper.registerModule(new JavaTimeModule());
-    return mapper;
-  }
+    @Bean
+    @Primary
+    public ObjectMapper restResponseMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(Include.NON_NULL);
+        mapper.configure(FAIL_ON_EMPTY_BEANS, false);
+        mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.registerModule(new JavaTimeModule());
+        return mapper;
+    }
 
-  @Bean
-  public ApplicationLoggingHelper applicationLoggingHelper(ObjectMapper restResponseMapper) {
-    return new ApplicationLoggingHelper(restResponseMapper);
-  }
+    @Bean
+    public ApplicationLoggingHelper applicationLoggingHelper(ObjectMapper restResponseMapper) {
+        return new ApplicationLoggingHelper(restResponseMapper);
+    }
 }

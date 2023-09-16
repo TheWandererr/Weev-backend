@@ -10,9 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class CloudinaryService {
 
-  private final CloudinaryClient client;
+    private final CloudinaryClient client;
 
-  public Image upload(MultipartFile file) {
-    return client.upload(file);
-  }
+    public Image upload(MultipartFile file) {
+        return client.upload(file);
+    }
 }

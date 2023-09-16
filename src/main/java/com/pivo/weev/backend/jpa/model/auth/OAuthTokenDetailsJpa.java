@@ -13,21 +13,21 @@ import lombok.Setter;
 
 @Entity
 @Table(
-    name = "oauth_details",
-    uniqueConstraints = {@UniqueConstraint(columnNames = {Columns.TOKEN_DETAILS_USER_ID, Columns.TOKEN_DETAILS_DEVICE_ID})}
+        name = "oauth_details",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {Columns.TOKEN_DETAILS_USER_ID, Columns.TOKEN_DETAILS_DEVICE_ID})}
 )
 @SequenceGenerator(sequenceName = "oauth_details_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
 public class OAuthTokenDetailsJpa extends SequencedPersistable<Long> {
 
-  @Column(name = Columns.TOKEN_DETAILS_USER_ID, nullable = false)
-  private Long userId;
-  @Column(name = Columns.TOKEN_DETAILS_DEVICE_ID, nullable = false)
-  private String deviceId;
-  @Column(nullable = false)
-  private String serial;
-  @Column(nullable = false)
-  private Instant expiresAt;
+    @Column(name = Columns.TOKEN_DETAILS_USER_ID, nullable = false)
+    private Long userId;
+    @Column(name = Columns.TOKEN_DETAILS_DEVICE_ID, nullable = false)
+    private String deviceId;
+    @Column(nullable = false)
+    private String serial;
+    @Column(nullable = false)
+    private Instant expiresAt;
 
 }

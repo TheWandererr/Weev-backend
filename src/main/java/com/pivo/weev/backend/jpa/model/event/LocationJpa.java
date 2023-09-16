@@ -16,21 +16,21 @@ import org.locationtech.jts.geom.Point;
 @Setter
 public class LocationJpa extends SequencedPersistable<Long> {
 
-  @Column
-  private String country;
-  @Column
-  private String state;
-  @Column
-  private String city;
-  @Column
-  private String street;
-  @Column
-  private String road;
-  @Column
-  private String block;
-  @Column
-  private String building;
-  @Column
-  private String flat;
-  private Point point;
+    @Column
+    private String country;
+    @Column
+    private String state;
+    @Column
+    private String city;
+    @Column
+    private String street;
+    @Column
+    private String road;
+    @Column
+    private String block;
+    @Column
+    private String building;
+    @Column
+    private String flat;
+    private Point point;
 }

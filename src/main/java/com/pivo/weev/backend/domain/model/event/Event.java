@@ -11,22 +11,22 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class Event {
 
-  private String header;
-  private String category;
-  private String subcategory;
-  private Location location;
-  private int membersLimit;
-  private String description;
-  private MultipartFile photo;
-  private EntryFee entryFee;
-  private Restrictions restrictions;
-  private LocalDateTime localStartDateTime;
-  private String startTimeZoneId;
-  private LocalDateTime localEndDateTime;
-  private String endTimeZoneId;
+    private String header;
+    private String category;
+    private String subcategory;
+    private Location location;
+    private int membersLimit;
+    private String description;
+    private MultipartFile photo;
+    private EntryFee entryFee;
+    private Restrictions restrictions;
+    private LocalDateTime localStartDateTime;
+    private String startTimeZoneId;
+    private LocalDateTime localEndDateTime;
+    private String endTimeZoneId;
 
-  public boolean hasPhoto() {
-    return nonNull(photo);
-  }
+    public boolean hasPhoto() {
+        return nonNull(photo);
+    }
 
 }

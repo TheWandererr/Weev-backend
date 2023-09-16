@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class Error {
 
-  private final String errorCode;
-  private final String messageCode;
+    private final String errorCode;
+    private final String messageCode;
 
 }

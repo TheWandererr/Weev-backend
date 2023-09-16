@@ -9,9 +9,9 @@ import org.locationtech.jts.geom.PrecisionModel;
 @UtilityClass
 public class CustomGeometryFactory {
 
-  private static final GeometryFactory FACTORY = new GeometryFactory(new PrecisionModel(), 4326);
+    private static final GeometryFactory FACTORY = new GeometryFactory(new PrecisionModel(), 4326);
 
-  public static Point createPoint(Double lng, Double ltd) {
-    return FACTORY.createPoint(new Coordinate(lng, ltd));
-  }
+    public static Point createPoint(Double lng, Double ltd) {
+        return FACTORY.createPoint(new Coordinate(lng, ltd));
+    }
 }
