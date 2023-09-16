@@ -9,7 +9,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
-import com.pivo.weev.backend.jpa.exception.ResourceNotFoundException;
+import com.pivo.weev.backend.domain.persistance.jpa.exception.ResourceNotFoundException;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.model.error.Error;
 import com.pivo.weev.backend.rest.model.exception.MissingCookieException;

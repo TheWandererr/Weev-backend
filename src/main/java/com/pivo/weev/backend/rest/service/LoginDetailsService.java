@@ -1,15 +1,15 @@
 package com.pivo.weev.backend.rest.service;
 
-import static com.pivo.weev.backend.jpa.specification.builder.UserJpaSpecificationBuilder.UsernameType.ANY;
-import static com.pivo.weev.backend.jpa.specification.builder.UserJpaSpecificationBuilder.buildUserSearchSpecification;
+import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserJpaSpecificationBuilder.UsernameType.ANY;
+import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserJpaSpecificationBuilder.buildUserSearchSpecification;
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.AUTHENTICATION_FAILED;
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.MISSING_COOKIE;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getCurrentRequest;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-import com.pivo.weev.backend.jpa.model.user.UserJpa;
-import com.pivo.weev.backend.jpa.repository.wrapper.UserRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepositoryWrapper;
 import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import com.pivo.weev.backend.rest.utils.HttpServletUtils;
 import jakarta.servlet.http.HttpServletRequest;

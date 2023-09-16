@@ -6,25 +6,25 @@ import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.SUBCATEGOR
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.mapstruct.factory.Mappers.getMapper;
 
-import com.pivo.weev.backend.domain.mapping.CloudResourceJpaMapper;
 import com.pivo.weev.backend.domain.mapping.EventJpaMapper;
 import com.pivo.weev.backend.domain.mapping.LocationJpaMapper;
 import com.pivo.weev.backend.domain.model.event.Event;
 import com.pivo.weev.backend.domain.model.event.Location;
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
+import com.pivo.weev.backend.domain.model.file.Image;
+import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.CategoryJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.SubcategoryJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventCategoryRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.LocationRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepositoryWrapper;
+import com.pivo.weev.backend.domain.service.files.FilesUploadingService;
+import com.pivo.weev.backend.domain.service.files.FilesCompressingService;
 import com.pivo.weev.backend.domain.service.validation.EventsValidationService;
-import com.pivo.weev.backend.integration.client.cloudinary.model.Image;
-import com.pivo.weev.backend.integration.service.cloudinary.CloudinaryService;
-import com.pivo.weev.backend.jpa.model.common.CloudResourceJpa;
-import com.pivo.weev.backend.jpa.model.event.CategoryJpa;
-import com.pivo.weev.backend.jpa.model.event.EventJpa;
-import com.pivo.weev.backend.jpa.model.event.LocationJpa;
-import com.pivo.weev.backend.jpa.model.event.SubcategoryJpa;
-import com.pivo.weev.backend.jpa.model.user.UserJpa;
-import com.pivo.weev.backend.jpa.repository.wrapper.EventCategoryRepositoryWrapper;
-import com.pivo.weev.backend.jpa.repository.wrapper.EventRepositoryWrapper;
-import com.pivo.weev.backend.jpa.repository.wrapper.LocationRepositoryWrapper;
-import com.pivo.weev.backend.jpa.repository.wrapper.UserRepositoryWrapper;
 import jakarta.transaction.Transactional;
 import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,8 @@ public class EventsOperatingService {
     private final EventCategoryRepositoryWrapper eventCategoryRepository;
     private final UserRepositoryWrapper userRepository;
 
-    private final CloudinaryService cloudinaryService;
+    private final FilesUploadingService filesUploadingService;
+    private final FilesCompressingService filesCompressingService;
     private final EventsValidationService eventsValidationService;
     private final TimeZoneService timeZoneService;
 
@@ -63,7 +64,7 @@ public class EventsOperatingService {
         eventJpa.setLocation(getLocation(sample));
         eventJpa.setCategory(retrieveCategory(sample));
         eventJpa.setSubcategory(retrieveSubcategory(eventJpa.getCategory(), sample));
-        eventJpa.setPhoto(uploadPhoto(sample));
+        processPhoto(eventJpa, sample);
         UserJpa creator = userRepository.fetch(getUserId());
         eventJpa.setCreator(creator);
         return eventJpa;
@@ -84,12 +85,13 @@ public class EventsOperatingService {
                 .orElseThrow(() -> new ReasonableException(SUBCATEGORY_NOT_FOUND_ERROR));
     }
 
-    private CloudResourceJpa uploadPhoto(Event sample) {
+    private void processPhoto(EventJpa eventJpa, Event sample) {
         if (!sample.hasPhoto()) {
-            return null;
+            return;
         }
-        Image image = cloudinaryService.upload(sample.getPhoto());
-        return getMapper(CloudResourceJpaMapper.class).map(image);
+        Image compressedPhoto = filesCompressingService.compress(sample.getPhoto());
+        CloudResourceJpa cloudResourceJpa = filesUploadingService.upload(compressedPhoto);
+        eventJpa.setPhoto(cloudResourceJpa);
     }
 
 }

@@ -1,8 +1,8 @@
 package com.pivo.weev.backend.domain.mapping;
 
 import com.pivo.weev.backend.domain.model.event.Location;
-import com.pivo.weev.backend.jpa.model.event.LocationJpa;
-import com.pivo.weev.backend.jpa.utils.CustomGeometryFactory;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.utils.CustomGeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

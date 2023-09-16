@@ -10,6 +10,7 @@ public class Constants {
 
         public static final String DASH = "-";
         public static final String DOT = ".";
+        public static final String SLASH = "/";
     }
 
     @UtilityClass

@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class CloudinaryClient {
@@ -39,13 +38,15 @@ public class CloudinaryClient {
         LOGGER.info("Client Initialization is finished");
     }
 
-    public Image upload(MultipartFile file) {
+    public Image upload(byte[] bytes) {
         try {
             Object response = api.uploader()
-                                 .upload(file.getBytes(), cloudinaryProperties.getUploadParams());
+                                 .upload(bytes, cloudinaryProperties.getUploadParams());
             return mapper.convertValue(response, Image.class);
         } catch (IOException exception) {
-            String reason = ofNullable(exception.getCause()).map(Throwable::getMessage).orElse(null);
+            String reason = ofNullable(exception.getCause())
+                    .map(Throwable::getMessage)
+                    .orElse(null);
             throw new ReasonableException(CLOUD_OPERATION_ERROR, reason, NOT_ACCEPTABLE);
         }
     }

@@ -2,7 +2,7 @@ package com.pivo.weev.backend.domain.mapping;
 
 import com.pivo.weev.backend.common.utils.DateTimeUtils;
 import com.pivo.weev.backend.domain.model.event.Event;
-import com.pivo.weev.backend.jpa.model.event.EventJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

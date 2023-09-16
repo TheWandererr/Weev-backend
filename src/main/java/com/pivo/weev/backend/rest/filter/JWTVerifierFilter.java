@@ -11,8 +11,8 @@ import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 import static java.util.Objects.isNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pivo.weev.backend.jpa.model.auth.OAuthTokenDetailsJpa;
-import com.pivo.weev.backend.jpa.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.model.auth.OAuthTokenDetailsJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
 import com.pivo.weev.backend.rest.error.ErrorFactory;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.model.error.Error;

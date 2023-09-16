@@ -29,6 +29,7 @@
     <cloudinary.version>1.34.0</cloudinary.version>
     <jackson-jsr310.version>2.15.2</jackson-jsr310.version>
     <timeshape.version>2022g.17</timeshape.version>
+    <thumbnailator.version>0.4.20</thumbnailator.version>
   </properties>
 
   <dependencies>
@@ -147,6 +148,11 @@
       <groupId>net.iakovlev</groupId>
       <artifactId>timeshape</artifactId>
       <version>${timeshape.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.coobird</groupId>
+      <artifactId>thumbnailator</artifactId>
+      <version>${thumbnailator.version}</version>
     </dependency>
   </dependencies>
 
