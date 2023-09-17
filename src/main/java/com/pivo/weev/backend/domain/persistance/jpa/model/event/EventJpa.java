@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.event;
 
+import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.ON_MODERATION;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_HEADER;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
@@ -7,7 +8,6 @@ import static jakarta.persistence.FetchType.LAZY;
 import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.model.common.ModerationStatus;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ModifiableJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import jakarta.persistence.Column;
@@ -23,6 +23,7 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -30,8 +31,12 @@ import lombok.Setter;
 @SequenceGenerator(sequenceName = "event_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
+@NoArgsConstructor
 public class EventJpa extends ModifiableJpa<Long> {
 
+    @OneToOne(cascade = ALL, fetch = LAZY)
+    @JoinColumn(name = "updatable_event_id")
+    private EventJpa updatableTarget;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id")
     private UserJpa creator;
@@ -67,10 +72,18 @@ public class EventJpa extends ModifiableJpa<Long> {
     private Instant utcEndDateTime;
     @Column
     @Enumerated(STRING)
-    private ModerationStatus moderationStatus;
+    private EventStatus eventStatus;
 
     public boolean hasRestrictions() {
         return nonNull(restrictions);
+    }
+
+    public boolean isOnModeration() {
+        return eventStatus == ON_MODERATION;
+    }
+
+    public boolean hasUpdatableTarget() {
+        return nonNull(updatableTarget);
     }
 
 }

@@ -20,6 +20,8 @@ public final class Constants {
         public static final String TIME_ZONE_ID_NOT_FOUND_ERROR = "time.zone.id.not.recognized";
 
         public static final String FIELD_VALIDATION_FAILED_ERROR_PATTERN = "%s.incorrect";
+
+        public static final String EVENT_MODERATION_IMPOSSIBLE_ERROR = "event.moderation.impossible";
     }
 
     @UtilityClass

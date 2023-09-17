@@ -24,7 +24,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.LocationR
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.files.FilesUploadingService;
 import com.pivo.weev.backend.domain.service.files.FilesCompressingService;
-import com.pivo.weev.backend.domain.service.validation.EventsValidationService;
+import com.pivo.weev.backend.domain.service.validation.EventsOperationsValidator;
 import jakarta.transaction.Transactional;
 import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
@@ -41,13 +41,13 @@ public class EventsOperatingService {
 
     private final FilesUploadingService filesUploadingService;
     private final FilesCompressingService filesCompressingService;
-    private final EventsValidationService eventsValidationService;
+    private final EventsOperationsValidator eventsOperationsValidator;
     private final TimeZoneService timeZoneService;
 
     @Transactional
     public void saveEvent(Event sample) {
         setTimeZones(sample);
-        eventsValidationService.validate(sample);
+        eventsOperationsValidator.validateCreation(sample);
         EventJpa jpaEvent = preparePersistableEvent(sample);
         eventRepository.save(jpaEvent);
     }

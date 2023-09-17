@@ -13,9 +13,9 @@ import java.time.Instant;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EventsValidationService {
+public class EventsOperationsValidator {
 
-    public void validate(Event validatable) {
+    public void validateCreation(Event validatable) {
         validateDateTimes(validatable);
     }
 
