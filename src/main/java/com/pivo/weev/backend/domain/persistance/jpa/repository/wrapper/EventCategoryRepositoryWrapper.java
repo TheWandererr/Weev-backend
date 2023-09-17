@@ -1,8 +1,8 @@
 package com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper;
 
+import com.pivo.weev.backend.domain.persistance.jpa.exception.ResourceNotFoundException;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ResourceName;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.CategoryJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.exception.ResourceNotFoundException;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.IEventCategoryRepository;
 import org.springframework.stereotype.Component;
 

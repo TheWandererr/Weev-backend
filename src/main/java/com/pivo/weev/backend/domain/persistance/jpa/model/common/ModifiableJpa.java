@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.time.Instant;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,7 +16,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 @MappedSuperclass
 @Getter
 @Setter
-public class ModifiableJpa<PK extends Serializable> extends SequencedPersistable<PK> {
+@EqualsAndHashCode(callSuper = true)
+public abstract class ModifiableJpa<PK extends Serializable> extends SequencedPersistable<PK> {
 
     @CreationTimestamp
     @Column(name = CREATED_DATE)

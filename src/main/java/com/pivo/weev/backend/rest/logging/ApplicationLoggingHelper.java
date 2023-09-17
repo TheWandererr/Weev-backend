@@ -4,7 +4,7 @@ import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getCurrentReques
 import static java.util.Optional.ofNullable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pivo.weev.backend.rest.model.common.LogMessage;
+import com.pivo.weev.backend.rest.model.common.LogMessageRest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.utils.Constants.ResponseDetails;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,12 +17,12 @@ public class ApplicationLoggingHelper {
     private final ObjectMapper restResponseMapper;
 
     public String buildLoggingError(Exception exception, String failure) {
-        LogMessage message = buildLogMessage(exception, failure, true);
+        LogMessageRest message = buildLogMessage(exception, failure, true);
         return toJson(message);
     }
 
     public String buildLoggingError(Exception exception, String failure, boolean includeBody) {
-        LogMessage message = buildLogMessage(exception, failure, includeBody);
+        LogMessageRest message = buildLogMessage(exception, failure, includeBody);
         return toJson(message);
     }
 
@@ -35,22 +35,22 @@ public class ApplicationLoggingHelper {
     }
 
     public String buildLoggingError(HttpServletRequest request, BaseResponse baseResponse, String failure) {
-        LogMessage message = buildLogMessage(request, baseResponse, failure, true);
+        LogMessageRest message = buildLogMessage(request, baseResponse, failure, true);
         return toJson(message);
     }
 
     public String buildLoggingError(HttpServletRequest request, BaseResponse baseResponse, String failure, boolean includeBody) {
-        LogMessage message = buildLogMessage(request, baseResponse, failure, includeBody);
+        LogMessageRest message = buildLogMessage(request, baseResponse, failure, includeBody);
         return toJson(message);
     }
 
     public String buildLoggingInfo(HttpServletRequest request, BaseResponse baseResponse, String failure) {
-        LogMessage message = buildLogMessage(request, baseResponse, failure, false);
+        LogMessageRest message = buildLogMessage(request, baseResponse, failure, false);
         return toJson(message);
     }
 
-    private LogMessage buildLogMessage(HttpServletRequest request, BaseResponse baseResponse, String failure, boolean includeBody) {
-        LogMessage message = LogMessage.fromRequest(request, includeBody);
+    private LogMessageRest buildLogMessage(HttpServletRequest request, BaseResponse baseResponse, String failure, boolean includeBody) {
+        LogMessageRest message = LogMessageRest.fromRequest(request, includeBody);
         message.getDetails().putAll(baseResponse.getDetails());
         ofNullable(baseResponse.getError())
                 .ifPresent(error -> message.getDetails().put(error.getErrorCode(), error.getMessageCode()));
@@ -58,19 +58,19 @@ public class ApplicationLoggingHelper {
         return message;
     }
 
-    private LogMessage buildLogMessage(Exception exception, String failure, boolean includeBody) {
+    private LogMessageRest buildLogMessage(Exception exception, String failure, boolean includeBody) {
         HttpServletRequest request = getCurrentRequest();
-        LogMessage message = LogMessage.fromRequest(request, includeBody);
+        LogMessageRest message = LogMessageRest.fromRequest(request, includeBody);
         message.setDetails(Map.of(ResponseDetails.REASON, exception.getMessage()));
         message.setFailure(failure);
         return message;
     }
 
-    private String toJson(LogMessage logMessage) {
+    private String toJson(LogMessageRest logMessageRest) {
         try {
-            return restResponseMapper.writeValueAsString(logMessage);
+            return restResponseMapper.writeValueAsString(logMessageRest);
         } catch (Exception e) {
-            return logMessage.toString();
+            return logMessageRest.toString();
         }
     }
 }

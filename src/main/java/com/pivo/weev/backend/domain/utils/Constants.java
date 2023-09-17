@@ -20,6 +20,8 @@ public final class Constants {
         public static final String TIME_ZONE_ID_NOT_FOUND_ERROR = "time.zone.id.not.recognized";
 
         public static final String FIELD_VALIDATION_FAILED_ERROR_PATTERN = "%s.incorrect";
+
+        public static final String EVENT_MODERATION_IMPOSSIBLE_ERROR = "event.moderation.impossible";
     }
 
     @UtilityClass
@@ -47,5 +49,20 @@ public final class Constants {
             SCALE_MAPPING.put(2000000L, 0.6);
             SCALE_MAPPING.put(3000000L, 0.4);
         }
+    }
+
+    @UtilityClass
+    public static final class NotificationTitles {
+
+        public static final String EVENT_CONFIRMATION = "event.confirmation";
+        public static final String EVENT_UPDATE_SUCCESSFUL = "event.update.successful";
+        public static final String EVENT_UPDATE_FAILED = "event.update.failed";
+        public static final String EVENT_DECLINATION = "event.declination";
+    }
+
+    @UtilityClass
+    public static final class PageableParams {
+
+        public static final Integer EVENTS_PER_PAGE = 5;
     }
 }

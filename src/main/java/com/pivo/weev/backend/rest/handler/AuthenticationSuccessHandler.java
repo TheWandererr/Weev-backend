@@ -7,9 +7,9 @@ import static org.springframework.http.HttpStatus.OK;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pivo.weev.backend.domain.model.auth.OAuthTokenDetails;
-import com.pivo.weev.backend.domain.service.OAuthTokenService;
+import com.pivo.weev.backend.domain.service.auth.OAuthTokenService;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
-import com.pivo.weev.backend.rest.mapping.OAuthTokenDetailsMapper;
+import com.pivo.weev.backend.rest.mapping.domain.OAuthTokenDetailsMapper;
 import com.pivo.weev.backend.rest.model.auth.JWTPair;
 import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;

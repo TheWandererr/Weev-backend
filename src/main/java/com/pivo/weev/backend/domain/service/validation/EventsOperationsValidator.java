@@ -7,19 +7,19 @@ import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.LOC
 import static java.lang.String.format;
 import static java.time.Instant.now;
 
-import com.pivo.weev.backend.domain.model.event.Event;
+import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
 import java.time.Instant;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EventsValidationService {
+public class EventsOperationsValidator {
 
-    public void validate(Event validatable) {
+    public void validateCreation(CreatableEvent validatable) {
         validateDateTimes(validatable);
     }
 
-    private void validateDateTimes(Event validatable) {
+    private void validateDateTimes(CreatableEvent validatable) {
         Instant startInstant = toInstant(validatable.getLocalStartDateTime(), validatable.getStartTimeZoneId());
         if (startInstant.isBefore(now())) {
             throw new ReasonableException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));

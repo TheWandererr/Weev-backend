@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LogMessage {
+public class LogMessageRest {
 
     private Map<String, String> headers;
     private Map<String, Object> details;
@@ -42,8 +42,8 @@ public class LogMessage {
         return body;
     }
 
-    public static LogMessage fromRequest(HttpServletRequest request, boolean includeBody) {
-        LogMessage message = new LogMessage();
+    public static LogMessageRest fromRequest(HttpServletRequest request, boolean includeBody) {
+        LogMessageRest message = new LogMessageRest();
         message.setHeaders(collectHeaders(request));
         if (includeBody) {
             message.setBody(getRequestParams(request));

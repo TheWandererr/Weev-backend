@@ -23,8 +23,8 @@ import com.nimbusds.jose.jwk.RSAKey.Builder;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.pivo.weev.backend.domain.service.OAuthTokenService;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
+import com.pivo.weev.backend.domain.service.auth.OAuthTokenService;
 import com.pivo.weev.backend.rest.error.ErrorFactory;
 import com.pivo.weev.backend.rest.filter.JWTVerifierFilter;
 import com.pivo.weev.backend.rest.handler.AccessDeniedHandler;
@@ -134,7 +134,7 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
                                            customizer.requestMatchers(GET).permitAll()
                                                      .requestMatchers(POST).hasAnyAuthority(WRITE)
                                                      .requestMatchers(PUT).hasAnyAuthority(WRITE)
-                                                     .requestMatchers(DELETE).hasAnyRole(WRITE)
+                                                     .requestMatchers(DELETE).hasAnyAuthority(WRITE)
         );
 
         http.sessionManagement(customizer -> customizer.sessionCreationPolicy(NEVER));

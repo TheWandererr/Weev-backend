@@ -2,9 +2,9 @@ package com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper;
 
 import static java.util.Objects.nonNull;
 
+import com.pivo.weev.backend.domain.persistance.jpa.exception.ResourceNotFoundException;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.Entity;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ResourceName;
-import com.pivo.weev.backend.domain.persistance.jpa.exception.ResourceNotFoundException;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.IGenericRepository;
 import com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Errors;
 import java.io.Serializable;
