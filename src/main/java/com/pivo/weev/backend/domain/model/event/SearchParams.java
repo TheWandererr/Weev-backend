@@ -16,7 +16,7 @@ public class SearchParams {
 
     public String[] getSortFields() {
         if (isNull(sortFields)) {
-            return new String[] {};
+            return new String[]{};
         }
         return sortFields;
     }

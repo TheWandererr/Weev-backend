@@ -23,8 +23,8 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRepo
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.LocationRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.TimeZoneService;
-import com.pivo.weev.backend.domain.service.files.FilesUploadingService;
 import com.pivo.weev.backend.domain.service.files.FilesCompressingService;
+import com.pivo.weev.backend.domain.service.files.FilesUploadingService;
 import com.pivo.weev.backend.domain.service.validation.EventsOperationsValidator;
 import jakarta.transaction.Transactional;
 import java.time.ZoneId;

@@ -1,7 +1,5 @@
 package com.pivo.weev.backend.domain.persistance.jpa.utils;
 
-import static com.pivo.weev.backend.domain.utils.Constants.PageableParams.EVENTS_PER_PAGE;
-
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

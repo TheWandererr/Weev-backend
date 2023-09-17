@@ -56,9 +56,9 @@ public class ModerationController {
 
     @GetMapping("/events/{page}")
     public EventsSearchResponse searchEvents(@PathVariable @Min(0) Integer page) {
-       Page<Event> eventsPage = moderationService.searchEvents(page);
-       List<EventPreviewRest> restEvents = getMapper(EventPreviewRestMapper.class).map(eventsPage.getContent());
-       PageRest<EventPreviewRest> pageRest = new PageRest<>(restEvents, eventsPage.getNumber());
-       return new EventsSearchResponse(pageRest,  eventsPage.getTotalElements(), eventsPage.getTotalPages());
+        Page<Event> eventsPage = moderationService.searchEvents(page);
+        List<EventPreviewRest> restEvents = getMapper(EventPreviewRestMapper.class).map(eventsPage.getContent());
+        PageRest<EventPreviewRest> pageRest = new PageRest<>(restEvents, eventsPage.getNumber());
+        return new EventsSearchResponse(pageRest, eventsPage.getTotalElements(), eventsPage.getTotalPages());
     }
 }
