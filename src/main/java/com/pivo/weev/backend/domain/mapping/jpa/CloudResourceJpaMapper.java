@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.mapping;
+package com.pivo.weev.backend.domain.mapping.jpa;
 
 import com.pivo.weev.backend.domain.utils.AuthUtils;
 import com.pivo.weev.backend.integration.client.cloudinary.model.Image;

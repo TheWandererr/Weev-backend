@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.rest.mapping;
+package com.pivo.weev.backend.rest.mapping.domain;
 
 import com.pivo.weev.backend.domain.model.auth.OAuthTokenDetails;
 import com.pivo.weev.backend.rest.model.auth.JWTPair;

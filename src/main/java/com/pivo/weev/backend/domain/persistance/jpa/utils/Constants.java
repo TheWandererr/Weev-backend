@@ -32,6 +32,8 @@ public class Constants {
         public static final String EVENT_CATEGORY = "category";
         public static final String EVENT_SUBCATEGORY = "subcategory";
         public static final String EVENT_HEADER = "header";
+        public static final String EVENT_STATUS = "status";
+        public static final String EVENT_UTC_START_DATE_TIME = "utcStartDateTime";
 
         public static final String EVENT_CATEGORY_NAME = "name";
         public static final String EVENT_SUBCATEGORY_NAME = "name";
@@ -42,8 +44,12 @@ public class Constants {
 
         private static final String PATH_SPLITTER_LITERAL = ".";
         public static final String PATH_SPLITTER = Pattern.quote(PATH_SPLITTER_LITERAL);
+
         public static final String USER_NICKNAME = Columns.USER_NICKNAME;
         public static final String USER_EMAIL = Columns.USER_EMAIL;
         public static final String USER_PHONE_NUMBER = Columns.USER_PHONE_NUMBER;
+
+        public static final String EVENT_UTC_START_DATE_TIME = Columns.EVENT_UTC_START_DATE_TIME;
+        public static final String EVENT_STATUS = Columns.EVENT_STATUS;
     }
 }

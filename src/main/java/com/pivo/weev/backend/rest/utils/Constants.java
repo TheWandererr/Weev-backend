@@ -118,6 +118,6 @@ public class Constants {
     @UtilityClass
     public static final class DateTimePatterns {
 
-        public static final String DEFAULT_LOCAL_DATE_TIME_PATTERN = "yyyy-dd-MM HH:mm";
+        public static final String YYYY_DD_MM_HH_MM_DATE_TIME_PATTERN = "yyyy-dd-MM HH:mm";
     }
 }

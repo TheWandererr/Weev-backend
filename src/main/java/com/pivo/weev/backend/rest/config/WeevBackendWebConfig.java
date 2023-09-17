@@ -23,7 +23,7 @@ import com.nimbusds.jose.jwk.RSAKey.Builder;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.pivo.weev.backend.domain.service.OAuthTokenService;
+import com.pivo.weev.backend.domain.service.auth.OAuthTokenService;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
 import com.pivo.weev.backend.rest.error.ErrorFactory;
 import com.pivo.weev.backend.rest.filter.JWTVerifierFilter;

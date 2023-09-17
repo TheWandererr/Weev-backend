@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.mapping;
+package com.pivo.weev.backend.domain.mapping.jpa;
 
 import com.pivo.weev.backend.domain.model.auth.OAuthTokenDetails;
 import com.pivo.weev.backend.domain.persistance.jpa.model.auth.OAuthTokenDetailsJpa;

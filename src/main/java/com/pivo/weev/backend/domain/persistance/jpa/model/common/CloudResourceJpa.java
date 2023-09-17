@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import lombok.Setter;
 @SequenceGenerator(sequenceName = "cloud_resource_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 public class CloudResourceJpa extends SequencedPersistable<Long> {
 
     @Column(unique = true, nullable = false)

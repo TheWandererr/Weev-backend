@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.service;
+package com.pivo.weev.backend.domain.service.event;
 
 import static com.pivo.weev.backend.common.utils.CollectionUtils.findFirst;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
@@ -6,9 +6,9 @@ import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.SUBCATEGOR
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.mapstruct.factory.Mappers.getMapper;
 
-import com.pivo.weev.backend.domain.mapping.EventJpaMapper;
-import com.pivo.weev.backend.domain.mapping.LocationJpaMapper;
-import com.pivo.weev.backend.domain.model.event.Event;
+import com.pivo.weev.backend.domain.mapping.jpa.EventJpaMapper;
+import com.pivo.weev.backend.domain.mapping.jpa.LocationJpaMapper;
+import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.model.event.Location;
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
 import com.pivo.weev.backend.domain.model.file.Image;
@@ -22,6 +22,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventCate
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.LocationRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepositoryWrapper;
+import com.pivo.weev.backend.domain.service.TimeZoneService;
 import com.pivo.weev.backend.domain.service.files.FilesUploadingService;
 import com.pivo.weev.backend.domain.service.files.FilesCompressingService;
 import com.pivo.weev.backend.domain.service.validation.EventsOperationsValidator;
@@ -45,21 +46,21 @@ public class EventsOperatingService {
     private final TimeZoneService timeZoneService;
 
     @Transactional
-    public void saveEvent(Event sample) {
+    public void saveEvent(CreatableEvent sample) {
         setTimeZones(sample);
         eventsOperationsValidator.validateCreation(sample);
         EventJpa jpaEvent = preparePersistableEvent(sample);
         eventRepository.save(jpaEvent);
     }
 
-    private void setTimeZones(Event sample) {
+    private void setTimeZones(CreatableEvent sample) {
         Location location = sample.getLocation();
         ZoneId zoneId = timeZoneService.getZoneId(location.getLtd(), location.getLng());
         sample.setStartTimeZoneId(zoneId.getId());
         sample.setEndTimeZoneId(zoneId.getId());
     }
 
-    private EventJpa preparePersistableEvent(Event sample) {
+    private EventJpa preparePersistableEvent(CreatableEvent sample) {
         EventJpa eventJpa = getMapper(EventJpaMapper.class).map(sample);
         eventJpa.setLocation(getLocation(sample));
         eventJpa.setCategory(retrieveCategory(sample));
@@ -70,22 +71,22 @@ public class EventsOperatingService {
         return eventJpa;
     }
 
-    private LocationJpa getLocation(Event sample) {
+    private LocationJpa getLocation(CreatableEvent sample) {
         Location location = sample.getLocation();
         return locationRepository.findByCoordinates(location.getLng(), location.getLtd())
                                  .orElseGet(() -> locationRepository.save(getMapper(LocationJpaMapper.class).map(location)));
     }
 
-    private CategoryJpa retrieveCategory(Event sample) {
+    private CategoryJpa retrieveCategory(CreatableEvent sample) {
         return eventCategoryRepository.fetchByName(sample.getCategory());
     }
 
-    private SubcategoryJpa retrieveSubcategory(CategoryJpa categoryJpa, Event sample) {
+    private SubcategoryJpa retrieveSubcategory(CategoryJpa categoryJpa, CreatableEvent sample) {
         return findFirst(categoryJpa.getSubcategories(), subcategoryJpa -> equalsIgnoreCase(subcategoryJpa.getName(), sample.getSubcategory()))
                 .orElseThrow(() -> new ReasonableException(SUBCATEGORY_NOT_FOUND_ERROR));
     }
 
-    private void processPhoto(EventJpa eventJpa, Event sample) {
+    private void processPhoto(EventJpa eventJpa, CreatableEvent sample) {
         if (!sample.hasPhoto()) {
             return;
         }

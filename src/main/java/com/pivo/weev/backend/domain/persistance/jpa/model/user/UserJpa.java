@@ -8,6 +8,7 @@ import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Colum
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 
+import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ModifiableJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import jakarta.persistence.Column;
@@ -71,4 +72,7 @@ public class UserJpa extends ModifiableJpa<Long> {
     )
     @ManyToMany(fetch = LAZY, cascade = ALL)
     private Set<EventJpa> participatedEvents;
+    @OneToOne(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "avatar_id")
+    private CloudResourceJpa avatar;
 }

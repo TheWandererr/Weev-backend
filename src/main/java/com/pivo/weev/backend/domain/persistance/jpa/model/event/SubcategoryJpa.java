@@ -24,4 +24,9 @@ public class SubcategoryJpa extends SequencedPersistable<Long> {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private CategoryJpa category;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

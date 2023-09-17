@@ -25,4 +25,9 @@ public class CategoryJpa extends SequencedPersistable<Long> {
     private String name;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SubcategoryJpa> subcategories;
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

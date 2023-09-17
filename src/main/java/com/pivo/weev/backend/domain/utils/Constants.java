@@ -59,4 +59,10 @@ public final class Constants {
         public static final String EVENT_UPDATE_FAILED = "event.update.failed";
         public static final String EVENT_DECLINATION = "event.declination";
     }
+
+    @UtilityClass
+    public static final class PageableParams {
+
+        public static final Integer EVENTS_PER_PAGE = 5;
+    }
 }
