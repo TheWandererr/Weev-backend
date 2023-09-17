@@ -11,6 +11,7 @@ import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("weev/api/events")
 @RequiredArgsConstructor
+@Validated
 public class EventsController {
 
     private final EventsOperatingService eventsOperatingService;
@@ -31,4 +33,10 @@ public class EventsController {
         eventsOperatingService.saveEvent(sample);
         return new BaseResponse(ResponseMessage.CREATED);
     }
+
+    /*
+    * запрещаем редактирование за 3 часа до начала
+    * количество участников уже больше, чем лимит в запросе
+    * проверить владельца
+    * */
 }

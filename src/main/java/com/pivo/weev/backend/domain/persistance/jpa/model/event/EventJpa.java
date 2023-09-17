@@ -5,23 +5,30 @@ import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Colum
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ModifiableJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,6 +39,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class EventJpa extends ModifiableJpa<Long> {
 
     @OneToOne(cascade = ALL, fetch = LAZY)
@@ -73,6 +81,8 @@ public class EventJpa extends ModifiableJpa<Long> {
     @Column
     @Enumerated(STRING)
     private EventStatus eventStatus;
+    @ManyToMany(mappedBy = "participatedEvents", cascade = CascadeType.ALL)
+    private Set<UserJpa> members;
 
     public boolean hasRestrictions() {
         return nonNull(restrictions);
@@ -86,4 +96,10 @@ public class EventJpa extends ModifiableJpa<Long> {
         return nonNull(updatableTarget);
     }
 
+    public Set<UserJpa> getMembers() {
+        if (isNull(members)) {
+            members = new HashSet<>();
+        }
+        return members;
+    }
 }

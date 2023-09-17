@@ -134,7 +134,7 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
                                            customizer.requestMatchers(GET).permitAll()
                                                      .requestMatchers(POST).hasAnyAuthority(WRITE)
                                                      .requestMatchers(PUT).hasAnyAuthority(WRITE)
-                                                     .requestMatchers(DELETE).hasAnyRole(WRITE)
+                                                     .requestMatchers(DELETE).hasAnyAuthority(WRITE)
         );
 
         http.sessionManagement(customizer -> customizer.sessionCreationPolicy(NEVER));

@@ -27,7 +27,7 @@ public class ModerationValidator {
 
     private void validateModerationStatus(EventJpa validatable) {
         if (!validatable.isOnModeration()) {
-            throw new ReasonableException(EVENT_MODERATION_IMPOSSIBLE_ERROR, LOCAL_START_DATE_TIME, BAD_REQUEST);
+            throw new ReasonableException(EVENT_MODERATION_IMPOSSIBLE_ERROR, null, BAD_REQUEST);
         }
     }
 }

@@ -72,6 +72,7 @@ public class Constants {
         public static final String INCORRECT_FEE_AMOUNT = "incorrect.fee.amount";
         public static final String UNSUPPORTED_FILE = "unsupported.file";
         public static final String FLOW_INTERRUPTED_ERROR = "flow.interrupted.error";
+        public static final String INVALID_DECLINATION_REASON = "unsupported.declination.reason";
     }
 
     @UtilityClass

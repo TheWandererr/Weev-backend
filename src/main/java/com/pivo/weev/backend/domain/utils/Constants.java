@@ -50,4 +50,13 @@ public final class Constants {
             SCALE_MAPPING.put(3000000L, 0.4);
         }
     }
+
+    @UtilityClass
+    public static final class NotificationTitles {
+
+        public static final String EVENT_CONFIRMATION = "event.confirmation";
+        public static final String EVENT_UPDATE_SUCCESSFUL = "event.update.successful";
+        public static final String EVENT_UPDATE_FAILED = "event.update.failed";
+        public static final String EVENT_DECLINATION = "event.declination";
+    }
 }

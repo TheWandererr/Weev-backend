@@ -8,7 +8,9 @@ public enum ResourceName implements Enumerated {
     OAUTH_TOKEN_DETAILS,
     EVENT,
     EVENT_CATEGORY,
-    LOCATION;
+    LOCATION,
+    NOTIFICATION,
+    DECLINATION_REASON;
 
     @Override
     public String getName() {
