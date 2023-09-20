@@ -1,10 +1,12 @@
 package com.pivo.weev.backend.rest.filter;
 
 import static com.pivo.weev.backend.rest.utils.Constants.Api.LOGIN_URI;
+import static com.pivo.weev.backend.rest.utils.Constants.Api.MODERATION_URI;
 import static com.pivo.weev.backend.rest.utils.Constants.Api.REFRESH_URI;
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.INVALID_TOKEN;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getAuthorizationValue;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getDeviceId;
+import static com.pivo.weev.backend.rest.utils.HttpServletUtils.matches;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
@@ -27,7 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @AllArgsConstructor
-public class JWTVerifierFilter extends OncePerRequestFilter {
+public class JWTAuthenticityVerifierFilter extends OncePerRequestFilter {
 
     private final ErrorFactory errorFactory;
     private final ObjectMapper restResponseMapper;
@@ -52,9 +54,12 @@ public class JWTVerifierFilter extends OncePerRequestFilter {
 
     private boolean isSkipRequest(HttpServletRequest request) {
         if (HttpMethod.GET.matches(request.getMethod())) {
-            return !request.getRequestURI().endsWith(REFRESH_URI);
+            if (matches(request, REFRESH_URI)) {
+                return false;
+            }
+            return !matches(request, MODERATION_URI);
         }
-        return request.getRequestURI().endsWith(LOGIN_URI);
+        return matches(request, LOGIN_URI);
     }
 
     private void handleUnauthorized(HttpServletResponse response, String failure) throws IOException {

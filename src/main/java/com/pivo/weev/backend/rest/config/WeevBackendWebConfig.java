@@ -26,7 +26,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.auth.OAuthTokenService;
 import com.pivo.weev.backend.rest.error.ErrorFactory;
-import com.pivo.weev.backend.rest.filter.JWTVerifierFilter;
+import com.pivo.weev.backend.rest.filter.JWTAuthenticityVerifierFilter;
 import com.pivo.weev.backend.rest.handler.AccessDeniedHandler;
 import com.pivo.weev.backend.rest.handler.AuthenticationFailureHandler;
 import com.pivo.weev.backend.rest.handler.AuthenticationSuccessHandler;
@@ -148,7 +148,7 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
         http.oauth2ResourceServer(customizer -> customizer.jwt(withDefaults()));
 
         http.addFilterBefore(
-                new JWTVerifierFilter(errorFactory, restResponseMapper, applicationLoggingHelper, jwtAuthenticityVerifier),
+                new JWTAuthenticityVerifierFilter(errorFactory, restResponseMapper, applicationLoggingHelper, jwtAuthenticityVerifier),
                 UsernamePasswordAuthenticationFilter.class
         );
 

@@ -10,11 +10,13 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 public class Event extends Identifiable {
 
     private User creator;
@@ -34,6 +36,7 @@ public class Event extends Identifiable {
     private String endTimeZoneId;
     private Instant utcEndDateTime;
     private Set<User> members;
+    private String status;
 
     public Set<User> getMembers() {
         if (isNull(members)) {

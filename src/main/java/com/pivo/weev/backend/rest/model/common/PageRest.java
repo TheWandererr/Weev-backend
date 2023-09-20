@@ -14,7 +14,7 @@ import lombok.Setter;
 public class PageRest<T> {
 
     private List<T> content;
-    private Integer page;
+    private Integer number;
 
     public List<T> getContent() {
         if (isNull(content)) {

@@ -29,6 +29,7 @@ public class Constants {
         public static final String LOGIN_URI = "/auth/login";
         public static final String LOGOUT_URL = "/weev/auth/logout";
         public static final String REFRESH_URI = "/auth/refresh";
+        public static final String MODERATION_URI = "/api/moderation";
     }
 
     @UtilityClass

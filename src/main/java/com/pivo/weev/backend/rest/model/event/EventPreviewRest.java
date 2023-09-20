@@ -30,4 +30,5 @@ public class EventPreviewRest {
     @JsonFormat(pattern = YYYY_DD_MM_HH_MM_DATE_TIME_PATTERN)
     private LocalDateTime localEndDateTime;
     private String endTimeZoneId;
+    private String status;
 }
