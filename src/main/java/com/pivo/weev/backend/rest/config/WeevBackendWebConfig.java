@@ -34,6 +34,7 @@ import com.pivo.weev.backend.rest.handler.UnauthorizedHandler;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.service.AuthService;
 import com.pivo.weev.backend.rest.service.LoginDetailsService;
+import com.pivo.weev.backend.rest.service.security.JWTAuthenticityVerifier;
 import com.pivo.weev.backend.rest.service.security.JWTClaimsVerifier;
 import com.pivo.weev.backend.rest.service.security.RSAKeyService;
 import com.pivo.weev.backend.rest.utils.LocaleUtils;
@@ -75,7 +76,6 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
     private final LoginDetailsService loginDetailsService;
     private final AuthService authService;
     private final RSAKeyService rsaKeyService;
-    private final OAuthTokenDetailsRepositoryWrapper oAuthTokenDetailsRepository;
     private final OAuthTokenService oauthTokenService;
     private final ErrorFactory errorFactory;
 
@@ -111,19 +111,20 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
-                                           JwtDecoder jwtDecoder,
                                            ObjectMapper restResponseMapper,
-                                           ApplicationLoggingHelper applicationLoggingHelper)
+                                           ApplicationLoggingHelper applicationLoggingHelper,
+                                           JWTAuthenticityVerifier jwtAuthenticityVerifier)
             throws Exception {
         http.formLogin(customizer ->
                                customizer.loginProcessingUrl(LOGIN_URL)
                                          .usernameParameter(USERNAME)
                                          .passwordParameter(PASSWORD)
-                                         .successHandler(new AuthenticationSuccessHandler(
-                                                 restResponseMapper,
-                                                 applicationLoggingHelper,
-                                                 authService,
-                                                 oauthTokenService)
+                                         .successHandler(
+                                                 new AuthenticationSuccessHandler(
+                                                         restResponseMapper,
+                                                         applicationLoggingHelper,
+                                                         authService,
+                                                         oauthTokenService)
                                          )
                                          .failureHandler(
                                                  new AuthenticationFailureHandler(restResponseMapper, applicationLoggingHelper, errorFactory))
@@ -147,7 +148,7 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
         http.oauth2ResourceServer(customizer -> customizer.jwt(withDefaults()));
 
         http.addFilterBefore(
-                new JWTVerifierFilter(errorFactory, restResponseMapper, applicationLoggingHelper, jwtDecoder, oAuthTokenDetailsRepository),
+                new JWTVerifierFilter(errorFactory, restResponseMapper, applicationLoggingHelper, jwtAuthenticityVerifier),
                 UsernamePasswordAuthenticationFilter.class
         );
 
@@ -189,6 +190,11 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
                 .build();
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
+    }
+
+    @Bean
+    public JWTAuthenticityVerifier jwtAuthenticityVerifier(OAuthTokenDetailsRepositoryWrapper oAuthTokenDetailsRepository, JwtDecoder jwtDecoder) {
+        return new JWTAuthenticityVerifier(oAuthTokenDetailsRepository, jwtDecoder);
     }
 
     @Bean

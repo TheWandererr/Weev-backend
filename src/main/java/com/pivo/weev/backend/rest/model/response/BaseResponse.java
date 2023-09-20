@@ -6,7 +6,7 @@ import static java.util.Objects.nonNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.pivo.weev.backend.rest.model.error.Error;
+import com.pivo.weev.backend.rest.model.error.ErrorRest;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -21,11 +21,11 @@ import lombok.Setter;
 @Setter
 public class BaseResponse {
 
-    private Error error;
+    private ErrorRest error;
     private ResponseMessage message;
     private Map<String, Object> details;
 
-    public BaseResponse(Error error, ResponseMessage responseMessage) {
+    public BaseResponse(ErrorRest error, ResponseMessage responseMessage) {
         this(error, responseMessage, null);
     }
 

@@ -5,7 +5,7 @@ import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pivo.weev.backend.rest.error.ErrorFactory;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
-import com.pivo.weev.backend.rest.model.error.Error;
+import com.pivo.weev.backend.rest.model.error.ErrorRest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import com.pivo.weev.backend.rest.utils.Constants.ErrorCodes;
@@ -31,7 +31,7 @@ public class AccessDeniedHandler implements org.springframework.security.web.acc
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
             throws IOException, ServletException {
-        Error error = errorFactory.create(ErrorCodes.PERMISSIONS, accessDeniedException.getMessage());
+        ErrorRest error = errorFactory.create(ErrorCodes.PERMISSIONS, accessDeniedException.getMessage());
         BaseResponse loginResponse = new BaseResponse(error, ResponseMessage.FORBIDDEN);
         LOGGER.error(applicationLoggingHelper.buildLoggingError(accessDeniedException, null, false));
         writeResponse(loginResponse, response, HttpStatus.FORBIDDEN, restResponseMapper);

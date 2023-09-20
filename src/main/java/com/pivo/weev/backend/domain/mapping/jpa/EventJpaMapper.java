@@ -1,5 +1,7 @@
 package com.pivo.weev.backend.domain.mapping.jpa;
 
+import static org.mapstruct.ReportingPolicy.IGNORE;
+
 import com.pivo.weev.backend.common.utils.DateTimeUtils;
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
@@ -7,7 +9,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper(imports = {DateTimeUtils.class, LocationJpaMapper.class, RestrictionsJpaMapper.class, EntryFeeJpaMapper.class}, uses = {RestrictionsJpaMapper.class})
+@Mapper(
+        imports = {DateTimeUtils.class, LocationJpaMapper.class, RestrictionsJpaMapper.class, EntryFeeJpaMapper.class}, uses = {RestrictionsJpaMapper.class},
+        unmappedTargetPolicy = IGNORE
+)
 public interface EventJpaMapper {
 
     @Mapping(target = "id", ignore = true)

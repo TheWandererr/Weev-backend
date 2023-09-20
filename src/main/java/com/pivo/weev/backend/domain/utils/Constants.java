@@ -18,6 +18,7 @@ public final class Constants {
         public static final String FILE_COMPRESSING_ERROR = "file.compressing.failed";
         public static final String SUBCATEGORY_NOT_FOUND_ERROR = "subcategory.not.found";
         public static final String TIME_ZONE_ID_NOT_FOUND_ERROR = "time.zone.id.not.recognized";
+        public static final String TOKEN_COMPROMISED_ERROR = "token.compromised";
 
         public static final String FIELD_VALIDATION_FAILED_ERROR_PATTERN = "%s.incorrect";
 

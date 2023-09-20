@@ -6,7 +6,7 @@ import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pivo.weev.backend.rest.error.ErrorFactory;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
-import com.pivo.weev.backend.rest.model.error.Error;
+import com.pivo.weev.backend.rest.model.error.ErrorRest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import jakarta.servlet.ServletException;
@@ -35,7 +35,7 @@ public class AuthenticationFailureHandler implements org.springframework.securit
     }
 
     private void handleFailedLogin(HttpServletResponse response, AuthenticationException exception) throws IOException {
-        Error error = errorFactory.create(UNAUTHORIZED, exception.getMessage());
+        ErrorRest error = errorFactory.create(UNAUTHORIZED, exception.getMessage());
         BaseResponse loginResponse = new BaseResponse(error, ResponseMessage.UNAUTHORIZED);
         LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
         writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);

@@ -5,7 +5,7 @@ import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pivo.weev.backend.rest.error.ErrorFactory;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
-import com.pivo.weev.backend.rest.model.error.Error;
+import com.pivo.weev.backend.rest.model.error.ErrorRest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import com.pivo.weev.backend.rest.utils.Constants.ErrorCodes;
@@ -32,7 +32,7 @@ public class UnauthorizedHandler implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException, ServletException {
-        Error error = errorFactory.create(ErrorCodes.UNAUTHORIZED, authException.getMessage());
+        ErrorRest error = errorFactory.create(ErrorCodes.UNAUTHORIZED, authException.getMessage());
         BaseResponse loginResponse = new BaseResponse(error, ResponseMessage.UNAUTHORIZED);
         LOGGER.error(applicationLoggingHelper.buildLoggingError(authException, null, false));
         writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);

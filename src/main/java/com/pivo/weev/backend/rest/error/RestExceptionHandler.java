@@ -11,7 +11,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
 import com.pivo.weev.backend.domain.persistance.jpa.exception.ResourceNotFoundException;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
-import com.pivo.weev.backend.rest.model.error.Error;
+import com.pivo.weev.backend.rest.model.error.ErrorRest;
 import com.pivo.weev.backend.rest.model.exception.MissingCookieException;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
@@ -51,7 +51,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = AccessDeniedException.class)
     public ResponseEntity<BaseResponse> handleAccessDeniedException(AccessDeniedException accessDeniedException) {
-        Error error = errorFactory.forbidden();
+        ErrorRest error = errorFactory.forbidden();
         BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
         logger.error(applicationLoggingHelper.buildLoggingError(body, accessDeniedException.getMessage()));
         return ResponseEntity.status(FORBIDDEN)
@@ -60,7 +60,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {MissingCookieException.class, InvalidCookieException.class})
     public ResponseEntity<BaseResponse> handleMissingCookieException(RuntimeException runtimeException) {
-        Error error = errorFactory.forbidden();
+        ErrorRest error = errorFactory.forbidden();
         BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
         logger.error(applicationLoggingHelper.buildLoggingError(body, runtimeException.getMessage()));
         return ResponseEntity.status(FORBIDDEN)
@@ -69,7 +69,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = InternalAuthenticationServiceException.class)
     public ResponseEntity<BaseResponse> handleInternalAuthenticationServiceException(InternalAuthenticationServiceException exception) {
-        Error error = errorFactory.unauthorized(exception.getMessage());
+        ErrorRest error = errorFactory.unauthorized(exception.getMessage());
         BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
         logger.error(applicationLoggingHelper.buildLoggingError(body, exception.getMessage()));
         return ResponseEntity.status(UNAUTHORIZED)
@@ -84,7 +84,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         String messageCode = ofNullable(exception.getBindingResult().getFieldError())
                 .map(error -> StringUtils.join(error.getField(), DOT, error.getDefaultMessage()))
                 .orElse(null);
-        Error error = errorFactory.create(VALIDATION_FAILED, messageCode);
+        ErrorRest error = errorFactory.create(VALIDATION_FAILED, messageCode);
         BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
         logger.error(applicationLoggingHelper.buildLoggingError(body, null));
         return ResponseEntity.badRequest()
@@ -93,7 +93,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ResourceNotFoundException.class})
     public ResponseEntity<BaseResponse> handleResourceNotFoundException(ResourceNotFoundException resourceNotFoundException) {
-        Error error = errorFactory.create(NOT_FOUND, resourceNotFoundException.getMessage());
+        ErrorRest error = errorFactory.create(NOT_FOUND, resourceNotFoundException.getMessage());
         BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
         logger.error(applicationLoggingHelper.buildLoggingError(body, null));
         return ResponseEntity.badRequest()
@@ -102,7 +102,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ReasonableException.class})
     public ResponseEntity<BaseResponse> handleReasonableException(ReasonableException reasonableException) {
-        Error error = errorFactory.create(reasonableException.getErrorCode(), FLOW_INTERRUPTED);
+        ErrorRest error = errorFactory.create(reasonableException.getErrorCode(), FLOW_INTERRUPTED);
         BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR, reasonableException.buildDetails());
         logger.error(applicationLoggingHelper.buildLoggingError(body, null));
         return ResponseEntity.status(reasonableException.getHttpStatus())
