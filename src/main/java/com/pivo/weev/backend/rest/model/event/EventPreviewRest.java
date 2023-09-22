@@ -18,8 +18,8 @@ public class EventPreviewRest {
     private String category;
     private String subcategory;
     private LocationRest location;
-    private Integer membersLimit;
-    private Integer membersCount;
+    private int membersLimit;
+    private int membersCount;
     private String description;
     private ImageRest photo;
     private EntryFeeRest entryFee;
@@ -31,4 +31,6 @@ public class EventPreviewRest {
     private LocalDateTime localEndDateTime;
     private String endTimeZoneId;
     private String status;
+    private boolean ended;
+    private boolean started;
 }

@@ -28,6 +28,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaParams;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SpecificationBuilder;
 import jakarta.persistence.criteria.Expression;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -92,12 +93,12 @@ public class EventsSpecificationBuilder {
         return (root, query, builder) -> {
 
             Expression<Long> epochStartDateTimeExpression = builder.function(DATE_PART, Long.class, builder.literal(EPOCH), getExpression(startDateTimeCriteriaParams, root));
-            Long epochCurrentDateTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+            Long currentEpoch = Instant.now().getEpochSecond();
 
             Expression<Long> epochEndDateTimeExpression = builder.function(DATE_PART, Long.class, builder.literal(EPOCH), getExpression(endDateTimeCriteriaParams, root));
 
-            Expression<Long> weight = builder.abs(builder.diff(epochStartDateTimeExpression, epochCurrentDateTime));
-            Expression<Long> past = builder.diff(epochEndDateTimeExpression, epochCurrentDateTime);
+            Expression<Long> weight = builder.abs(builder.diff(epochStartDateTimeExpression, currentEpoch));
+            Expression<Long> past = builder.diff(epochEndDateTimeExpression, currentEpoch);
 
             query.orderBy(builder.desc(past), builder.asc(weight));
             return null;

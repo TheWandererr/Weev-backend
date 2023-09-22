@@ -10,6 +10,8 @@ import org.mapstruct.Mapping;
 public interface EventPreviewRestMapper {
 
     @Mapping(target = "membersCount", expression = "java(source.getMembers().size())")
+    @Mapping(target = "ended", expression = "java(source.isEnded())")
+    @Mapping(target = "started", expression = "java(source.isStarted())")
     EventPreviewRest map(Event source);
 
     List<EventPreviewRest> map(List<Event> source);

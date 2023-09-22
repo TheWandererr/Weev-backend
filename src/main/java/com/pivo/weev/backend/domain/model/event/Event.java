@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.domain.model.event;
 
+import static java.time.Instant.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -47,5 +48,13 @@ public class Event extends Identifiable {
 
     public boolean hasPhoto() {
         return nonNull(photo);
+    }
+
+    public boolean isEnded() {
+        return now().isAfter(utcEndDateTime);
+    }
+
+    public boolean isStarted() {
+        return !isEnded() && now().isAfter(utcStartDateTime);
     }
 }
