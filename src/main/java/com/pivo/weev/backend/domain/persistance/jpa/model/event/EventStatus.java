@@ -1,9 +1,18 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.event;
 
-public enum EventStatus {
+import lombok.Getter;
 
-    ON_MODERATION,
-    HAS_MODERATION_INSTANCE,
-    CONFIRMED,
-    DECLINED
+@Getter
+public enum EventStatus {
+    ON_MODERATION("ON_MODERATION"),
+    HAS_MODERATION_INSTANCE("HAS_MODERATION_INSTANCE"),
+    CONFIRMED("CONFIRMED"),
+    DECLINED("DECLINED");
+
+    private final String value;
+
+    EventStatus(String value) {
+        this.value = value;
+    }
+
 }

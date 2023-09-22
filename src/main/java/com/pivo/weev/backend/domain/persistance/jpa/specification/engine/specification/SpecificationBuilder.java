@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification;
 
-import com.pivo.weev.backend.common.utils.ArrayUtils;
+import static com.pivo.weev.backend.common.utils.CollectionUtils.isEmpty;
+
 import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -26,9 +27,8 @@ public class SpecificationBuilder<T> {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public SpecificationBuilder<T> andAll(Specification<T>... specifications) {
-        if (ArrayUtils.isEmpty(specifications)) {
+    public SpecificationBuilder<T> andAll(List<Specification<T>> specifications) {
+        if (isEmpty(specifications)) {
             return this;
         }
         for (Specification<T> specification : specifications) {
@@ -37,9 +37,8 @@ public class SpecificationBuilder<T> {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public SpecificationBuilder<T> andAny(Specification<T>... specifications) {
-        if (ArrayUtils.isEmpty(specifications)) {
+    public SpecificationBuilder<T> andAny(List<Specification<T>> specifications) {
+        if (isEmpty(specifications)) {
             return this;
         }
         Specification<T> inner = SimpleSpecifications.empty();
@@ -50,9 +49,8 @@ public class SpecificationBuilder<T> {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public SpecificationBuilder<T> orAll(Specification<T>... specifications) {
-        if (ArrayUtils.isEmpty(specifications)) {
+    public SpecificationBuilder<T> orAll(List<Specification<T>> specifications) {
+        if (isEmpty(specifications)) {
             return this;
         }
         Specification<T> inner = SimpleSpecifications.empty();
@@ -63,9 +61,8 @@ public class SpecificationBuilder<T> {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public SpecificationBuilder<T> orAny(Specification<T>... specifications) {
-        if (ArrayUtils.isEmpty(specifications)) {
+    public SpecificationBuilder<T> orAny(List<Specification<T>> specifications) {
+        if (isEmpty(specifications)) {
             return this;
         }
         for (Specification<T> specification : specifications) {

@@ -17,7 +17,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -45,7 +44,7 @@ public class EventJpa extends ModifiableJpa<Long> {
     @OneToOne(cascade = ALL, fetch = LAZY)
     @JoinColumn(name = "updatable_event_id")
     private EventJpa updatableTarget;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "creator_id")
     private UserJpa creator;
     @Column(nullable = false, name = EVENT_HEADER)
@@ -84,9 +83,6 @@ public class EventJpa extends ModifiableJpa<Long> {
     private EventStatus status;
     @ManyToMany(mappedBy = "participatedEvents", fetch = LAZY, cascade = ALL)
     private Set<UserJpa> members;
-    @OneToOne(fetch = FetchType.LAZY, cascade = ALL)
-    @JoinColumn(name = "relevance_id")
-    private RelevanceJpa relevance;
 
     public boolean hasRestrictions() {
         return nonNull(restrictions);

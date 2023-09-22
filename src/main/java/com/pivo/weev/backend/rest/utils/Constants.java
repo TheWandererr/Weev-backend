@@ -71,6 +71,7 @@ public class Constants {
         public static final String INVALID_EVENT_MEMBERS_AMOUNT = "incorrect.members.limit";
         public static final String LENGTH_OUT_OF_BOUND = "length.out.of.bound";
         public static final String INCORRECT_FEE_AMOUNT = "incorrect.fee.amount";
+        public static final String INCORRECT_RADIUS_AMOUNT = "incorrect.radius.amount";
         public static final String UNSUPPORTED_FILE = "unsupported.file";
         public static final String FLOW_INTERRUPTED_ERROR = "flow.interrupted.error";
         public static final String INVALID_DECLINATION_REASON = "unsupported.declination.reason";
@@ -119,6 +120,6 @@ public class Constants {
     @UtilityClass
     public static final class DateTimePatterns {
 
-        public static final String YYYY_DD_MM_HH_MM_DATE_TIME_PATTERN = "yyyy-dd-MM HH:mm";
+        public static final String YYYY_MM_DD_HH_MM_DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm";
     }
 }

@@ -10,6 +10,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteri
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaJoin;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaParams;
 import com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -23,7 +24,7 @@ public class CriteriaParamsBuilder {
     public static <E> CriteriaParams<E> buildCriteriaParams(String fieldPath, int joins) {
         List<String> fieldsChain = ofNullable(fieldPath).map(path -> path.split(Paths.PATH_SPLITTER))
                                                         .map(ArrayUtils::toList)
-                                                        .orElse(null);
+                                                        .orElseGet(Collections::emptyList);
         if (CollectionUtils.isEmpty(fieldsChain)) {
             return new CriteriaParams<>();
         }

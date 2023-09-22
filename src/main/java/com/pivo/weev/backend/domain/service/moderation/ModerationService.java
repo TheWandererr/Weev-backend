@@ -1,10 +1,8 @@
 package com.pivo.weev.backend.domain.service.moderation;
 
-import static com.pivo.weev.backend.common.utils.ArrayUtils.toArray;
 import static com.pivo.weev.backend.common.utils.CollectionUtils.mapToList;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CONFIRMED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DECLINED;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Paths.EVENT_UTC_START_DATE_TIME;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_CONFIRMATION;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_DECLINATION;
@@ -12,10 +10,7 @@ import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EV
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_UPDATE_SUCCESSFUL;
 import static org.mapstruct.factory.Mappers.getMapper;
 
-import com.pivo.weev.backend.domain.mapping.domain.EventMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.EventJpaMapper;
-import com.pivo.weev.backend.domain.model.event.Event;
-import com.pivo.weev.backend.domain.model.event.SearchParams;
 import com.pivo.weev.backend.domain.persistance.jpa.NotificationFactory;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.DeclinationReason;
@@ -28,8 +23,6 @@ import com.pivo.weev.backend.domain.service.validation.ModerationValidator;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -99,21 +92,5 @@ public class ModerationService {
         declinable.setStatus(DECLINED);
         NotificationJpa notification = notificationFactory.createEventNotification(declinable, EVENT_DECLINATION, declinationReason);
         eventNotificationRepository.save(notification);
-    }
-
-    @Transactional
-    public Page<Event> searchEvents(Integer page) {
-        SearchParams searchParams = buildSearchParams(page);
-        Page<EventJpa> eventsJpaPage = eventsSearchService.search(searchParams);
-        List<Event> content = getMapper(EventMapper.class).map(eventsJpaPage.getContent());
-        return new PageImpl<>(content, eventsJpaPage.getPageable(), eventsJpaPage.getTotalElements());
-    }
-
-    private SearchParams buildSearchParams(Integer page) {
-        SearchParams searchParams = new SearchParams();
-        searchParams.setPage(page);
-        searchParams.setOnModeration(true);
-        searchParams.setSortFields(toArray(EVENT_UTC_START_DATE_TIME));
-        return searchParams;
     }
 }

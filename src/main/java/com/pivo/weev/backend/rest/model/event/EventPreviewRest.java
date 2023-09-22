@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.model.event;
 
-import static com.pivo.weev.backend.rest.utils.Constants.DateTimePatterns.YYYY_DD_MM_HH_MM_DATE_TIME_PATTERN;
+import static com.pivo.weev.backend.rest.utils.Constants.DateTimePatterns.YYYY_MM_DD_HH_MM_DATE_TIME_PATTERN;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pivo.weev.backend.rest.model.UserCompactedRest;
@@ -24,10 +24,10 @@ public class EventPreviewRest {
     private ImageRest photo;
     private EntryFeeRest entryFee;
     private RestrictionsRest restrictions;
-    @JsonFormat(pattern = YYYY_DD_MM_HH_MM_DATE_TIME_PATTERN)
+    @JsonFormat(pattern = YYYY_MM_DD_HH_MM_DATE_TIME_PATTERN)
     private LocalDateTime localStartDateTime;
     private String startTimeZoneId;
-    @JsonFormat(pattern = YYYY_DD_MM_HH_MM_DATE_TIME_PATTERN)
+    @JsonFormat(pattern = YYYY_MM_DD_HH_MM_DATE_TIME_PATTERN)
     private LocalDateTime localEndDateTime;
     private String endTimeZoneId;
     private String status;
