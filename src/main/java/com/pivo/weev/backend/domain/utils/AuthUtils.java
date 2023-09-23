@@ -53,15 +53,25 @@ public class AuthUtils {
     }
 
     public static Jwt getAuthenticationDetails() {
+        return getOptionalAuthenticationDetails()
+                .orElseThrow(() -> new AuthorizationServiceException(AUTHENTICATION_PRINCIPAL_NOT_FOUND_ERROR));
+    }
+
+    public static Optional<Jwt> getOptionalAuthenticationDetails() {
         return ofNullable(getAuthentication())
                 .map(Authentication::getPrincipal)
                 .filter(Jwt.class::isInstance)
-                .map(Jwt.class::cast)
-                .orElseThrow(() -> new AuthorizationServiceException(AUTHENTICATION_PRINCIPAL_NOT_FOUND_ERROR));
+                .map(Jwt.class::cast);
     }
 
     public static Long getUserId() {
         return getAuthenticationDetails()
                 .getClaim(USER_ID);
+    }
+
+    public static Long getNullableUserId() {
+        return getOptionalAuthenticationDetails()
+                .<Long>map(jwt -> jwt.getClaim(USER_ID))
+                .orElse(null);
     }
 }

@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.domain.model.event;
 
+import static com.pivo.weev.backend.common.utils.CollectionUtils.isPresent;
 import static java.time.Instant.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -10,6 +11,7 @@ import com.pivo.weev.backend.domain.model.user.User;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -56,5 +58,9 @@ public class Event extends Identifiable {
 
     public boolean isStarted() {
         return !isEnded() && now().isAfter(utcStartDateTime);
+    }
+
+    public boolean hasMember(long memberId) {
+        return isPresent(getMembers(), member -> Objects.equals(member.getId(), memberId));
     }
 }

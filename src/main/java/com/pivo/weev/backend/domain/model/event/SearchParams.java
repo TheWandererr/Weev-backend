@@ -4,7 +4,6 @@ import static com.pivo.weev.backend.common.utils.ArrayUtils.isEmpty;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-import com.pivo.weev.backend.common.utils.ArrayUtils;
 import lombok.Getter;
 import lombok.Setter;
 

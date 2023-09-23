@@ -20,16 +20,10 @@ public class EventPreviewRest {
     private LocationRest location;
     private int membersLimit;
     private int membersCount;
-    private String description;
     private ImageRest photo;
-    private EntryFeeRest entryFee;
-    private RestrictionsRest restrictions;
     @JsonFormat(pattern = YYYY_MM_DD_HH_MM_DATE_TIME_PATTERN)
     private LocalDateTime localStartDateTime;
     private String startTimeZoneId;
-    @JsonFormat(pattern = YYYY_MM_DD_HH_MM_DATE_TIME_PATTERN)
-    private LocalDateTime localEndDateTime;
-    private String endTimeZoneId;
     private String status;
     private boolean ended;
     private boolean started;

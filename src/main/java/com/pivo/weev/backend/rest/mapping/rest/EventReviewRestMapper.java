@@ -4,7 +4,7 @@ import static com.pivo.weev.backend.domain.utils.EventDataUtils.isHidePrivateDat
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.model.event.Event;
-import com.pivo.weev.backend.rest.model.event.EventPreviewRest;
+import com.pivo.weev.backend.rest.model.event.EventReviewRest;
 import com.pivo.weev.backend.rest.model.event.LocationRest;
 import java.util.List;
 import org.mapstruct.AfterMapping;
@@ -13,7 +13,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(uses = {ImageRestMapper.class, EntryFeeRestMapper.class, RestrictionsRestMapper.class})
-public interface EventPreviewRestMapper {
+public interface EventReviewRestMapper {
 
     LocationRestMapper LOCATION_REST_MAPPER = getMapper(LocationRestMapper.class);
 
@@ -21,12 +21,12 @@ public interface EventPreviewRestMapper {
     @Mapping(target = "ended", expression = "java(source.isEnded())")
     @Mapping(target = "started", expression = "java(source.isStarted())")
     @Mapping(target = "location", ignore = true)
-    EventPreviewRest map(Event source);
+    EventReviewRest map(Event source);
 
-    List<EventPreviewRest> map(List<Event> source);
+    List<EventReviewRest> map(List<Event> source);
 
     @AfterMapping
-    default void mapPrivateData(Event source, @MappingTarget EventPreviewRest target) {
+    default void mapPrivateData(Event source, @MappingTarget EventReviewRest target) {
         boolean hidePrivateData = isHidePrivateData(source);
         LocationRest restLocation = hidePrivateData
                 ? LOCATION_REST_MAPPER.mapPrivate(source.getLocation())

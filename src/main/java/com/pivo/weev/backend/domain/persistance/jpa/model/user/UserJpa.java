@@ -17,6 +17,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -55,7 +56,7 @@ public class UserJpa extends ModifiableJpa<Long> {
     @Length(max = 20)
     @Column(length = 20, name = USER_PHONE_NUMBER, unique = true)
     private String phoneNumber;
-    @OneToOne(cascade = ALL)
+    @ManyToOne(cascade = ALL)
     @JoinColumn(name = "role_id")
     private UserRoleJpa role;
     private Boolean active;

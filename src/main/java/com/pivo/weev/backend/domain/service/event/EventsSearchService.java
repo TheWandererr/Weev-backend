@@ -33,4 +33,11 @@ public class EventsSearchService {
         List<Event> content = getMapper(EventMapper.class).map(jpaPage.getContent());
         return new PageImpl<>(content, jpaPage.getPageable(), jpaPage.getTotalElements());
     }
+
+    @Transactional
+    public Event search(Long id) {
+        return eventRepository.find(id)
+                              .map(event -> getMapper(EventMapper.class).map(event))
+                              .orElse(null);
+    }
 }
