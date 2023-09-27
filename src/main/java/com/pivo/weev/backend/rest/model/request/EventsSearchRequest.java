@@ -1,5 +1,7 @@
 package com.pivo.weev.backend.rest.model.request;
 
+import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.EVENTS_PER_PAGE;
+
 import com.pivo.weev.backend.rest.model.event.RadiusRest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -20,6 +22,6 @@ public class EventsSearchRequest extends PageableRequest {
     private RadiusRest radius;
 
     public EventsSearchRequest(Integer page) {
-        super(page);
+        super(page, EVENTS_PER_PAGE);
     }
 }

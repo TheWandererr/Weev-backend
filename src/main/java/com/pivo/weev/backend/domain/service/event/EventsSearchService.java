@@ -2,7 +2,6 @@ package com.pivo.weev.backend.domain.service.event;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.EventsSpecificationBuilder.buildEventsSearchSpecification;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.PageableUtils.build;
-import static com.pivo.weev.backend.domain.utils.Constants.PageableParams.EVENTS_PER_PAGE;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.domain.EventMapper;
@@ -27,7 +26,7 @@ public class EventsSearchService {
 
     @Transactional
     public Page<Event> search(SearchParams searchParams) {
-        Pageable pageable = build(searchParams.getPage(), EVENTS_PER_PAGE, searchParams.getSortFields());
+        Pageable pageable = build(searchParams.getPage(), searchParams.getPageSize(), searchParams.getSortFields());
         Specification<EventJpa> specification = buildEventsSearchSpecification(searchParams);
         Page<EventJpa> jpaPage = eventRepository.findAll(specification, pageable);
         List<Event> content = getMapper(EventMapper.class).map(jpaPage.getContent());

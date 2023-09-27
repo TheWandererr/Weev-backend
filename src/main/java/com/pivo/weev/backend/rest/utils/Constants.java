@@ -122,4 +122,10 @@ public class Constants {
 
         public static final String YYYY_MM_DD_HH_MM_DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm";
     }
+
+    @UtilityClass
+    public static final class PageableParams {
+
+        public static final Integer EVENTS_PER_PAGE = 5;
+    }
 }

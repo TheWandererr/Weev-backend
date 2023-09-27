@@ -12,6 +12,7 @@ import lombok.Setter;
 public class SearchParams {
 
     private int page;
+    private int pageSize;
     private String[] sortFields;
 
     private String header;
