@@ -1,14 +1,11 @@
 package com.pivo.weev.backend.rest.filter;
 
-import static com.pivo.weev.backend.rest.utils.Constants.Api.LOGIN_URI;
-import static com.pivo.weev.backend.rest.utils.Constants.Api.MODERATION_URI;
-import static com.pivo.weev.backend.rest.utils.Constants.Api.REFRESH_URI;
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.INVALID_TOKEN;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getAuthorizationValue;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getDeviceId;
-import static com.pivo.weev.backend.rest.utils.HttpServletUtils.matches;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pivo.weev.backend.rest.error.ErrorFactory;
@@ -24,7 +21,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -39,11 +35,12 @@ public class JWTAuthenticityVerifierFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        if (isSkipRequest(request)) {
+        String authorization = getAuthorizationValue(request);
+        if (isSkipRequest(authorization)) {
             filterChain.doFilter(request, response);
             return;
         } else {
-            Pair<Boolean, String> verificationResult = jwtAuthenticityVerifier.verify(getAuthorizationValue(request), getDeviceId(request).orElse(null));
+            Pair<Boolean, String> verificationResult = jwtAuthenticityVerifier.verify(authorization, getDeviceId(request).orElse(null));
             if (isNotTrue(verificationResult.getLeft())) {
                 handleUnauthorized(response, verificationResult.getRight());
                 return;
@@ -52,14 +49,15 @@ public class JWTAuthenticityVerifierFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean isSkipRequest(HttpServletRequest request) {
-        if (HttpMethod.GET.matches(request.getMethod())) {
+    private boolean isSkipRequest(String authorization) {
+        return isBlank(authorization); // TODO check this!!!
+        /*if (HttpMethod.GET.matches(request.getMethod())) {
             if (matches(request, REFRESH_URI)) {
                 return false;
             }
             return !matches(request, MODERATION_URI);
         }
-        return matches(request, LOGIN_URI);
+        return matches(request, LOGIN_URI) || matches(request, EVENTS_SEARCH_URI);*/
     }
 
     private void handleUnauthorized(HttpServletResponse response, String failure) throws IOException {

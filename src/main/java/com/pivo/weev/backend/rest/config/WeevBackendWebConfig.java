@@ -2,6 +2,7 @@ package com.pivo.weev.backend.rest.config;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
+import static com.pivo.weev.backend.rest.utils.Constants.Api.EVENTS_SEARCH_URI;
 import static com.pivo.weev.backend.rest.utils.Constants.Api.LOGIN_URL;
 import static com.pivo.weev.backend.rest.utils.Constants.Authorities.WRITE;
 import static com.pivo.weev.backend.rest.utils.Constants.RequestParameters.PASSWORD;
@@ -115,6 +116,14 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
                                            ApplicationLoggingHelper applicationLoggingHelper,
                                            JWTAuthenticityVerifier jwtAuthenticityVerifier)
             throws Exception {
+        http.authorizeHttpRequests(customizer ->
+                                           customizer.requestMatchers(GET).permitAll()
+                                                     .requestMatchers(POST, "/*" + EVENTS_SEARCH_URI).permitAll()
+                                                     .requestMatchers(POST).hasAnyAuthority(WRITE)
+                                                     .requestMatchers(PUT).hasAnyAuthority(WRITE)
+                                                     .requestMatchers(DELETE).hasAnyAuthority(WRITE)
+        );
+
         http.formLogin(customizer ->
                                customizer.loginProcessingUrl(LOGIN_URL)
                                          .usernameParameter(USERNAME)
@@ -129,13 +138,6 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
                                          .failureHandler(
                                                  new AuthenticationFailureHandler(restResponseMapper, applicationLoggingHelper, errorFactory))
                                          .permitAll()
-        );
-
-        http.authorizeHttpRequests(customizer ->
-                                           customizer.requestMatchers(GET).permitAll()
-                                                     .requestMatchers(POST).hasAnyAuthority(WRITE)
-                                                     .requestMatchers(PUT).hasAnyAuthority(WRITE)
-                                                     .requestMatchers(DELETE).hasAnyAuthority(WRITE)
         );
 
         http.sessionManagement(customizer -> customizer.sessionCreationPolicy(NEVER));

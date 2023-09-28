@@ -4,10 +4,11 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.common.utils.CollectionUtils;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CriteriaParams<E> {
+public class CriteriaParams<E> implements Serializable {
 
     private List<CriteriaJoin> joins;
     private List<CriteriaGet> gets;
