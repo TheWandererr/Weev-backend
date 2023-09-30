@@ -1,19 +1,22 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.common;
 
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.DeclinationReason;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Inheritance;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +27,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@Inheritance(strategy = SINGLE_TABLE)
+@DiscriminatorColumn(name = "notification_type", discriminatorType = DiscriminatorType.STRING)
 public class NotificationJpa extends ModifiableJpa<Long> {
 
     @ManyToOne(fetch = LAZY, cascade = ALL)
@@ -32,16 +38,10 @@ public class NotificationJpa extends ModifiableJpa<Long> {
     @Column
     private String title;
     @Column
-    @Enumerated(STRING)
+    @Enumerated(EnumType.STRING)
     private Type type;
     @Column(columnDefinition = "boolean default false")
     private Boolean viewed;
-    @ManyToOne(fetch = LAZY, cascade = ALL)
-    @JoinColumn(name = "event_id")
-    private EventJpa event;
-    @ManyToOne
-    @JoinColumn(name = "declination_reason_id")
-    private DeclinationReason declinationReason;
 
     public enum Type {
         COMMON,

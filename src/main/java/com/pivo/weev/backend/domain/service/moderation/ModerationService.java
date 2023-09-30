@@ -15,10 +15,10 @@ import com.pivo.weev.backend.domain.persistance.jpa.NotificationFactory;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.DeclinationReason;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventNotificationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeclinationReasonsRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.NotificationRepositoryWrapper;
-import com.pivo.weev.backend.domain.service.event.EventsSearchService;
 import com.pivo.weev.backend.domain.service.validation.ModerationValidator;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -30,12 +30,11 @@ import org.springframework.stereotype.Service;
 public class ModerationService {
 
     private final EventRepositoryWrapper eventRepository;
-    private final NotificationRepositoryWrapper eventNotificationRepository;
+    private final NotificationRepositoryWrapper notificationRepository;
     private final DeclinationReasonsRepositoryWrapper declinationReasonsRepository;
 
     private final ModerationValidator moderationValidator;
     private final NotificationFactory notificationFactory;
-    private final EventsSearchService eventsSearchService;
 
     @Transactional
     public void confirmEvent(Long id) {
@@ -52,8 +51,8 @@ public class ModerationService {
     private void confirmNewEvent(EventJpa confirmable) {
         confirmable.setModeratedBy(getUserId());
         confirmable.setStatus(CONFIRMED);
-        NotificationJpa notification = notificationFactory.createEventNotification(confirmable, EVENT_CONFIRMATION);
-        eventNotificationRepository.save(notification);
+        EventNotificationJpa notification = notificationFactory.createEventNotification(confirmable, EVENT_CONFIRMATION);
+        notificationRepository.save(notification);
     }
 
     private void confirmEventUpdate(EventJpa confirmable, EventJpa updatable) {
@@ -61,8 +60,8 @@ public class ModerationService {
         updatable.setModeratedBy(getUserId());
         updatable.setStatus(CONFIRMED);
         eventRepository.delete(confirmable);
-        NotificationJpa notification = notificationFactory.createEventNotification(updatable, EVENT_UPDATE_SUCCESSFUL);
-        eventNotificationRepository.save(notification);
+        EventNotificationJpa notification = notificationFactory.createEventNotification(updatable, EVENT_UPDATE_SUCCESSFUL);
+        notificationRepository.save(notification);
     }
 
     public List<String> getDeclinationReasons() {
@@ -84,13 +83,13 @@ public class ModerationService {
     private void declineEventUpdate(EventJpa declinable, EventJpa updatableTarget, DeclinationReason declinationReason) {
         eventRepository.delete(declinable);
         NotificationJpa notification = notificationFactory.createEventNotification(updatableTarget, EVENT_UPDATE_FAILED, declinationReason);
-        eventNotificationRepository.save(notification);
+        notificationRepository.save(notification);
     }
 
     private void declineNewEvent(EventJpa declinable, DeclinationReason declinationReason) {
         declinable.setModeratedBy(getUserId());
         declinable.setStatus(DECLINED);
         NotificationJpa notification = notificationFactory.createEventNotification(declinable, EVENT_DECLINATION, declinationReason);
-        eventNotificationRepository.save(notification);
+        notificationRepository.save(notification);
     }
 }

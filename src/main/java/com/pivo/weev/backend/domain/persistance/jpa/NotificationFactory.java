@@ -2,16 +2,16 @@ package com.pivo.weev.backend.domain.persistance.jpa;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa.Type.IMPORTANT;
 
-import com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.DeclinationReason;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventNotificationJpa;
 import org.springframework.stereotype.Component;
 
 @Component
 public class NotificationFactory {
 
-    public NotificationJpa createEventNotification(EventJpa event, String title) {
-        NotificationJpa eventNotificationJpa = new NotificationJpa();
+    public EventNotificationJpa createEventNotification(EventJpa event, String title) {
+        EventNotificationJpa eventNotificationJpa = new EventNotificationJpa();
         eventNotificationJpa.setEvent(event);
         eventNotificationJpa.setType(IMPORTANT);
         eventNotificationJpa.setRecipient(event.getCreator());
@@ -20,8 +20,8 @@ public class NotificationFactory {
         return eventNotificationJpa;
     }
 
-    public NotificationJpa createEventNotification(EventJpa event, String title, DeclinationReason declinationReason) {
-        NotificationJpa eventNotification = createEventNotification(event, title);
+    public EventNotificationJpa createEventNotification(EventJpa event, String title, DeclinationReason declinationReason) {
+        EventNotificationJpa eventNotification = createEventNotification(event, title);
         eventNotification.setDeclinationReason(declinationReason);
         return eventNotification;
     }
