@@ -19,6 +19,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventNotificatio
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeclinationReasonsRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.NotificationRepositoryWrapper;
+import com.pivo.weev.backend.domain.service.event.EventsOperatingService;
 import com.pivo.weev.backend.domain.service.validation.ModerationValidator;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -35,6 +36,7 @@ public class ModerationService {
 
     private final ModerationValidator moderationValidator;
     private final NotificationFactory notificationFactory;
+    private final EventsOperatingService eventsOperatingService;
 
     @Transactional
     public void confirmEvent(Long id) {
@@ -56,10 +58,15 @@ public class ModerationService {
     }
 
     private void confirmEventUpdate(EventJpa confirmable, EventJpa updatable) {
+
+        eventsOperatingService.deletePhoto(updatable);
+
         getMapper(EventJpaMapper.class).map(confirmable, updatable);
         updatable.setModeratedBy(getUserId());
         updatable.setStatus(CONFIRMED);
+
         eventRepository.delete(confirmable);
+
         EventNotificationJpa notification = notificationFactory.createEventNotification(updatable, EVENT_UPDATE_SUCCESSFUL);
         notificationRepository.save(notification);
     }
@@ -81,6 +88,7 @@ public class ModerationService {
     }
 
     private void declineEventUpdate(EventJpa declinable, EventJpa updatableTarget, DeclinationReason declinationReason) {
+        eventsOperatingService.deletePhoto(declinable);
         eventRepository.delete(declinable);
         NotificationJpa notification = notificationFactory.createEventNotification(updatableTarget, EVENT_UPDATE_FAILED, declinationReason);
         notificationRepository.save(notification);

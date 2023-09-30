@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.service.event;
 
 import static com.pivo.weev.backend.common.utils.CollectionUtils.findFirst;
+import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.HAS_MODERATION_INSTANCE;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.SUBCATEGORY_NOT_FOUND_ERROR;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
@@ -18,18 +19,20 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.SubcategoryJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.CloudResourceRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventCategoryRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.LocationRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.TimeZoneService;
+import com.pivo.weev.backend.domain.service.files.FilesCloudService;
 import com.pivo.weev.backend.domain.service.files.FilesCompressingService;
-import com.pivo.weev.backend.domain.service.files.FilesUploadingService;
 import com.pivo.weev.backend.domain.service.validation.EventsOperationsValidator;
 import jakarta.transaction.Transactional;
 import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -39,8 +42,9 @@ public class EventsOperatingService {
     private final EventRepositoryWrapper eventRepository;
     private final EventCategoryRepositoryWrapper eventCategoryRepository;
     private final UserRepositoryWrapper userRepository;
+    private final CloudResourceRepositoryWrapper cloudResourceRepository;
 
-    private final FilesUploadingService filesUploadingService;
+    private final FilesCloudService filesCloudService;
     private final FilesCompressingService filesCompressingService;
     private final EventsOperationsValidator eventsOperationsValidator;
     private final TimeZoneService timeZoneService;
@@ -66,8 +70,11 @@ public class EventsOperatingService {
         eventJpa.setCategory(retrieveCategory(sample));
         eventJpa.setSubcategory(retrieveSubcategory(eventJpa.getCategory(), sample));
         processPhoto(eventJpa, sample);
+
         UserJpa creator = userRepository.fetch(getUserId());
         eventJpa.setCreator(creator);
+        creator.getCreatedEvents().add(eventJpa);
+
         return eventJpa;
     }
 
@@ -87,12 +94,60 @@ public class EventsOperatingService {
     }
 
     private void processPhoto(EventJpa eventJpa, CreatableEvent sample) {
-        if (!sample.hasPhoto()) {
+        if (!sample.isUpdatePhoto()) {
             return;
         }
-        Image compressedPhoto = filesCompressingService.compress(sample.getPhoto());
-        CloudResourceJpa cloudResourceJpa = filesUploadingService.upload(compressedPhoto);
+        if (!sample.hasPhoto()) {
+            deletePhoto(eventJpa);
+        } else if (eventJpa.hasPhoto()) {
+            replacePhoto(eventJpa, sample.getPhoto());
+        } else {
+            createPhoto(eventJpa, sample.getPhoto());
+        }
+    }
+
+    public void deletePhoto(EventJpa eventJpa) {
+        if (!eventJpa.hasPhoto()) {
+            return;
+        }
+        CloudResourceJpa photo = eventJpa.getPhoto();
+        cloudResourceRepository.delete(photo);
+        filesCloudService.delete(photo.getExternalId());
+    }
+
+    private void replacePhoto(EventJpa eventJpa, MultipartFile photo) {
+        deletePhoto(eventJpa);
+        createPhoto(eventJpa, photo);
+    }
+
+    private void createPhoto(EventJpa eventJpa, MultipartFile photo) {
+        Image compressedPhoto = filesCompressingService.compress(photo);
+        CloudResourceJpa cloudResourceJpa = filesCloudService.upload(compressedPhoto);
         eventJpa.setPhoto(cloudResourceJpa);
     }
 
+    @Transactional
+    public void updateEvent(CreatableEvent sample) {
+        setTimeZones(sample);
+        EventJpa updatableTarget = eventRepository.fetch(sample.getId());
+        eventsOperationsValidator.validateUpdate(updatableTarget, sample);
+
+        EventJpa jpaEvent = preparePersistableEvent(sample);
+        jpaEvent.setUpdatableTarget(updatableTarget);
+
+        if (updatableTarget.isOnModeration()) {
+            replaceExistingEvent(jpaEvent, updatableTarget);
+        } else {
+            eventRepository.findByUpdatableTargetId(sample.getId())
+                           .ifPresentOrElse(existingJpaEvent -> replaceExistingEvent(jpaEvent, existingJpaEvent), () -> {
+                               updatableTarget.setStatus(HAS_MODERATION_INSTANCE);
+                               eventRepository.save(jpaEvent);
+                           });
+        }
+    }
+
+    private void replaceExistingEvent(EventJpa jpaEvent, EventJpa existingJpaEvent) {
+        deletePhoto(existingJpaEvent);
+        getMapper(EventJpaMapper.class).map(jpaEvent, existingJpaEvent);
+    }
 }

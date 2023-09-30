@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class CreatableEvent {
 
+    private long id;
     private String header;
     private String category;
     private String subcategory;
@@ -18,6 +19,7 @@ public class CreatableEvent {
     private int membersLimit;
     private String description;
     private MultipartFile photo;
+    private boolean updatePhoto;
     private EntryFee entryFee;
     private Restrictions restrictions;
     private LocalDateTime localStartDateTime;

@@ -27,7 +27,7 @@ public class LoginDetails implements UserDetails {
     private final String serial;
     private final String username;
     private final String password;
-    private final Boolean active;
+    private final boolean active;
     private final List<SimpleGrantedAuthority> authenticationAuthorities;
 
     @Override
@@ -47,22 +47,22 @@ public class LoginDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return isTrue(getActive());
+        return isActive();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isTrue(getActive());
+        return isActive();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return isTrue(getActive());
+        return isActive();
     }
 
     @Override
     public boolean isEnabled() {
-        return isTrue(getActive());
+        return isActive();
     }
 
     public static LoginDetails from(UserJpa userJpa, String username, String deviceId, String issuer) {
@@ -77,7 +77,7 @@ public class LoginDetails implements UserDetails {
                 UUID.randomUUID().toString(),
                 username,
                 userJpa.getPassword(),
-                userJpa.getActive(),
+                isTrue(userJpa.getActive()),
                 simpleGrantedAuthorities
         );
     }

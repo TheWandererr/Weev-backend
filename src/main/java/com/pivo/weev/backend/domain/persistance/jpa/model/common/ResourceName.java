@@ -10,7 +10,8 @@ public enum ResourceName implements Enumerated {
     EVENT_CATEGORY,
     LOCATION,
     NOTIFICATION,
-    DECLINATION_REASON;
+    DECLINATION_REASON,
+    CLOUD_RESOURCE;
 
     @Override
     public String getName() {

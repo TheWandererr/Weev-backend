@@ -1,26 +1,32 @@
 package com.pivo.weev.backend.domain.service.validation;
 
 import static com.pivo.weev.backend.common.utils.DateTimeUtils.toInstant;
+import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
+import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.ACCESS_DENIED_ERROR;
 import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.FIELD_VALIDATION_FAILED_ERROR_PATTERN;
 import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.LOCAL_END_DATE_TIME;
 import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.LOCAL_START_DATE_TIME;
+import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.MEMBERS_LIMIT;
 import static java.lang.String.format;
 import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.HOURS;
+import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import java.time.Instant;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EventsOperationsValidator {
 
+    /*
+     * запрещаем создание меньше чем за 2 часа до  начала
+     * дата окончания после начала
+     * */
     public void validateCreation(CreatableEvent validatable) {
-        validateDateTimes(validatable);
-    }
-
-    private void validateDateTimes(CreatableEvent validatable) {
         Instant startInstant = toInstant(validatable.getLocalStartDateTime(), validatable.getStartTimeZoneId());
         if (startInstant.isBefore(now().plus(2, HOURS))) {
             throw new ReasonableException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
@@ -28,6 +34,28 @@ public class EventsOperationsValidator {
         Instant endInstant = toInstant(validatable.getLocalEndDateTime(), validatable.getEndTimeZoneId());
         if (endInstant.isBefore(startInstant) || endInstant.equals(startInstant)) {
             throw new ReasonableException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_END_DATE_TIME));
+        }
+    }
+
+    /*
+     * запрещаем редактирование за 3 часа до начала
+     * количество участников уже больше, чем лимит в запросе
+     * проверить владельца
+     * */
+    public void validateUpdate(EventJpa updatable, CreatableEvent validatable) {
+        Instant startInstant = toInstant(validatable.getLocalStartDateTime(), validatable.getStartTimeZoneId());
+        if (!now().plus(3, HOURS).isBefore(startInstant)) {
+            throw new ReasonableException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
+        }
+        int membersLimit = validatable.getMembersLimit();
+        if (membersLimit > 0 && updatable.getMembers().size() > membersLimit) {
+            throw new ReasonableException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, MEMBERS_LIMIT));
+        }
+        if (!Objects.equals(getUserId(), updatable.getCreator().getId())) {
+            throw new ReasonableException(ACCESS_DENIED_ERROR);
+        }
+        if (nonNull(updatable.getUpdatableTarget())) {
+            throw new ReasonableException(ACCESS_DENIED_ERROR);
         }
     }
 }

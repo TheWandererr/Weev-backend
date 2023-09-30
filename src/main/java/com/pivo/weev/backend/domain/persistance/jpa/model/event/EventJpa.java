@@ -5,6 +5,8 @@ import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Colum
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_STATUS;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_UTC_START_DATE_TIME;
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 import static java.util.Objects.isNull;
@@ -55,7 +57,7 @@ public class EventJpa extends ModifiableJpa<Long> {
     @ManyToOne(optional = false)
     @JoinColumn(name = "subcategory_id")
     private SubcategoryJpa subcategory;
-    @ManyToOne(fetch = LAZY, cascade = ALL, optional = false)
+    @ManyToOne(fetch = LAZY, cascade = {PERSIST, MERGE}, optional = false)
     @JoinColumn(name = "location_id")
     private LocationJpa location;
     @Embedded
@@ -68,8 +70,7 @@ public class EventJpa extends ModifiableJpa<Long> {
     private CloudResourceJpa photo;
     private Boolean reminded;
     private Long moderatedBy;
-    @OneToOne(fetch = LAZY, cascade = ALL, optional = false)
-    @JoinColumn(name = "event_restrictions_id")
+    @Embedded
     private RestrictionsJpa restrictions;
     private LocalDateTime localStartDateTime;
     private String startTimeZoneId;
@@ -84,6 +85,13 @@ public class EventJpa extends ModifiableJpa<Long> {
     @ManyToMany(mappedBy = "participatedEvents", fetch = LAZY, cascade = ALL)
     private Set<UserJpa> members;
 
+    public Set<UserJpa> getMembers() {
+        if (isNull(members)) {
+            members = new HashSet<>();
+        }
+        return members;
+    }
+
     public boolean hasRestrictions() {
         return nonNull(restrictions);
     }
@@ -96,10 +104,7 @@ public class EventJpa extends ModifiableJpa<Long> {
         return nonNull(updatableTarget);
     }
 
-    public Set<UserJpa> getMembers() {
-        if (isNull(members)) {
-            members = new HashSet<>();
-        }
-        return members;
+    public boolean hasPhoto() {
+        return nonNull(photo);
     }
 }

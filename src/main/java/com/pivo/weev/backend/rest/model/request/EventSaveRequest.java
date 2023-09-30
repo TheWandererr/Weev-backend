@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class EventSaveRequest {
 
+    private Long id;
     @Size(min = 3, max = 120, message = INVALID_EVENT_HEADER)
     @NotBlank(message = MUST_BE_NOT_BLANK)
     private String header;
@@ -45,6 +46,7 @@ public class EventSaveRequest {
     private String description;
     @ValidImage
     private MultipartFile photo;
+    private boolean updatePhoto;
     private EntryFeeRest entryFee;
     private RestrictionsRest restrictions;
     @NotNull(message = MUST_BE_NOT_NULL)

@@ -23,6 +23,8 @@ public final class Constants {
         public static final String FIELD_VALIDATION_FAILED_ERROR_PATTERN = "%s.incorrect";
 
         public static final String EVENT_MODERATION_IMPOSSIBLE_ERROR = "event.moderation.impossible";
+
+        public static final String ACCESS_DENIED_ERROR = "access.denied";
     }
 
     @UtilityClass
@@ -36,6 +38,7 @@ public final class Constants {
 
         public static final String LOCAL_START_DATE_TIME = "localStartDateTime";
         public static final String LOCAL_END_DATE_TIME = "localEndDateTime";
+        public static final String MEMBERS_LIMIT = "membersLimit";
     }
 
     @UtilityClass

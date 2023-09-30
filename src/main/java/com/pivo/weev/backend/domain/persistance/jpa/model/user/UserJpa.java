@@ -18,11 +18,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -76,4 +78,6 @@ public class UserJpa extends ModifiableJpa<Long> {
     @OneToOne(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "avatar_id")
     private CloudResourceJpa avatar;
+    @OneToMany(fetch = LAZY, mappedBy = "creator")
+    private List<EventJpa> createdEvents;
 }

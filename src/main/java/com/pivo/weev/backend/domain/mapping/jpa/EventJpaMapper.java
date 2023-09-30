@@ -29,11 +29,21 @@ public interface EventJpaMapper {
     @Mapping(target = "status", constant = "ON_MODERATION")
     EventJpa map(CreatableEvent source);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "moderatedBy", ignore = true)
-    @Mapping(target = "updatableTarget", ignore = true)
-    @Mapping(target = "creator", ignore = true)
-    @Mapping(target = "status", ignore = true)
-    @Mapping(target = "createdDate", ignore = true)
-    void map(EventJpa source, @MappingTarget EventJpa destination);
+    default void map(EventJpa source, @MappingTarget EventJpa destination) {
+        destination.setLocation(source.getLocation());
+        destination.setCategory(source.getCategory());
+        destination.setSubcategory(source.getSubcategory());
+        destination.setDescription(source.getDescription());
+        destination.setHeader(source.getHeader());
+        destination.setEndTimeZoneId(source.getEndTimeZoneId());
+        destination.setStartTimeZoneId(source.getStartTimeZoneId());
+        destination.setLocalStartDateTime(source.getLocalStartDateTime());
+        destination.setUtcStartDateTime(source.getUtcStartDateTime());
+        destination.setLocalEndDateTime(source.getLocalEndDateTime());
+        destination.setUtcEndDateTime(source.getUtcEndDateTime());
+        destination.setEntryFee(source.getEntryFee());
+        destination.setMembersLimit(source.getMembersLimit());
+        destination.setRestrictions(source.getRestrictions());
+        destination.setPhoto(source.getPhoto());
+    }
 }

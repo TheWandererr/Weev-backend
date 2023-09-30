@@ -11,13 +11,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class FilesUploadingService {
+public class FilesCloudService {
 
     private final CloudinaryService cloudinaryService;
 
     public CloudResourceJpa upload(com.pivo.weev.backend.domain.model.file.Image source) {
         Image image = cloudinaryService.upload(source);
         return getMapper(CloudResourceJpaMapper.class).map(image);
+    }
+
+    public void delete(String externalId) {
+
     }
 
 }

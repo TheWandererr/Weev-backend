@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -59,6 +60,7 @@ public class EventsController {
     @ResponseStatus(value = CREATED)
     public BaseResponse createEvent(@Valid @ModelAttribute EventSaveRequest request) {
         CreatableEvent sample = getMapper(CreatableEventMapper.class).map(request);
+        sample.setUpdatePhoto(true);
         eventsOperatingService.saveEvent(sample);
         return new BaseResponse(ResponseMessage.CREATED);
     }
@@ -70,9 +72,11 @@ public class EventsController {
         return new EventSearchResponse(restEvent);
     }
 
-    /*
-     * запрещаем редактирование за 3 часа до начала
-     * количество участников уже больше, чем лимит в запросе
-     * проверить владельца
-     * */
+    @PutMapping
+    public BaseResponse updateEvent(@Valid @ModelAttribute EventSaveRequest request) {
+        CreatableEvent sample = getMapper(CreatableEventMapper.class).map(request);
+        eventsOperatingService.updateEvent(sample);
+        return new BaseResponse(ResponseMessage.SUCCESS);
+    }
+
 }
