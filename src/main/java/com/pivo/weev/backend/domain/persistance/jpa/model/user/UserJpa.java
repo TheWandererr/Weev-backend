@@ -6,10 +6,12 @@ import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Colum
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.USER_PASSWORD;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.USER_PHONE_NUMBER;
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ModifiableJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +26,6 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
-import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -58,7 +59,7 @@ public class UserJpa extends ModifiableJpa<Long> {
     @Length(max = 20)
     @Column(length = 20, name = USER_PHONE_NUMBER, unique = true)
     private String phoneNumber;
-    @ManyToOne(cascade = ALL)
+    @ManyToOne(fetch = EAGER, cascade = ALL)
     @JoinColumn(name = "role_id")
     private UserRoleJpa role;
     private Boolean active;
@@ -79,5 +80,7 @@ public class UserJpa extends ModifiableJpa<Long> {
     @JoinColumn(name = "avatar_id")
     private CloudResourceJpa avatar;
     @OneToMany(fetch = LAZY, mappedBy = "creator")
-    private List<EventJpa> createdEvents;
+    private Set<EventJpa> createdEvents;
+    @OneToMany(fetch = LAZY, mappedBy = "recipient")
+    private Set<NotificationJpa> notifications;
 }

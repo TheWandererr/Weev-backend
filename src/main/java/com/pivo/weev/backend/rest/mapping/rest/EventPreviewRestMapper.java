@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.mapping.rest;
 
-import static com.pivo.weev.backend.domain.utils.EventDataUtils.isHidePrivateData;
+import static com.pivo.weev.backend.domain.utils.EventDataUtils.hasHiddenData;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.model.event.Event;
@@ -26,10 +26,10 @@ public interface EventPreviewRestMapper {
     List<EventPreviewRest> map(List<Event> source);
 
     @AfterMapping
-    default void mapPrivateData(Event source, @MappingTarget EventPreviewRest target) {
-        boolean hidePrivateData = isHidePrivateData(source);
-        LocationRest restLocation = hidePrivateData
-                ? LOCATION_REST_MAPPER.mapPrivate(source.getLocation())
+    default void mapHiddenData(Event source, @MappingTarget EventPreviewRest target) {
+        boolean hasHiddenData = hasHiddenData(source);
+        LocationRest restLocation = hasHiddenData
+                ? LOCATION_REST_MAPPER.mapHidden(source.getLocation())
                 : LOCATION_REST_MAPPER.map(source.getLocation());
         target.setLocation(restLocation);
     }

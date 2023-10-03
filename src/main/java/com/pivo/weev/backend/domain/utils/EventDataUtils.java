@@ -10,9 +10,16 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class EventDataUtils {
 
-    public static boolean isHidePrivateData(Event source) {
+    public static boolean hasHiddenData(Event source) {
+        if (!source.hasRestrictions()) {
+            return false;
+        }
         Long viewerId = getNullableUserId();
-        return source.getRestrictions().isJoinByRequest()
-                && (isNull(viewerId) || !Objects.equals(source.getCreator().getId(), viewerId) || !source.hasMember(viewerId));
+        if (source.getRestrictions().isJoinByRequest()) {
+            boolean unauthorized = isNull(viewerId);
+            boolean isMemberOrCreator = Objects.equals(source.getCreator().getId(), viewerId) || source.hasMember(viewerId);
+            return unauthorized || !isMemberOrCreator;
+        }
+        return false;
     }
 }

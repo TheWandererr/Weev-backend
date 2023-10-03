@@ -1,6 +1,5 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.event;
 
-import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa;
@@ -19,10 +18,10 @@ import lombok.Setter;
 @DiscriminatorValue("event")
 public class EventNotificationJpa extends NotificationJpa {
 
-    @ManyToOne(fetch = LAZY, cascade = ALL)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "event_id")
     private EventJpa event;
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "declination_reason_id")
     private DeclinationReason declinationReason;
 }

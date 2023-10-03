@@ -7,7 +7,6 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersis
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -27,8 +26,7 @@ public class UserRoleJpa extends SequencedPersistable<Long> {
 
     @Column
     private String name;
-    @OneToMany(fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
-    @JoinColumn(name = "role_id", nullable = false)
+    @OneToMany(fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true, mappedBy = "role")
     private Set<AuthorityJpa> authorities;
 
     public Set<AuthorityJpa> getAuthorities() {

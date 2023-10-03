@@ -63,4 +63,8 @@ public class Event extends Identifiable {
     public boolean hasMember(long memberId) {
         return isPresent(getMembers(), member -> Objects.equals(member.getId(), memberId));
     }
+
+    public boolean hasRestrictions() {
+        return nonNull(restrictions);
+    }
 }
