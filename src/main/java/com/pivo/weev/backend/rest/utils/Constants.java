@@ -63,6 +63,7 @@ public class Constants {
         public static final String UNAUTHORIZED = "unauthorized";
         public static final String FORBIDDEN = "forbidden";
         public static final String VALIDATION_FAILED = "validation.failed";
+        public static final String FIELD_VALIDATION_FAILED = "field.validation.failed";
         public static final String NOT_FOUND = "not.found";
         public static final String MUST_BE_NOT_NULL = "must.be.not.null";
         public static final String MUST_BE_NOT_BLANK = "must.be.not.blank";

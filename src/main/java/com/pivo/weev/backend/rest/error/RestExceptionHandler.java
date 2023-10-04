@@ -1,8 +1,8 @@
 package com.pivo.weev.backend.rest.error;
 
 import static com.pivo.weev.backend.common.utils.Constants.Symbols.DOT;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.FIELD_VALIDATION_FAILED;
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.NOT_FOUND;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.VALIDATION_FAILED;
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.FLOW_INTERRUPTED;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -84,7 +84,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         String messageCode = ofNullable(exception.getBindingResult().getFieldError())
                 .map(error -> StringUtils.join(error.getField(), DOT, error.getDefaultMessage()))
                 .orElse(null);
-        ErrorRest error = errorFactory.create(VALIDATION_FAILED, messageCode);
+        ErrorRest error = errorFactory.create(FIELD_VALIDATION_FAILED, messageCode);
         BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
         logger.error(applicationLoggingHelper.buildLoggingError(body, null));
         return ResponseEntity.badRequest()
