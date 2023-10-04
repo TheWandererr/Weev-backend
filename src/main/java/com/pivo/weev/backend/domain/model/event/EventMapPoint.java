@@ -6,8 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Radius {
+public class EventMapPoint extends MapPoint {
 
-    private MapPoint point;
-    private double value;
+    private Long eventId;
 }

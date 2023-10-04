@@ -9,6 +9,7 @@ import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.jpa.EventJpaMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.LocationJpaMapper;
+import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.model.event.Location;
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
@@ -58,8 +59,9 @@ public class EventsOperatingService {
     }
 
     private void setTimeZones(CreatableEvent sample) {
-        Location location = sample.getLocation();
-        ZoneId zoneId = timeZoneService.getZoneId(location.getLtd(), location.getLng());
+        MapPoint mapPoint = sample.getLocation()
+                                  .getPoint();
+        ZoneId zoneId = timeZoneService.getZoneId(mapPoint.getLtd(), mapPoint.getLng());
         sample.setStartTimeZoneId(zoneId.getId());
         sample.setEndTimeZoneId(zoneId.getId());
     }
@@ -80,7 +82,8 @@ public class EventsOperatingService {
 
     private LocationJpa getLocation(CreatableEvent sample) {
         Location location = sample.getLocation();
-        return locationRepository.findByCoordinates(location.getLng(), location.getLtd())
+        MapPoint mapPoint = location.getPoint();
+        return locationRepository.findByCoordinates(mapPoint.getLng(), mapPoint.getLtd())
                                  .orElseGet(() -> locationRepository.save(getMapper(LocationJpaMapper.class).map(location)));
     }
 

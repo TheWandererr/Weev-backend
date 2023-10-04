@@ -1,5 +1,7 @@
 package com.pivo.weev.backend.domain.mapping.jpa;
 
+import static java.util.Optional.ofNullable;
+
 import com.pivo.weev.backend.domain.model.event.Location;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.utils.CustomGeometryFactory;
@@ -17,6 +19,9 @@ public interface LocationJpaMapper {
 
     @Named("createPoint")
     default Point createPoint(Location source) {
-        return CustomGeometryFactory.createPoint(source.getLng(), source.getLtd());
+        return ofNullable(source)
+                .map(Location::getPoint)
+                .map(point -> CustomGeometryFactory.createPoint(point.getLng(), point.getLtd()))
+                .orElse(null);
     }
 }

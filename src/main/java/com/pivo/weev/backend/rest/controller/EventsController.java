@@ -1,11 +1,13 @@
 package com.pivo.weev.backend.rest.controller;
 
+import static com.pivo.weev.backend.common.utils.CollectionUtils.mapToList;
 import static com.pivo.weev.backend.rest.model.event.SearchContextRest.published;
 import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.model.event.Event;
+import com.pivo.weev.backend.domain.model.event.EventMapPoint;
 import com.pivo.weev.backend.domain.model.event.SearchParams;
 import com.pivo.weev.backend.domain.service.event.EventsOperatingService;
 import com.pivo.weev.backend.domain.service.event.EventsSearchService;
@@ -13,7 +15,9 @@ import com.pivo.weev.backend.rest.mapping.domain.CreatableEventMapper;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
 import com.pivo.weev.backend.rest.mapping.rest.EventPreviewRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.EventReviewRestMapper;
+import com.pivo.weev.backend.rest.mapping.rest.MapPointRestMapper;
 import com.pivo.weev.backend.rest.model.common.PageRest;
+import com.pivo.weev.backend.rest.model.event.EventMapPointRest;
 import com.pivo.weev.backend.rest.model.event.EventPreviewRest;
 import com.pivo.weev.backend.rest.model.event.EventReviewRest;
 import com.pivo.weev.backend.rest.model.request.EventSaveRequest;
@@ -21,6 +25,7 @@ import com.pivo.weev.backend.rest.model.request.EventsSearchRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import com.pivo.weev.backend.rest.model.response.EventSearchResponse;
+import com.pivo.weev.backend.rest.model.response.EventsMapPointsSearchResponse;
 import com.pivo.weev.backend.rest.model.response.EventsSearchResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -54,6 +59,15 @@ public class EventsController {
         List<EventPreviewRest> restEvents = getMapper(EventPreviewRestMapper.class).map(eventsPage.getContent());
         PageRest<EventPreviewRest> restEventsPage = new PageRest<>(restEvents, eventsPage.getNumber());
         return new EventsSearchResponse(restEventsPage, eventsPage.getTotalElements(), eventsPage.getTotalPages());
+    }
+
+    @PostMapping("/map/search")
+    public EventsMapPointsSearchResponse searchMapPoints(@Valid @RequestBody EventsSearchRequest searchRequest) {
+        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(searchRequest, published());
+        Page<EventMapPoint> pointsPage = eventsSearchService.searchMapPoints(searchParams);
+        List<EventMapPointRest> restPoints = mapToList(pointsPage.getContent(), eventMapPoint -> (EventMapPointRest) getMapper(MapPointRestMapper.class).map(eventMapPoint));
+        PageRest<EventMapPointRest> restPointsPage = new PageRest<>(restPoints, pointsPage.getNumber());
+        return new EventsMapPointsSearchResponse(restPointsPage, pointsPage.getTotalElements(), pointsPage.getTotalPages());
     }
 
     @PostMapping

@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.domain.model.event;
 
+import com.pivo.weev.backend.domain.model.common.MapPoint;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,5 @@ public class Location {
     private String block;
     private String building;
     private String flat;
-    private Double lng;
-    private Double ltd;
+    private MapPoint point;
 }

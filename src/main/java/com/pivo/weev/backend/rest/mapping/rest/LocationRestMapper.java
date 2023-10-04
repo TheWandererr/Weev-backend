@@ -6,7 +6,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper
+@Mapper(uses = {MapPointRestMapper.class})
 public interface LocationRestMapper {
 
     LocationRest map(Location source);

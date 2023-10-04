@@ -13,6 +13,7 @@ import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Paths
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Paths.EVENT_SUBCATEGORY;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.CustomGeometryFactory.createPoint;
 
+import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.event.Radius;
 import com.pivo.weev.backend.domain.model.event.SearchParams;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
@@ -57,9 +58,13 @@ public class EventsSpecificationBuilder {
     }
 
     private Specification<EventJpa> buildRadiusSpecification(SearchParams searchParams) {
+        if (!searchParams.hasRadius()) {
+            return empty();
+        }
         Radius radius = searchParams.getRadius();
-        Point point = createPoint(radius.getLng(), radius.getLtd());
-        return searchParams.hasRadius() ? new EventRadiusSpecification(point, radius.getValue()) : empty();
+        MapPoint mapPoint = radius.getPoint();
+        Point point = createPoint(mapPoint.getLng(), mapPoint.getLtd());
+        return new EventRadiusSpecification(point, radius.getValue());
     }
 
     private Specification<EventJpa> buildSortSpecification(SearchParams searchParams) {

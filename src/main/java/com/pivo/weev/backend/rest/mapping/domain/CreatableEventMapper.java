@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper
+@Mapper(uses = {LocationMapper.class})
 public interface CreatableEventMapper {
 
     @Mapping(target = "membersLimit", source = "source", qualifiedByName = "getMembersLimit")

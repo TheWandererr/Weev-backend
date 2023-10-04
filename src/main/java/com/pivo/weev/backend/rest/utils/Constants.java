@@ -31,6 +31,7 @@ public class Constants {
         public static final String REFRESH_URI = "/auth/refresh";
         public static final String MODERATION_URI = "/api/moderation";
         public static final String EVENTS_SEARCH_URI = "/api/events/search";
+        public static final String EVENTS_SEARCH_MAP_URI = "/api/events/map/search";
     }
 
     @UtilityClass
@@ -76,6 +77,7 @@ public class Constants {
         public static final String UNSUPPORTED_FILE = "unsupported.file";
         public static final String FLOW_INTERRUPTED_ERROR = "flow.interrupted.error";
         public static final String INVALID_DECLINATION_REASON = "unsupported.declination.reason";
+        public static final String INVALID_PAGE_SIZE = "incorrect.page.size";
     }
 
     @UtilityClass

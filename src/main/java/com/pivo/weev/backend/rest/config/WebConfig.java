@@ -2,6 +2,7 @@ package com.pivo.weev.backend.rest.config;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
+import static com.pivo.weev.backend.rest.utils.Constants.Api.EVENTS_SEARCH_MAP_URI;
 import static com.pivo.weev.backend.rest.utils.Constants.Api.EVENTS_SEARCH_URI;
 import static com.pivo.weev.backend.rest.utils.Constants.Api.LOGIN_URL;
 import static com.pivo.weev.backend.rest.utils.Constants.Authorities.WRITE;
@@ -72,7 +73,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class WeevBackendWebConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     private final LoginDetailsService loginDetailsService;
     private final AuthService authService;
@@ -118,7 +119,7 @@ public class WeevBackendWebConfig implements WebMvcConfigurer {
             throws Exception {
         http.authorizeHttpRequests(customizer ->
                                            customizer.requestMatchers(GET).permitAll()
-                                                     .requestMatchers(POST, "/*" + EVENTS_SEARCH_URI).permitAll()
+                                                     .requestMatchers(POST, "/*" + EVENTS_SEARCH_URI, "/*" + EVENTS_SEARCH_MAP_URI).permitAll()
                                                      .requestMatchers(POST).hasAnyAuthority(WRITE)
                                                      .requestMatchers(PUT).hasAnyAuthority(WRITE)
                                                      .requestMatchers(DELETE).hasAnyAuthority(WRITE)
