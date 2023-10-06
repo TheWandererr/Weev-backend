@@ -9,7 +9,7 @@ import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.model.event.Event;
 import com.pivo.weev.backend.domain.model.event.EventMapPoint;
 import com.pivo.weev.backend.domain.model.event.SearchParams;
-import com.pivo.weev.backend.domain.service.event.EventsOperatingService;
+import com.pivo.weev.backend.domain.service.event.EventCrudService;
 import com.pivo.weev.backend.domain.service.event.EventsSearchService;
 import com.pivo.weev.backend.rest.mapping.domain.CreatableEventMapper;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
@@ -49,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class EventsController {
 
-    private final EventsOperatingService eventsOperatingService;
+    private final EventCrudService eventCrudService;
     private final EventsSearchService eventsSearchService;
 
     @PostMapping("/search")
@@ -75,7 +75,7 @@ public class EventsController {
     public BaseResponse createEvent(@Valid @ModelAttribute EventSaveRequest request) {
         CreatableEvent sample = getMapper(CreatableEventMapper.class).map(request);
         sample.setUpdatePhoto(true);
-        eventsOperatingService.saveEvent(sample);
+        eventCrudService.saveEvent(sample);
         return new BaseResponse(ResponseMessage.CREATED);
     }
 
@@ -89,7 +89,7 @@ public class EventsController {
     @PutMapping
     public BaseResponse updateEvent(@Valid @ModelAttribute EventSaveRequest request) {
         CreatableEvent sample = getMapper(CreatableEventMapper.class).map(request);
-        eventsOperatingService.updateEvent(sample);
+        eventCrudService.updateEvent(sample);
         return new BaseResponse(ResponseMessage.SUCCESS);
     }
 

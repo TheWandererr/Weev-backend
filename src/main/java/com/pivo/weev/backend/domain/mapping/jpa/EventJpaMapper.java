@@ -27,7 +27,7 @@ public interface EventJpaMapper {
     @Mapping(target = "utcEndDateTime", expression = "java(DateTimeUtils.toInstant(source.getLocalEndDateTime(), source.getEndTimeZoneId()))")
     @Mapping(target = "reminded", constant = "false")
     @Mapping(target = "status", constant = "ON_MODERATION")
-    EventJpa map(CreatableEvent source);
+    void map(CreatableEvent source, @MappingTarget EventJpa target);
 
     default void map(EventJpa source, @MappingTarget EventJpa destination) {
         destination.setLocation(source.getLocation());

@@ -8,52 +8,40 @@ import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.jpa.EventJpaMapper;
-import com.pivo.weev.backend.domain.mapping.jpa.LocationJpaMapper;
 import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
-import com.pivo.weev.backend.domain.model.event.Location;
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
-import com.pivo.weev.backend.domain.model.file.Image;
-import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.CategoryJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.SubcategoryJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.CloudResourceRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventCategoryRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRepositoryWrapper;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.LocationRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepositoryWrapper;
-import com.pivo.weev.backend.domain.service.TimeZoneService;
-import com.pivo.weev.backend.domain.service.files.FilesCloudService;
-import com.pivo.weev.backend.domain.service.files.FilesCompressingService;
-import com.pivo.weev.backend.domain.service.validation.EventsOperationsValidator;
+import com.pivo.weev.backend.domain.service.LocationService;
+import com.pivo.weev.backend.domain.service.validation.EventOperationsValidator;
 import jakarta.transaction.Transactional;
 import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class EventsOperatingService {
+public class EventCrudService {
 
-    private final LocationRepositoryWrapper locationRepository;
     private final EventRepositoryWrapper eventRepository;
     private final EventCategoryRepositoryWrapper eventCategoryRepository;
     private final UserRepositoryWrapper userRepository;
-    private final CloudResourceRepositoryWrapper cloudResourceRepository;
 
-    private final FilesCloudService filesCloudService;
-    private final FilesCompressingService filesCompressingService;
-    private final EventsOperationsValidator eventsOperationsValidator;
-    private final TimeZoneService timeZoneService;
+    private final EventOperationsValidator eventOperationsValidator;
+    private final LocationService locationService;
+    private final EventImageService eventImageService;
 
     @Transactional
     public void saveEvent(CreatableEvent sample) {
         setTimeZones(sample);
-        eventsOperationsValidator.validateCreation(sample);
+        eventOperationsValidator.validateCreation(sample);
         EventJpa jpaEvent = preparePersistableEvent(sample);
         eventRepository.save(jpaEvent);
     }
@@ -61,30 +49,21 @@ public class EventsOperatingService {
     private void setTimeZones(CreatableEvent sample) {
         MapPoint mapPoint = sample.getLocation()
                                   .getPoint();
-        ZoneId zoneId = timeZoneService.getZoneId(mapPoint.getLtd(), mapPoint.getLng());
+        ZoneId zoneId = locationService.resolveTimeZone(mapPoint);
         sample.setStartTimeZoneId(zoneId.getId());
         sample.setEndTimeZoneId(zoneId.getId());
     }
 
     private EventJpa preparePersistableEvent(CreatableEvent sample) {
-        EventJpa eventJpa = getMapper(EventJpaMapper.class).map(sample);
-        eventJpa.setLocation(getLocation(sample));
+        UserJpa creator = userRepository.fetch(getUserId());
+        EventJpa eventJpa = new EventJpa(creator);
+        getMapper(EventJpaMapper.class).map(sample, eventJpa);
+        LocationJpa location = locationService.resolveLocation(sample);
+        eventJpa.setLocation(location);
         eventJpa.setCategory(retrieveCategory(sample));
         eventJpa.setSubcategory(retrieveSubcategory(eventJpa.getCategory(), sample));
-        processPhoto(eventJpa, sample);
-
-        UserJpa creator = userRepository.fetch(getUserId());
-        eventJpa.setCreator(creator);
-        creator.getCreatedEvents().add(eventJpa);
-
+        eventImageService.updatePhoto(sample, eventJpa);
         return eventJpa;
-    }
-
-    private LocationJpa getLocation(CreatableEvent sample) {
-        Location location = sample.getLocation();
-        MapPoint mapPoint = location.getPoint();
-        return locationRepository.findByCoordinates(mapPoint.getLng(), mapPoint.getLtd())
-                                 .orElseGet(() -> locationRepository.save(getMapper(LocationJpaMapper.class).map(location)));
     }
 
     private CategoryJpa retrieveCategory(CreatableEvent sample) {
@@ -96,44 +75,11 @@ public class EventsOperatingService {
                 .orElseThrow(() -> new ReasonableException(SUBCATEGORY_NOT_FOUND_ERROR));
     }
 
-    private void processPhoto(EventJpa eventJpa, CreatableEvent sample) {
-        if (!sample.isUpdatePhoto()) {
-            return;
-        }
-        if (!sample.hasPhoto()) {
-            deletePhoto(eventJpa);
-        } else if (eventJpa.hasPhoto()) {
-            replacePhoto(eventJpa, sample.getPhoto());
-        } else {
-            createPhoto(eventJpa, sample.getPhoto());
-        }
-    }
-
-    public void deletePhoto(EventJpa eventJpa) {
-        if (!eventJpa.hasPhoto()) {
-            return;
-        }
-        CloudResourceJpa photo = eventJpa.getPhoto();
-        cloudResourceRepository.delete(photo);
-        filesCloudService.delete(photo.getExternalId());
-    }
-
-    private void replacePhoto(EventJpa eventJpa, MultipartFile photo) {
-        deletePhoto(eventJpa);
-        createPhoto(eventJpa, photo);
-    }
-
-    private void createPhoto(EventJpa eventJpa, MultipartFile photo) {
-        Image compressedPhoto = filesCompressingService.compress(photo);
-        CloudResourceJpa cloudResourceJpa = filesCloudService.upload(compressedPhoto);
-        eventJpa.setPhoto(cloudResourceJpa);
-    }
-
     @Transactional
     public void updateEvent(CreatableEvent sample) {
         setTimeZones(sample);
         EventJpa updatableTarget = eventRepository.fetch(sample.getId());
-        eventsOperationsValidator.validateUpdate(updatableTarget, sample);
+        eventOperationsValidator.validateUpdate(updatableTarget, sample);
 
         EventJpa jpaEvent = preparePersistableEvent(sample);
         jpaEvent.setUpdatableTarget(updatableTarget);
@@ -150,7 +96,7 @@ public class EventsOperatingService {
     }
 
     private void replaceExistingEvent(EventJpa jpaEvent, EventJpa existingJpaEvent) {
-        deletePhoto(existingJpaEvent);
+        eventImageService.deletePhoto(existingJpaEvent);
         getMapper(EventJpaMapper.class).map(jpaEvent, existingJpaEvent);
     }
 }

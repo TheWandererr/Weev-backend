@@ -11,15 +11,12 @@ import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EV
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.jpa.EventJpaMapper;
-import com.pivo.weev.backend.domain.persistance.jpa.NotificationFactory;
-import com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.DeclinationReason;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventNotificationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeclinationReasonsRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRepositoryWrapper;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.NotificationRepositoryWrapper;
-import com.pivo.weev.backend.domain.service.event.EventsOperatingService;
+import com.pivo.weev.backend.domain.service.NotificationService;
+import com.pivo.weev.backend.domain.service.event.EventImageService;
 import com.pivo.weev.backend.domain.service.validation.ModerationValidator;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -31,12 +28,11 @@ import org.springframework.stereotype.Service;
 public class ModerationService {
 
     private final EventRepositoryWrapper eventRepository;
-    private final NotificationRepositoryWrapper notificationRepository;
     private final DeclinationReasonsRepositoryWrapper declinationReasonsRepository;
 
     private final ModerationValidator moderationValidator;
-    private final NotificationFactory notificationFactory;
-    private final EventsOperatingService eventsOperatingService;
+    private final EventImageService eventImageService;
+    private final NotificationService notificationService;
 
     @Transactional
     public void confirmEvent(Long id) {
@@ -53,22 +49,18 @@ public class ModerationService {
     private void confirmNewEvent(EventJpa confirmable) {
         confirmable.setModeratedBy(getUserId());
         confirmable.setStatus(CONFIRMED);
-        EventNotificationJpa notification = notificationFactory.createEventNotification(confirmable, EVENT_CONFIRMATION);
-        notificationRepository.save(notification);
+        notificationService.createNotification(confirmable, EVENT_CONFIRMATION);
     }
 
     private void confirmEventUpdate(EventJpa confirmable, EventJpa updatable) {
-
-        eventsOperatingService.deletePhoto(updatable);
+        eventImageService.deletePhoto(updatable);
 
         getMapper(EventJpaMapper.class).map(confirmable, updatable);
         updatable.setModeratedBy(getUserId());
         updatable.setStatus(CONFIRMED);
 
         eventRepository.delete(confirmable);
-
-        EventNotificationJpa notification = notificationFactory.createEventNotification(updatable, EVENT_UPDATE_SUCCESSFUL);
-        notificationRepository.save(notification);
+        notificationService.createNotification(updatable, EVENT_UPDATE_SUCCESSFUL);
     }
 
     public List<String> getDeclinationReasons() {
@@ -88,16 +80,14 @@ public class ModerationService {
     }
 
     private void declineEventUpdate(EventJpa declinable, EventJpa updatableTarget, DeclinationReason declinationReason) {
-        eventsOperatingService.deletePhoto(declinable);
+        eventImageService.deletePhoto(declinable);
         eventRepository.delete(declinable);
-        NotificationJpa notification = notificationFactory.createEventNotification(updatableTarget, EVENT_UPDATE_FAILED, declinationReason);
-        notificationRepository.save(notification);
+        notificationService.createNotification(updatableTarget, EVENT_UPDATE_FAILED, declinationReason);
     }
 
     private void declineNewEvent(EventJpa declinable, DeclinationReason declinationReason) {
         declinable.setModeratedBy(getUserId());
         declinable.setStatus(DECLINED);
-        NotificationJpa notification = notificationFactory.createEventNotification(declinable, EVENT_DECLINATION, declinationReason);
-        notificationRepository.save(notification);
+        notificationService.createNotification(declinable, EVENT_DECLINATION, declinationReason);
     }
 }

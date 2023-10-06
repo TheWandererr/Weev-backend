@@ -85,6 +85,11 @@ public class EventJpa extends ModifiableJpa<Long> {
     @ManyToMany(mappedBy = "participatedEvents", fetch = LAZY, cascade = ALL)
     private Set<UserJpa> members;
 
+    public EventJpa(UserJpa creator) {
+        this.creator = creator;
+        creator.getCreatedEvents().add(this);
+    }
+
     public Set<UserJpa> getMembers() {
         if (isNull(members)) {
             members = new HashSet<>();

@@ -20,7 +20,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EventsOperationsValidator {
+public class EventOperationsValidator {
 
     /*
      * запрещаем создание меньше чем за 2 часа до  начала
