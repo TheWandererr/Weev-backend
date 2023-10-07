@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.model.response;
 
-import com.pivo.weev.backend.rest.model.event.EventReviewRest;
+import com.pivo.weev.backend.rest.model.event.EventDetailedRest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,5 +12,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EventSearchResponse extends BaseResponse {
 
-    private EventReviewRest event;
+    private EventDetailedRest event;
 }

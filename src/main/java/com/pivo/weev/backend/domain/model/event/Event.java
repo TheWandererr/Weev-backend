@@ -60,8 +60,8 @@ public class Event extends Identifiable {
         return !isEnded() && now().isAfter(utcStartDateTime);
     }
 
-    public boolean hasMember(long memberId) {
-        return isPresent(getMembers(), member -> Objects.equals(member.getId(), memberId));
+    public boolean hasMember(Long memberId) {
+        return nonNull(memberId) && isPresent(getMembers(), member -> Objects.equals(member.getId(), memberId));
     }
 
     public boolean hasRestrictions() {

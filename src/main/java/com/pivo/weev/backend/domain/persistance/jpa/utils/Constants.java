@@ -75,4 +75,10 @@ public class Constants {
 
         public static final String EPOCH = "epoch";
     }
+
+    @UtilityClass
+    public static final class ConfigNames {
+
+        public static final String IMAGE_COMPRESSING_SCALE = "image.compressing.scale";
+    }
 }

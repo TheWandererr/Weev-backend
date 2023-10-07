@@ -1,7 +1,5 @@
 package com.pivo.weev.backend.domain.utils;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -45,14 +43,6 @@ public final class Constants {
     public static final class CompressingParams {
 
         public static final Double MAX_SCALING = 0.2;
-        public static final Map<Long, Double> SCALE_MAPPING;
-
-        static {
-            SCALE_MAPPING = new LinkedHashMap<>();
-            SCALE_MAPPING.put(1000000L, 0.7);
-            SCALE_MAPPING.put(2000000L, 0.6);
-            SCALE_MAPPING.put(3000000L, 0.4);
-        }
     }
 
     @UtilityClass

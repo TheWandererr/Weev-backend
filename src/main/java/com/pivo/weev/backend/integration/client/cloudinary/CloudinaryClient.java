@@ -50,4 +50,15 @@ public class CloudinaryClient {
             throw new ReasonableException(CLOUD_OPERATION_ERROR, reason, NOT_ACCEPTABLE);
         }
     }
+
+    public void destroy(String id) {
+        try {
+            api.uploader().destroy(id, null);
+        } catch (IOException exception) {
+            String reason = ofNullable(exception.getCause())
+                    .map(Throwable::getMessage)
+                    .orElse(null);
+            LOGGER.error("Error destroying resource {}, because of {}", id, reason);
+        }
+    }
 }

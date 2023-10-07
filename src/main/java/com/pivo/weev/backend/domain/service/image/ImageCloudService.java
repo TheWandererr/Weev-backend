@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.service.files;
+package com.pivo.weev.backend.domain.service.image;
 
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class FilesCloudService {
+public class ImageCloudService {
 
     private final CloudinaryService cloudinaryService;
 

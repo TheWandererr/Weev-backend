@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EventPreviewRest {
+public class EventCompactedRest {
 
     private Long id;
     private UserCompactedRest creator;

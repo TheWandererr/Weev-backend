@@ -11,7 +11,8 @@ public enum ResourceName implements Enumerated {
     LOCATION,
     NOTIFICATION,
     DECLINATION_REASON,
-    CLOUD_RESOURCE;
+    CLOUD_RESOURCE,
+    CONFIG;
 
     @Override
     public String getName() {

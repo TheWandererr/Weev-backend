@@ -16,4 +16,8 @@ public class CloudinaryService {
     public Image upload(com.pivo.weev.backend.domain.model.file.Image image) {
         return client.upload(getBytes(image.getSource(), image.getFormat()));
     }
+
+    public void destroy(String id) {
+        client.destroy(id);
+    }
 }

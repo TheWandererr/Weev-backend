@@ -13,13 +13,13 @@ import com.pivo.weev.backend.domain.service.event.EventCrudService;
 import com.pivo.weev.backend.domain.service.event.EventsSearchService;
 import com.pivo.weev.backend.rest.mapping.domain.CreatableEventMapper;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
-import com.pivo.weev.backend.rest.mapping.rest.EventPreviewRestMapper;
-import com.pivo.weev.backend.rest.mapping.rest.EventReviewRestMapper;
+import com.pivo.weev.backend.rest.mapping.rest.EventCompactedRestMapper;
+import com.pivo.weev.backend.rest.mapping.rest.EventDetailedRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.MapPointRestMapper;
 import com.pivo.weev.backend.rest.model.common.PageRest;
+import com.pivo.weev.backend.rest.model.event.EventCompactedRest;
+import com.pivo.weev.backend.rest.model.event.EventDetailedRest;
 import com.pivo.weev.backend.rest.model.event.EventMapPointRest;
-import com.pivo.weev.backend.rest.model.event.EventPreviewRest;
-import com.pivo.weev.backend.rest.model.event.EventReviewRest;
 import com.pivo.weev.backend.rest.model.request.EventSaveRequest;
 import com.pivo.weev.backend.rest.model.request.EventsSearchRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
@@ -56,8 +56,8 @@ public class EventsController {
     public EventsSearchResponse search(@Valid @RequestBody EventsSearchRequest searchRequest) {
         SearchParams searchParams = getMapper(SearchParamsMapper.class).map(searchRequest, published());
         Page<Event> eventsPage = eventsSearchService.search(searchParams);
-        List<EventPreviewRest> restEvents = getMapper(EventPreviewRestMapper.class).map(eventsPage.getContent());
-        PageRest<EventPreviewRest> restEventsPage = new PageRest<>(restEvents, eventsPage.getNumber());
+        List<EventCompactedRest> restEvents = getMapper(EventCompactedRestMapper.class).map(eventsPage.getContent());
+        PageRest<EventCompactedRest> restEventsPage = new PageRest<>(restEvents, eventsPage.getNumber());
         return new EventsSearchResponse(restEventsPage, eventsPage.getTotalElements(), eventsPage.getTotalPages());
     }
 
@@ -82,7 +82,7 @@ public class EventsController {
     @GetMapping("/{id}")
     public EventSearchResponse search(@Min(1) @PathVariable Long id) {
         Event event = eventsSearchService.search(id);
-        EventReviewRest restEvent = getMapper(EventReviewRestMapper.class).map(event);
+        EventDetailedRest restEvent = getMapper(EventDetailedRestMapper.class).map(event);
         return new EventSearchResponse(restEvent);
     }
 

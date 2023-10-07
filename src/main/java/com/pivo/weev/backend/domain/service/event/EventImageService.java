@@ -5,8 +5,8 @@ import com.pivo.weev.backend.domain.model.file.Image;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.CloudResourceRepositoryWrapper;
-import com.pivo.weev.backend.domain.service.files.FilesCloudService;
-import com.pivo.weev.backend.domain.service.files.FilesCompressingService;
+import com.pivo.weev.backend.domain.service.image.ImageCloudService;
+import com.pivo.weev.backend.domain.service.image.ImageCompressingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,8 +17,8 @@ public class EventImageService {
 
     private final CloudResourceRepositoryWrapper cloudResourceRepository;
 
-    private final FilesCloudService filesCloudService;
-    private final FilesCompressingService filesCompressingService;
+    private final ImageCloudService imageCloudService;
+    private final ImageCompressingService imageCompressingService;
 
     public void updatePhoto(CreatableEvent source, EventJpa destination) {
         if (!source.isUpdatePhoto()) {
@@ -39,7 +39,7 @@ public class EventImageService {
         }
         CloudResourceJpa photo = eventJpa.getPhoto();
         cloudResourceRepository.delete(photo);
-        filesCloudService.delete(photo.getExternalId());
+        imageCloudService.delete(photo.getExternalId());
     }
 
     private void replacePhoto(EventJpa eventJpa, MultipartFile photo) {
@@ -48,8 +48,8 @@ public class EventImageService {
     }
 
     private void createPhoto(EventJpa eventJpa, MultipartFile photo) {
-        Image compressedPhoto = filesCompressingService.compress(photo);
-        CloudResourceJpa cloudResourceJpa = filesCloudService.upload(compressedPhoto);
+        Image compressedPhoto = imageCompressingService.compress(photo);
+        CloudResourceJpa cloudResourceJpa = imageCloudService.upload(compressedPhoto);
         eventJpa.setPhoto(cloudResourceJpa);
     }
 }

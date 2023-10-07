@@ -9,9 +9,9 @@ import com.pivo.weev.backend.domain.model.event.SearchParams;
 import com.pivo.weev.backend.domain.service.event.EventsSearchService;
 import com.pivo.weev.backend.domain.service.moderation.ModerationService;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
-import com.pivo.weev.backend.rest.mapping.rest.EventPreviewRestMapper;
+import com.pivo.weev.backend.rest.mapping.rest.EventCompactedRestMapper;
 import com.pivo.weev.backend.rest.model.common.PageRest;
-import com.pivo.weev.backend.rest.model.event.EventPreviewRest;
+import com.pivo.weev.backend.rest.model.event.EventCompactedRest;
 import com.pivo.weev.backend.rest.model.request.EventDeclineRequest;
 import com.pivo.weev.backend.rest.model.request.EventsSearchRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
@@ -64,8 +64,8 @@ public class ModerationController {
     public EventsSearchResponse searchEvents(@PathVariable @Min(0) Integer page) {
         SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new EventsSearchRequest(page), onModeration());
         Page<Event> eventsPage = eventsSearchService.search(searchParams);
-        List<EventPreviewRest> restEvents = getMapper(EventPreviewRestMapper.class).map(eventsPage.getContent());
-        PageRest<EventPreviewRest> pageRest = new PageRest<>(restEvents, eventsPage.getNumber());
+        List<EventCompactedRest> restEvents = getMapper(EventCompactedRestMapper.class).map(eventsPage.getContent());
+        PageRest<EventCompactedRest> pageRest = new PageRest<>(restEvents, eventsPage.getNumber());
         return new EventsSearchResponse(pageRest, eventsPage.getTotalElements(), eventsPage.getTotalPages());
     }
 }

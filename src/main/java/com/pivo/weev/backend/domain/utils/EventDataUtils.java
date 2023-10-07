@@ -17,7 +17,7 @@ public final class EventDataUtils {
         Long viewerId = getNullableUserId();
         if (source.getRestrictions().isJoinByRequest()) {
             boolean unauthorized = isNull(viewerId);
-            boolean isMemberOrCreator = Objects.equals(source.getCreator().getId(), viewerId) || source.hasMember(viewerId);
+            boolean isMemberOrCreator = !unauthorized && (Objects.equals(source.getCreator().getId(), viewerId) || source.hasMember(viewerId));
             return unauthorized || !isMemberOrCreator;
         }
         return false;

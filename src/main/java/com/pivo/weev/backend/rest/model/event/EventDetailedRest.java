@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EventReviewRest extends EventPreviewRest {
+public class EventDetailedRest extends EventCompactedRest {
 
     private String description;
     private EntryFeeRest entryFee;
@@ -20,4 +20,5 @@ public class EventReviewRest extends EventPreviewRest {
     private String endTimeZoneId;
     private Instant utcStartDateTime;
     private Instant utcEndDateTime;
+    private boolean member;
 }
