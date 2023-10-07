@@ -34,6 +34,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,7 +77,7 @@ public class EventsController {
     public BaseResponse createEvent(@Valid @ModelAttribute EventSaveRequest request) {
         CreatableEvent sample = getMapper(CreatableEventMapper.class).map(request);
         sample.setUpdatePhoto(true);
-        eventCrudService.saveEvent(sample);
+        eventCrudService.save(sample);
         return new BaseResponse(ResponseMessage.CREATED);
     }
 
@@ -96,7 +97,13 @@ public class EventsController {
 
     @PutMapping("/{id}/cancellation")
     public BaseResponse cancelEvent(@Min(value = 1, message = INVALID_ID) @PathVariable Long id) {
-        eventCrudService.cancelEvent(id);
+        eventCrudService.cancel(id);
+        return new BaseResponse(ResponseMessage.SUCCESS);
+    }
+
+    @DeleteMapping("/{id}")
+    public BaseResponse deleteEvent(@Min(value = 1, message = INVALID_ID) @PathVariable Long id) {
+        eventCrudService.delete(id);
         return new BaseResponse(ResponseMessage.SUCCESS);
     }
 

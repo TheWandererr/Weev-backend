@@ -38,7 +38,7 @@ public class EventImageService {
             return;
         }
         CloudResourceJpa photo = eventJpa.getPhoto();
-        cloudResourceRepository.delete(photo);
+        cloudResourceRepository.forceDelete(photo);
         imageCloudService.delete(photo.getExternalId());
     }
 

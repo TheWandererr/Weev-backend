@@ -2,6 +2,7 @@ package com.pivo.weev.backend.domain.persistance.jpa.model.event;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CANCELED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DECLINED;
+import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DELETED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.ON_MODERATION;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_HEADER;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_STATUS;
@@ -113,6 +114,10 @@ public class EventJpa extends ModifiableJpa<Long> {
 
     public boolean isDeclined() {
         return status == DECLINED;
+    }
+
+    public boolean isDeleted() {
+        return status == DELETED;
     }
 
     public boolean hasUpdatableTarget() {

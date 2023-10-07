@@ -42,10 +42,14 @@ public abstract class GenericRepositoryWrapper<PK extends Serializable, E extend
         return find(specification).orElseThrow(() -> new ResourceNotFoundException(notFound()));
     }
 
-    public void delete(E resource) {
+    public void forceDelete(E resource) {
         if (nonNull(resource)) {
             repository.delete(resource);
         }
+    }
+
+    public void forceDeleteById(PK id) {
+        repository.deleteById(id);
     }
 
     public Optional<E> find(PK id) {

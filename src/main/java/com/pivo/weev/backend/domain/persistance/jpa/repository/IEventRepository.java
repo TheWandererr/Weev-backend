@@ -13,4 +13,8 @@ public interface IEventRepository extends IGenericRepository<Long, EventJpa> {
     @Modifying
     @Query(value = "delete from events e where e.updatable_event_id = ?1", nativeQuery = true)
     void deleteByUpdatableTargetId(Long id);
+
+    @Modifying
+    @Query(value = "delete from EventJpa e where e.id = ?1")
+    void deleteById(Long id);
 }

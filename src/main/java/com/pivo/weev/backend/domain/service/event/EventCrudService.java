@@ -23,7 +23,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRepo
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.LocationService;
 import com.pivo.weev.backend.domain.service.NotificationService;
-import com.pivo.weev.backend.domain.service.validation.EventOperationsValidator;
+import com.pivo.weev.backend.domain.service.validation.EventCrudValidator;
 import jakarta.transaction.Transactional;
 import java.time.ZoneId;
 import java.util.Set;
@@ -38,15 +38,15 @@ public class EventCrudService {
     private final EventCategoryRepositoryWrapper eventCategoryRepository;
     private final UserRepositoryWrapper userRepository;
 
-    private final EventOperationsValidator eventOperationsValidator;
+    private final EventCrudValidator eventCrudValidator;
     private final LocationService locationService;
     private final EventImageService eventImageService;
     private final NotificationService notificationService;
 
     @Transactional
-    public void saveEvent(CreatableEvent sample) {
+    public void save(CreatableEvent sample) {
         setTimeZones(sample);
-        eventOperationsValidator.validateCreation(sample);
+        eventCrudValidator.validateCreation(sample);
         EventJpa jpaEvent = preparePersistableEvent(sample);
         eventRepository.save(jpaEvent);
     }
@@ -84,7 +84,7 @@ public class EventCrudService {
     public void updateEvent(CreatableEvent sample) {
         setTimeZones(sample);
         EventJpa updatableTarget = eventRepository.fetch(sample.getId());
-        eventOperationsValidator.validateUpdate(updatableTarget, sample);
+        eventCrudValidator.validateUpdate(updatableTarget, sample);
 
         EventJpa jpaEvent = preparePersistableEvent(sample);
         jpaEvent.setUpdatableTarget(updatableTarget);
@@ -106,14 +106,22 @@ public class EventCrudService {
     }
 
     @Transactional
-    public void cancelEvent(Long id) {
+    public void cancel(Long id) {
         EventJpa cancellable = eventRepository.fetch(id);
-        eventOperationsValidator.validateCancellation(cancellable);
+        eventCrudValidator.validateCancellation(cancellable);
 
         Set<UserJpa> dissolvedMembers = cancellable.dissolve();
         notificationService.notifyAll(dissolvedMembers, cancellable, EVENT_CANCELLATION);
 
         eventRepository.deleteByUpdatableTargetId(id);
         cancellable.setStatus(CANCELED);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        EventJpa deletable = eventRepository.fetch(id);
+        eventCrudValidator.validateDeletion(deletable);
+        eventImageService.deletePhoto(deletable);
+        eventRepository.logicalDelete(deletable);
     }
 }

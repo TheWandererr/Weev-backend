@@ -1,7 +1,9 @@
 package com.pivo.weev.backend.domain.service.validation;
 
 import static com.pivo.weev.backend.common.utils.DateTimeUtils.toInstant;
+import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CANCELED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CONFIRMED;
+import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DECLINED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.HAS_MODERATION_INSTANCE;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.ON_MODERATION;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
@@ -25,9 +27,10 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EventOperationsValidator {
+public class EventCrudValidator {
 
     private static final Set<EventStatus> CANCELLABLE_EVENT_STATUSES = Set.of(ON_MODERATION, HAS_MODERATION_INSTANCE, CONFIRMED);
+    private static final Set<EventStatus> DELETABLE_EVENT_STATUSES = Set.of(CANCELED, DECLINED);
 
     /*
      * запрещаем создание меньше чем за 2 часа до  начала
@@ -85,6 +88,12 @@ public class EventOperationsValidator {
             throw new ReasonableException(ACCESS_DENIED_ERROR);
         }
         if (!CANCELLABLE_EVENT_STATUSES.contains(cancellable.getStatus())) {
+            throw new ReasonableException(ACCESS_DENIED_ERROR);
+        }
+    }
+
+    public void validateDeletion(EventJpa deletable) {
+        if (!DELETABLE_EVENT_STATUSES.contains(deletable.getStatus())) {
             throw new ReasonableException(ACCESS_DENIED_ERROR);
         }
     }

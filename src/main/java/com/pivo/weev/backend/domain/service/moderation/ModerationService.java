@@ -61,9 +61,10 @@ public class ModerationService {
         updatable.setModeratedBy(getUserId());
         updatable.setStatus(CONFIRMED);
 
-        eventRepository.delete(confirmable);
+        eventRepository.forceDelete(confirmable);
+
         Set<UserJpa> recipients = updatable.getUsers();
-        notificationService.notifyAll(recipients, confirmable, EVENT_UPDATE_SUCCESSFUL);
+        notificationService.notifyAll(recipients, updatable, EVENT_UPDATE_SUCCESSFUL);
     }
 
     public List<String> getDeclinationReasons() {
@@ -84,7 +85,7 @@ public class ModerationService {
 
     private void declineEventUpdate(EventJpa declinable, EventJpa updatableTarget, DeclinationReason declinationReason) {
         eventImageService.deletePhoto(declinable);
-        eventRepository.delete(declinable);
+        eventRepository.forceDelete(declinable);
         notificationService.notify(updatableTarget, updatableTarget.getCreator(), EVENT_UPDATE_FAILED, declinationReason);
     }
 
