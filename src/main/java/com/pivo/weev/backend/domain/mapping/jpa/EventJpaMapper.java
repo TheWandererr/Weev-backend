@@ -29,7 +29,7 @@ public interface EventJpaMapper {
     @Mapping(target = "status", constant = "ON_MODERATION")
     void map(CreatableEvent source, @MappingTarget EventJpa target);
 
-    default void map(EventJpa source, @MappingTarget EventJpa destination) {
+    default void remap(EventJpa source, @MappingTarget EventJpa destination) {
         destination.setLocation(source.getLocation());
         destination.setCategory(source.getCategory());
         destination.setSubcategory(source.getSubcategory());
@@ -45,5 +45,6 @@ public interface EventJpaMapper {
         destination.setMembersLimit(source.getMembersLimit());
         destination.setRestrictions(source.getRestrictions());
         destination.setPhoto(source.getPhoto());
+        destination.setStatus(source.getStatus());
     }
 }

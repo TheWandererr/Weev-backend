@@ -2,6 +2,7 @@ package com.pivo.weev.backend.rest.controller;
 
 import static com.pivo.weev.backend.common.utils.CollectionUtils.mapToList;
 import static com.pivo.weev.backend.rest.model.event.SearchContextRest.published;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.INVALID_ID;
 import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -80,7 +81,7 @@ public class EventsController {
     }
 
     @GetMapping("/{id}")
-    public EventSearchResponse search(@Min(1) @PathVariable Long id) {
+    public EventSearchResponse search(@Min(value = 1, message = INVALID_ID) @PathVariable Long id) {
         Event event = eventsSearchService.search(id);
         EventDetailedRest restEvent = getMapper(EventDetailedRestMapper.class).map(event);
         return new EventSearchResponse(restEvent);
@@ -90,6 +91,12 @@ public class EventsController {
     public BaseResponse updateEvent(@Valid @ModelAttribute EventSaveRequest request) {
         CreatableEvent sample = getMapper(CreatableEventMapper.class).map(request);
         eventCrudService.updateEvent(sample);
+        return new BaseResponse(ResponseMessage.SUCCESS);
+    }
+
+    @PutMapping("/{id}/cancellation")
+    public BaseResponse cancelEvent(@Min(value = 1, message = INVALID_ID) @PathVariable Long id) {
+        eventCrudService.cancelEvent(id);
         return new BaseResponse(ResponseMessage.SUCCESS);
     }
 

@@ -1,9 +1,11 @@
 package com.pivo.weev.backend.domain.service.event;
 
 import static com.pivo.weev.backend.common.utils.CollectionUtils.findFirst;
+import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CANCELED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.HAS_MODERATION_INSTANCE;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.SUBCATEGORY_NOT_FOUND_ERROR;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_CANCELLATION;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -20,9 +22,11 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventCate
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.LocationService;
+import com.pivo.weev.backend.domain.service.NotificationService;
 import com.pivo.weev.backend.domain.service.validation.EventOperationsValidator;
 import jakarta.transaction.Transactional;
 import java.time.ZoneId;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +41,7 @@ public class EventCrudService {
     private final EventOperationsValidator eventOperationsValidator;
     private final LocationService locationService;
     private final EventImageService eventImageService;
+    private final NotificationService notificationService;
 
     @Transactional
     public void saveEvent(CreatableEvent sample) {
@@ -84,7 +89,7 @@ public class EventCrudService {
         EventJpa jpaEvent = preparePersistableEvent(sample);
         jpaEvent.setUpdatableTarget(updatableTarget);
 
-        if (updatableTarget.isOnModeration()) {
+        if (updatableTarget.isOnModeration() || updatableTarget.isCanceled() || updatableTarget.isDeclined()) {
             replaceExistingEvent(jpaEvent, updatableTarget);
         } else {
             eventRepository.findByUpdatableTargetId(sample.getId())
@@ -97,6 +102,18 @@ public class EventCrudService {
 
     private void replaceExistingEvent(EventJpa jpaEvent, EventJpa existingJpaEvent) {
         eventImageService.deletePhoto(existingJpaEvent);
-        getMapper(EventJpaMapper.class).map(jpaEvent, existingJpaEvent);
+        getMapper(EventJpaMapper.class).remap(jpaEvent, existingJpaEvent);
+    }
+
+    @Transactional
+    public void cancelEvent(Long id) {
+        EventJpa cancellable = eventRepository.fetch(id);
+        eventOperationsValidator.validateCancellation(cancellable);
+
+        Set<UserJpa> dissolvedMembers = cancellable.dissolve();
+        notificationService.notifyAll(dissolvedMembers, cancellable, EVENT_CANCELLATION);
+
+        eventRepository.deleteByUpdatableTargetId(id);
+        cancellable.setStatus(CANCELED);
     }
 }

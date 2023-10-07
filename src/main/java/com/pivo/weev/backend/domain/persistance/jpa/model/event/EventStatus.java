@@ -7,7 +7,8 @@ public enum EventStatus {
     ON_MODERATION("ON_MODERATION"),
     HAS_MODERATION_INSTANCE("HAS_MODERATION_INSTANCE"),
     CONFIRMED("CONFIRMED"),
-    DECLINED("DECLINED");
+    DECLINED("DECLINED"),
+    CANCELED("CANCELED");
 
     private final String value;
 

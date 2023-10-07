@@ -79,6 +79,7 @@ public class Constants {
         public static final String FLOW_INTERRUPTED_ERROR = "flow.interrupted.error";
         public static final String INVALID_DECLINATION_REASON = "unsupported.declination.reason";
         public static final String INVALID_PAGE_SIZE = "incorrect.page.size";
+        public static final String INVALID_ID = "invalid.id";
     }
 
     @UtilityClass

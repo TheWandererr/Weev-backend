@@ -17,6 +17,10 @@ public class EventRepositoryWrapper extends GenericRepositoryWrapper<Long, Event
         return repository.findByUpdatableTargetId(id);
     }
 
+    public void deleteByUpdatableTargetId(Long id) {
+        repository.deleteByUpdatableTargetId(id);
+    }
+
     @Override
     public void delete(EventJpa resource) {
         resource.setPhoto(null);

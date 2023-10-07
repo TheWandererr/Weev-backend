@@ -13,6 +13,7 @@ import static org.mapstruct.factory.Mappers.getMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.EventJpaMapper;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.DeclinationReason;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeclinationReasonsRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.NotificationService;
@@ -20,6 +21,7 @@ import com.pivo.weev.backend.domain.service.event.EventImageService;
 import com.pivo.weev.backend.domain.service.validation.ModerationValidator;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,18 +51,19 @@ public class ModerationService {
     private void confirmNewEvent(EventJpa confirmable) {
         confirmable.setModeratedBy(getUserId());
         confirmable.setStatus(CONFIRMED);
-        notificationService.createNotification(confirmable, EVENT_CONFIRMATION);
+        notificationService.notify(confirmable, confirmable.getCreator(), EVENT_CONFIRMATION);
     }
 
     private void confirmEventUpdate(EventJpa confirmable, EventJpa updatable) {
         eventImageService.deletePhoto(updatable);
 
-        getMapper(EventJpaMapper.class).map(confirmable, updatable);
+        getMapper(EventJpaMapper.class).remap(confirmable, updatable);
         updatable.setModeratedBy(getUserId());
         updatable.setStatus(CONFIRMED);
 
         eventRepository.delete(confirmable);
-        notificationService.createNotification(updatable, EVENT_UPDATE_SUCCESSFUL);
+        Set<UserJpa> recipients = updatable.getUsers();
+        notificationService.notifyAll(recipients, confirmable, EVENT_UPDATE_SUCCESSFUL);
     }
 
     public List<String> getDeclinationReasons() {
@@ -82,12 +85,12 @@ public class ModerationService {
     private void declineEventUpdate(EventJpa declinable, EventJpa updatableTarget, DeclinationReason declinationReason) {
         eventImageService.deletePhoto(declinable);
         eventRepository.delete(declinable);
-        notificationService.createNotification(updatableTarget, EVENT_UPDATE_FAILED, declinationReason);
+        notificationService.notify(updatableTarget, updatableTarget.getCreator(), EVENT_UPDATE_FAILED, declinationReason);
     }
 
     private void declineNewEvent(EventJpa declinable, DeclinationReason declinationReason) {
         declinable.setModeratedBy(getUserId());
         declinable.setStatus(DECLINED);
-        notificationService.createNotification(declinable, EVENT_DECLINATION, declinationReason);
+        notificationService.notify(declinable, declinable.getCreator(), EVENT_DECLINATION, declinationReason);
     }
 }

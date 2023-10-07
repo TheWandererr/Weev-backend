@@ -52,5 +52,6 @@ public final class Constants {
         public static final String EVENT_UPDATE_SUCCESSFUL = "event.update.successful";
         public static final String EVENT_UPDATE_FAILED = "event.update.failed";
         public static final String EVENT_DECLINATION = "event.declination";
+        public static final String EVENT_CANCELLATION = "event.cancellation";
     }
 }

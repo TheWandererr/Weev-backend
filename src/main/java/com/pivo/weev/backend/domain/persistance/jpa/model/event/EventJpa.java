@@ -1,5 +1,7 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.event;
 
+import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CANCELED;
+import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DECLINED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.ON_MODERATION;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_HEADER;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_STATUS;
@@ -105,11 +107,34 @@ public class EventJpa extends ModifiableJpa<Long> {
         return status == ON_MODERATION;
     }
 
+    public boolean isCanceled() {
+        return status == CANCELED;
+    }
+
+    public boolean isDeclined() {
+        return status == DECLINED;
+    }
+
     public boolean hasUpdatableTarget() {
         return nonNull(updatableTarget);
     }
 
     public boolean hasPhoto() {
         return nonNull(photo);
+    }
+
+    public Set<UserJpa> dissolve() {
+        Set<UserJpa> membersCopy = new HashSet<>(this.members);
+        for (UserJpa member : this.members) {
+            member.getParticipatedEvents().remove(this);
+        }
+        this.members.clear();
+        return membersCopy;
+    }
+
+    public Set<UserJpa> getUsers() {
+        Set<UserJpa> users = new HashSet<>(this.members);
+        users.add(creator);
+        return users;
     }
 }
