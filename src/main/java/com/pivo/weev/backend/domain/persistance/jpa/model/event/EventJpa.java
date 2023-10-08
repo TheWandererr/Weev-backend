@@ -6,6 +6,7 @@ import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStat
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.ON_MODERATION;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_HEADER;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_STATUS;
+import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_UTC_END_DATE_TIME;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_UTC_START_DATE_TIME;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.MERGE;
@@ -81,6 +82,7 @@ public class EventJpa extends ModifiableJpa<Long> {
     private Instant utcStartDateTime;
     private LocalDateTime localEndDateTime;
     private String endTimeZoneId;
+    @Column(name = EVENT_UTC_END_DATE_TIME)
     private Instant utcEndDateTime;
     @Column(name = EVENT_STATUS)
     @Enumerated(STRING)

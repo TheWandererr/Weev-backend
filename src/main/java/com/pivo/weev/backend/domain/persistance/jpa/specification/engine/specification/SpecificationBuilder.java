@@ -2,6 +2,7 @@ package com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specif
 
 import static com.pivo.weev.backend.common.utils.CollectionUtils.isEmpty;
 
+import jakarta.persistence.metamodel.Attribute;
 import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -159,6 +160,10 @@ public class SpecificationBuilder<T> {
     public SpecificationBuilder<T> orBetween(String fieldPath, Integer value1, Integer value2) {
         resultSpecification = resultSpecification.or(SimpleSpecifications.between(fieldPath, value1, value2));
         return this;
+    }
+
+    public <E> SpecificationBuilder<T> andEqual(Attribute<?, ?> attribute, E value, Class<E> clazz) {
+        return andEqual(attribute.getName(), value, clazz);
     }
 
     public <E> SpecificationBuilder<T> andEqual(String fieldPath, E value, Class<E> clazz) {

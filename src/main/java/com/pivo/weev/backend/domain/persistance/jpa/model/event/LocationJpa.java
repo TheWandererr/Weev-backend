@@ -1,6 +1,10 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.event;
 
+import static jakarta.persistence.AccessType.FIELD;
+
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
+import jakarta.persistence.Access;
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.SequenceGenerator;
@@ -32,5 +36,8 @@ public class LocationJpa extends SequencedPersistable<Long> {
     private String building;
     @Column
     private String flat;
+    @Column
+    @Basic
+    @Access(FIELD)
     private Point point;
 }

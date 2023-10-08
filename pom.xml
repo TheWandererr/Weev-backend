@@ -154,6 +154,11 @@
       <artifactId>thumbnailator</artifactId>
       <version>${thumbnailator.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-jpamodelgen</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -187,6 +192,11 @@
               <groupId>org.projectlombok</groupId>
               <artifactId>lombok-mapstruct-binding</artifactId>
               <version>0.2.0</version>
+            </path>
+            <path>
+              <groupId>org.hibernate</groupId>
+              <artifactId>hibernate-jpamodelgen</artifactId>
+              <version>${hibernate.version}</version>
             </path>
             <path>
               <groupId>org.mapstruct</groupId>

@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.rest.service;
 
-import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserJpaSpecificationBuilder.UsernameType.ANY;
-import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserJpaSpecificationBuilder.buildUserSearchSpecification;
+import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType.ANY;
+import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.buildUserSearchSpecification;
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.AUTHENTICATION_FAILED;
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.MISSING_COOKIE;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getCurrentRequest;

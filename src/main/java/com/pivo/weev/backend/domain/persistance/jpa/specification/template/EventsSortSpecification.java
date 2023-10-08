@@ -1,13 +1,12 @@
-package com.pivo.weev.backend.domain.persistance.jpa.specification;
+package com.pivo.weev.backend.domain.persistance.jpa.specification.template;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.CriteriaParamsBuilder.buildCriteriaParams;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.ExpressionBuilder.getExpression;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.CriteriaFunctions.DATE_PART;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.CriteriaLiterals.EPOCH;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Paths.EVENT_UTC_END_DATE_TIME;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Paths.EVENT_UTC_START_DATE_TIME;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa_;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaParams;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -24,8 +23,8 @@ public class EventsSortSpecification implements Specification<EventJpa> {
     private final CriteriaParams<LocalDateTime> endDateTimeCriteriaParams;
 
     public EventsSortSpecification() {
-        this.startDateTimeCriteriaParams = buildCriteriaParams(EVENT_UTC_START_DATE_TIME, 0, LocalDateTime.class);
-        this.endDateTimeCriteriaParams = buildCriteriaParams(EVENT_UTC_END_DATE_TIME, 0, LocalDateTime.class);
+        this.startDateTimeCriteriaParams = buildCriteriaParams(EventJpa_.utcStartDateTime, 0, LocalDateTime.class);
+        this.endDateTimeCriteriaParams = buildCriteriaParams(EventJpa_.utcEndDateTime, 0, LocalDateTime.class);
     }
 
     @Override

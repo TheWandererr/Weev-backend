@@ -7,33 +7,31 @@ import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.empty;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.equal;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.in;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Paths.EVENT_CATEGORY;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Paths.EVENT_HEADER;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Paths.EVENT_STATUS;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Paths.EVENT_SUBCATEGORY;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.CustomGeometryFactory.createPoint;
+import static java.util.List.of;
 
 import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.event.Radius;
 import com.pivo.weev.backend.domain.model.event.SearchParams;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.specification.EventRadiusSpecification;
-import com.pivo.weev.backend.domain.persistance.jpa.specification.EventsSortSpecification;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa_;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SpecificationBuilder;
+import com.pivo.weev.backend.domain.persistance.jpa.specification.template.EventRadiusSpecification;
+import com.pivo.weev.backend.domain.persistance.jpa.specification.template.EventsSortSpecification;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.jpa.domain.Specification;
 
 @UtilityClass
-public class EventsSpecificationBuilder {
+public class EventSpecificationBuilder {
 
     private static final Specification<EventJpa> SORT_SPECIFICATION = new EventsSortSpecification();
 
     public static Specification<EventJpa> buildEventsSearchSpecification(SearchParams searchParams) {
         SpecificationBuilder<EventJpa> specificationBuilder = new SpecificationBuilder<>();
         if (searchParams.isOnModeration()) {
-            return specificationBuilder.andEqual(EVENT_STATUS, ON_MODERATION.name(), String.class)
+            return specificationBuilder.andEqual(EventJpa_.status, ON_MODERATION.name(), String.class)
                                        .build();
         }
         return specificationBuilder
@@ -45,14 +43,14 @@ public class EventsSpecificationBuilder {
     }
 
     private List<Specification<EventJpa>> collectTextSpecifications(SearchParams searchParams) {
-        return List.of(containsIgnoreCase(EVENT_HEADER, searchParams.getHeader()),
-                       equal(EVENT_CATEGORY, searchParams.getCategory(), String.class),
-                       equal(EVENT_SUBCATEGORY, searchParams.getSubcategory(), String.class));
+        return of(containsIgnoreCase(EventJpa_.header, searchParams.getHeader()),
+                  equal(EventJpa_.category, searchParams.getCategory(), String.class),
+                  equal(EventJpa_.subcategory, searchParams.getSubcategory(), String.class));
     }
 
     private Specification<EventJpa> buildStatusSpecification(SearchParams searchParams) {
         if (searchParams.isPublished()) {
-            return in(EVENT_STATUS, List.of(CONFIRMED, HAS_MODERATION_INSTANCE));
+            return in(EventJpa_.status, of(CONFIRMED, HAS_MODERATION_INSTANCE));
         }
         return empty();
     }

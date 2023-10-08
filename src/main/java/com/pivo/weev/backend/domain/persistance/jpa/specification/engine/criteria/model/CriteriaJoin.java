@@ -2,7 +2,11 @@ package com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criter
 
 
 import jakarta.persistence.criteria.JoinType;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class CriteriaJoin extends CriteriaOperation {
 
     private final JoinType joinType;
@@ -15,9 +19,5 @@ public class CriteriaJoin extends CriteriaOperation {
     public CriteriaJoin(String fieldName) {
         super(fieldName);
         this.joinType = JoinType.INNER;
-    }
-
-    public JoinType getJoinType() {
-        return joinType;
     }
 }

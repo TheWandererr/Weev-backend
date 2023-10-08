@@ -12,13 +12,10 @@ import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import lombok.experimental.UtilityClass;
 
-
+@UtilityClass
 public class ExpressionBuilder {
-
-    private ExpressionBuilder() throws IllegalAccessException {
-        throw new IllegalAccessException("This is utility class that cannot be initialized");
-    }
 
     public static <E> Expression<E> getExpression(CriteriaParams<E> params, Root<?> root) {
         return getPath(params, root).as(params.getCriteriaClass());

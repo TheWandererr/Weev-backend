@@ -110,12 +110,12 @@ public class CollectionUtils {
         return stream(collection).anyMatch(condition);
     }
 
-    public static <T> T extract(List<T> list, int index) {
+    public static <T> T remove(List<T> list, int index) {
         return list.remove(index);
     }
 
     public static <T> T pop(List<T> list) {
-        return extract(list, 0);
+        return remove(list, 0);
     }
 
     public static <T> boolean containsAny(Collection<T> source, Collection<T> samples) {

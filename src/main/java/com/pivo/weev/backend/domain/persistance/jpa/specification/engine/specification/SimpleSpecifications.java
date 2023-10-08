@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification;
 
 
+import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.CriteriaParamsBuilder.buildCriteriaParams;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.ExpressionBuilder.getExpression;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.ExpressionBuilder.getPath;
 
@@ -8,6 +9,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteri
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaCompareParams;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaParams;
 import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.metamodel.Attribute;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +34,7 @@ public class SimpleSpecifications {
     public static <T> Specification<T> lessThan(String fieldPath, Integer value, int joins) {
         return Objects.isNull(value)
                 ? empty()
-                : buildLessThanIntegerSpecification(CriteriaParamsBuilder.buildCriteriaParams(fieldPath, joins, value, Integer.class));
+                : buildLessThanIntegerSpecification(buildCriteriaParams(fieldPath, joins, value, Integer.class));
     }
 
     public static <T> Specification<T> lessThan(String fieldPath, Double value) {
@@ -42,7 +44,7 @@ public class SimpleSpecifications {
     public static <T> Specification<T> lessThan(String fieldPath, Double value, int joins) {
         return Objects.isNull(value)
                 ? empty()
-                : buildLessThanDoubleSpecification(CriteriaParamsBuilder.buildCriteriaParams(fieldPath, joins, value, Double.class));
+                : buildLessThanDoubleSpecification(buildCriteriaParams(fieldPath, joins, value, Double.class));
     }
 
     public static <T> Specification<T> lessThanOrEqualTo(String fieldPath, Integer value) {
@@ -52,7 +54,7 @@ public class SimpleSpecifications {
     public static <T> Specification<T> lessThanOrEqualTo(String fieldPath, Integer value, int joins) {
         return Objects.isNull(value)
                 ? empty()
-                : buildLessThanOrEqualToIntegerSpecification(CriteriaParamsBuilder.buildCriteriaParams(fieldPath, joins, value, Integer.class));
+                : buildLessThanOrEqualToIntegerSpecification(buildCriteriaParams(fieldPath, joins, value, Integer.class));
     }
 
     public static <T> Specification<T> lessThanOrEqualTo(String fieldPath, Double value) {
@@ -62,7 +64,7 @@ public class SimpleSpecifications {
     public static <T> Specification<T> lessThanOrEqualTo(String fieldPath, Double value, int joins) {
         return Objects.isNull(value)
                 ? empty()
-                : buildLessThanOrEqualToDoubleSpecification(CriteriaParamsBuilder.buildCriteriaParams(fieldPath, joins, value, Double.class));
+                : buildLessThanOrEqualToDoubleSpecification(buildCriteriaParams(fieldPath, joins, value, Double.class));
     }
 
     public static <T> Specification<T> greaterThan(String fieldPath, Integer value) {
@@ -72,7 +74,7 @@ public class SimpleSpecifications {
     public static <T> Specification<T> greaterThan(String fieldPath, Integer value, int joins) {
         return Objects.isNull(value)
                 ? empty()
-                : buildGreaterThanIntegerSpecification(CriteriaParamsBuilder.buildCriteriaParams(fieldPath, joins, value, Integer.class));
+                : buildGreaterThanIntegerSpecification(buildCriteriaParams(fieldPath, joins, value, Integer.class));
     }
 
     public static <T> Specification<T> greaterThan(String fieldPath, Double value) {
@@ -82,7 +84,7 @@ public class SimpleSpecifications {
     public static <T> Specification<T> greaterThan(String fieldPath, Double value, int joins) {
         return Objects.isNull(value)
                 ? empty()
-                : buildGreaterThanDoubleSpecification(CriteriaParamsBuilder.buildCriteriaParams(fieldPath, joins, value, Double.class));
+                : buildGreaterThanDoubleSpecification(buildCriteriaParams(fieldPath, joins, value, Double.class));
     }
 
     public static <T> Specification<T> greaterThanOrEqualTo(String fieldPath, Integer value) {
@@ -92,7 +94,7 @@ public class SimpleSpecifications {
     public static <T> Specification<T> greaterThanOrEqualTo(String fieldPath, Integer value, int joins) {
         return Objects.isNull(value)
                 ? empty()
-                : buildGreaterThanOrEqualToIntegerSpecification(CriteriaParamsBuilder.buildCriteriaParams(fieldPath, joins, value, Integer.class));
+                : buildGreaterThanOrEqualToIntegerSpecification(buildCriteriaParams(fieldPath, joins, value, Integer.class));
     }
 
     public static <T> Specification<T> greaterThanOrEqualTo(String fieldPath, Double value) {
@@ -102,7 +104,11 @@ public class SimpleSpecifications {
     public static <T> Specification<T> greaterThanOrEqualTo(String fieldPath, Double value, int joins) {
         return Objects.isNull(value)
                 ? empty()
-                : buildGreaterThanOrEqualToDoubleSpecification(CriteriaParamsBuilder.buildCriteriaParams(fieldPath, joins, value, Double.class));
+                : buildGreaterThanOrEqualToDoubleSpecification(buildCriteriaParams(fieldPath, joins, value, Double.class));
+    }
+
+    public static <T, E> Specification<T> equal(Attribute<?, ?> attribute, E value, Class<E> clazz) {
+        return equal(attribute.getName(), value, 0, clazz);
     }
 
     public static <T, E> Specification<T> equal(String fieldPath, E value, Class<E> clazz) {
@@ -112,7 +118,7 @@ public class SimpleSpecifications {
     public static <T, E> Specification<T> equal(String fieldPath, E value, int joins, Class<E> clazz) {
         return Objects.isNull(value)
                 ? empty()
-                : buildEqualSpecification(CriteriaParamsBuilder.buildCriteriaParams(fieldPath, joins, value, clazz));
+                : buildEqualSpecification(buildCriteriaParams(fieldPath, joins, value, clazz));
     }
 
     public static <T, E> Specification<T> isNull(String fieldPath, Class<E> clazz) {
@@ -120,7 +126,7 @@ public class SimpleSpecifications {
     }
 
     public static <T, E> Specification<T> isNull(String fieldPath, int joins, Class<E> clazz) {
-        return buildIsNullSpecification(CriteriaParamsBuilder.buildCriteriaParams(fieldPath, joins, clazz));
+        return buildIsNullSpecification(buildCriteriaParams(fieldPath, joins, clazz));
     }
 
     public static <T> Specification<T> contains(String fieldPath, String value) {
@@ -130,7 +136,11 @@ public class SimpleSpecifications {
     public static <T> Specification<T> contains(String fieldPath, String value, int joins) {
         return StringUtils.isBlank(value)
                 ? empty()
-                : buildContainsSpecification(CriteriaParamsBuilder.buildCriteriaParams(fieldPath, joins, value, String.class));
+                : buildContainsSpecification(buildCriteriaParams(fieldPath, joins, value, String.class));
+    }
+
+    public static <T> Specification<T> containsIgnoreCase(Attribute<?, ?> attribute, String value) {
+        return containsIgnoreCase(attribute.getName(), value, 0);
     }
 
     public static <T> Specification<T> containsIgnoreCase(String fieldPath, String value) {
@@ -140,7 +150,11 @@ public class SimpleSpecifications {
     public static <T> Specification<T> containsIgnoreCase(String fieldPath, String value, int joins) {
         return StringUtils.isBlank(value)
                 ? empty()
-                : buildContainsIgnoreCaseSpecification(CriteriaParamsBuilder.buildCriteriaParams(fieldPath, joins, value, String.class));
+                : buildContainsIgnoreCaseSpecification(buildCriteriaParams(fieldPath, joins, value, String.class));
+    }
+
+    public static <T> Specification<T> in(Attribute<?, ?> attribute, List<?> values) {
+        return in(attribute.getName(), values, 0);
     }
 
     public static <T> Specification<T> in(String fieldPath, List<?> values) {
@@ -148,7 +162,7 @@ public class SimpleSpecifications {
     }
 
     public static <T> Specification<T> in(String fieldPath, List<?> values, int joins) {
-        return buildInSpecification(CriteriaParamsBuilder.buildCriteriaParams(fieldPath, joins, values, Object.class));
+        return buildInSpecification(buildCriteriaParams(fieldPath, joins, values, Object.class));
     }
 
     public static <T> Specification<T> between(String fieldPath, Integer value1, Integer value2) {

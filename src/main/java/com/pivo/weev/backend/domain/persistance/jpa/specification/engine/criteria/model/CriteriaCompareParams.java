@@ -2,6 +2,11 @@ package com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criter
 
 import static java.util.Objects.nonNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class CriteriaCompareParams<E, V> {
 
     private final CriteriaParams<E> first;
@@ -10,14 +15,6 @@ public class CriteriaCompareParams<E, V> {
     public CriteriaCompareParams(CriteriaParams<E> first, CriteriaParams<V> second) {
         this.first = first;
         this.second = second;
-    }
-
-    public CriteriaParams<E> getFirst() {
-        return first;
-    }
-
-    public CriteriaParams<V> getSecond() {
-        return second;
     }
 
     public boolean isSuitableForExpression() {
