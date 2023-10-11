@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.rest.model.event;
 
 import static com.pivo.weev.backend.common.utils.ArrayUtils.toArray;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Paths.EVENT_UTC_START_DATE_TIME;
+import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_UTC_START_DATE_TIME;
 
 import lombok.Getter;
 import lombok.Setter;

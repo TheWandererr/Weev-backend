@@ -28,8 +28,13 @@ public class EventRepositoryWrapper extends GenericRepositoryWrapper<Long, Event
         resource.setStatus(DELETED);
     }
 
+    @Override
     public void forceDelete(EventJpa resource) {
         resource.setPhoto(null);
         super.forceDeleteById(resource.getId());
+    }
+
+    public Optional<EventJpa> findVisibleById(Long id) {
+        return repository.findByIdAndDeletedIsFalse(id);
     }
 }

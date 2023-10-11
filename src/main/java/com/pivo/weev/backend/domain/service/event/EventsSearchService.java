@@ -42,7 +42,7 @@ public class EventsSearchService {
 
     @Transactional
     public Event search(Long id) {
-        return eventRepository.find(id)
+        return eventRepository.findVisibleById(id)
                               .map(event -> getMapper(EventMapper.class).map(event))
                               .orElse(null);
     }
