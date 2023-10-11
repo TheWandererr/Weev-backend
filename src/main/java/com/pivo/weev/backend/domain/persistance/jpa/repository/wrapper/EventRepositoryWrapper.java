@@ -35,6 +35,6 @@ public class EventRepositoryWrapper extends GenericRepositoryWrapper<Long, Event
     }
 
     public Optional<EventJpa> findVisibleById(Long id) {
-        return repository.findByIdAndDeletedIsFalse(id);
+        return repository.findByIdAndStatusNot(id, DELETED);
     }
 }

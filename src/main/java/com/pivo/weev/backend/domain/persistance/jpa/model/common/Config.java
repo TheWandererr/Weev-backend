@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.common;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,10 +9,11 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.EqualsAndHashCode;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.SqlTypes;
 
 @Entity
@@ -19,7 +21,6 @@ import org.hibernate.type.SqlTypes;
 @SequenceGenerator(sequenceName = "config_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 public class Config extends ModifiableJpa<Long> {
 
     @Column(unique = true)
@@ -32,5 +33,33 @@ public class Config extends ModifiableJpa<Long> {
             map = new HashMap<>();
         }
         return map;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        Class<?> oEffectiveClass = o instanceof HibernateProxy oProxy
+                ? oProxy.getHibernateLazyInitializer().getPersistentClass()
+                : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy proxy
+                ? proxy.getHibernateLazyInitializer().getPersistentClass()
+                : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) {
+            return false;
+        }
+        Config that = (Config) o;
+        return nonNull(id) && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy proxy
+                ? proxy.getHibernateLazyInitializer().getPersistentClass().hashCode()
+                : getClass().hashCode();
     }
 }

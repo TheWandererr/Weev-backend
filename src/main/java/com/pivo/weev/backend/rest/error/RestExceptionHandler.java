@@ -5,6 +5,7 @@ import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.FIELD_VALIDA
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.NOT_FOUND;
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.FLOW_INTERRUPTED;
 import static java.util.Optional.ofNullable;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -20,6 +21,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -105,7 +107,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorRest error = errorFactory.create(reasonableException.getErrorCode(), FLOW_INTERRUPTED);
         BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR, reasonableException.buildDetails());
         logger.error(applicationLoggingHelper.buildLoggingError(body, null));
-        return ResponseEntity.status(reasonableException.getHttpStatus())
+        HttpStatus httpStatus = ofNullable(reasonableException.getHttpStatus()).orElse(BAD_REQUEST);
+        return ResponseEntity.status(httpStatus)
                              .body(body);
     }
 }

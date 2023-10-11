@@ -8,6 +8,7 @@ import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Colum
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
+import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ModifiableJpa;
@@ -26,12 +27,14 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
+import java.util.Objects;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
+import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.validator.constraints.Length;
 
 @Entity
@@ -83,4 +86,32 @@ public class UserJpa extends ModifiableJpa<Long> {
     private Set<EventJpa> createdEvents;
     @OneToMany(fetch = LAZY, mappedBy = "recipient")
     private Set<NotificationJpa> notifications;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        Class<?> oEffectiveClass = o instanceof HibernateProxy oProxy
+                ? oProxy.getHibernateLazyInitializer().getPersistentClass()
+                : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy proxy
+                ? proxy.getHibernateLazyInitializer().getPersistentClass()
+                : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) {
+            return false;
+        }
+        UserJpa that = (UserJpa) o;
+        return nonNull(id) && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return this instanceof HibernateProxy proxy
+                ? proxy.getHibernateLazyInitializer().getPersistentClass().hashCode()
+                : getClass().hashCode();
+    }
 }

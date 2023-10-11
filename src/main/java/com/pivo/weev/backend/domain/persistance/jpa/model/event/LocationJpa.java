@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.event;
 
 import static jakarta.persistence.AccessType.FIELD;
+import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
 import jakarta.persistence.Access;
@@ -9,8 +10,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.proxy.HibernateProxy;
 import org.locationtech.jts.geom.Point;
 
 @Entity
@@ -40,4 +43,30 @@ public class LocationJpa extends SequencedPersistable<Long> {
     @Basic
     @Access(FIELD)
     private Point point;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        Class<?> oEffectiveClass = o instanceof HibernateProxy oProxy
+                ? oProxy.getHibernateLazyInitializer().getPersistentClass()
+                : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy proxy
+                ? proxy.getHibernateLazyInitializer().getPersistentClass()
+                : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) {
+            return false;
+        }
+        LocationJpa that = (LocationJpa) o;
+        return nonNull(id) && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

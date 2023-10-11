@@ -21,6 +21,10 @@ public class ReasonableException extends RuntimeException {
         this(errorCode, null, BAD_REQUEST);
     }
 
+    public ReasonableException(String errorCode, String reason) {
+        this(errorCode, reason, BAD_REQUEST);
+    }
+
     public Map<String, Object> buildDetails() {
         Map<String, Object> details = new HashMap<>();
         if (isNotBlank(reason)) {

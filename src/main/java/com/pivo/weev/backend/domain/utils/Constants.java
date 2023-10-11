@@ -23,6 +23,7 @@ public final class Constants {
         public static final String EVENT_MODERATION_IMPOSSIBLE_ERROR = "event.moderation.impossible";
 
         public static final String ACCESS_DENIED_ERROR = "access.denied";
+        public static final String OPERATION_IMPOSSIBLE_ERROR = "operation.impossible";
     }
 
     @UtilityClass

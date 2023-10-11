@@ -1,6 +1,8 @@
 package com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification;
 
 import static com.pivo.weev.backend.common.utils.CollectionUtils.isEmpty;
+import static org.springframework.data.jpa.domain.Specification.allOf;
+import static org.springframework.data.jpa.domain.Specification.anyOf;
 
 import jakarta.persistence.metamodel.Attribute;
 import java.util.List;
@@ -29,12 +31,8 @@ public class SpecificationBuilder<T> {
     }
 
     public SpecificationBuilder<T> andAll(List<Specification<T>> specifications) {
-        if (isEmpty(specifications)) {
-            return this;
-        }
-        for (Specification<T> specification : specifications) {
-            this.resultSpecification = this.resultSpecification.and(specification);
-        }
+        Specification<T> inner = allOf(specifications);
+        this.resultSpecification = this.resultSpecification.and(inner);
         return this;
     }
 
@@ -42,33 +40,20 @@ public class SpecificationBuilder<T> {
         if (isEmpty(specifications)) {
             return this;
         }
-        Specification<T> inner = SimpleSpecifications.empty();
-        for (Specification<T> specification : specifications) {
-            inner = inner.or(specification);
-        }
+        Specification<T> inner = anyOf(specifications);
         this.resultSpecification = this.resultSpecification.and(inner);
         return this;
     }
 
     public SpecificationBuilder<T> orAll(List<Specification<T>> specifications) {
-        if (isEmpty(specifications)) {
-            return this;
-        }
-        Specification<T> inner = SimpleSpecifications.empty();
-        for (Specification<T> specification : specifications) {
-            inner = inner.and(specification);
-        }
+        Specification<T> inner = allOf(specifications);
         this.resultSpecification = this.resultSpecification.or(inner);
         return this;
     }
 
     public SpecificationBuilder<T> orAny(List<Specification<T>> specifications) {
-        if (isEmpty(specifications)) {
-            return this;
-        }
-        for (Specification<T> specification : specifications) {
-            this.resultSpecification = this.resultSpecification.or(specification);
-        }
+        Specification<T> inner = anyOf(specifications);
+        this.resultSpecification = this.resultSpecification.or(inner);
         return this;
     }
 
