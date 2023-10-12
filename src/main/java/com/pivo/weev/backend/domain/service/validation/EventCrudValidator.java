@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 public class EventCrudValidator {
 
     private static final Set<EventStatus> CANCELLABLE_EVENT_STATUSES = Set.of(ON_MODERATION, HAS_MODERATION_INSTANCE, CONFIRMED);
+    private static final Set<EventStatus> UPDATABLE_EVENT_STATUSES = Set.of(ON_MODERATION, HAS_MODERATION_INSTANCE, CONFIRMED, DECLINED, CANCELED);
     private static final Set<EventStatus> DELETABLE_EVENT_STATUSES = Set.of(CANCELED, DECLINED);
 
     /*
@@ -49,9 +50,10 @@ public class EventCrudValidator {
 
     /*
      * запрещаем редактирование за 3 часа до начала
-     * количество участников уже больше, чем лимит в запросе
+     * запрещаем, если количество участников уже больше, чем лимит в запросе
      * проверяем владельца
      * это не скрытый ивент (созданный для обновления другого ивента)
+     * проверяем статусы
      * */
     public void validateUpdate(EventJpa updatable, CreatableEvent validatable) {
         Instant startInstant = toInstant(validatable.getLocalStartDateTime(), validatable.getStartTimeZoneId());
@@ -66,6 +68,9 @@ public class EventCrudValidator {
             throw new ReasonableException(ACCESS_DENIED_ERROR);
         }
         if (nonNull(updatable.getUpdatableTarget())) {
+            throw new ReasonableException(ACCESS_DENIED_ERROR);
+        }
+        if (!UPDATABLE_EVENT_STATUSES.contains(updatable.getStatus())) {
             throw new ReasonableException(ACCESS_DENIED_ERROR);
         }
     }
