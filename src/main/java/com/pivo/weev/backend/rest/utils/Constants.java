@@ -134,4 +134,11 @@ public class Constants {
 
         public static final Integer EVENTS_PER_PAGE = 5;
     }
+
+    @UtilityClass
+    public static final class MapParams {
+
+        public static final int MINIMAL_ZOOM = 1;
+        public static final int MAXIMUM_ZOOM = 30;
+    }
 }

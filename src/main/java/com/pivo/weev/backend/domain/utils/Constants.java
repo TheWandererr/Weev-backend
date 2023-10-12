@@ -55,4 +55,11 @@ public final class Constants {
         public static final String EVENT_DECLINATION = "event.declination";
         public static final String EVENT_CANCELLATION = "event.cancellation";
     }
+
+    @UtilityClass
+    public static final class MapParams {
+
+        public static final int MINIMAL_ZOOM = 4;
+        public static final int MAXIMUM_ZOOM = 22;
+    }
 }
