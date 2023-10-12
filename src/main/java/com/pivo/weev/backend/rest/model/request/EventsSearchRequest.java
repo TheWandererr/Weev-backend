@@ -24,8 +24,9 @@ public class EventsSearchRequest extends PageableRequest {
     @Valid
     private RadiusRest radius;
     @Min(value = 1, message = INVALID_ZOOM)
-    @Max(value = 20, message = INVALID_ZOOM)
+    @Max(value = 12, message = INVALID_ZOOM)
     private Integer zoom;
+    private String locationHash;
 
     public EventsSearchRequest(Integer page) {
         super(page, EVENTS_PER_PAGE);

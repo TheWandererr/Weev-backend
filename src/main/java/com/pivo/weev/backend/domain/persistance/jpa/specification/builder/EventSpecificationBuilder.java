@@ -3,11 +3,13 @@ package com.pivo.weev.backend.domain.persistance.jpa.specification.builder;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CONFIRMED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.HAS_MODERATION_INSTANCE;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.ON_MODERATION;
+import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.contains;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.containsIgnoreCase;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.empty;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.equal;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.in;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.CustomGeometryFactory.createPoint;
+import static com.pivo.weev.backend.domain.persistance.jpa.utils.SpecificationUtils.fieldPathFrom;
 import static java.util.List.of;
 
 import com.pivo.weev.backend.domain.model.common.MapPoint;
@@ -15,6 +17,7 @@ import com.pivo.weev.backend.domain.model.event.Radius;
 import com.pivo.weev.backend.domain.model.event.SearchParams;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa_;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa_;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SpecificationBuilder;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.template.EventRadiusSpecification;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.template.EventsSortSpecification;
@@ -39,6 +42,7 @@ public class EventSpecificationBuilder {
                 .and(buildStatusSpecification(searchParams))
                 .and(buildRadiusSpecification(searchParams))
                 .and(buildSortSpecification(searchParams))
+                .and(buildLocationHashSpecification(searchParams))
                 .build();
     }
 
@@ -63,6 +67,13 @@ public class EventSpecificationBuilder {
         MapPoint mapPoint = radius.getPoint();
         Point point = createPoint(mapPoint.getLng(), mapPoint.getLtd());
         return new EventRadiusSpecification(point, radius.getValue());
+    }
+
+    private Specification<EventJpa> buildLocationHashSpecification(SearchParams searchParams) {
+        if (!searchParams.hasLocationHash()) {
+            return empty();
+        }
+        return contains(fieldPathFrom(EventJpa_.location, LocationJpa_.hash), searchParams.getLocationHash(), 1);
     }
 
     private Specification<EventJpa> buildSortSpecification(SearchParams searchParams) {

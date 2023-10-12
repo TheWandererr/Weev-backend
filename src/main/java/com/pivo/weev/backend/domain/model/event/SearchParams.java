@@ -3,6 +3,7 @@ package com.pivo.weev.backend.domain.model.event;
 import static com.pivo.weev.backend.common.utils.ArrayUtils.isEmpty;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class SearchParams {
     private String subcategory;
     private Radius radius;
     private int zoom;
+    private String locationHash;
 
     private boolean onModeration;
     private boolean published;
@@ -37,5 +39,9 @@ public class SearchParams {
 
     public boolean hasSortFields() {
         return !isEmpty(getSortFields());
+    }
+
+    public boolean hasLocationHash() {
+        return isNotBlank(locationHash);
     }
 }
