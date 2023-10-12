@@ -73,13 +73,14 @@ public class Constants {
         public static final String INVALID_EVENT_SUBCATEGORY = "unsupported.subcategory";
         public static final String INVALID_EVENT_MEMBERS_AMOUNT = "incorrect.members.limit";
         public static final String LENGTH_OUT_OF_BOUND = "length.out.of.bound";
-        public static final String INCORRECT_FEE_AMOUNT = "incorrect.fee.amount";
-        public static final String INCORRECT_RADIUS_AMOUNT = "incorrect.radius.amount";
+        public static final String INVALID_FEE_AMOUNT = "incorrect.fee.amount";
+        public static final String INVALID_RADIUS_AMOUNT = "incorrect.radius.amount";
         public static final String UNSUPPORTED_FILE = "unsupported.file";
         public static final String FLOW_INTERRUPTED_ERROR = "flow.interrupted.error";
         public static final String INVALID_DECLINATION_REASON = "unsupported.declination.reason";
         public static final String INVALID_PAGE_SIZE = "incorrect.page.size";
         public static final String INVALID_ID = "invalid.id";
+        public static final String INVALID_ZOOM = "invalid.zoom";
     }
 
     @UtilityClass

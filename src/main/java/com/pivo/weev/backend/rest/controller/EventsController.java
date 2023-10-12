@@ -6,9 +6,9 @@ import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.INVALID_ID;
 import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.CREATED;
 
+import com.pivo.weev.backend.domain.model.common.MapPointCluster;
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.model.event.Event;
-import com.pivo.weev.backend.domain.model.event.EventMapPoint;
 import com.pivo.weev.backend.domain.model.event.SearchParams;
 import com.pivo.weev.backend.domain.service.event.EventCrudService;
 import com.pivo.weev.backend.domain.service.event.EventsSearchService;
@@ -16,17 +16,17 @@ import com.pivo.weev.backend.rest.mapping.domain.CreatableEventMapper;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
 import com.pivo.weev.backend.rest.mapping.rest.EventCompactedRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.EventDetailedRestMapper;
-import com.pivo.weev.backend.rest.mapping.rest.MapPointRestMapper;
+import com.pivo.weev.backend.rest.mapping.rest.MapPointClusterRestMapper;
+import com.pivo.weev.backend.rest.model.common.MapPointClusterRest;
 import com.pivo.weev.backend.rest.model.common.PageRest;
 import com.pivo.weev.backend.rest.model.event.EventCompactedRest;
 import com.pivo.weev.backend.rest.model.event.EventDetailedRest;
-import com.pivo.weev.backend.rest.model.event.EventMapPointRest;
 import com.pivo.weev.backend.rest.model.request.EventSaveRequest;
 import com.pivo.weev.backend.rest.model.request.EventsSearchRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import com.pivo.weev.backend.rest.model.response.EventSearchResponse;
-import com.pivo.weev.backend.rest.model.response.EventsMapPointsSearchResponse;
+import com.pivo.weev.backend.rest.model.response.EventsMapPointClusterSearchResponse;
 import com.pivo.weev.backend.rest.model.response.EventsSearchResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -64,12 +64,12 @@ public class EventsController {
     }
 
     @PostMapping("/map/search")
-    public EventsMapPointsSearchResponse searchMapPoints(@Valid @RequestBody EventsSearchRequest searchRequest) {
+    public EventsMapPointClusterSearchResponse searchMapPointClusters(@Valid @RequestBody EventsSearchRequest searchRequest) {
         SearchParams searchParams = getMapper(SearchParamsMapper.class).map(searchRequest, published());
-        Page<EventMapPoint> pointsPage = eventsSearchService.searchMapPoints(searchParams);
-        List<EventMapPointRest> restPoints = mapToList(pointsPage.getContent(), eventMapPoint -> (EventMapPointRest) getMapper(MapPointRestMapper.class).map(eventMapPoint));
-        PageRest<EventMapPointRest> restPointsPage = new PageRest<>(restPoints, pointsPage.getNumber());
-        return new EventsMapPointsSearchResponse(restPointsPage, pointsPage.getTotalElements(), pointsPage.getTotalPages());
+        Page<MapPointCluster> clustersPage = eventsSearchService.searchMapPointClusters(searchParams);
+        List<MapPointClusterRest> restClusters = mapToList(clustersPage.getContent(), pointCluster -> getMapper(MapPointClusterRestMapper.class).map(pointCluster));
+        PageRest<MapPointClusterRest> restClustersPage = new PageRest<>(restClusters, clustersPage.getNumber());
+        return new EventsMapPointClusterSearchResponse(restClustersPage, clustersPage.getTotalElements(), clustersPage.getTotalPages());
     }
 
     @PostMapping

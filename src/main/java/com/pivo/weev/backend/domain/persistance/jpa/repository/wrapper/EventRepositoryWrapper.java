@@ -34,7 +34,7 @@ public class EventRepositoryWrapper extends GenericRepositoryWrapper<Long, Event
         super.forceDeleteById(resource.getId());
     }
 
-    public Optional<EventJpa> findVisibleById(Long id) {
-        return repository.findByIdAndStatusNot(id, DELETED);
+    public Optional<EventJpa> findById(Long id) {
+        return repository.findById(id);
     }
 }

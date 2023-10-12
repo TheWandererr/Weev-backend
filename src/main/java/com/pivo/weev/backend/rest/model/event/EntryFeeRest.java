@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.model.event;
 
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.INCORRECT_FEE_AMOUNT;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.INVALID_FEE_AMOUNT;
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK;
 
 import jakarta.validation.constraints.DecimalMin;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class EntryFeeRest {
 
-    @DecimalMin(value = "0.01", message = INCORRECT_FEE_AMOUNT)
+    @DecimalMin(value = "0.01", message = INVALID_FEE_AMOUNT)
     private BigDecimal amount;
     @NotBlank(message = MUST_BE_NOT_BLANK)
     private String currency;

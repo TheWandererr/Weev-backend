@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper
+@Mapper(uses = {MapPointMapper.class})
 public interface SearchParamsMapper {
 
     @Mapping(target = "published", source = "searchContext.published")

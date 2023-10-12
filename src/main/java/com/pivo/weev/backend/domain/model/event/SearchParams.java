@@ -19,6 +19,7 @@ public class SearchParams {
     private String category;
     private String subcategory;
     private Radius radius;
+    private int zoom;
 
     private boolean onModeration;
     private boolean published;

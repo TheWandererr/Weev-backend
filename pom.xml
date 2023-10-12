@@ -30,6 +30,7 @@
     <jackson-jsr310.version>2.15.2</jackson-jsr310.version>
     <timeshape.version>2022g.17</timeshape.version>
     <thumbnailator.version>0.4.20</thumbnailator.version>
+    <geohash.version>1.4.0</geohash.version>
   </properties>
 
   <dependencies>
@@ -158,6 +159,11 @@
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-jpamodelgen</artifactId>
       <version>${hibernate.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.hsr</groupId>
+      <artifactId>geohash</artifactId>
+      <version>${geohash.version}</version>
     </dependency>
   </dependencies>
 

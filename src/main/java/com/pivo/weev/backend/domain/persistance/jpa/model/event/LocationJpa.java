@@ -39,10 +39,12 @@ public class LocationJpa extends SequencedPersistable<Long> {
     private String building;
     @Column
     private String flat;
-    @Column
+    @Column(nullable = false)
     @Basic
     @Access(FIELD)
     private Point point;
+    @Column(nullable = false)
+    private String hash;
 
     @Override
     public boolean equals(Object o) {

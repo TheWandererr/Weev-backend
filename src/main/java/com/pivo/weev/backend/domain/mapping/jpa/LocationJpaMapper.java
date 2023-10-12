@@ -15,6 +15,7 @@ public interface LocationJpaMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "point", source = "source", qualifiedByName = "createPoint")
+    @Mapping(target = "hash", expression = "java(source.getGeoHashString())")
     LocationJpa map(Location source);
 
     @Named("createPoint")
