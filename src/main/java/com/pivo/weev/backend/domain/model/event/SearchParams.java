@@ -21,7 +21,7 @@ public class SearchParams {
     private String subcategory;
     private Radius radius;
     private int zoom;
-    private String locationHash;
+    private String geoHash;
 
     private boolean onModeration;
     private boolean published;
@@ -41,7 +41,7 @@ public class SearchParams {
         return !isEmpty(getSortFields());
     }
 
-    public boolean hasLocationHash() {
-        return isNotBlank(locationHash);
+    public boolean hasGeoHash() {
+        return isNotBlank(geoHash);
     }
 }

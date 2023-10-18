@@ -28,7 +28,7 @@ public class EventsSearchRequest extends PageableRequest {
     @Min(value = MINIMAL_ZOOM, message = INVALID_ZOOM)
     @Max(value = MAXIMUM_ZOOM, message = INVALID_ZOOM)
     private Integer zoom;
-    private String locationHash;
+    private String geoHash;
 
     public EventsSearchRequest(Integer page) {
         super(page, EVENTS_PER_PAGE);

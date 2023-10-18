@@ -14,6 +14,7 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.validator.constraints.Length;
 import org.locationtech.jts.geom.Point;
 
 @Entity
@@ -43,7 +44,8 @@ public class LocationJpa extends SequencedPersistable<Long> {
     @Basic
     @Access(FIELD)
     private Point point;
-    @Column(nullable = false)
+    @Length(max = 12)
+    @Column(nullable = false, length = 12)
     private String hash;
 
     @Override

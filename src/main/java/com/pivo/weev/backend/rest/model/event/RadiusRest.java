@@ -16,6 +16,6 @@ public class RadiusRest {
     @NotNull(message = MUST_BE_NOT_NULL)
     private MapPointRest point;
     @NotNull(message = MUST_BE_NOT_NULL)
-    @Min(value = 1, message = INVALID_RADIUS_AMOUNT)
+    @Min(value = 0, message = INVALID_RADIUS_AMOUNT)
     private Double value;
 }

@@ -42,7 +42,7 @@ public class EventSpecificationBuilder {
                 .and(buildStatusSpecification(searchParams))
                 .and(buildRadiusSpecification(searchParams))
                 .and(buildSortSpecification(searchParams))
-                .and(buildLocationHashSpecification(searchParams))
+                .and(buildGeoHashSpecification(searchParams))
                 .build();
     }
 
@@ -69,11 +69,11 @@ public class EventSpecificationBuilder {
         return new EventRadiusSpecification(point, radius.getValue());
     }
 
-    private Specification<EventJpa> buildLocationHashSpecification(SearchParams searchParams) {
-        if (!searchParams.hasLocationHash()) {
+    private Specification<EventJpa> buildGeoHashSpecification(SearchParams searchParams) {
+        if (!searchParams.hasGeoHash()) {
             return empty();
         }
-        return contains(fieldPathFrom(EventJpa_.location, LocationJpa_.hash), searchParams.getLocationHash(), 1);
+        return contains(fieldPathFrom(EventJpa_.location, LocationJpa_.hash), searchParams.getGeoHash(), 1);
     }
 
     private Specification<EventJpa> buildSortSpecification(SearchParams searchParams) {
