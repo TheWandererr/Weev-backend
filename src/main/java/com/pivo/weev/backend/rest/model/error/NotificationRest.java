@@ -5,9 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ErrorRest {
+public class NotificationRest {
 
-    private final String errorCode;
-    private final String messageCode;
-
+    private final String titleCode;
 }

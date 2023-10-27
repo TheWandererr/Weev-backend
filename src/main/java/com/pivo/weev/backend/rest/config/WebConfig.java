@@ -27,7 +27,9 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.auth.OAuthTokenService;
-import com.pivo.weev.backend.rest.error.ErrorFactory;
+import com.pivo.weev.backend.rest.error.AlertRestFactory;
+import com.pivo.weev.backend.rest.error.NotificationRestFactory;
+import com.pivo.weev.backend.rest.error.PopupRestFactory;
 import com.pivo.weev.backend.rest.filter.JWTAuthenticityVerifierFilter;
 import com.pivo.weev.backend.rest.handler.AccessDeniedHandler;
 import com.pivo.weev.backend.rest.handler.AuthenticationFailureHandler;
@@ -79,7 +81,9 @@ public class WebConfig implements WebMvcConfigurer {
     private final AuthService authService;
     private final RSAKeyService rsaKeyService;
     private final OAuthTokenService oauthTokenService;
-    private final ErrorFactory errorFactory;
+    private final PopupRestFactory popupRestFactory;
+    private final AlertRestFactory alertRestFactory;
+    private final NotificationRestFactory notificationRestFactory;
 
     @Bean
     public RequestContextListener requestContextListener() {
@@ -137,21 +141,21 @@ public class WebConfig implements WebMvcConfigurer {
                                                          oauthTokenService)
                                          )
                                          .failureHandler(
-                                                 new AuthenticationFailureHandler(restResponseMapper, applicationLoggingHelper, errorFactory))
+                                                 new AuthenticationFailureHandler(restResponseMapper, applicationLoggingHelper, notificationRestFactory))
                                          .permitAll()
         );
 
         http.sessionManagement(customizer -> customizer.sessionCreationPolicy(NEVER));
 
         http.exceptionHandling(customizer ->
-                                       customizer.accessDeniedHandler(new AccessDeniedHandler(restResponseMapper, applicationLoggingHelper, errorFactory))
-                                                 .authenticationEntryPoint(new UnauthorizedHandler(restResponseMapper, applicationLoggingHelper, errorFactory))
+                                       customizer.accessDeniedHandler(new AccessDeniedHandler(restResponseMapper, applicationLoggingHelper, alertRestFactory))
+                                                 .authenticationEntryPoint(new UnauthorizedHandler(restResponseMapper, applicationLoggingHelper, notificationRestFactory))
         );
 
         http.oauth2ResourceServer(customizer -> customizer.jwt(withDefaults()));
 
         http.addFilterBefore(
-                new JWTAuthenticityVerifierFilter(errorFactory, restResponseMapper, applicationLoggingHelper, jwtAuthenticityVerifier),
+                new JWTAuthenticityVerifierFilter(popupRestFactory, restResponseMapper, applicationLoggingHelper, jwtAuthenticityVerifier),
                 UsernamePasswordAuthenticationFilter.class
         );
 

@@ -5,11 +5,9 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import java.util.HashMap;
 import java.util.Map;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-@AllArgsConstructor
 @Getter
 public class ReasonableException extends RuntimeException {
 
@@ -23,6 +21,12 @@ public class ReasonableException extends RuntimeException {
 
     public ReasonableException(String errorCode, String reason) {
         this(errorCode, reason, BAD_REQUEST);
+    }
+
+    public ReasonableException(String errorCode, String reason, HttpStatus httpStatus) {
+        this.errorCode = errorCode;
+        this.reason = reason;
+        this.httpStatus = httpStatus;
     }
 
     public Map<String, Object> buildDetails() {

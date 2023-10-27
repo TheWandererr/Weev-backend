@@ -27,6 +27,12 @@ public final class Constants {
     }
 
     @UtilityClass
+    public static final class MessageCodes {
+
+        public static final String EVENT_CAPACITY_EXCEEDED = "event.capacity.exceeded";
+    }
+
+    @UtilityClass
     public static final class EncryptionPatterns {
 
         public static final String PRIVATE_KEY_MASK_SYMBOLS = "###";

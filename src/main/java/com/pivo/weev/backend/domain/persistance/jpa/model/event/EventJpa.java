@@ -9,6 +9,7 @@ import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Colum
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_UTC_END_DATE_TIME;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_UTC_START_DATE_TIME;
 import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
+import static com.pivo.weev.backend.domain.utils.Constants.MessageCodes.EVENT_CAPACITY_EXCEEDED;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
@@ -152,7 +153,7 @@ public class EventJpa extends ModifiableJpa<Long> {
             return;
         }
         if (nonNull(membersLimit) && membersLimit > 0 && getMembers().size() == membersLimit) {
-            throw new ReasonableException(OPERATION_IMPOSSIBLE_ERROR, "event is full");
+            throw new ReasonableException(OPERATION_IMPOSSIBLE_ERROR, EVENT_CAPACITY_EXCEEDED);
         }
         getMembers().add(user);
         user.getParticipatedEvents().add(this);

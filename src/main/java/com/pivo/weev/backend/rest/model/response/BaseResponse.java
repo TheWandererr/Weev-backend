@@ -6,31 +6,49 @@ import static java.util.Objects.nonNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.pivo.weev.backend.rest.model.error.ErrorRest;
+import com.pivo.weev.backend.rest.model.error.AlertRest;
+import com.pivo.weev.backend.rest.model.error.NotificationRest;
+import com.pivo.weev.backend.rest.model.error.PopupRest;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @JsonInclude(NON_EMPTY)
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 public class BaseResponse {
 
-    private ErrorRest error;
+    private PopupRest popup;
+    private AlertRest alert;
+    private NotificationRest notification;
     private ResponseMessage message;
     private Map<String, Object> details;
 
-    public BaseResponse(ErrorRest error, ResponseMessage responseMessage) {
-        this(error, responseMessage, null);
+    public BaseResponse(PopupRest popup, ResponseMessage responseMessage) {
+        this(popup, responseMessage, null);
     }
 
     public BaseResponse(ResponseMessage responseMessage) {
         this(null, responseMessage, null);
+    }
+
+    public BaseResponse(AlertRest alert, ResponseMessage message) {
+        this.alert = alert;
+        this.message = message;
+    }
+
+    public BaseResponse(PopupRest popup, ResponseMessage message, Map<String, Object> details) {
+        this.popup = popup;
+        this.message = message;
+        this.details = details;
+    }
+
+    public BaseResponse(NotificationRest notification, ResponseMessage message) {
+        this.notification = notification;
+        this.message = message;
     }
 
     public Map<String, Object> getDetails() {
@@ -51,7 +69,7 @@ public class BaseResponse {
 
     @JsonIgnore
     public boolean isFailed() {
-        return nonNull(error);
+        return nonNull(popup);
     }
 
     @JsonIgnore

@@ -1,14 +1,15 @@
 package com.pivo.weev.backend.rest.handler;
 
+import static com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage.FORBIDDEN;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.NO_PERMISSIONS;
+import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.NOT_ENOUGH_PERMISSIONS;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pivo.weev.backend.rest.error.ErrorFactory;
+import com.pivo.weev.backend.rest.error.AlertRestFactory;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
-import com.pivo.weev.backend.rest.model.error.ErrorRest;
+import com.pivo.weev.backend.rest.model.error.AlertRest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
-import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
-import com.pivo.weev.backend.rest.utils.Constants.ErrorCodes;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,13 +27,13 @@ public class AccessDeniedHandler implements org.springframework.security.web.acc
 
     private final ObjectMapper restResponseMapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
-    private final ErrorFactory errorFactory;
+    private final AlertRestFactory alertRestFactory;
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
             throws IOException, ServletException {
-        ErrorRest error = errorFactory.create(ErrorCodes.PERMISSIONS, accessDeniedException.getMessage());
-        BaseResponse loginResponse = new BaseResponse(error, ResponseMessage.FORBIDDEN);
+        AlertRest alert = alertRestFactory.create(NO_PERMISSIONS, NOT_ENOUGH_PERMISSIONS);
+        BaseResponse loginResponse = new BaseResponse(alert, FORBIDDEN);
         LOGGER.error(applicationLoggingHelper.buildLoggingError(accessDeniedException, null, false));
         writeResponse(loginResponse, response, HttpStatus.FORBIDDEN, restResponseMapper);
     }

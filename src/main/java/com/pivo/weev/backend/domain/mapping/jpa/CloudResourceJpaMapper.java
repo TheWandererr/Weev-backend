@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 public interface CloudResourceJpaMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "externalId", source = "source.publicId")
+    @Mapping(target = "externalId", source = "publicId")
     @Mapping(target = "authorId", expression = "java(AuthUtils.getUserId())")
     CloudResourceJpa map(Image source);
 }

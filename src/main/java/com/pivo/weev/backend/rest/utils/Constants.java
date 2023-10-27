@@ -58,8 +58,7 @@ public class Constants {
     @UtilityClass
     public static final class ErrorCodes {
 
-
-        public static final String PERMISSIONS = "not.enough.permissions";
+        public static final String NO_PERMISSIONS = "not.enough.permissions";
         public static final String UNAUTHORIZED = "unauthorized";
         public static final String FORBIDDEN = "forbidden";
         public static final String VALIDATION_FAILED = "validation.failed";
@@ -68,17 +67,17 @@ public class Constants {
         public static final String MUST_BE_NOT_NULL = "must.be.not.null";
         public static final String MUST_BE_NOT_BLANK = "must.be.not.blank";
         public static final String MUST_BE_NULL_OR_NOT_BLANK = "must.be.null.or.not.blank";
-        public static final String INVALID_EVENT_HEADER = "incorrect.header.length";
-        public static final String INVALID_EVENT_CATEGORY = "unsupported.category";
-        public static final String INVALID_EVENT_SUBCATEGORY = "unsupported.subcategory";
-        public static final String INVALID_EVENT_MEMBERS_AMOUNT = "incorrect.members.limit";
+        public static final String INVALID_EVENT_HEADER = "invalid.header.length";
+        public static final String INVALID_EVENT_CATEGORY = "invalid.category";
+        public static final String INVALID_EVENT_SUBCATEGORY = "invalid.subcategory";
+        public static final String INVALID_EVENT_MEMBERS_AMOUNT = "invalid.members.limit";
         public static final String LENGTH_OUT_OF_BOUND = "length.out.of.bound";
-        public static final String INVALID_FEE_AMOUNT = "incorrect.fee.amount";
-        public static final String INVALID_RADIUS_AMOUNT = "incorrect.radius.amount";
-        public static final String UNSUPPORTED_FILE = "unsupported.file";
+        public static final String INVALID_FEE_AMOUNT = "invalid.fee.amount";
+        public static final String INVALID_RADIUS_AMOUNT = "invalid.radius.amount";
+        public static final String INVALID_FILE = "invalid.file";
         public static final String FLOW_INTERRUPTED_ERROR = "flow.interrupted.error";
         public static final String INVALID_DECLINATION_REASON = "unsupported.declination.reason";
-        public static final String INVALID_PAGE_SIZE = "incorrect.page.size";
+        public static final String INVALID_PAGE_SIZE = "invalid.page.size";
         public static final String INVALID_ID = "invalid.id";
         public static final String INVALID_ZOOM = "invalid.zoom";
     }
@@ -91,6 +90,9 @@ public class Constants {
         public static final String AUTHENTICATION_FAILED = "authentication.failed";
         public static final String NOT_ENOUGH_PERMISSIONS = "not.enough.permissions";
         public static final String FLOW_INTERRUPTED = "flow.interrupted";
+        public static final String LOGIN_REQUIRED = "login.required";
+        public static final String SOMETHING_WENT_WRONG = "something.went.wrong";
+        public static final String BAD_CREDENTIALS = "bad.credentials";
     }
 
 
@@ -140,5 +142,14 @@ public class Constants {
 
         public static final int MINIMAL_ZOOM = 1;
         public static final int MAXIMUM_ZOOM = 30;
+    }
+
+    @UtilityClass
+    public static final class PopupButtons {
+
+        public static final String OK = "ok";
+        public static final String CANCEL = "cancel";
+        public static final String LOGIN = "login";
+
     }
 }

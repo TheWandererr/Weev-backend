@@ -1,16 +1,18 @@
 package com.pivo.weev.backend.rest.filter;
 
+import static com.pivo.weev.backend.common.utils.Constants.Symbols.COLON;
 import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.INVALID_TOKEN;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getAuthorizationValue;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getDeviceId;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.join;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pivo.weev.backend.rest.error.ErrorFactory;
+import com.pivo.weev.backend.rest.error.PopupRestFactory;
 import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
-import com.pivo.weev.backend.rest.model.error.ErrorRest;
+import com.pivo.weev.backend.rest.model.error.PopupRest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import com.pivo.weev.backend.rest.service.security.JWTAuthenticityVerifier;
@@ -27,7 +29,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @AllArgsConstructor
 public class JWTAuthenticityVerifierFilter extends OncePerRequestFilter {
 
-    private final ErrorFactory errorFactory;
+    private final PopupRestFactory popupRestFactory;
     private final ObjectMapper restResponseMapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
     private final JWTAuthenticityVerifier jwtAuthenticityVerifier;
@@ -61,9 +63,9 @@ public class JWTAuthenticityVerifierFilter extends OncePerRequestFilter {
     }
 
     private void handleUnauthorized(HttpServletResponse response, String failure) throws IOException {
-        ErrorRest error = errorFactory.unauthorized(INVALID_TOKEN);
+        PopupRest error = popupRestFactory.unauthorized();
         BaseResponse errorResponse = new BaseResponse(error, ResponseMessage.UNAUTHORIZED);
-        logger.error(applicationLoggingHelper.buildLoggingError(errorResponse, failure, false));
+        logger.error(applicationLoggingHelper.buildLoggingError(errorResponse, join(INVALID_TOKEN, COLON, failure), false));
         writeResponse(errorResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);
     }
 }
