@@ -3,7 +3,7 @@ package com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criter
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-import com.pivo.weev.backend.common.utils.CollectionUtils;
+import com.pivo.weev.backend.utils.CollectionUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

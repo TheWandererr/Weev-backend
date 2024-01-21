@@ -2,8 +2,8 @@ package com.pivo.weev.backend.rest.model.auth;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
-import com.pivo.weev.backend.common.utils.CollectionUtils;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
+import com.pivo.weev.backend.utils.CollectionUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;

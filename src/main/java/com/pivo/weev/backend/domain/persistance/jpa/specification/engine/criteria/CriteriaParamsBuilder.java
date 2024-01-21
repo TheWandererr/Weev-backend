@@ -1,15 +1,15 @@
 package com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria;
 
-import static com.pivo.weev.backend.common.utils.CollectionUtils.isEmpty;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Paths.PATH_SPLITTER;
+import static com.pivo.weev.backend.utils.CollectionUtils.isEmpty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
-import com.pivo.weev.backend.common.utils.ArrayUtils;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaCompareParams;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaGet;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaJoin;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaParams;
+import com.pivo.weev.backend.utils.ArrayUtils;
 import jakarta.persistence.metamodel.Attribute;
 import java.util.Collections;
 import java.util.List;

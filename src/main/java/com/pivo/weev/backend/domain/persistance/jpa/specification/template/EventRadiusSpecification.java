@@ -1,10 +1,10 @@
 package com.pivo.weev.backend.domain.persistance.jpa.specification.template;
 
-import static com.pivo.weev.backend.common.utils.ArrayUtils.toArray;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.CriteriaParamsBuilder.buildCriteriaParams;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.ExpressionBuilder.getExpression;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.CriteriaFunctions.DISTANCE_3D;
 import static com.pivo.weev.backend.domain.persistance.jpa.utils.SpecificationUtils.fieldPathFrom;
+import static com.pivo.weev.backend.utils.ArrayUtils.toArray;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa_;

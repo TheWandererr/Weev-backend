@@ -1,21 +1,18 @@
 package com.pivo.weev.backend.rest.service.security;
 
-import static com.pivo.weev.backend.common.utils.CollectionUtils.collect;
-import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.MINUTES;
+import static com.pivo.weev.backend.utils.CollectionUtils.collect;
+import static java.time.temporal.ChronoUnit.HOURS;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 
+import com.pivo.weev.backend.domain.service.config.ConfigsService;
 import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import com.pivo.weev.backend.rest.utils.Constants.Api;
 import com.pivo.weev.backend.rest.utils.Constants.Claims;
 import com.pivo.weev.backend.rest.utils.Constants.JWTModes;
 import java.time.Instant;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -27,23 +24,18 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class JWTProvider {
 
-    private JwtEncoder jwtEncoder;
-
-    @Autowired
-    @Lazy
-    public void setJwtEncoder(JwtEncoder jwtEncoder) {
-        this.jwtEncoder = jwtEncoder;
-    }
+    private final JwtEncoder jwtEncoder;
+    private final ConfigsService configsService;
 
     public Jwt provideAccessToken(LoginDetails loginDetails) {
-        return generateToken(loginDetails, 30, MINUTES, JWTModes.ACCESS);
+        return generateToken(loginDetails, configsService.getAccessTokenExpiresAmount(), JWTModes.ACCESS);
     }
 
     public Jwt provideRefreshToken(LoginDetails loginDetails) {
-        return generateToken(loginDetails, 7, DAYS, JWTModes.REFRESH);
+        return generateToken(loginDetails, configsService.getRefreshTokenExpiresAmount(), JWTModes.REFRESH);
     }
 
-    private Jwt generateToken(LoginDetails loginDetails, int expiresAtAmount, TemporalUnit expiresAtUnit, String mode) {
+    private Jwt generateToken(LoginDetails loginDetails, int expiresAtAmount, String mode) {
         Instant now = Instant.now();
         String scope = JWTModes.ACCESS.equals(mode)
                 ? collect(loginDetails.getAuthenticationAuthorities(), SimpleGrantedAuthority::getAuthority, Collectors.joining(SPACE))
@@ -53,7 +45,7 @@ public class JWTProvider {
                                              .audience(List.of(Api.PREFIX))
                                              .issuer(loginDetails.getIssuer())
                                              .issuedAt(now)
-                                             .expiresAt(now.plus(expiresAtAmount, expiresAtUnit))
+                                             .expiresAt(now.plus(expiresAtAmount, HOURS))
                                              .claim(Claims.DEVICE_ID, loginDetails.getDeviceId())
                                              .claim(Claims.USER_ID, loginDetails.getUserId())
                                              .claim(Claims.SCOPE, scope)

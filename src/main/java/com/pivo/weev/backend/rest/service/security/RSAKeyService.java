@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.rest.service.security;
 
-import com.pivo.weev.backend.common.utils.IOUtils;
 import com.pivo.weev.backend.rest.model.auth.PKCS8KeyProperties;
+import com.pivo.weev.backend.utils.IOUtils;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;

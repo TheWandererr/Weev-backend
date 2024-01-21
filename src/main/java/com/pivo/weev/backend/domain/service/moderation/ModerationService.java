@@ -1,6 +1,5 @@
 package com.pivo.weev.backend.domain.service.moderation;
 
-import static com.pivo.weev.backend.common.utils.CollectionUtils.mapToList;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CONFIRMED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DECLINED;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
@@ -8,6 +7,7 @@ import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EV
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_DECLINATION;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_UPDATE_FAILED;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_UPDATE_SUCCESSFUL;
+import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.jpa.EventJpaMapper;

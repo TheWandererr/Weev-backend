@@ -1,15 +1,15 @@
 package com.pivo.weev.backend.domain.service.image;
 
-import static com.pivo.weev.backend.common.utils.IOUtils.getFormat;
 import static com.pivo.weev.backend.domain.utils.Constants.CompressingParams.MAX_SCALING;
-import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.FILE_COMPRESSING_ERROR;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.FILE_COMPRESSING_ERROR;
+import static com.pivo.weev.backend.utils.IOUtils.getFormat;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
 import com.pivo.weev.backend.domain.model.file.Image;
-import com.pivo.weev.backend.domain.service.config.ConfigsWrapper;
-import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
+import com.pivo.weev.backend.domain.service.config.ConfigsService;
+import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +29,7 @@ public class ImageCompressingService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageCompressingService.class);
 
     private final ApplicationLoggingHelper loggingHelper;
-    private final ConfigsWrapper configsWrapper;
+    private final ConfigsService configsWrapper;
 
     public Image compress(MultipartFile file) {
         try {

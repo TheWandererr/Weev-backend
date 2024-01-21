@@ -1,17 +1,17 @@
 package com.pivo.weev.backend.rest.filter;
 
-import static com.pivo.weev.backend.common.utils.Constants.Symbols.COLON;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.INVALID_TOKEN;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getAuthorizationValue;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getDeviceId;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_TOKEN;
+import static com.pivo.weev.backend.utils.Constants.Symbols.COLON;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.join;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.error.PopupRestFactory;
-import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.model.error.PopupRest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
@@ -30,7 +30,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JWTAuthenticityVerifierFilter extends OncePerRequestFilter {
 
     private final PopupRestFactory popupRestFactory;
-    private final ObjectMapper restResponseMapper;
+    private final ObjectMapper mapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
     private final JWTAuthenticityVerifier jwtAuthenticityVerifier;
 
@@ -66,6 +66,6 @@ public class JWTAuthenticityVerifierFilter extends OncePerRequestFilter {
         PopupRest error = popupRestFactory.unauthorized();
         BaseResponse errorResponse = new BaseResponse(error, ResponseMessage.UNAUTHORIZED);
         logger.error(applicationLoggingHelper.buildLoggingError(errorResponse, join(INVALID_TOKEN, COLON, failure), false));
-        writeResponse(errorResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);
+        writeResponse(errorResponse, response, HttpStatus.UNAUTHORIZED, mapper);
     }
 }

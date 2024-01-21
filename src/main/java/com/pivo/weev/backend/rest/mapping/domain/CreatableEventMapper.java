@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.mapping.domain;
 
-import static com.pivo.weev.backend.common.utils.Constants.Amount.INFINITY;
+import static com.pivo.weev.backend.utils.Constants.Amount.INFINITY;
 import static java.util.Objects.isNull;
 
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;

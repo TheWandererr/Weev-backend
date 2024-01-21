@@ -1,10 +1,10 @@
 package com.pivo.weev.backend.rest.service.security;
 
-import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.AUTHORIZATION_TOKEN_NOT_FOUND_ERROR;
-import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.TOKEN_COMPROMISED_ERROR;
 import static com.pivo.weev.backend.domain.utils.JwtUtils.getDeviceId;
 import static com.pivo.weev.backend.domain.utils.JwtUtils.getSerial;
 import static com.pivo.weev.backend.domain.utils.JwtUtils.getUserId;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.AUTHORIZATION_TOKEN_NOT_FOUND_ERROR;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.TOKEN_COMPROMISED_ERROR;
 import static java.util.Objects.isNull;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.auth.OAuthTokenDetailsJpa;

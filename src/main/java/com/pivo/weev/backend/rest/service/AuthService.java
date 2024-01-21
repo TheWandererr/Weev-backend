@@ -2,15 +2,13 @@ package com.pivo.weev.backend.rest.service;
 
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getAuthenticationDetails;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getLoginDetails;
-import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.AUTHORIZATION_TOKEN_NOT_FOUND_ERROR;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.AUTHORIZATION_TOKEN_NOT_FOUND_ERROR;
 
 import com.pivo.weev.backend.domain.service.auth.OAuthTokenService;
 import com.pivo.weev.backend.rest.model.auth.JWTPair;
 import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import com.pivo.weev.backend.rest.service.security.JWTProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -24,13 +22,7 @@ public class AuthService {
     private final JWTProvider jwtProvider;
     private final LoginDetailsService loginDetailsService;
     private final OAuthTokenService oAuthTokenService;
-    private JwtDecoder jwtDecoder;
-
-    @Autowired
-    @Lazy
-    public void setJwtDecoder(JwtDecoder jwtDecoder) {
-        this.jwtDecoder = jwtDecoder;
-    }
+    private final JwtDecoder jwtDecoder;
 
     public JWTPair generateTokens(Authentication authentication) {
         LoginDetails loginDetails = getLoginDetails(authentication);

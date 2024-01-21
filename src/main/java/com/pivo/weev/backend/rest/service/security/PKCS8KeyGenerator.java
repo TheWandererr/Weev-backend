@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.service.security;
 
-import com.pivo.weev.backend.common.utils.IOUtils;
+import com.pivo.weev.backend.utils.IOUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

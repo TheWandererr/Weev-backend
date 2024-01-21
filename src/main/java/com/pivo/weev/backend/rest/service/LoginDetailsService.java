@@ -2,9 +2,10 @@ package com.pivo.weev.backend.rest.service;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType.ANY;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.buildUserSearchSpecification;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.AUTHENTICATION_FAILED;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.MISSING_COOKIE;
+import static com.pivo.weev.backend.rest.utils.Constants.ResponseDetails.TITLE;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getCurrentRequest;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.BAD_CREDENTIALS;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.NO_PERMISSIONS;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -36,11 +37,11 @@ public class LoginDetailsService implements UserDetailsService {
         Specification<UserJpa> specification = buildUserSearchSpecification(formattedUsername, ANY);
         return userRepository.find(specification)
                              .map(userJpa -> LoginDetails.from(userJpa, formattedUsername, deviceId, httpServletRequest.getRequestURI()))
-                             .orElseThrow(() -> new UsernameNotFoundException(AUTHENTICATION_FAILED));
+                             .orElseThrow(() -> new UsernameNotFoundException(BAD_CREDENTIALS + TITLE));
     }
 
     private String getDeviceId(HttpServletRequest httpServletRequest) {
         return HttpServletUtils.getDeviceId(httpServletRequest)
-                               .orElseThrow(() -> new UsernameNotFoundException(MISSING_COOKIE));
+                               .orElseThrow(() -> new UsernameNotFoundException(NO_PERMISSIONS + TITLE));
     }
 }

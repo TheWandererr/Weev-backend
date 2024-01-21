@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("weev/api/moderation")
+@RequestMapping("/api/moderation")
 @RequiredArgsConstructor
 @Validated
 @PreAuthorize("hasAnyAuthority('SCOPE_moderation')")
@@ -42,7 +42,7 @@ public class ModerationController {
     private final ModerationService moderationService;
     private final EventsSearchService eventsSearchService;
 
-    @GetMapping("/reasons")
+    @GetMapping("/declination-reasons")
     public DeclinationReasonsResponse getDeclinationReasons() {
         List<String> reasons = moderationService.getDeclinationReasons();
         return new DeclinationReasonsResponse(reasons);

@@ -1,6 +1,5 @@
-package com.pivo.weev.backend.common.utils;
+package com.pivo.weev.backend.utils;
 
-import static com.pivo.weev.backend.common.utils.ArrayUtils.isEmpty;
 import static java.util.Arrays.asList;
 
 import java.util.Arrays;
@@ -12,7 +11,7 @@ public interface Enumerated {
 
     static <T extends Enumerated> String[] names(Class<T> clazz) {
         final T[] enumConstants = clazz.getEnumConstants();
-        if (isEmpty(enumConstants)) {
+        if (ArrayUtils.isEmpty(enumConstants)) {
             return new String[0];
         }
         return Arrays.toString(enumConstants).replaceAll("^.|.$", "").split(", ");

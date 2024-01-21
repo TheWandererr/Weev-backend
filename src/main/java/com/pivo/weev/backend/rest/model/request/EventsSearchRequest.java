@@ -1,9 +1,9 @@
 package com.pivo.weev.backend.rest.model.request;
 
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.INVALID_ZOOM;
 import static com.pivo.weev.backend.rest.utils.Constants.MapParams.MAXIMUM_ZOOM;
 import static com.pivo.weev.backend.rest.utils.Constants.MapParams.MINIMAL_ZOOM;
 import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.EVENTS_PER_PAGE;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_AMOUNT;
 
 import com.pivo.weev.backend.rest.model.event.RadiusRest;
 import jakarta.validation.Valid;
@@ -25,8 +25,8 @@ public class EventsSearchRequest extends PageableRequest {
     private String subcategory;
     @Valid
     private RadiusRest radius;
-    @Min(value = MINIMAL_ZOOM, message = INVALID_ZOOM)
-    @Max(value = MAXIMUM_ZOOM, message = INVALID_ZOOM)
+    @Min(value = MINIMAL_ZOOM, message = INVALID_AMOUNT)
+    @Max(value = MAXIMUM_ZOOM, message = INVALID_AMOUNT)
     private Integer zoom;
     private String geoHash;
 

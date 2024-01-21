@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class NotificationRest {
 
-    private final String titleCode;
+    private final String title;
 }

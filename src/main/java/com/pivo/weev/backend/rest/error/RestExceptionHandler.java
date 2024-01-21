@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.rest.error;
 
-import static com.pivo.weev.backend.common.utils.Constants.Symbols.DOT;
 import static com.pivo.weev.backend.rest.utils.Constants.PopupButtons.OK;
+import static com.pivo.weev.backend.utils.Constants.Symbols.DOT;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -9,7 +9,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
 import com.pivo.weev.backend.domain.persistance.jpa.exception.ResourceNotFoundException;
-import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
+import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.model.error.AlertRest;
 import com.pivo.weev.backend.rest.model.error.PopupRest;
 import com.pivo.weev.backend.rest.model.exception.MissingCookieException;
@@ -106,7 +106,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ReasonableException.class})
     public ResponseEntity<BaseResponse> handleReasonableException(ReasonableException reasonableException) {
-        PopupRest error = popupRestFactory.create(reasonableException.getErrorCode(), reasonableException.getReason(), List.of(OK));
+        PopupRest error = popupRestFactory.create(reasonableException.getCode(), reasonableException.getReason(), List.of(OK));
         BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR, reasonableException.buildDetails());
         logger.error(applicationLoggingHelper.buildLoggingError(body, null));
         HttpStatus httpStatus = ofNullable(reasonableException.getHttpStatus()).orElse(BAD_REQUEST);

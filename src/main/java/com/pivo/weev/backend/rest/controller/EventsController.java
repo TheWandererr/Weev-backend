@@ -1,8 +1,8 @@
 package com.pivo.weev.backend.rest.controller;
 
-import static com.pivo.weev.backend.common.utils.CollectionUtils.mapToList;
 import static com.pivo.weev.backend.rest.model.event.SearchContextRest.published;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.INVALID_ID;
+import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_ID;
 import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("weev/api/events")
+@RequestMapping("/api/events")
 @RequiredArgsConstructor
 @Validated
 public class EventsController {
@@ -88,7 +88,7 @@ public class EventsController {
         return new EventSearchResponse(restEvent);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public BaseResponse updateEvent(@Valid @ModelAttribute EventSaveRequest request) {
         CreatableEvent sample = getMapper(CreatableEventMapper.class).map(request);
         eventCrudService.updateEvent(sample);

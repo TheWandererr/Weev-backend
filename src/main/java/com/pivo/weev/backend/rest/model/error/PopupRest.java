@@ -12,8 +12,8 @@ import lombok.Getter;
 @JsonInclude(NON_NULL)
 public class PopupRest {
 
-    private final String titleCode;
-    private final String messageCode;
+    private final String title;
+    private final String message;
     private List<ButtonRest> buttons;
 
     @Getter

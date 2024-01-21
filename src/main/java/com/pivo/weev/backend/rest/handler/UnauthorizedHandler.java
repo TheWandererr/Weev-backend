@@ -4,8 +4,8 @@ import static com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMes
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.error.NotificationRestFactory;
-import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.model.error.NotificationRest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import jakarta.servlet.ServletException;
@@ -24,16 +24,16 @@ public class UnauthorizedHandler implements AuthenticationEntryPoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UnauthorizedHandler.class);
 
-    private final ObjectMapper restResponseMapper;
+    private final ObjectMapper mapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
     private final NotificationRestFactory notificationRestFactory;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException, ServletException {
-        NotificationRest notification = notificationRestFactory.badCredentials();
+        NotificationRest notification = notificationRestFactory.unauthorized();
         BaseResponse loginResponse = new BaseResponse(notification, UNAUTHORIZED);
         LOGGER.error(applicationLoggingHelper.buildLoggingError(authException, null, false));
-        writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);
+        writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, mapper);
     }
 }

@@ -8,7 +8,7 @@ import static org.springframework.http.HttpStatus.OK;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pivo.weev.backend.domain.model.auth.OAuthTokenDetails;
 import com.pivo.weev.backend.domain.service.auth.OAuthTokenService;
-import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
+import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.mapping.domain.OAuthTokenDetailsMapper;
 import com.pivo.weev.backend.rest.model.auth.JWTPair;
 import com.pivo.weev.backend.rest.model.auth.LoginDetails;
@@ -31,7 +31,7 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationSuccessHandler.class);
 
-    private final ObjectMapper restResponseMapper;
+    private final ObjectMapper mapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
     private final AuthService authService;
     private final OAuthTokenService oAuthTokenService;
@@ -48,11 +48,11 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
             JWTPair jwtPair = authService.generateTokens(authentication);
             updateTokenDetails(loginDetails, jwtPair);
             LoginResponse loginResponse = new LoginResponse(jwtPair.getAccessTokenValue(), jwtPair.getRefreshTokenValue());
-            writeResponse(loginResponse, response, OK, restResponseMapper);
+            writeResponse(loginResponse, response, OK, mapper);
         } catch (Exception exception) {
             LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
             BaseResponse loginResponse = new BaseResponse(ResponseMessage.UNAUTHORIZED);
-            writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);
+            writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, mapper);
         }
     }
 

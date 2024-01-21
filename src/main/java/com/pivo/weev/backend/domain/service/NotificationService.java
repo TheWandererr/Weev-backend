@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.service;
 
-import static com.pivo.weev.backend.common.utils.CollectionUtils.mapToSet;
+import static com.pivo.weev.backend.utils.CollectionUtils.mapToSet;
 
 import com.pivo.weev.backend.domain.persistance.jpa.NotificationFactory;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa;

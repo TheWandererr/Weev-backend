@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.integration.service.cloudinary;
 
-import static com.pivo.weev.backend.common.utils.IOUtils.getBytes;
+import static com.pivo.weev.backend.utils.IOUtils.getBytes;
 
 import com.pivo.weev.backend.integration.client.cloudinary.CloudinaryClient;
 import com.pivo.weev.backend.integration.client.cloudinary.model.Image;

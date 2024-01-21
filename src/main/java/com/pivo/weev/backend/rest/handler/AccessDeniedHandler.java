@@ -1,13 +1,13 @@
 package com.pivo.weev.backend.rest.handler;
 
 import static com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage.FORBIDDEN;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.NO_PERMISSIONS;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.NOT_ENOUGH_PERMISSIONS;
+import static com.pivo.weev.backend.rest.utils.Constants.ResponseDetails.TITLE;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.NO_PERMISSIONS;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.error.AlertRestFactory;
-import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.model.error.AlertRest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import jakarta.servlet.ServletException;
@@ -25,16 +25,16 @@ public class AccessDeniedHandler implements org.springframework.security.web.acc
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessDeniedHandler.class);
 
-    private final ObjectMapper restResponseMapper;
+    private final ObjectMapper mapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
     private final AlertRestFactory alertRestFactory;
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
             throws IOException, ServletException {
-        AlertRest alert = alertRestFactory.create(NO_PERMISSIONS, NOT_ENOUGH_PERMISSIONS);
+        AlertRest alert = alertRestFactory.create(NO_PERMISSIONS + TITLE, NO_PERMISSIONS);
         BaseResponse loginResponse = new BaseResponse(alert, FORBIDDEN);
         LOGGER.error(applicationLoggingHelper.buildLoggingError(accessDeniedException, null, false));
-        writeResponse(loginResponse, response, HttpStatus.FORBIDDEN, restResponseMapper);
+        writeResponse(loginResponse, response, HttpStatus.FORBIDDEN, mapper);
     }
 }

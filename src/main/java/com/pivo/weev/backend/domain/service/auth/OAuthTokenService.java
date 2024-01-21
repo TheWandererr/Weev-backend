@@ -5,12 +5,12 @@ import static com.pivo.weev.backend.domain.utils.JwtUtils.getUserId;
 import static java.util.Objects.isNull;
 import static org.mapstruct.factory.Mappers.getMapper;
 
-import com.pivo.weev.backend.common.utils.CollectionUtils;
 import com.pivo.weev.backend.domain.mapping.jpa.OAuthTokenDetailsJpaMapper;
 import com.pivo.weev.backend.domain.model.auth.OAuthTokenDetails;
 import com.pivo.weev.backend.domain.persistance.jpa.model.auth.OAuthTokenDetailsJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
+import com.pivo.weev.backend.utils.CollectionUtils;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;

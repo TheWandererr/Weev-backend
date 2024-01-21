@@ -59,8 +59,10 @@ public class Constants {
     }
 
     @UtilityClass
-    public static final class ConfigNames {
+    public static final class Configs {
 
         public static final String IMAGE_COMPRESSING_SCALE = "image.compressing.scale";
+        public static final String ACCESS_TOKEN_EXPIRES_AMOUNT = "access.token.expires.amount";
+        public static final String REFRESH_TOKEN_EXPIRES_AMOUNT = "refresh.token.expires.amount";
     }
 }

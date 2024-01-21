@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.rest.logging;
+package com.pivo.weev.backend.logging;
 
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getCurrentRequest;
 import static java.util.Optional.ofNullable;
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApplicationLoggingHelper {
 
-    private final ObjectMapper restResponseMapper;
+    private final ObjectMapper mapper;
 
     public String buildLoggingError(Exception exception, String failure) {
         LogMessageRest message = buildLogMessage(exception, failure, true);
@@ -53,7 +53,7 @@ public class ApplicationLoggingHelper {
         LogMessageRest message = LogMessageRest.fromRequest(request, includeBody);
         message.getDetails().putAll(baseResponse.getDetails());
         ofNullable(baseResponse.getPopup())
-                .ifPresent(popup -> message.getDetails().put(popup.getTitleCode(), popup.getMessageCode()));
+                .ifPresent(popup -> message.getDetails().put(popup.getTitle(), popup.getMessage()));
         message.setFailure(failure);
         return message;
     }
@@ -68,7 +68,7 @@ public class ApplicationLoggingHelper {
 
     private String toJson(LogMessageRest logMessageRest) {
         try {
-            return restResponseMapper.writeValueAsString(logMessageRest);
+            return mapper.writeValueAsString(logMessageRest);
         } catch (Exception e) {
             return logMessageRest.toString();
         }

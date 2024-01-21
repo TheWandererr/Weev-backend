@@ -1,11 +1,11 @@
 package com.pivo.weev.backend.domain.service.event;
 
-import static com.pivo.weev.backend.common.utils.CollectionUtils.findFirst;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CANCELED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.HAS_MODERATION_INSTANCE;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
-import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.SUBCATEGORY_NOT_FOUND_ERROR;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_CANCELLATION;
+import static com.pivo.weev.backend.utils.CollectionUtils.findFirst;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.SUBCATEGORY_NOT_FOUND_ERROR;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -65,17 +65,17 @@ public class EventCrudService {
         getMapper(EventJpaMapper.class).map(sample, eventJpa);
         LocationJpa location = locationService.resolveLocation(sample);
         eventJpa.setLocation(location);
-        eventJpa.setCategory(retrieveCategory(sample));
-        eventJpa.setSubcategory(retrieveSubcategory(eventJpa.getCategory(), sample));
+        eventJpa.setCategory(resolveCategory(sample));
+        eventJpa.setSubcategory(resolveSubcategory(eventJpa.getCategory(), sample));
         eventImageService.updatePhoto(sample, eventJpa);
         return eventJpa;
     }
 
-    private CategoryJpa retrieveCategory(CreatableEvent sample) {
+    private CategoryJpa resolveCategory(CreatableEvent sample) {
         return eventCategoryRepository.fetchByName(sample.getCategory());
     }
 
-    private SubcategoryJpa retrieveSubcategory(CategoryJpa categoryJpa, CreatableEvent sample) {
+    private SubcategoryJpa resolveSubcategory(CategoryJpa categoryJpa, CreatableEvent sample) {
         return findFirst(categoryJpa.getSubcategories(), subcategoryJpa -> equalsIgnoreCase(subcategoryJpa.getName(), sample.getSubcategory()))
                 .orElseThrow(() -> new ReasonableException(SUBCATEGORY_NOT_FOUND_ERROR));
     }

@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification;
 
-import static com.pivo.weev.backend.common.utils.CollectionUtils.isEmpty;
+import static com.pivo.weev.backend.utils.CollectionUtils.isEmpty;
 import static org.springframework.data.jpa.domain.Specification.allOf;
 import static org.springframework.data.jpa.domain.Specification.anyOf;
 

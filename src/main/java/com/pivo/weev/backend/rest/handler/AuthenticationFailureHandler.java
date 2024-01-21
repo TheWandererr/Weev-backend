@@ -3,8 +3,8 @@ package com.pivo.weev.backend.rest.handler;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.error.NotificationRestFactory;
-import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.model.error.NotificationRest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
@@ -23,7 +23,7 @@ public class AuthenticationFailureHandler implements org.springframework.securit
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationFailureHandler.class);
 
-    private final ObjectMapper restResponseMapper;
+    private final ObjectMapper mapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
     private final NotificationRestFactory notificationRestFactory;
 
@@ -37,6 +37,6 @@ public class AuthenticationFailureHandler implements org.springframework.securit
         NotificationRest notification = notificationRestFactory.badCredentials();
         BaseResponse loginResponse = new BaseResponse(notification, ResponseMessage.UNAUTHORIZED);
         LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
-        writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, restResponseMapper);
+        writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, mapper);
     }
 }

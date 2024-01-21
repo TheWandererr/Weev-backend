@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.model.common;
 
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.MUST_BE_NOT_NULL;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_NULL;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

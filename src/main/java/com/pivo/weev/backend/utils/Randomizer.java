@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.common.utils;
+package com.pivo.weev.backend.utils;
 
 import java.util.Random;
 import java.util.UUID;

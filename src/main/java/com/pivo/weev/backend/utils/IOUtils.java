@@ -1,11 +1,10 @@
-package com.pivo.weev.backend.common.utils;
+package com.pivo.weev.backend.utils;
 
-import static com.pivo.weev.backend.common.utils.ArrayUtils.last;
-import static com.pivo.weev.backend.common.utils.Constants.Symbols.SLASH;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 import static javax.imageio.ImageIO.write;
 
+import com.pivo.weev.backend.utils.Constants.Symbols;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -75,6 +74,6 @@ public class IOUtils {
 
     public static String getFormat(MultipartFile file) throws IOException {
         String mediaType = getMediaType(file);
-        return last(mediaType.split(SLASH)).orElse(null);
+        return ArrayUtils.last(mediaType.split(Symbols.SLASH)).orElse(null);
     }
 }

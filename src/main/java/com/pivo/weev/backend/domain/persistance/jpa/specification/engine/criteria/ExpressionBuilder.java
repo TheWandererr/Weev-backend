@@ -1,10 +1,10 @@
 package com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria;
 
 
-import com.pivo.weev.backend.common.utils.CollectionUtils;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaGet;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaJoin;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaParams;
+import com.pivo.weev.backend.utils.CollectionUtils;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Path;

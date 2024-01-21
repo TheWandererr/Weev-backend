@@ -4,9 +4,9 @@ import static com.pivo.weev.backend.rest.utils.Constants.FileMediaTypes.IMAGE;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import com.pivo.weev.backend.common.utils.IOUtils;
-import com.pivo.weev.backend.rest.logging.ApplicationLoggingHelper;
+import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.validation.annotation.ValidImage;
+import com.pivo.weev.backend.utils.IOUtils;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.io.IOException;

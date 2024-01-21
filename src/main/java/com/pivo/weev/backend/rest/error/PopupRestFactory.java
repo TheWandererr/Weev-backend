@@ -1,13 +1,11 @@
 package com.pivo.weev.backend.rest.error;
 
-import static com.pivo.weev.backend.common.utils.CollectionUtils.mapToList;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.FLOW_INTERRUPTED_ERROR;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.FORBIDDEN;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.UNAUTHORIZED;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.LOGIN_REQUIRED;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.NOT_ENOUGH_PERMISSIONS;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorMessageCodes.SOMETHING_WENT_WRONG;
 import static com.pivo.weev.backend.rest.utils.Constants.PopupButtons.OK;
+import static com.pivo.weev.backend.rest.utils.Constants.ResponseDetails.TITLE;
+import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.FLOW_INTERRUPTED_ERROR;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.NO_PERMISSIONS;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.UNAUTHORIZED;
 
 import com.pivo.weev.backend.rest.model.error.PopupRest;
 import com.pivo.weev.backend.rest.model.error.PopupRest.ButtonRest;
@@ -21,22 +19,22 @@ public class PopupRestFactory {
 
     private final ButtonRestFactory buttonRestFactory;
 
-    public PopupRest create(String errorCode, String messageCode, List<String> buttonCodes) {
+    public PopupRest create(String code, String message, List<String> buttonCodes) {
         List<ButtonRest> buttons = mapToList(buttonCodes, buttonRestFactory::create);
-        return new PopupRest(errorCode, messageCode, buttons);
+        return new PopupRest(code, message, buttons);
     }
 
     public PopupRest forbidden() {
         ButtonRest button = buttonRestFactory.ok();
-        return new PopupRest(FORBIDDEN, NOT_ENOUGH_PERMISSIONS, List.of(button));
+        return new PopupRest(NO_PERMISSIONS + TITLE, NO_PERMISSIONS, List.of(button));
     }
 
     public PopupRest unauthorized() {
         ButtonRest button = buttonRestFactory.login();
-        return new PopupRest(UNAUTHORIZED, LOGIN_REQUIRED, List.of(button));
+        return new PopupRest(UNAUTHORIZED + TITLE, UNAUTHORIZED, List.of(button));
     }
 
     public PopupRest somethingWentWrong() {
-        return create(FLOW_INTERRUPTED_ERROR, SOMETHING_WENT_WRONG, List.of(OK));
+        return create(FLOW_INTERRUPTED_ERROR + TITLE, FLOW_INTERRUPTED_ERROR, List.of(OK));
     }
 }

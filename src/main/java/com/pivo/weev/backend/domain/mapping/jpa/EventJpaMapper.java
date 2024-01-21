@@ -2,9 +2,9 @@ package com.pivo.weev.backend.domain.mapping.jpa;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
-import com.pivo.weev.backend.common.utils.DateTimeUtils;
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
+import com.pivo.weev.backend.utils.DateTimeUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

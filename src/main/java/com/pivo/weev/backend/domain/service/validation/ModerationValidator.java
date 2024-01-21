@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.domain.service.validation;
 
-import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.EVENT_MODERATION_IMPOSSIBLE_ERROR;
 import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.LOCAL_START_DATE_TIME;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
 import static java.time.Instant.now;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -21,13 +21,13 @@ public class ModerationValidator {
     private void validateStartDateTime(EventJpa validatable) {
         Instant utcStartDateTime = validatable.getUtcStartDateTime();
         if (now().isAfter(utcStartDateTime)) {
-            throw new ReasonableException(EVENT_MODERATION_IMPOSSIBLE_ERROR, LOCAL_START_DATE_TIME, BAD_REQUEST);
+            throw new ReasonableException(OPERATION_IMPOSSIBLE_ERROR, LOCAL_START_DATE_TIME, BAD_REQUEST);
         }
     }
 
     private void validateModerationStatus(EventJpa validatable) {
         if (!validatable.isOnModeration()) {
-            throw new ReasonableException(EVENT_MODERATION_IMPOSSIBLE_ERROR, null, BAD_REQUEST);
+            throw new ReasonableException(OPERATION_IMPOSSIBLE_ERROR, null, BAD_REQUEST);
         }
     }
 }

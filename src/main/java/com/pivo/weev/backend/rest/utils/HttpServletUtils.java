@@ -1,9 +1,9 @@
 package com.pivo.weev.backend.rest.utils;
 
-import static com.pivo.weev.backend.common.utils.ArrayUtils.findFirst;
-import static com.pivo.weev.backend.common.utils.ArrayUtils.first;
-import static com.pivo.weev.backend.common.utils.StreamUtils.map;
-import static com.pivo.weev.backend.common.utils.StreamUtils.stream;
+import static com.pivo.weev.backend.utils.ArrayUtils.findFirst;
+import static com.pivo.weev.backend.utils.ArrayUtils.first;
+import static com.pivo.weev.backend.utils.StreamUtils.map;
+import static com.pivo.weev.backend.utils.StreamUtils.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -14,10 +14,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.security.oauth2.core.OAuth2AccessToken.TokenType.BEARER;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pivo.weev.backend.common.utils.ArrayUtils;
-import com.pivo.weev.backend.common.utils.CollectionUtils;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.utils.Constants.Cookies;
+import com.pivo.weev.backend.utils.ArrayUtils;
+import com.pivo.weev.backend.utils.CollectionUtils;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

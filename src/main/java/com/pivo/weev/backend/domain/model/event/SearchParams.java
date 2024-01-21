@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.model.event;
 
-import static com.pivo.weev.backend.common.utils.ArrayUtils.isEmpty;
+import static com.pivo.weev.backend.utils.ArrayUtils.isEmpty;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;

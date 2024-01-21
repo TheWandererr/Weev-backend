@@ -27,6 +27,8 @@ public class Config extends ModifiableJpa<Long> {
     private String name;
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> map;
+    @Column
+    private Integer integer;
 
     public Map<String, Object> getMap() {
         if (isNull(map)) {

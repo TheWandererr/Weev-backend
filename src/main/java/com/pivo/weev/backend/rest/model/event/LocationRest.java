@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.rest.model.event;
 
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK;
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.MUST_BE_NOT_NULL;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_NULL;
 
 import com.pivo.weev.backend.rest.model.common.MapPointRest;
 import jakarta.validation.constraints.NotBlank;

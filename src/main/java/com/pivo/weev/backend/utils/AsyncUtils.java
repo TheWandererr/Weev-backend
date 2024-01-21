@@ -1,6 +1,5 @@
-package com.pivo.weev.backend.common.utils;
+package com.pivo.weev.backend.utils;
 
-import static com.pivo.weev.backend.common.utils.StreamUtils.map;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 import java.util.List;
@@ -13,8 +12,8 @@ import lombok.experimental.UtilityClass;
 public final class AsyncUtils {
 
     public static <S, R> List<R> supplyAll(List<S> payload, Function<S, R> execution, Executor executor) {
-        return map(payload, object -> supplyAsync(() -> execution.apply(object), executor))
-                .map(CompletableFuture::join)
-                .toList();
+        return StreamUtils.map(payload, object -> supplyAsync(() -> execution.apply(object), executor))
+                          .map(CompletableFuture::join)
+                          .toList();
     }
 }

@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AlertRest {
 
-    private final String titleCode;
-    private final String messageCode;
+    private final String title;
+    private final String message;
 }

@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.common;
 
-import com.pivo.weev.backend.common.utils.Enumerated;
+import com.pivo.weev.backend.utils.Enumerated;
 
 public enum ResourceName implements Enumerated {
 

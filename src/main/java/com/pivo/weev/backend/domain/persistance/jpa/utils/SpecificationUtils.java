@@ -1,8 +1,8 @@
 package com.pivo.weev.backend.domain.persistance.jpa.utils;
 
-import static com.pivo.weev.backend.common.utils.ArrayUtils.mapToList;
-import static com.pivo.weev.backend.common.utils.ArrayUtils.toArray;
-import static com.pivo.weev.backend.common.utils.Constants.Symbols.DOT;
+import static com.pivo.weev.backend.utils.ArrayUtils.mapToList;
+import static com.pivo.weev.backend.utils.ArrayUtils.toArray;
+import static com.pivo.weev.backend.utils.Constants.Symbols.DOT;
 
 import jakarta.persistence.metamodel.Attribute;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.service;
 
-import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.TIME_ZONE_ID_NOT_FOUND_ERROR;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.TIME_ZONE_ID_NOT_FOUND_ERROR;
 
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
 import java.time.ZoneId;

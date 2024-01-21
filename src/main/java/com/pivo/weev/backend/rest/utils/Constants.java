@@ -24,12 +24,8 @@ public class Constants {
     @UtilityClass
     public static final class Api {
 
-        public static final String PREFIX = "/weev/api";
-        public static final String LOGIN_URL = "/weev/auth/login";
-        public static final String LOGIN_URI = "/auth/login";
-        public static final String LOGOUT_URL = "/weev/auth/logout";
-        public static final String REFRESH_URI = "/auth/refresh";
-        public static final String MODERATION_URI = "/api/moderation";
+        public static final String PREFIX = "/api";
+        public static final String LOGIN_URL = "/auth/login";
         public static final String EVENTS_SEARCH_URI = "/api/events/search";
         public static final String EVENTS_SEARCH_MAP_URI = "/api/events/map/search";
     }
@@ -56,50 +52,10 @@ public class Constants {
     }
 
     @UtilityClass
-    public static final class ErrorCodes {
-
-        public static final String NO_PERMISSIONS = "not.enough.permissions";
-        public static final String UNAUTHORIZED = "unauthorized";
-        public static final String FORBIDDEN = "forbidden";
-        public static final String VALIDATION_FAILED = "validation.failed";
-        public static final String FIELD_VALIDATION_FAILED = "field.validation.failed";
-        public static final String NOT_FOUND = "not.found";
-        public static final String MUST_BE_NOT_NULL = "must.be.not.null";
-        public static final String MUST_BE_NOT_BLANK = "must.be.not.blank";
-        public static final String MUST_BE_NULL_OR_NOT_BLANK = "must.be.null.or.not.blank";
-        public static final String INVALID_EVENT_HEADER = "invalid.header.length";
-        public static final String INVALID_EVENT_CATEGORY = "invalid.category";
-        public static final String INVALID_EVENT_SUBCATEGORY = "invalid.subcategory";
-        public static final String INVALID_EVENT_MEMBERS_AMOUNT = "invalid.members.limit";
-        public static final String LENGTH_OUT_OF_BOUND = "length.out.of.bound";
-        public static final String INVALID_FEE_AMOUNT = "invalid.fee.amount";
-        public static final String INVALID_RADIUS_AMOUNT = "invalid.radius.amount";
-        public static final String INVALID_FILE = "invalid.file";
-        public static final String FLOW_INTERRUPTED_ERROR = "flow.interrupted.error";
-        public static final String INVALID_DECLINATION_REASON = "unsupported.declination.reason";
-        public static final String INVALID_PAGE_SIZE = "invalid.page.size";
-        public static final String INVALID_ID = "invalid.id";
-        public static final String INVALID_ZOOM = "invalid.zoom";
-    }
-
-    @UtilityClass
-    public static final class ErrorMessageCodes {
-
-        public static final String INVALID_TOKEN = "invalid.token";
-        public static final String MISSING_COOKIE = "missing.cookie";
-        public static final String AUTHENTICATION_FAILED = "authentication.failed";
-        public static final String NOT_ENOUGH_PERMISSIONS = "not.enough.permissions";
-        public static final String FLOW_INTERRUPTED = "flow.interrupted";
-        public static final String LOGIN_REQUIRED = "login.required";
-        public static final String SOMETHING_WENT_WRONG = "something.went.wrong";
-        public static final String BAD_CREDENTIALS = "bad.credentials";
-    }
-
-
-    @UtilityClass
     public static final class ResponseDetails {
 
         public static final String REASON = "reason";
+        public static final String TITLE = ".title";
     }
 
     @UtilityClass

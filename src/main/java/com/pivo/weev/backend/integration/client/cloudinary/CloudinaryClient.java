@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.integration.client.cloudinary;
 
-import static com.pivo.weev.backend.domain.utils.Constants.ErrorCodes.CLOUD_OPERATION_ERROR;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.CLOUD_OPERATION_ERROR;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 
@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,7 +23,7 @@ public class CloudinaryClient {
     private final Cloudinary api;
     private final ObjectMapper mapper;
 
-    public CloudinaryClient(CloudinaryProperties cloudinaryProperties, @Qualifier("mapper") ObjectMapper mapper) {
+    public CloudinaryClient(CloudinaryProperties cloudinaryProperties, ObjectMapper mapper) {
         this.mapper = mapper;
         LOGGER.info("Client Initialization is started");
         this.cloudinaryProperties = cloudinaryProperties;

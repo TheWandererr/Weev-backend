@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.common.utils;
+package com.pivo.weev.backend.utils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

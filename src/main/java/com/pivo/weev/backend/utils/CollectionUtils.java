@@ -1,10 +1,10 @@
-package com.pivo.weev.backend.common.utils;
+package com.pivo.weev.backend.utils;
 
-import static com.pivo.weev.backend.common.utils.StreamUtils.flatStream;
-import static com.pivo.weev.backend.common.utils.StreamUtils.map;
-import static com.pivo.weev.backend.common.utils.StreamUtils.nullableStream;
-import static com.pivo.weev.backend.common.utils.StreamUtils.select;
-import static com.pivo.weev.backend.common.utils.StreamUtils.stream;
+import static com.pivo.weev.backend.utils.StreamUtils.flatStream;
+import static com.pivo.weev.backend.utils.StreamUtils.map;
+import static com.pivo.weev.backend.utils.StreamUtils.nullableStream;
+import static com.pivo.weev.backend.utils.StreamUtils.select;
+import static com.pivo.weev.backend.utils.StreamUtils.stream;
 import static java.util.Objects.isNull;
 
 import java.util.Collection;

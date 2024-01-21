@@ -1,8 +1,8 @@
 package com.pivo.weev.backend.domain.service.clusterization;
 
-import static com.pivo.weev.backend.common.utils.CollectionUtils.mapToList;
 import static com.pivo.weev.backend.domain.utils.Constants.MapParams.MAXIMUM_ZOOM;
 import static com.pivo.weev.backend.domain.utils.Constants.MapParams.MINIMAL_ZOOM;
+import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.mapstruct.factory.Mappers.getMapper;

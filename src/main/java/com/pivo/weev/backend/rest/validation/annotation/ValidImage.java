@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.validation.annotation;
 
-import static com.pivo.weev.backend.rest.utils.Constants.ErrorCodes.INVALID_FILE;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_FILE;
 
 import com.pivo.weev.backend.rest.validation.validator.ImageValidator;
 import jakarta.validation.Constraint;
