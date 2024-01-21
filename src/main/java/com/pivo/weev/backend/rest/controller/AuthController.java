@@ -2,7 +2,7 @@ package com.pivo.weev.backend.rest.controller;
 
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getAuthorizationValue;
 
-import com.pivo.weev.backend.rest.model.auth.JWTPair;
+import com.pivo.weev.backend.rest.model.auth.AuthTokens;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import com.pivo.weev.backend.rest.model.response.LoginResponse;
@@ -22,12 +22,12 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @GetMapping("/refresh")
+    @GetMapping("/tokens/refresh")
     @PreAuthorize("hasAnyAuthority('SCOPE_refresh')")
     public LoginResponse refreshToken(HttpServletRequest httpServletRequest) {
         String token = getAuthorizationValue(httpServletRequest);
-        JWTPair jwtPair = authService.refreshAuthentication(token);
-        return new LoginResponse(jwtPair.getAccessToken().getTokenValue(), jwtPair.getRefreshToken().getTokenValue());
+        AuthTokens authTokens = authService.refreshTokens(token);
+        return new LoginResponse(authTokens.getAccessTokenValue(), authTokens.getRefreshTokenValue());
     }
 
     @PostMapping("/logout")

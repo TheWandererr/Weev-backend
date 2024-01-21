@@ -10,7 +10,7 @@ import com.pivo.weev.backend.domain.model.auth.OAuthTokenDetails;
 import com.pivo.weev.backend.domain.service.auth.OAuthTokenService;
 import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.mapping.domain.OAuthTokenDetailsMapper;
-import com.pivo.weev.backend.rest.model.auth.JWTPair;
+import com.pivo.weev.backend.rest.model.auth.AuthTokens;
 import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
@@ -45,9 +45,9 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
     private void handleSuccessLogin(HttpServletResponse response, Authentication authentication) throws IOException {
         try {
             LoginDetails loginDetails = getLoginDetails(authentication);
-            JWTPair jwtPair = authService.generateTokens(authentication);
-            updateTokenDetails(loginDetails, jwtPair);
-            LoginResponse loginResponse = new LoginResponse(jwtPair.getAccessTokenValue(), jwtPair.getRefreshTokenValue());
+            AuthTokens authTokens = authService.generateTokens(authentication);
+            updateTokenDetails(loginDetails, authTokens);
+            LoginResponse loginResponse = new LoginResponse(authTokens.getAccessTokenValue(), authTokens.getRefreshTokenValue());
             writeResponse(loginResponse, response, OK, mapper);
         } catch (Exception exception) {
             LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
@@ -56,15 +56,15 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
         }
     }
 
-    private void updateTokenDetails(LoginDetails loginDetails, JWTPair jwtPair) {
+    private void updateTokenDetails(LoginDetails loginDetails, AuthTokens authTokens) {
         boolean updated = oAuthTokenService.updateTokenDetails(
                 loginDetails.getUserId(),
                 loginDetails.getDeviceId(),
                 loginDetails.getSerial(),
-                jwtPair.getRefreshToken().getExpiresAt()
+                authTokens.getRefreshToken().getExpiresAt()
         );
         if (!updated) {
-            OAuthTokenDetails tokenDetails = getMapper(OAuthTokenDetailsMapper.class).map(loginDetails, jwtPair);
+            OAuthTokenDetails tokenDetails = getMapper(OAuthTokenDetailsMapper.class).map(loginDetails, authTokens);
             oAuthTokenService.saveTokenDetails(tokenDetails);
         }
     }

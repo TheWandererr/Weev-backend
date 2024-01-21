@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 @Getter
 @Setter
 @AllArgsConstructor
-public class JWTPair {
+public class AuthTokens {
 
     private final Jwt accessToken;
     private final Jwt refreshToken;
