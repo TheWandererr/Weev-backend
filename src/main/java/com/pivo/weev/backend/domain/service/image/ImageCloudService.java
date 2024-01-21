@@ -4,8 +4,8 @@ import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.jpa.CloudResourceJpaMapper;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
-import com.pivo.weev.backend.integration.client.cloudinary.model.Image;
-import com.pivo.weev.backend.integration.service.cloudinary.CloudinaryService;
+import com.pivo.weev.backend.integration.cloudinary.model.Image;
+import com.pivo.weev.backend.integration.cloudinary.service.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class ImageCloudService {
     }
 
     public void delete(String externalId) {
-
+        cloudinaryService.destroy(externalId);
     }
 
 }

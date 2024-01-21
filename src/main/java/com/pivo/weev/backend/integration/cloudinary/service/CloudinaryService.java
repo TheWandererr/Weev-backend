@@ -1,9 +1,9 @@
-package com.pivo.weev.backend.integration.service.cloudinary;
+package com.pivo.weev.backend.integration.cloudinary.service;
 
 import static com.pivo.weev.backend.utils.IOUtils.getBytes;
 
-import com.pivo.weev.backend.integration.client.cloudinary.CloudinaryClient;
-import com.pivo.weev.backend.integration.client.cloudinary.model.Image;
+import com.pivo.weev.backend.integration.cloudinary.client.CloudinaryClient;
+import com.pivo.weev.backend.integration.cloudinary.model.Image;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

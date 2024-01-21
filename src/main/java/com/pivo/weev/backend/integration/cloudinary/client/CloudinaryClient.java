@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.integration.client.cloudinary;
+package com.pivo.weev.backend.integration.cloudinary.client;
 
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.CLOUD_OPERATION_ERROR;
 import static java.util.Optional.ofNullable;
@@ -7,7 +7,8 @@ import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 import com.cloudinary.Cloudinary;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pivo.weev.backend.domain.model.exception.ReasonableException;
-import com.pivo.weev.backend.integration.client.cloudinary.model.Image;
+import com.pivo.weev.backend.integration.cloudinary.CloudinaryProperties;
+import com.pivo.weev.backend.integration.cloudinary.model.Image;
 import java.io.IOException;
 import java.util.Map;
 import org.slf4j.Logger;

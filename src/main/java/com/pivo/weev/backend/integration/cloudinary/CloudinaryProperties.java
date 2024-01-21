@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.integration.client.cloudinary;
+package com.pivo.weev.backend.integration.cloudinary;
 
 import java.util.Map;
 import lombok.Getter;

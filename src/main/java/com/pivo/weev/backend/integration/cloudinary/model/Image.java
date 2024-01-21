@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.integration.client.cloudinary.model;
+package com.pivo.weev.backend.integration.cloudinary.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
