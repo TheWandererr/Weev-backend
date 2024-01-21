@@ -23,6 +23,7 @@ public class FirebaseProperties {
     private String tokenUri;
     private String authProviderCertUrl;
     private String certUrl;
+    private String storageBucket;
     private Integer connectTimeout;
     private Integer readTimeout;
 
@@ -55,5 +56,9 @@ public class FirebaseProperties {
 
     public Map<String, String> getCredentials() {
         return credentials;
+    }
+
+    public String getStorageBucket() {
+        return storageBucket;
     }
 }
