@@ -24,7 +24,7 @@ public class AuthController {
 
     @GetMapping("/tokens/refresh")
     @PreAuthorize("hasAnyAuthority('SCOPE_refresh')")
-    public LoginResponse refreshToken(HttpServletRequest httpServletRequest) {
+    public LoginResponse refreshTokens(HttpServletRequest httpServletRequest) {
         String token = getAuthorizationValue(httpServletRequest);
         AuthTokens authTokens = authService.refreshTokens(token);
         return new LoginResponse(authTokens.getAccessTokenValue(), authTokens.getRefreshTokenValue());
