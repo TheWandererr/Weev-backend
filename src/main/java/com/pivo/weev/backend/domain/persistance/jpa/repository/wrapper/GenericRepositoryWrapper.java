@@ -6,7 +6,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.exception.ResourceNotFoundEx
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.Entity;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ResourceName;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.IGenericRepository;
-import com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Errors;
+import com.pivo.weev.backend.domain.persistance.utils.Constants.Errors;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;

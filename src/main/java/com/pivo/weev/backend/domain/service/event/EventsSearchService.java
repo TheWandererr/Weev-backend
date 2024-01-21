@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.domain.service.event;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.EventSpecificationBuilder.buildEventsSearchSpecification;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.PageableUtils.build;
+import static com.pivo.weev.backend.domain.persistance.utils.PageableUtils.build;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static org.mapstruct.factory.Mappers.getMapper;
 

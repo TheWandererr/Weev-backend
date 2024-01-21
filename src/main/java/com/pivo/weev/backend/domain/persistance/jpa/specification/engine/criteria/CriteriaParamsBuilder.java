@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria;
 
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Paths.PATH_SPLITTER;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Paths.PATH_SPLITTER;
 import static com.pivo.weev.backend.utils.CollectionUtils.isEmpty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;

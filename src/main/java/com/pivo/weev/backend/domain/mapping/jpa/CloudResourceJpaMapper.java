@@ -1,16 +1,21 @@
 package com.pivo.weev.backend.domain.mapping.jpa;
 
-import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
-import com.pivo.weev.backend.domain.utils.AuthUtils;
-import com.pivo.weev.backend.integration.cloudinary.model.Image;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 
-@Mapper(imports = {AuthUtils.class})
+import com.google.cloud.storage.Blob;
+import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
+import java.net.URL;
+import org.mapstruct.Mapper;
+
+@Mapper()
 public interface CloudResourceJpaMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "externalId", source = "publicId")
-    @Mapping(target = "authorId", expression = "java(AuthUtils.getUserId())")
-    CloudResourceJpa map(Image source);
+    default CloudResourceJpa map(Blob source, URL downloadUrl) {
+        CloudResourceJpa destination = new CloudResourceJpa();
+        destination.setAuthorId(getUserId());
+        destination.setBlobId(source.getBlobId().getName());
+        destination.setFormat(source.getContentType());
+        destination.setUrl(downloadUrl.toString());
+        return destination;
+    }
 }

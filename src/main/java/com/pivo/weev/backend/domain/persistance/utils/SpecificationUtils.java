@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.persistance.jpa.utils;
+package com.pivo.weev.backend.domain.persistance.utils;
 
 import static com.pivo.weev.backend.utils.ArrayUtils.mapToList;
 import static com.pivo.weev.backend.utils.ArrayUtils.toArray;

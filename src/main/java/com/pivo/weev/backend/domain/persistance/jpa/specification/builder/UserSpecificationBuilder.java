@@ -3,7 +3,7 @@ package com.pivo.weev.backend.domain.persistance.jpa.specification.builder;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType.ANY;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.equal;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.SpecificationUtils.fieldPathFrom;
+import static com.pivo.weev.backend.domain.persistance.utils.SpecificationUtils.fieldPathFrom;
 import static java.util.List.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 

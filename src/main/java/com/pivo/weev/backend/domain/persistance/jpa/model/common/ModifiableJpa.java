@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.common;
 
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.CREATED_DATE;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.MODIFIED_DATE;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.CREATED_DATE;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.MODIFIED_DATE;
 import static java.util.Objects.nonNull;
 
 import jakarta.persistence.Column;

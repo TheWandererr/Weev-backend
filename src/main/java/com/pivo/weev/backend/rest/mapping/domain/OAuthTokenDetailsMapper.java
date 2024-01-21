@@ -12,6 +12,6 @@ public interface OAuthTokenDetailsMapper {
     @Mapping(target = "userId", source = "loginDetails.userId")
     @Mapping(target = "deviceId", source = "loginDetails.deviceId")
     @Mapping(target = "serial", source = "loginDetails.serial")
-    @Mapping(target = "expiresAt", source = "jwtPair.refreshToken.expiresAt")
+    @Mapping(target = "expiresAt", source = "authTokens.refreshToken.expiresAt")
     OAuthTokenDetails map(LoginDetails loginDetails, AuthTokens authTokens);
 }

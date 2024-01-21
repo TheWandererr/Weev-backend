@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.persistance.jpa.utils;
+package com.pivo.weev.backend.domain.persistance.utils;
 
 import lombok.experimental.UtilityClass;
 import org.locationtech.jts.geom.Coordinate;

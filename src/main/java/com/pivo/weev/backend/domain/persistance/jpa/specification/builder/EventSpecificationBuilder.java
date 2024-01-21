@@ -8,8 +8,8 @@ import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.empty;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.equal;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.in;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.CustomGeometryFactory.createPoint;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.SpecificationUtils.fieldPathFrom;
+import static com.pivo.weev.backend.domain.persistance.utils.CustomGeometryFactory.createPoint;
+import static com.pivo.weev.backend.domain.persistance.utils.SpecificationUtils.fieldPathFrom;
 import static java.util.List.of;
 
 import com.pivo.weev.backend.domain.model.common.MapPoint;

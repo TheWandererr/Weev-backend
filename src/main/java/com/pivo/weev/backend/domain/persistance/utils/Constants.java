@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.persistance.jpa.utils;
+package com.pivo.weev.backend.domain.persistance.utils;
 
 import java.util.regex.Pattern;
 import lombok.experimental.UtilityClass;
@@ -64,5 +64,16 @@ public class Constants {
         public static final String IMAGE_COMPRESSING_SCALE = "image.compressing.scale";
         public static final String ACCESS_TOKEN_EXPIRES_AMOUNT = "access.token.expires.amount";
         public static final String REFRESH_TOKEN_EXPIRES_AMOUNT = "refresh.token.expires.amount";
+    }
+
+    @UtilityClass
+    public static final class Firestore {
+
+        @UtilityClass
+        public static final class Collections {
+
+            public static final String CONFIGS = "configs";
+        }
+
     }
 }

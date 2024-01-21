@@ -1,10 +1,10 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.user;
 
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.USER_EMAIL;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.USER_NAME;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.USER_NICKNAME;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.USER_PASSWORD;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.USER_PHONE_NUMBER;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.USER_EMAIL;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.USER_NAME;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.USER_NICKNAME;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.USER_PASSWORD;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.USER_PHONE_NUMBER;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;

@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.event;
 
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_CATEGORY_NAME;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.EVENT_CATEGORY_NAME;
 import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;

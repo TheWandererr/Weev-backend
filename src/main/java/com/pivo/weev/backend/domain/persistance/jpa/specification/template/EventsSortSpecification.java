@@ -2,8 +2,8 @@ package com.pivo.weev.backend.domain.persistance.jpa.specification.template;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.CriteriaParamsBuilder.buildCriteriaParams;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.ExpressionBuilder.getExpression;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.CriteriaFunctions.DATE_PART;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.CriteriaLiterals.EPOCH;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.CriteriaFunctions.DATE_PART;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.CriteriaLiterals.EPOCH;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa_;

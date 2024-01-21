@@ -3,7 +3,7 @@ package com.pivo.weev.backend.domain.persistance.jpa.model.auth;
 import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
-import com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns;
+import com.pivo.weev.backend.domain.persistance.utils.Constants.Columns;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.SequenceGenerator;

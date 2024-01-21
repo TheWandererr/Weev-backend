@@ -39,7 +39,7 @@ public class EventImageService {
         }
         CloudResourceJpa photo = eventJpa.getPhoto();
         cloudResourceRepository.forceDelete(photo);
-        imageCloudService.delete(photo.getExternalId());
+        imageCloudService.delete(photo.getBlobId());
     }
 
     private void replacePhoto(EventJpa eventJpa, MultipartFile photo) {

@@ -4,6 +4,7 @@ import static java.util.Objects.nonNull;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.util.Objects;
@@ -19,15 +20,13 @@ import org.hibernate.proxy.HibernateProxy;
 public class CloudResourceJpa extends SequencedPersistable<Long> {
 
     @Column(unique = true, nullable = false)
-    private String externalId;
+    private String blobId;
     @Column(unique = true, nullable = false)
+    @Lob
     private String url;
-    private Integer height;
-    private Integer width;
     private String format;
     @Column(nullable = false)
     private Long authorId;
-    private String signature;
 
     @Override
     public final boolean equals(Object o) {

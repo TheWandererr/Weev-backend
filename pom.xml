@@ -31,6 +31,7 @@
     <timeshape.version>2022g.17</timeshape.version>
     <thumbnailator.version>0.4.20</thumbnailator.version>
     <geohash.version>1.4.0</geohash.version>
+    <firebase.version>9.2.0</firebase.version>
   </properties>
 
   <dependencies>
@@ -164,6 +165,11 @@
       <groupId>ch.hsr</groupId>
       <artifactId>geohash</artifactId>
       <version>${geohash.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.firebase</groupId>
+      <artifactId>firebase-admin</artifactId>
+      <version>${firebase.version}</version>
     </dependency>
   </dependencies>
 

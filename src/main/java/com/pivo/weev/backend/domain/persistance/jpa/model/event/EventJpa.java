@@ -4,10 +4,10 @@ import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStat
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DECLINED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DELETED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.ON_MODERATION;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_HEADER;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_STATUS;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_UTC_END_DATE_TIME;
-import static com.pivo.weev.backend.domain.persistance.jpa.utils.Constants.Columns.EVENT_UTC_START_DATE_TIME;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.EVENT_HEADER;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.EVENT_STATUS;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.EVENT_UTC_END_DATE_TIME;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.EVENT_UTC_START_DATE_TIME;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
 import static com.pivo.weev.backend.utils.Constants.Reasons.EVENT_CAPACITY_EXCEEDED;
 import static jakarta.persistence.CascadeType.ALL;

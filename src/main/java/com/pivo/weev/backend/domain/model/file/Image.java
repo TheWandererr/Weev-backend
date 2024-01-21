@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class Image {
 
+    private final String name;
     private final String format;
     private final BufferedImage source;
 }

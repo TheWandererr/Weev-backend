@@ -34,7 +34,7 @@ public class ImageCompressingService {
     public Image compress(MultipartFile file) {
         try {
             BufferedImage compressed = compress(file.getInputStream(), getScale(file));
-            return new Image(getFormat(file), compressed);
+            return new Image(file.getOriginalFilename(), getFormat(file), compressed);
         } catch (IOException exception) {
             String reason = ofNullable(exception.getCause())
                     .map(Throwable::getMessage)
