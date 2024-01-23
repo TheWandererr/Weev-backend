@@ -8,11 +8,11 @@ import com.pivo.weev.backend.domain.service.auth.OAuthTokenService;
 import com.pivo.weev.backend.rest.model.auth.AuthTokens;
 import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import com.pivo.weev.backend.rest.service.security.JWTProvider;
+import com.pivo.weev.backend.rest.service.security.JwtHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,7 +22,7 @@ public class AuthService {
     private final JWTProvider jwtProvider;
     private final LoginDetailsService loginDetailsService;
     private final OAuthTokenService oAuthTokenService;
-    private final JwtDecoder jwtDecoder;
+    private final JwtHolder jwtHolder;
 
     public AuthTokens generateTokens(Authentication authentication) {
         LoginDetails loginDetails = getLoginDetails(authentication);
@@ -35,8 +35,8 @@ public class AuthService {
         return new AuthTokens(accessToken, refreshToken);
     }
 
-    public AuthTokens refreshTokens(String token) {
-        Jwt jwt = jwtDecoder.decode(token);
+    public AuthTokens refreshTokens() {
+        Jwt jwt = jwtHolder.getToken();
         String username = jwt.getSubject();
         LoginDetails loginDetails = (LoginDetails) loginDetailsService.loadUserByUsername(username);
         AuthTokens authTokens = generateTokens(loginDetails);

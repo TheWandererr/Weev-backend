@@ -19,14 +19,16 @@ import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.error.AlertRestFactory;
 import com.pivo.weev.backend.rest.error.NotificationRestFactory;
 import com.pivo.weev.backend.rest.error.PopupRestFactory;
-import com.pivo.weev.backend.rest.filter.JWTAuthenticityVerifierFilter;
+import com.pivo.weev.backend.rest.filter.JwtAuthenticityVerifierFilter;
+import com.pivo.weev.backend.rest.filter.JwtDecoderFilter;
 import com.pivo.weev.backend.rest.handler.AccessDeniedHandler;
 import com.pivo.weev.backend.rest.handler.AuthenticationFailureHandler;
 import com.pivo.weev.backend.rest.handler.AuthenticationSuccessHandler;
 import com.pivo.weev.backend.rest.handler.UnauthorizedHandler;
 import com.pivo.weev.backend.rest.service.AuthService;
 import com.pivo.weev.backend.rest.service.LoginDetailsService;
-import com.pivo.weev.backend.rest.service.security.JWTAuthenticityVerifier;
+import com.pivo.weev.backend.rest.service.security.JwtAuthenticityVerifier;
+import com.pivo.weev.backend.rest.service.security.JwtHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +40,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -55,8 +58,10 @@ public class WebSecurityBeans {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            ObjectMapper mapper,
+                                           JwtHolder jwtHolder,
+                                           JwtDecoder jwtDecoder,
                                            ApplicationLoggingHelper applicationLoggingHelper,
-                                           JWTAuthenticityVerifier jwtAuthenticityVerifier)
+                                           JwtAuthenticityVerifier jwtAuthenticityVerifier)
             throws Exception {
         http.authorizeHttpRequests(customizer ->
                                            customizer.requestMatchers(GET).permitAll()
@@ -92,8 +97,11 @@ public class WebSecurityBeans {
         http.oauth2ResourceServer(customizer -> customizer.jwt(withDefaults()));
 
         http.addFilterBefore(
-                new JWTAuthenticityVerifierFilter(popupRestFactory, mapper, applicationLoggingHelper, jwtAuthenticityVerifier),
+                new JwtAuthenticityVerifierFilter(popupRestFactory, mapper, applicationLoggingHelper, jwtAuthenticityVerifier, jwtHolder),
                 UsernamePasswordAuthenticationFilter.class
+        );
+        http.addFilterBefore(new JwtDecoderFilter(mapper, jwtHolder, jwtDecoder, popupRestFactory, applicationLoggingHelper),
+                             JwtAuthenticityVerifierFilter.class
         );
 
         http.cors(AbstractHttpConfigurer::disable);

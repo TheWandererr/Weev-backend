@@ -1,12 +1,9 @@
 package com.pivo.weev.backend.rest.filter;
 
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getAuthorizationValue;
-import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getDeviceId;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_TOKEN;
 import static com.pivo.weev.backend.utils.Constants.Symbols.COLON;
-import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.join;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,51 +12,38 @@ import com.pivo.weev.backend.rest.error.PopupRestFactory;
 import com.pivo.weev.backend.rest.model.error.PopupRest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
-import com.pivo.weev.backend.rest.service.security.JWTAuthenticityVerifier;
+import com.pivo.weev.backend.rest.service.security.JwtHolder;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @AllArgsConstructor
-public class JWTAuthenticityVerifierFilter extends OncePerRequestFilter {
+public class JwtDecoderFilter extends OncePerRequestFilter {
 
-    private final PopupRestFactory popupRestFactory;
     private final ObjectMapper mapper;
+    private final JwtHolder jwtHolder;
+    private final JwtDecoder jwtDecoder;
+    private final PopupRestFactory popupRestFactory;
     private final ApplicationLoggingHelper applicationLoggingHelper;
-    private final JWTAuthenticityVerifier jwtAuthenticityVerifier;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = getAuthorizationValue(request);
-        if (isSkipRequest(authorization)) {
-            filterChain.doFilter(request, response);
+        try {
+            Jwt jwt = jwtDecoder.decode(authorization);
+            jwtHolder.setToken(jwt);
+        } catch (Exception exception) {
+            handleUnauthorized(response, exception.getMessage());
             return;
-        } else {
-            Pair<Boolean, String> verificationResult = jwtAuthenticityVerifier.verify(authorization, getDeviceId(request).orElse(null));
-            if (isNotTrue(verificationResult.getLeft())) {
-                handleUnauthorized(response, verificationResult.getRight());
-                return;
-            }
         }
         filterChain.doFilter(request, response);
-    }
-
-    private boolean isSkipRequest(String authorization) {
-        return isBlank(authorization); // TODO check this!!!
-        /*if (HttpMethod.GET.matches(request.getMethod())) {
-            if (matches(request, REFRESH_URI)) {
-                return false;
-            }
-            return !matches(request, MODERATION_URI);
-        }
-        return matches(request, LOGIN_URI) || matches(request, EVENTS_SEARCH_URI);*/
     }
 
     private void handleUnauthorized(HttpServletResponse response, String failure) throws IOException {

@@ -9,34 +9,31 @@ import static java.util.Objects.isNull;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.auth.OAuthTokenDetailsJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
+import com.pivo.weev.backend.rest.model.auth.JwtVerificationResult;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 @AllArgsConstructor
-public class JWTAuthenticityVerifier {
+public class JwtAuthenticityVerifier {
 
     private final OAuthTokenDetailsRepositoryWrapper oAuthTokenDetailsRepository;
-    private final JwtDecoder jwtDecoder;
 
-    public Pair<Boolean, String> verify(String authorization, String deviceId) {
+    public JwtVerificationResult verify(Jwt jwt, String deviceId) {
         try {
-            Jwt jwt = jwtDecoder.decode(authorization);
             OAuthTokenDetailsJpa tokenDetails = oAuthTokenDetailsRepository.findByUserIdAndDeviceId(getUserId(jwt), getDeviceId(jwt));
             if (isNull(tokenDetails)) {
-                return Pair.of(false, AUTHORIZATION_TOKEN_NOT_FOUND_ERROR);
+                return new JwtVerificationResult(false, AUTHORIZATION_TOKEN_NOT_FOUND_ERROR);
             }
             if (!StringUtils.equals(getSerial(jwt), tokenDetails.getSerial())) {
-                return Pair.of(false, TOKEN_COMPROMISED_ERROR);
+                return new JwtVerificationResult(false, TOKEN_COMPROMISED_ERROR);
             }
             if (!StringUtils.equals(deviceId, tokenDetails.getDeviceId())) {
-                return Pair.of(false, TOKEN_COMPROMISED_ERROR);
+                return new JwtVerificationResult(false, TOKEN_COMPROMISED_ERROR);
             }
         } catch (Exception exception) {
-            return Pair.of(false, exception.getMessage());
+            return new JwtVerificationResult(false, exception.getMessage());
         }
-        return Pair.of(true, null);
+        return new JwtVerificationResult(true, null);
     }
 }

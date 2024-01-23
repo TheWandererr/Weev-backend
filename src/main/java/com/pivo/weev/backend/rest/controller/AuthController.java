@@ -1,13 +1,10 @@
 package com.pivo.weev.backend.rest.controller;
 
-import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getAuthorizationValue;
-
 import com.pivo.weev.backend.rest.model.auth.AuthTokens;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import com.pivo.weev.backend.rest.model.response.LoginResponse;
 import com.pivo.weev.backend.rest.service.AuthService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +21,8 @@ public class AuthController {
 
     @GetMapping("/tokens/refresh")
     @PreAuthorize("hasAnyAuthority('SCOPE_refresh')")
-    public LoginResponse refreshTokens(HttpServletRequest httpServletRequest) {
-        String token = getAuthorizationValue(httpServletRequest);
-        AuthTokens authTokens = authService.refreshTokens(token);
+    public LoginResponse refreshTokens() {
+        AuthTokens authTokens = authService.refreshTokens();
         return new LoginResponse(authTokens.getAccessTokenValue(), authTokens.getRefreshTokenValue());
     }
 

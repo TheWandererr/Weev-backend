@@ -7,8 +7,8 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.OAuthTokenDetailsRepositoryWrapper;
-import com.pivo.weev.backend.rest.service.security.JWTAuthenticityVerifier;
 import com.pivo.weev.backend.rest.service.security.JWTClaimsVerifier;
+import com.pivo.weev.backend.rest.service.security.JwtAuthenticityVerifier;
 import com.pivo.weev.backend.rest.service.security.RSAKeyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +41,7 @@ public class JwtConfig {
     }
 
     @Bean
-    public JWTAuthenticityVerifier jwtAuthenticityVerifier(OAuthTokenDetailsRepositoryWrapper oAuthTokenDetailsRepository, JwtDecoder jwtDecoder) {
-        return new JWTAuthenticityVerifier(oAuthTokenDetailsRepository, jwtDecoder);
+    public JwtAuthenticityVerifier jwtAuthenticityVerifier(OAuthTokenDetailsRepositoryWrapper oAuthTokenDetailsRepository) {
+        return new JwtAuthenticityVerifier(oAuthTokenDetailsRepository);
     }
 }
