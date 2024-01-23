@@ -77,8 +77,9 @@ public class EventJpa extends ModifiableJpa<Long> {
     private CloudResourceJpa photo;
     private Boolean reminded;
     private Long moderatedBy;
-    @Embedded
-    private RestrictionsJpa restrictions;
+    @OneToOne(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "restrictions_id")
+    private RestrictionsJpa restrictions = new RestrictionsJpa();
     private LocalDateTime localStartDateTime;
     private String startTimeZoneId;
     @Column(name = EVENT_UTC_START_DATE_TIME)

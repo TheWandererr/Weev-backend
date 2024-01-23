@@ -1,6 +1,13 @@
 package com.pivo.weev.backend.domain.service.event;
 
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.CLOUD_OPERATION_ERROR;
+import static org.mapstruct.factory.Mappers.getMapper;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
+import com.pivo.weev.backend.domain.mapping.jpa.CloudResourceJpaMapper;
+import com.pivo.weev.backend.domain.model.common.CloudResource;
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
+import com.pivo.weev.backend.domain.model.exception.ReasonableException;
 import com.pivo.weev.backend.domain.model.file.Image;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
@@ -29,7 +36,8 @@ public class EventImageService {
         } else if (destination.hasPhoto()) {
             replacePhoto(destination, source.getPhoto());
         } else {
-            createPhoto(destination, source.getPhoto());
+            CloudResourceJpa cloudResourceJpa = createPhoto(source.getPhoto());
+            destination.setPhoto(cloudResourceJpa);
         }
     }
 
@@ -43,13 +51,18 @@ public class EventImageService {
     }
 
     private void replacePhoto(EventJpa eventJpa, MultipartFile photo) {
-        deletePhoto(eventJpa);
-        createPhoto(eventJpa, photo);
+        try {
+            deletePhoto(eventJpa);
+        } catch (Exception exception) {
+            throw new ReasonableException(CLOUD_OPERATION_ERROR, exception.getMessage(), INTERNAL_SERVER_ERROR);
+        }
+        CloudResourceJpa cloudResourceJpa = createPhoto(photo);
+        eventJpa.setPhoto(cloudResourceJpa);
     }
 
-    private void createPhoto(EventJpa eventJpa, MultipartFile photo) {
+    private CloudResourceJpa createPhoto(MultipartFile photo) {
         Image compressedPhoto = imageCompressingService.compress(photo);
-        CloudResourceJpa cloudResourceJpa = imageCloudService.upload(compressedPhoto);
-        eventJpa.setPhoto(cloudResourceJpa);
+        CloudResource cloudResource = imageCloudService.upload(compressedPhoto);
+        return getMapper(CloudResourceJpaMapper.class).map(cloudResource);
     }
 }

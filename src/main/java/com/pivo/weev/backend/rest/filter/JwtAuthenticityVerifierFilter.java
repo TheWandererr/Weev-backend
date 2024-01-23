@@ -1,11 +1,10 @@
 package com.pivo.weev.backend.rest.filter;
 
-import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getAuthorizationValue;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getDeviceId;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_TOKEN;
 import static com.pivo.weev.backend.utils.Constants.Symbols.COLON;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.join;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @AllArgsConstructor
@@ -38,12 +38,12 @@ public class JwtAuthenticityVerifierFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String authorization = getAuthorizationValue(request);
-        if (isSkipRequest(authorization)) {
+        Jwt token = jwtHolder.getToken();
+        if (isSkipRequest(token)) {
             filterChain.doFilter(request, response);
             return;
         } else {
-            JwtVerificationResult verificationResult = jwtAuthenticityVerifier.verify(jwtHolder.getToken(), getDeviceId(request).orElse(null));
+            JwtVerificationResult verificationResult = jwtAuthenticityVerifier.verify(token, getDeviceId(request).orElse(null));
             if (!verificationResult.isSuccessful()) {
                 handleUnauthorized(response, verificationResult.getFailure());
                 return;
@@ -52,8 +52,8 @@ public class JwtAuthenticityVerifierFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean isSkipRequest(String authorization) {
-        return isBlank(authorization); // TODO check this!!!
+    private boolean isSkipRequest(Jwt jwt) {
+        return isNull(jwt); // TODO check this!!!
         /*if (HttpMethod.GET.matches(request.getMethod())) {
             if (matches(request, REFRESH_URI)) {
                 return false;

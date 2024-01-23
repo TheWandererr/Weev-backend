@@ -14,10 +14,12 @@ import static java.util.List.of;
 
 import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.event.Radius;
+import com.pivo.weev.backend.domain.model.event.Restrictions;
 import com.pivo.weev.backend.domain.model.event.SearchParams;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa_;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa_;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.RestrictionsJpa_;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SpecificationBuilder;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.template.EventRadiusSpecification;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.template.EventsSortSpecification;
@@ -43,6 +45,7 @@ public class EventSpecificationBuilder {
                 .and(buildRadiusSpecification(searchParams))
                 .and(buildSortSpecification(searchParams))
                 .and(buildGeoHashSpecification(searchParams))
+                .and(buildRestrictionsSpecification(searchParams))
                 .build();
     }
 
@@ -69,6 +72,10 @@ public class EventSpecificationBuilder {
         return new EventRadiusSpecification(point, radius.getValue());
     }
 
+    private Specification<EventJpa> buildSortSpecification(SearchParams searchParams) {
+        return searchParams.hasSortFields() ? empty() : SORT_SPECIFICATION;
+    }
+
     private Specification<EventJpa> buildGeoHashSpecification(SearchParams searchParams) {
         if (!searchParams.hasGeoHash()) {
             return empty();
@@ -76,7 +83,12 @@ public class EventSpecificationBuilder {
         return contains(fieldPathFrom(EventJpa_.location, LocationJpa_.hash), searchParams.getGeoHash(), 1);
     }
 
-    private Specification<EventJpa> buildSortSpecification(SearchParams searchParams) {
-        return searchParams.hasSortFields() ? empty() : SORT_SPECIFICATION;
+    private Specification<EventJpa> buildRestrictionsSpecification(SearchParams searchParams) {
+        if (!searchParams.hasRestrictions()) {
+            return empty();
+        }
+        Restrictions restrictions = searchParams.getRestrictions();
+        return equal(fieldPathFrom(EventJpa_.restrictions, RestrictionsJpa_.availability), restrictions.getAvailability().name(), String.class);
     }
+
 }

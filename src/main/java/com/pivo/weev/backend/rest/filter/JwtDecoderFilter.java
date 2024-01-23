@@ -4,6 +4,7 @@ import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getAuthorization
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_TOKEN;
 import static com.pivo.weev.backend.utils.Constants.Symbols.COLON;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.join;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,12 +37,14 @@ public class JwtDecoderFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = getAuthorizationValue(request);
-        try {
-            Jwt jwt = jwtDecoder.decode(authorization);
-            jwtHolder.setToken(jwt);
-        } catch (Exception exception) {
-            handleUnauthorized(response, exception.getMessage());
-            return;
+        if (isNotBlank(authorization)) {
+            try {
+                Jwt jwt = jwtDecoder.decode(authorization);
+                jwtHolder.setToken(jwt);
+            } catch (Exception exception) {
+                handleUnauthorized(response, exception.getMessage());
+                return;
+            }
         }
         filterChain.doFilter(request, response);
     }

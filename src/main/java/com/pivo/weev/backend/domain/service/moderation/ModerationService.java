@@ -56,12 +56,11 @@ public class ModerationService {
 
     private void confirmEventUpdate(EventJpa confirmable, EventJpa updatable) {
         eventImageService.deletePhoto(updatable);
+        eventRepository.forceDelete(confirmable);
 
         getMapper(EventJpaMapper.class).remap(confirmable, updatable);
         updatable.setModeratedBy(getUserId());
         updatable.setStatus(CONFIRMED);
-
-        eventRepository.forceDelete(confirmable);
 
         Set<UserJpa> recipients = updatable.getUsers();
         notificationService.notifyAll(recipients, updatable, EVENT_UPDATE_SUCCESSFUL);

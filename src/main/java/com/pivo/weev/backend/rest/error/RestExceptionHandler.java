@@ -97,7 +97,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ResourceNotFoundException.class})
     public ResponseEntity<BaseResponse> handleResourceNotFoundException(ResourceNotFoundException resourceNotFoundException) {
-        PopupRest error = popupRestFactory.somethingWentWrong();
+        PopupRest error = popupRestFactory.resourceNotFound(resourceNotFoundException.getCode());
         BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
         logger.error(applicationLoggingHelper.buildLoggingError(resourceNotFoundException, null));
         return ResponseEntity.badRequest()

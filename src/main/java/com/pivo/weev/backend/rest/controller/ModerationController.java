@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -48,13 +47,13 @@ public class ModerationController {
         return new DeclinationReasonsResponse(reasons);
     }
 
-    @PutMapping("/events/{id}")
+    @PutMapping("/events/{id}/confirmation")
     public BaseResponse confirmEvent(@PathVariable Long id) {
         moderationService.confirmEvent(id);
         return new BaseResponse(SUCCESS);
     }
 
-    @DeleteMapping("/events/{id}")
+    @PutMapping("/events/{id}/declination")
     public BaseResponse declineEvent(@PathVariable Long id, @Valid @RequestBody EventDeclineRequest request) {
         moderationService.declineEvent(id, request.getDeclinationReason());
         return new BaseResponse(SUCCESS);

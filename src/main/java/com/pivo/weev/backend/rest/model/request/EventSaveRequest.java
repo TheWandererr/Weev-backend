@@ -46,7 +46,7 @@ public class EventSaveRequest {
     private MultipartFile photo;
     private boolean updatePhoto;
     private EntryFeeRest entryFee;
-    private RestrictionsRest restrictions;
+    private RestrictionsRest restrictions = RestrictionsRest.withDefaults();
     @NotNull(message = MUST_BE_NOT_NULL)
     private LocalDateTime localStartDateTime;
     @NotNull(message = MUST_BE_NOT_NULL)

@@ -6,6 +6,7 @@ import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.EVENTS_P
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_AMOUNT;
 
 import com.pivo.weev.backend.rest.model.event.RadiusRest;
+import com.pivo.weev.backend.rest.model.event.RestrictionsRest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -29,6 +30,7 @@ public class EventsSearchRequest extends PageableRequest {
     @Max(value = MAXIMUM_ZOOM, message = INVALID_AMOUNT)
     private Integer zoom;
     private String geoHash;
+    private RestrictionsRest restrictions;
 
     public EventsSearchRequest(Integer page) {
         super(page, EVENTS_PER_PAGE);

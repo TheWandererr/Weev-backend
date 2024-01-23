@@ -22,13 +22,14 @@ public class SearchParams {
     private Radius radius;
     private int zoom;
     private String geoHash;
+    private Restrictions restrictions;
 
     private boolean onModeration;
     private boolean published;
 
     public String[] getSortFields() {
         if (isNull(sortFields)) {
-            return new String[]{};
+            sortFields = new String[]{};
         }
         return sortFields;
     }
@@ -43,5 +44,9 @@ public class SearchParams {
 
     public boolean hasGeoHash() {
         return isNotBlank(geoHash);
+    }
+
+    public boolean hasRestrictions() {
+        return nonNull(restrictions);
     }
 }

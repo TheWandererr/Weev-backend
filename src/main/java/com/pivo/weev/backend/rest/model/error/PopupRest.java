@@ -15,6 +15,7 @@ public class PopupRest {
     private final String title;
     private final String message;
     private List<ButtonRest> buttons;
+    private List<String> details;
 
     @Getter
     @AllArgsConstructor

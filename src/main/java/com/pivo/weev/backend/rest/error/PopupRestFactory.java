@@ -21,20 +21,26 @@ public class PopupRestFactory {
 
     public PopupRest create(String code, String message, List<String> buttonCodes) {
         List<ButtonRest> buttons = mapToList(buttonCodes, buttonRestFactory::create);
-        return new PopupRest(code, message, buttons);
+        return new PopupRest(code, message, buttons, null);
     }
 
     public PopupRest forbidden() {
         ButtonRest button = buttonRestFactory.ok();
-        return new PopupRest(NO_PERMISSIONS + TITLE, NO_PERMISSIONS, List.of(button));
+        return new PopupRest(NO_PERMISSIONS + TITLE, NO_PERMISSIONS, List.of(button), null);
     }
 
     public PopupRest unauthorized() {
         ButtonRest button = buttonRestFactory.login();
-        return new PopupRest(UNAUTHORIZED + TITLE, UNAUTHORIZED, List.of(button));
+        return new PopupRest(UNAUTHORIZED + TITLE, UNAUTHORIZED, List.of(button), null);
     }
 
     public PopupRest somethingWentWrong() {
         return create(FLOW_INTERRUPTED_ERROR + TITLE, FLOW_INTERRUPTED_ERROR, List.of(OK));
+    }
+
+    public PopupRest resourceNotFound(String detail) {
+        PopupRest popup = somethingWentWrong();
+        popup.getDetails().add(detail);
+        return popup;
     }
 }

@@ -108,4 +108,10 @@ public class Constants {
         public static final String LOGIN = "login";
 
     }
+
+    @UtilityClass
+    public static final class EventAvailabilities {
+
+        public static final String PUBLIC = "PUBLIC";
+    }
 }

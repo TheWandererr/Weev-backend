@@ -65,7 +65,7 @@ public class WebSecurityBeans {
             throws Exception {
         http.authorizeHttpRequests(customizer ->
                                            customizer.requestMatchers(GET).permitAll()
-                                                     .requestMatchers(POST, "/*" + EVENTS_SEARCH_URI, "/*" + EVENTS_SEARCH_MAP_URI).permitAll()
+                                                     .requestMatchers(POST, EVENTS_SEARCH_URI, EVENTS_SEARCH_MAP_URI).permitAll()
                                                      .requestMatchers(POST).hasAnyAuthority(WRITE)
                                                      .requestMatchers(PUT).hasAnyAuthority(WRITE)
                                                      .requestMatchers(DELETE).hasAnyAuthority(WRITE)
