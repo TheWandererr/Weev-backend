@@ -45,7 +45,7 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
     private void handleSuccessLogin(HttpServletResponse response, Authentication authentication) throws IOException {
         try {
             LoginDetails loginDetails = getLoginDetails(authentication);
-            AuthTokens authTokens = authService.generateTokens(authentication);
+            AuthTokens authTokens = authService.generateTokens(loginDetails);
             updateTokenDetails(loginDetails, authTokens);
             LoginResponse loginResponse = new LoginResponse(authTokens.getAccessTokenValue(), authTokens.getRefreshTokenValue());
             writeResponse(loginResponse, response, OK, mapper);

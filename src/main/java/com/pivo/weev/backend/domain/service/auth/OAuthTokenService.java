@@ -59,7 +59,7 @@ public class OAuthTokenService {
     }
 
     @Transactional
-    public void removeTokenDetails(Jwt jwt) {
+    public void revokeOAuthTokenDetails(Jwt jwt) {
         oAuthTokenDetailsRepository.removeByUserIdAndDeviceId(getUserId(jwt), getDeviceId(jwt));
     }
 }

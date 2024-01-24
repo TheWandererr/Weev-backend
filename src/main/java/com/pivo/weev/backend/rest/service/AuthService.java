@@ -1,7 +1,6 @@
 package com.pivo.weev.backend.rest.service;
 
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getAuthenticationDetails;
-import static com.pivo.weev.backend.domain.utils.AuthUtils.getLoginDetails;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.AUTHORIZATION_TOKEN_NOT_FOUND_ERROR;
 
 import com.pivo.weev.backend.domain.service.auth.OAuthTokenService;
@@ -11,7 +10,6 @@ import com.pivo.weev.backend.rest.service.security.JWTProvider;
 import com.pivo.weev.backend.rest.service.security.JwtHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AuthorizationServiceException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +22,7 @@ public class AuthService {
     private final OAuthTokenService oAuthTokenService;
     private final JwtHolder jwtHolder;
 
-    public AuthTokens generateTokens(Authentication authentication) {
-        LoginDetails loginDetails = getLoginDetails(authentication);
-        return generateTokens(loginDetails);
-    }
-
-    private AuthTokens generateTokens(LoginDetails loginDetails) {
+    public AuthTokens generateTokens(LoginDetails loginDetails) {
         Jwt accessToken = jwtProvider.provideAccessToken(loginDetails);
         Jwt refreshToken = jwtProvider.provideRefreshToken(loginDetails);
         return new AuthTokens(accessToken, refreshToken);
@@ -54,6 +47,6 @@ public class AuthService {
 
     public void logout() {
         Jwt jwt = getAuthenticationDetails();
-        oAuthTokenService.removeTokenDetails(jwt);
+        oAuthTokenService.revokeOAuthTokenDetails(jwt);
     }
 }
