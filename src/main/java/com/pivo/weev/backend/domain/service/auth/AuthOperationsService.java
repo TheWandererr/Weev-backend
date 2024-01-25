@@ -14,7 +14,6 @@ import static com.pivo.weev.backend.utils.Constants.ErrorCodes.VERIFICATION_NOT_
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.VERIFICATION_REQUEST_IS_EXPIRED_ERROR;
 import static com.pivo.weev.backend.utils.Randomizer.sixDigitInt;
 import static java.time.temporal.ChronoUnit.HOURS;
-import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
@@ -32,6 +31,7 @@ import com.pivo.weev.backend.domain.service.message.MessagingService;
 import java.time.Instant;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -73,7 +73,7 @@ public class AuthOperationsService {
     }
 
     private String defineContactsInaccessibilityError(UserJpa user, Contacts providedContacts) {
-        if (equalsIgnoreCase(user.getEmail(), providedContacts.getEmail())) {
+        if (StringUtils.equals(user.getEmail(), providedContacts.getEmail())) {
             return EMAIL_ALREADY_USED_ERROR;
         }
         return PHONE_NUMBER_ALREADY_USED;
@@ -130,19 +130,30 @@ public class AuthOperationsService {
 
     @Transactional
     public void register(UserSnapshot userSnapshot) {
+        verifyRegistrationAvailability(userSnapshot);
         VerificationRequestJpa verificationRequest = verificationRequestRepository.findByEmail(userSnapshot.getContacts().getEmail())
                                                                                   .filter(VerificationRequestJpa::isCompleted)
                                                                                   .orElseThrow(() -> new FlowInterruptedException(VERIFICATION_NOT_COMPLETED, null, BAD_REQUEST));
-        verifyNicknameAvailability(userSnapshot.getNickname());
         UserJpa user = userFactory.createUser(userSnapshot);
         userRepository.save(user);
         verificationRequestRepository.forceDelete(verificationRequest);
     }
 
-    private void verifyNicknameAvailability(String nickname) {
-        if (!isNicknameAvailable(nickname)) {
-            throw new FlowInterruptedException(NICKNAME_ALREADY_USED, null, BAD_REQUEST);
+    private void verifyRegistrationAvailability(UserSnapshot userSnapshot) {
+        Contacts contacts = userSnapshot.getContacts();
+        Specification<UserJpa> specification = buildUserSearchSpecification(userSnapshot.getNickname(), contacts.getEmail(), contacts.getPhoneNumber());
+        userRepository.find(specification)
+                      .ifPresent(existingUser -> {
+                          String code = defineRegistrationInaccessibilityError(existingUser, userSnapshot);
+                          throw new FlowInterruptedException(code, null, BAD_REQUEST);
+                      });
+    }
+
+    private String defineRegistrationInaccessibilityError(UserJpa existingUser, UserSnapshot userSnapshot) {
+        if (existingUser.getNickname().equals(userSnapshot.getNickname())) {
+            return NICKNAME_ALREADY_USED;
         }
+        return defineContactsInaccessibilityError(existingUser, userSnapshot.getContacts());
     }
 
     public boolean isNicknameAvailable(String nickname) {

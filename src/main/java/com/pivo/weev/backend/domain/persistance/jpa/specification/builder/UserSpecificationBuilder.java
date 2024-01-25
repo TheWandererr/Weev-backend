@@ -30,8 +30,9 @@ public class UserSpecificationBuilder {
         if (isBlank(username)) {
             return SimpleSpecifications.empty();
         }
+        String formattedUserName = username.toLowerCase();
         if (usernameType == ANY) {
-            return buildUserSearchSpecification(username);
+            return buildUserSearchSpecification(formattedUserName);
         }
         Attribute<UserJpa, String> attribute = switch (usernameType) {
             case PHONE_NUMBER -> UserJpa_.phoneNumber;
@@ -40,7 +41,7 @@ public class UserSpecificationBuilder {
             default -> throw new IllegalArgumentException();
         };
         SpecificationBuilder<UserJpa> specificationBuilder = new SpecificationBuilder<>();
-        return specificationBuilder.andEqual(fieldPathFrom(attribute), username, String.class).build();
+        return specificationBuilder.andEqual(fieldPathFrom(attribute), formattedUserName, String.class).build();
     }
 
     private static Specification<UserJpa> buildUserSearchSpecification(String username) {
