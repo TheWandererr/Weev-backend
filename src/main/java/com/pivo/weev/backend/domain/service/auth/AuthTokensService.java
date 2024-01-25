@@ -31,7 +31,7 @@ public class AuthTokensService {
         String username = jwt.getSubject();
         LoginDetails loginDetails = (LoginDetails) loginDetailsService.loadUserByUsername(username);
         AuthTokens authTokens = generateTokens(loginDetails);
-        boolean updated = authTokensDetailsService.updateTokenDetails(loginDetails, authTokens);
+        boolean updated = authTokensDetailsService.updateTokensDetails(loginDetails, authTokens);
         if (!updated) {
             throw new AuthorizationServiceException(AUTHORIZATION_TOKEN_NOT_FOUND_ERROR);
         }

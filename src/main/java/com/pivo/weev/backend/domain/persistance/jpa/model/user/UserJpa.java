@@ -26,6 +26,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import lombok.Getter;
@@ -45,7 +46,7 @@ import org.hibernate.validator.constraints.Length;
 public class UserJpa extends ModifiableJpa<Long> {
 
     @Length(max = 120)
-    @Column(length = 120, name = USER_NAME, nullable = false)
+    @Column(length = 120, name = USER_NAME)
     private String name;
     @Length(max = 20)
     @Column(length = 20, name = USER_NICKNAME, unique = true, nullable = false)
@@ -61,7 +62,7 @@ public class UserJpa extends ModifiableJpa<Long> {
     @ManyToOne(fetch = EAGER, cascade = ALL)
     @JoinColumn(name = "role_id")
     private UserRoleJpa role;
-    private Boolean active;
+    private Boolean active = false;
     @GenericGenerator(name = "event_member_id_generator", type = SequenceStyleGenerator.class)
     @JoinTable(
             name = "event_members",
@@ -74,14 +75,14 @@ public class UserJpa extends ModifiableJpa<Long> {
             }
     )
     @ManyToMany(fetch = LAZY, cascade = ALL)
-    private Set<EventJpa> participatedEvents;
+    private Set<EventJpa> participatedEvents = new HashSet<>();
     @OneToOne(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "avatar_id")
     private CloudResourceJpa avatar;
     @OneToMany(fetch = LAZY, mappedBy = "creator")
-    private Set<EventJpa> createdEvents;
+    private Set<EventJpa> createdEvents = new HashSet<>();
     @OneToMany(fetch = LAZY, mappedBy = "recipient")
-    private Set<NotificationJpa> notifications;
+    private Set<NotificationJpa> notifications = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

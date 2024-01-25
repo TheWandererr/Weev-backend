@@ -41,8 +41,8 @@ public class NotificationJpa extends ModifiableJpa<Long> {
     @Column
     @Enumerated(EnumType.STRING)
     private Type type;
-    @Column(columnDefinition = "boolean default false")
-    private Boolean viewed;
+    @Column
+    private Boolean viewed = false;
 
     public enum Type {
         COMMON,

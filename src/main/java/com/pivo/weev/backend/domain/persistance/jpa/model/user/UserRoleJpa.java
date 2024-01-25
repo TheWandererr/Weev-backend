@@ -25,7 +25,7 @@ import org.hibernate.proxy.HibernateProxy;
 @Setter
 public class UserRoleJpa extends SequencedPersistable<Long> {
 
-    @Column
+    @Column(unique = true)
     private String name;
     @OneToMany(fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true, mappedBy = "role")
     private Set<AuthorityJpa> authorities;

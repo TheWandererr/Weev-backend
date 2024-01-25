@@ -77,4 +77,10 @@ public class Constants {
         }
 
     }
+
+    @UtilityClass
+    public static final class UserRoles {
+
+        public static final String USER = "USER";
+    }
 }

@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.rest.controller;
 
+import static com.pivo.weev.backend.domain.model.auth.VerificationScope.REGISTRATION;
 import static com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage.SUCCESS;
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -38,13 +39,13 @@ public class AuthController {
         return new LoginResponse(authTokens.getAccessTokenValue(), authTokens.getRefreshTokenValue());
     }
 
-    @PostMapping("/email/verification/request")
+    @PostMapping("/registration/email/verification/request")
     public BaseResponse requestEmailVerification(@RequestBody @Valid EmailRequest request) {
-        authOperationsService.requestEmailVerification(request.getEmail());
+        authOperationsService.requestEmailVerification(request.getEmail(), REGISTRATION);
         return new BaseResponse(SUCCESS);
     }
 
-    @PutMapping("/email/verification/completion")
+    @PutMapping("/registration/email/verification/completion")
     public BaseResponse completeEmailVerification(@RequestBody @Valid VerificationCompletionRequest request) {
         authOperationsService.completeEmailVerification(request.getCode(), request.getEmail());
         return new BaseResponse(SUCCESS);

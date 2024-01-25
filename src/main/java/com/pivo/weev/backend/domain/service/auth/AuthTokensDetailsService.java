@@ -34,14 +34,14 @@ public class AuthTokensDetailsService {
 
     private final AuthTokensDetailsRepositoryWrapper authTokenDetailsRepository;
 
-    public AuthTokensDetailsJpa createTokenDetails(LoginDetails loginDetails, AuthTokens authTokens) {
+    public AuthTokensDetailsJpa createTokensDetails(LoginDetails loginDetails, AuthTokens authTokens) {
         AuthTokenDetails tokenDetails = getMapper(AuthTokenDetailsMapper.class).map(loginDetails, authTokens);
         AuthTokensDetailsJpa tokenDetailsJpa = getMapper(AuthTokenDetailsJpaMapper.class).map(tokenDetails);
         return authTokenDetailsRepository.save(tokenDetailsJpa);
     }
 
     @Transactional
-    public boolean updateTokenDetails(LoginDetails loginDetails, AuthTokens authTokens) {
+    public boolean updateTokensDetails(LoginDetails loginDetails, AuthTokens authTokens) {
         AuthTokensDetailsJpa tokenDetails = authTokenDetailsRepository.findByUserIdAndDeviceId(loginDetails.getUserId(), loginDetails.getDeviceId());
         if (isNull(tokenDetails)) {
             return false;
@@ -62,7 +62,7 @@ public class AuthTokensDetailsService {
     }
 
     @Transactional
-    public void revokeTokenDetails(Jwt jwt) {
+    public void revokeTokensDetails(Jwt jwt) {
         authTokenDetailsRepository.removeByUserIdAndDeviceId(getUserId(jwt), getDeviceId(jwt));
     }
 }

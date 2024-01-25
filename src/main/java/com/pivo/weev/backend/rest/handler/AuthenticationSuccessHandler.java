@@ -54,9 +54,9 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
     }
 
     private void updateTokenDetails(LoginDetails loginDetails, AuthTokens authTokens) {
-        boolean updated = authTokensDetailsService.updateTokenDetails(loginDetails, authTokens);
+        boolean updated = authTokensDetailsService.updateTokensDetails(loginDetails, authTokens);
         if (!updated) {
-            authTokensDetailsService.createTokenDetails(loginDetails, authTokens);
+            authTokensDetailsService.createTokensDetails(loginDetails, authTokens);
         }
     }
 }

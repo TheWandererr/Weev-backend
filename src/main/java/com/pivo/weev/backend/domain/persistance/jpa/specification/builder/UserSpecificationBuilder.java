@@ -43,8 +43,8 @@ public class UserSpecificationBuilder {
         return specificationBuilder.andEqual(fieldPathFrom(attribute), username, String.class).build();
     }
 
-    private static Specification<UserJpa> buildUserSearchSpecification(String nicknameOrEmailOrPhoneNumber) {
-        return buildUserSearchSpecification(nicknameOrEmailOrPhoneNumber, nicknameOrEmailOrPhoneNumber, nicknameOrEmailOrPhoneNumber);
+    private static Specification<UserJpa> buildUserSearchSpecification(String username) {
+        return buildUserSearchSpecification(username, username, username);
     }
 
     public static Specification<UserJpa> buildUserSearchSpecification(String nickname, String email, String phoneNumber) {

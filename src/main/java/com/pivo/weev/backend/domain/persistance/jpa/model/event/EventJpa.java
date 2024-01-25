@@ -92,7 +92,7 @@ public class EventJpa extends ModifiableJpa<Long> {
     @Enumerated(STRING)
     private EventStatus status;
     @ManyToMany(mappedBy = "participatedEvents", fetch = LAZY, cascade = ALL)
-    private Set<UserJpa> members;
+    private Set<UserJpa> members = new HashSet<>();
 
     public EventJpa(UserJpa creator) {
         this.creator = creator;

@@ -52,6 +52,10 @@ public class Constants {
         public static final String NO_VERIFICATION_REQUEST_ERROR = "no.verification.request";
         public static final String VERIFICATION_REQUEST_IS_EXPIRED_ERROR = "verification.request.is.expired";
         public static final String VERIFICATION_CODE_ERROR = "verification.code.incorrect";
+        public static final String VERIFICATION_NOT_COMPLETED = "verification.not.completed";
+        public static final String EMAIL_ALREADY_USED_ERROR = "email.already.used";
+        public static final String PHONE_NUMBER_ALREADY_USED = "phone.number.already.used";
+        public static final String NICKNAME_ALREADY_USED = "nickname.already.used";
 
         public static final String FIELD_VALIDATION_FAILED_ERROR_PATTERN = "%s.incorrect";
 
