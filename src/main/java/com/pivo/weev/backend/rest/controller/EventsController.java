@@ -2,7 +2,7 @@ package com.pivo.weev.backend.rest.controller;
 
 import static com.pivo.weev.backend.rest.model.event.SearchContextRest.published;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_ID;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.ID_FORMAT_ERROR;
 import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -82,7 +82,7 @@ public class EventsController {
     }
 
     @GetMapping("/{id}")
-    public EventSearchResponse search(@Min(value = 1, message = INVALID_ID) @PathVariable Long id) {
+    public EventSearchResponse search(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
         Event event = eventsSearchService.search(id);
         EventDetailedRest restEvent = getMapper(EventDetailedRestMapper.class).map(event);
         return new EventSearchResponse(restEvent);
@@ -96,13 +96,13 @@ public class EventsController {
     }
 
     @PutMapping("/{id}/cancellation")
-    public BaseResponse cancelEvent(@Min(value = 1, message = INVALID_ID) @PathVariable Long id) {
+    public BaseResponse cancelEvent(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
         eventCrudService.cancel(id);
         return new BaseResponse(ResponseMessage.SUCCESS);
     }
 
     @DeleteMapping("/{id}")
-    public BaseResponse deleteEvent(@Min(value = 1, message = INVALID_ID) @PathVariable Long id) {
+    public BaseResponse deleteEvent(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
         eventCrudService.delete(id);
         return new BaseResponse(ResponseMessage.SUCCESS);
     }

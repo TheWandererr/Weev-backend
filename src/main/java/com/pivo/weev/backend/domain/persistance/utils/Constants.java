@@ -64,6 +64,7 @@ public class Constants {
         public static final String IMAGE_COMPRESSING_SCALE = "image.compressing.scale";
         public static final String ACCESS_TOKEN_EXPIRES_AMOUNT = "access.token.expires.amount";
         public static final String REFRESH_TOKEN_EXPIRES_AMOUNT = "refresh.token.expires.amount";
+        public static final String VERIFICATION_REQUEST_VALIDITY_PERIOD = "verification.request.validity.period";
     }
 
     @UtilityClass

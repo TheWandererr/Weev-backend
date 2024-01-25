@@ -41,4 +41,20 @@ public final class Constants {
         public static final int MINIMAL_ZOOM = 4;
         public static final int MAXIMUM_ZOOM = 22;
     }
+
+    @UtilityClass
+    public static final class Messaging {
+
+        @UtilityClass
+        public static final class EmailMessages {
+
+            public static final String EMAIL_VERIFICATION_REQUEST_SUBJECT = "email.verification.request.subject";
+        }
+
+        @UtilityClass
+        public static final class Templates {
+
+            public static final String EMAIL_VERIFICATION_REQUEST = "email-verification.ftl";
+        }
+    }
 }

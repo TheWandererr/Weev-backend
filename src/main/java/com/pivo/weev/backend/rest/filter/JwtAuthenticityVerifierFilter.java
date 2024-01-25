@@ -2,20 +2,20 @@ package com.pivo.weev.backend.rest.filter;
 
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getDeviceId;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_TOKEN;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.TOKEN_ERROR;
 import static com.pivo.weev.backend.utils.Constants.Symbols.COLON;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.join;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pivo.weev.backend.domain.service.jwt.JwtHolder;
 import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.error.PopupRestFactory;
-import com.pivo.weev.backend.rest.model.auth.JwtVerificationResult;
 import com.pivo.weev.backend.rest.model.error.PopupRest;
+import com.pivo.weev.backend.rest.model.jwt.JwtVerificationResult;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
-import com.pivo.weev.backend.rest.service.security.JwtAuthenticityVerifier;
-import com.pivo.weev.backend.rest.service.security.JwtHolder;
+import com.pivo.weev.backend.rest.service.jwt.JwtAuthenticityVerifier;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -66,7 +66,7 @@ public class JwtAuthenticityVerifierFilter extends OncePerRequestFilter {
     private void handleUnauthorized(HttpServletResponse response, String failure) throws IOException {
         PopupRest error = popupRestFactory.unauthorized();
         BaseResponse errorResponse = new BaseResponse(error, ResponseMessage.UNAUTHORIZED);
-        logger.error(applicationLoggingHelper.buildLoggingError(errorResponse, join(INVALID_TOKEN, COLON, failure), false));
+        logger.error(applicationLoggingHelper.buildLoggingError(errorResponse, join(TOKEN_ERROR, COLON, failure), false));
         writeResponse(errorResponse, response, HttpStatus.UNAUTHORIZED, mapper);
     }
 }

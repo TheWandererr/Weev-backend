@@ -4,8 +4,8 @@ import static com.pivo.weev.backend.rest.utils.Constants.PopupButtons.OK;
 import static com.pivo.weev.backend.rest.utils.Constants.ResponseDetails.TITLE;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.FLOW_INTERRUPTED_ERROR;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.NO_PERMISSIONS;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.UNAUTHORIZED;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.PERMISSIONS_ERROR;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.UNAUTHORIZED_ERROR;
 
 import com.pivo.weev.backend.rest.model.error.PopupRest;
 import com.pivo.weev.backend.rest.model.error.PopupRest.ButtonRest;
@@ -26,12 +26,12 @@ public class PopupRestFactory {
 
     public PopupRest forbidden() {
         ButtonRest button = buttonRestFactory.ok();
-        return new PopupRest(NO_PERMISSIONS + TITLE, NO_PERMISSIONS, List.of(button), null);
+        return new PopupRest(PERMISSIONS_ERROR + TITLE, PERMISSIONS_ERROR, List.of(button), null);
     }
 
     public PopupRest unauthorized() {
         ButtonRest button = buttonRestFactory.login();
-        return new PopupRest(UNAUTHORIZED + TITLE, UNAUTHORIZED, List.of(button), null);
+        return new PopupRest(UNAUTHORIZED_ERROR + TITLE, UNAUTHORIZED_ERROR, List.of(button), null);
     }
 
     public PopupRest somethingWentWrong() {

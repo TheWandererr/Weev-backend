@@ -18,7 +18,7 @@ import static java.time.temporal.ChronoUnit.HOURS;
 import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
-import com.pivo.weev.backend.domain.model.exception.ReasonableException;
+import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus;
 import java.time.Instant;
@@ -40,11 +40,11 @@ public class EventCrudValidator {
     public void validateCreation(CreatableEvent validatable) {
         Instant startInstant = toInstant(validatable.getLocalStartDateTime(), validatable.getStartTimeZoneId());
         if (startInstant.isBefore(now().plus(2, HOURS))) {
-            throw new ReasonableException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
+            throw new FlowInterruptedException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
         }
         Instant endInstant = toInstant(validatable.getLocalEndDateTime(), validatable.getEndTimeZoneId());
         if (endInstant.isBefore(startInstant) || endInstant.equals(startInstant)) {
-            throw new ReasonableException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_END_DATE_TIME));
+            throw new FlowInterruptedException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_END_DATE_TIME));
         }
     }
 
@@ -58,20 +58,20 @@ public class EventCrudValidator {
     public void validateUpdate(EventJpa updatable, CreatableEvent validatable) {
         Instant startInstant = toInstant(validatable.getLocalStartDateTime(), validatable.getStartTimeZoneId());
         if (!now().plus(3, HOURS).isBefore(startInstant)) {
-            throw new ReasonableException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
+            throw new FlowInterruptedException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
         }
         int membersLimit = validatable.getMembersLimit();
         if (membersLimit > 0 && updatable.getMembers().size() > membersLimit) {
-            throw new ReasonableException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, MEMBERS_LIMIT));
+            throw new FlowInterruptedException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, MEMBERS_LIMIT));
         }
         if (!Objects.equals(getUserId(), updatable.getCreator().getId())) {
-            throw new ReasonableException(ACCESS_DENIED_ERROR);
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR);
         }
         if (nonNull(updatable.getUpdatableTarget())) {
-            throw new ReasonableException(ACCESS_DENIED_ERROR);
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR);
         }
         if (!UPDATABLE_EVENT_STATUSES.contains(updatable.getStatus())) {
-            throw new ReasonableException(ACCESS_DENIED_ERROR);
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR);
         }
     }
 
@@ -84,22 +84,22 @@ public class EventCrudValidator {
     public void validateCancellation(EventJpa cancellable) {
         Instant startInstant = toInstant(cancellable.getLocalStartDateTime(), cancellable.getStartTimeZoneId());
         if (!now().plus(3, HOURS).isBefore(startInstant)) {
-            throw new ReasonableException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
+            throw new FlowInterruptedException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
         }
         if (!Objects.equals(getUserId(), cancellable.getCreator().getId())) {
-            throw new ReasonableException(ACCESS_DENIED_ERROR);
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR);
         }
         if (nonNull(cancellable.getUpdatableTarget())) {
-            throw new ReasonableException(ACCESS_DENIED_ERROR);
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR);
         }
         if (!CANCELLABLE_EVENT_STATUSES.contains(cancellable.getStatus())) {
-            throw new ReasonableException(ACCESS_DENIED_ERROR);
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR);
         }
     }
 
     public void validateDeletion(EventJpa deletable) {
         if (!DELETABLE_EVENT_STATUSES.contains(deletable.getStatus())) {
-            throw new ReasonableException(ACCESS_DENIED_ERROR);
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR);
         }
     }
 }

@@ -5,7 +5,7 @@ import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSI
 import static java.time.Instant.now;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-import com.pivo.weev.backend.domain.model.exception.ReasonableException;
+import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import java.time.Instant;
 import org.springframework.stereotype.Service;
@@ -21,13 +21,13 @@ public class ModerationValidator {
     private void validateStartDateTime(EventJpa validatable) {
         Instant utcStartDateTime = validatable.getUtcStartDateTime();
         if (now().isAfter(utcStartDateTime)) {
-            throw new ReasonableException(OPERATION_IMPOSSIBLE_ERROR, LOCAL_START_DATE_TIME, BAD_REQUEST);
+            throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, LOCAL_START_DATE_TIME, BAD_REQUEST);
         }
     }
 
     private void validateModerationStatus(EventJpa validatable) {
         if (!validatable.isOnModeration()) {
-            throw new ReasonableException(OPERATION_IMPOSSIBLE_ERROR, null, BAD_REQUEST);
+            throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, null, BAD_REQUEST);
         }
     }
 }

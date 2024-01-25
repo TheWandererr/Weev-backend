@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.pivo.weev.backend.integration.firebase.FirebaseProperties;
+import com.pivo.weev.backend.integration.firebase.config.FirebaseProperties;
 import com.pivo.weev.backend.utils.IOUtils;
 import java.io.IOException;
 import lombok.Getter;
@@ -26,6 +26,7 @@ public class FirebaseApplication {
                                      .setConnectTimeout(properties.getConnectTimeout())
                                      .setCredentials(googleCredentials)
                                      .setStorageBucket(properties.getStorageBucket())
+                                     .setServiceAccountId(properties.getEmail())
                                      .build();
         this.instance = FirebaseApp.initializeApp(options);
     }

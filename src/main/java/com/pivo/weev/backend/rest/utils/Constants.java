@@ -28,6 +28,8 @@ public class Constants {
         public static final String LOGIN_URL = "/auth/login";
         public static final String EVENTS_SEARCH_URI = "/api/events/search";
         public static final String EVENTS_SEARCH_MAP_URI = "/api/events/map/search";
+        public static final String EMAIL_VERIFICATION_REQUEST_URI = "/auth/email/verification/request";
+        public static final String EMAIL_VERIFICATION_COMPLETION_URI = "/auth/email/verification/completion";
     }
 
     @UtilityClass
@@ -35,6 +37,7 @@ public class Constants {
 
         public static final String USERNAME = "username";
         public static final String PASSWORD = "password";
+        public static final String CODE = "code";
     }
 
     @UtilityClass

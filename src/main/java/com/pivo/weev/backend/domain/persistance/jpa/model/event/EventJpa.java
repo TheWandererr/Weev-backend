@@ -18,7 +18,7 @@ import static jakarta.persistence.FetchType.LAZY;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-import com.pivo.weev.backend.domain.model.exception.ReasonableException;
+import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ModifiableJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
@@ -154,7 +154,7 @@ public class EventJpa extends ModifiableJpa<Long> {
             return;
         }
         if (nonNull(membersLimit) && membersLimit > 0 && getMembers().size() == membersLimit) {
-            throw new ReasonableException(OPERATION_IMPOSSIBLE_ERROR, EVENT_CAPACITY_EXCEEDED);
+            throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, EVENT_CAPACITY_EXCEEDED);
         }
         getMembers().add(user);
         user.getParticipatedEvents().add(this);

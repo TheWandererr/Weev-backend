@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.validation.annotation;
 
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_FILE;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.FILE_FORMAT_ERROR;
 
 import com.pivo.weev.backend.rest.validation.validator.ImageValidator;
 import jakarta.validation.Constraint;
@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidImage {
 
-    String message() default INVALID_FILE;
+    String message() default FILE_FORMAT_ERROR;
 
     Class<?>[] groups() default {};
 

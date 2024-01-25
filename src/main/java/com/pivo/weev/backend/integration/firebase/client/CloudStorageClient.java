@@ -2,7 +2,7 @@ package com.pivo.weev.backend.integration.firebase.client;
 
 import static com.google.firebase.cloud.StorageClient.getInstance;
 import static com.pivo.weev.backend.utils.Constants.Symbols.DOT;
-import static java.util.UUID.randomUUID;
+import static com.pivo.weev.backend.utils.Randomizer.uuid;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
@@ -23,7 +23,7 @@ public class CloudStorageClient {
     }
 
     public Blob upload(byte[] content, String name, String contentType) {
-        BlobId blobId = BlobId.of(api.getName(), randomUUID() + DOT + name);
+        BlobId blobId = BlobId.of(api.getName(), uuid() + DOT + name);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
                                     .setContentType(contentType)
                                     .build();

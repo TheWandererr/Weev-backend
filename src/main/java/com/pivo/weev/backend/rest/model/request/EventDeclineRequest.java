@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.model.request;
 
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_DECLINATION_REASON;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.DECLINATION_REASON_UNSUPPORTED_ERROR;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -10,6 +10,6 @@ import lombok.Setter;
 @Setter
 public class EventDeclineRequest {
 
-    @NotBlank(message = INVALID_DECLINATION_REASON)
+    @NotBlank(message = DECLINATION_REASON_UNSUPPORTED_ERROR)
     private String declinationReason;
 }

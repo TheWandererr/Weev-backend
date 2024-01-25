@@ -26,7 +26,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 import java.util.Set;
 import lombok.Getter;
@@ -45,15 +44,12 @@ import org.hibernate.validator.constraints.Length;
 @Setter
 public class UserJpa extends ModifiableJpa<Long> {
 
-    @NotBlank
     @Length(max = 120)
     @Column(length = 120, name = USER_NAME, nullable = false)
     private String name;
-    @NotBlank
     @Length(max = 20)
     @Column(length = 20, name = USER_NICKNAME, unique = true, nullable = false)
     private String nickname;
-    @NotBlank
     @Column(name = USER_PASSWORD, nullable = false)
     private String password;
     @Length(max = 80)

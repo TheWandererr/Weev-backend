@@ -2,20 +2,17 @@ package com.pivo.weev.backend.rest.handler;
 
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getLoginDetails;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
-import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pivo.weev.backend.domain.model.auth.OAuthTokenDetails;
-import com.pivo.weev.backend.domain.service.auth.OAuthTokenService;
+import com.pivo.weev.backend.domain.model.auth.AuthTokens;
+import com.pivo.weev.backend.domain.model.auth.LoginDetails;
+import com.pivo.weev.backend.domain.service.auth.AuthTokensDetailsService;
+import com.pivo.weev.backend.domain.service.auth.AuthTokensService;
 import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
-import com.pivo.weev.backend.rest.mapping.domain.OAuthTokenDetailsMapper;
-import com.pivo.weev.backend.rest.model.auth.AuthTokens;
-import com.pivo.weev.backend.rest.model.auth.LoginDetails;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import com.pivo.weev.backend.rest.model.response.LoginResponse;
-import com.pivo.weev.backend.rest.service.AuthService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,8 +30,8 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 
     private final ObjectMapper mapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
-    private final AuthService authService;
-    private final OAuthTokenService oAuthTokenService;
+    private final AuthTokensService authTokensService;
+    private final AuthTokensDetailsService authTokensDetailsService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
@@ -45,7 +42,7 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
     private void handleSuccessLogin(HttpServletResponse response, Authentication authentication) throws IOException {
         try {
             LoginDetails loginDetails = getLoginDetails(authentication);
-            AuthTokens authTokens = authService.generateTokens(loginDetails);
+            AuthTokens authTokens = authTokensService.generateTokens(loginDetails);
             updateTokenDetails(loginDetails, authTokens);
             LoginResponse loginResponse = new LoginResponse(authTokens.getAccessTokenValue(), authTokens.getRefreshTokenValue());
             writeResponse(loginResponse, response, OK, mapper);
@@ -57,15 +54,9 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
     }
 
     private void updateTokenDetails(LoginDetails loginDetails, AuthTokens authTokens) {
-        boolean updated = oAuthTokenService.updateTokenDetails(
-                loginDetails.getUserId(),
-                loginDetails.getDeviceId(),
-                loginDetails.getSerial(),
-                authTokens.getRefreshToken().getExpiresAt()
-        );
+        boolean updated = authTokensDetailsService.updateTokenDetails(loginDetails, authTokens);
         if (!updated) {
-            OAuthTokenDetails tokenDetails = getMapper(OAuthTokenDetailsMapper.class).map(loginDetails, authTokens);
-            oAuthTokenService.saveTokenDetails(tokenDetails);
+            authTokensDetailsService.createTokenDetails(loginDetails, authTokens);
         }
     }
 }

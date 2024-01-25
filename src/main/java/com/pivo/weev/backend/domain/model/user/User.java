@@ -13,8 +13,7 @@ public class User extends Identifiable {
 
     private String name;
     private String nickname;
-    private String email;
-    private String phoneNumber;
+    private Contacts contacts;
     private Image avatar;
 
 }

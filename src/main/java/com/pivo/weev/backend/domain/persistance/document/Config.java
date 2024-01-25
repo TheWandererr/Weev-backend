@@ -16,6 +16,7 @@ public class Config {
     private Map<String, Object> map;
     private Integer integer;
     private Double vDouble;
+    private String string;
 
     public Map<String, Object> getMap() {
         if (isNull(map)) {

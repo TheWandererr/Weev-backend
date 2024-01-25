@@ -10,7 +10,6 @@ import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.model.event.Location;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.LocationRepositoryWrapper;
-import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +18,6 @@ import org.springframework.stereotype.Service;
 public class LocationService {
 
     private final LocationRepositoryWrapper locationRepository;
-
-    private final TimeZoneService timeZoneService;
-
-    public ZoneId resolveTimeZone(MapPoint mapPoint) {
-        return timeZoneService.getZoneId(mapPoint.getLtd(), mapPoint.getLng());
-    }
 
     public LocationJpa resolveLocation(CreatableEvent sample) {
         Location location = sample.getLocation();

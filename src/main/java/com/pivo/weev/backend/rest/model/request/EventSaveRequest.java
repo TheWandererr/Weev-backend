@@ -1,10 +1,10 @@
 package com.pivo.weev.backend.rest.model.request;
 
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_AMOUNT;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_LENGTH;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.LENGTH_OUT_OF_BOUND;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_NULL;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_AMOUNT_ERROR;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_LENGTH_ERROR;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.LENGTH_OUT_OF_BOUND_ERROR;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK_ERROR;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_NULL_ERROR;
 import static java.util.Objects.isNull;
 
 import com.pivo.weev.backend.rest.model.event.EntryFeeRest;
@@ -27,19 +27,19 @@ import org.springframework.web.multipart.MultipartFile;
 public class EventSaveRequest {
 
     private Long id;
-    @Size(min = 3, max = 120, message = INVALID_LENGTH)
-    @NotBlank(message = MUST_BE_NOT_BLANK)
+    @Size(min = 3, max = 120, message = INVALID_LENGTH_ERROR)
+    @NotBlank(message = MUST_BE_NOT_BLANK_ERROR)
     private String header;
-    @NotBlank(message = MUST_BE_NOT_BLANK)
+    @NotBlank(message = MUST_BE_NOT_BLANK_ERROR)
     private String category;
-    @NotBlank(message = MUST_BE_NOT_BLANK)
+    @NotBlank(message = MUST_BE_NOT_BLANK_ERROR)
     private String subcategory;
-    @NotNull(message = MUST_BE_NOT_NULL)
+    @NotNull(message = MUST_BE_NOT_NULL_ERROR)
     @Valid
     private LocationRest location;
-    @Min(value = 1, message = INVALID_AMOUNT)
+    @Min(value = 1, message = INVALID_AMOUNT_ERROR)
     private Integer membersLimit;
-    @Size(max = 255, message = LENGTH_OUT_OF_BOUND)
+    @Size(max = 255, message = LENGTH_OUT_OF_BOUND_ERROR)
     @NullableNotBlank
     private String description;
     @ValidImage
@@ -47,9 +47,9 @@ public class EventSaveRequest {
     private boolean updatePhoto;
     private EntryFeeRest entryFee;
     private RestrictionsRest restrictions = RestrictionsRest.withDefaults();
-    @NotNull(message = MUST_BE_NOT_NULL)
+    @NotNull(message = MUST_BE_NOT_NULL_ERROR)
     private LocalDateTime localStartDateTime;
-    @NotNull(message = MUST_BE_NOT_NULL)
+    @NotNull(message = MUST_BE_NOT_NULL_ERROR)
     private LocalDateTime localEndDateTime;
 
     public RestrictionsRest getRestrictions() {

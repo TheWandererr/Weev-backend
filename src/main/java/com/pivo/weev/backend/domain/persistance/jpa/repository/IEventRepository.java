@@ -1,7 +1,6 @@
 package com.pivo.weev.backend.domain.persistance.jpa.repository;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +17,4 @@ public interface IEventRepository extends IGenericRepository<Long, EventJpa> {
     @Modifying
     @Query(value = "delete from EventJpa e where e.id = ?1")
     void deleteById(Long id);
-
-    Optional<EventJpa> findByIdAndStatusNot(Long id, EventStatus status);
 }

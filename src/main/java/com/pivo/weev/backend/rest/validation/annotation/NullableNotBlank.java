@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.validation.annotation;
 
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NULL_OR_NOT_BLANK;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NULL_OR_NOT_BLANK_ERROR;
 
 import com.pivo.weev.backend.rest.validation.validator.NullableNotBlankValidator;
 import jakarta.validation.Constraint;
@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NullableNotBlank {
 
-    String message() default MUST_BE_NULL_OR_NOT_BLANK;
+    String message() default MUST_BE_NULL_OR_NOT_BLANK_ERROR;
 
     Class<?>[] groups() default {};
 

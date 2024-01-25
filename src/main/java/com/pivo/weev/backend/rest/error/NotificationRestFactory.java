@@ -1,8 +1,8 @@
 package com.pivo.weev.backend.rest.error;
 
 import static com.pivo.weev.backend.rest.utils.Constants.ResponseDetails.TITLE;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.BAD_CREDENTIALS;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.UNAUTHORIZED;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.CREDENTIALS_ERROR;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.UNAUTHORIZED_ERROR;
 
 import com.pivo.weev.backend.rest.model.error.NotificationRest;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 public class NotificationRestFactory {
 
     public NotificationRest badCredentials() {
-        return new NotificationRest(BAD_CREDENTIALS + TITLE);
+        return new NotificationRest(CREDENTIALS_ERROR + TITLE);
     }
 
     public NotificationRest unauthorized() {
-        return new NotificationRest(UNAUTHORIZED + TITLE);
+        return new NotificationRest(UNAUTHORIZED_ERROR + TITLE);
     }
 }

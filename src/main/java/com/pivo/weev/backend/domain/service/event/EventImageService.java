@@ -7,7 +7,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import com.pivo.weev.backend.domain.mapping.jpa.CloudResourceJpaMapper;
 import com.pivo.weev.backend.domain.model.common.CloudResource;
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
-import com.pivo.weev.backend.domain.model.exception.ReasonableException;
+import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.file.Image;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
@@ -54,7 +54,7 @@ public class EventImageService {
         try {
             deletePhoto(eventJpa);
         } catch (Exception exception) {
-            throw new ReasonableException(CLOUD_OPERATION_ERROR, exception.getMessage(), INTERNAL_SERVER_ERROR);
+            throw new FlowInterruptedException(CLOUD_OPERATION_ERROR, exception.getMessage(), INTERNAL_SERVER_ERROR);
         }
         CloudResourceJpa cloudResourceJpa = createPhoto(photo);
         eventJpa.setPhoto(cloudResourceJpa);

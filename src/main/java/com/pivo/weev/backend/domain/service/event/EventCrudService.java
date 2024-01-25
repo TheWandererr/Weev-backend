@@ -12,7 +12,7 @@ import static org.mapstruct.factory.Mappers.getMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.EventJpaMapper;
 import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
-import com.pivo.weev.backend.domain.model.exception.ReasonableException;
+import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.CategoryJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa;
@@ -23,6 +23,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRepo
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.LocationService;
 import com.pivo.weev.backend.domain.service.NotificationService;
+import com.pivo.weev.backend.domain.service.TimeZoneService;
 import com.pivo.weev.backend.domain.service.validation.EventCrudValidator;
 import jakarta.transaction.Transactional;
 import java.time.ZoneId;
@@ -40,6 +41,7 @@ public class EventCrudService {
 
     private final EventCrudValidator eventCrudValidator;
     private final LocationService locationService;
+    private final TimeZoneService timeZoneService;
     private final EventImageService eventImageService;
     private final NotificationService notificationService;
 
@@ -54,7 +56,7 @@ public class EventCrudService {
     private void setTimeZones(CreatableEvent sample) {
         MapPoint mapPoint = sample.getLocation()
                                   .getPoint();
-        ZoneId zoneId = locationService.resolveTimeZone(mapPoint);
+        ZoneId zoneId = timeZoneService.resolveTimeZone(mapPoint);
         sample.setStartTimeZoneId(zoneId.getId());
         sample.setEndTimeZoneId(zoneId.getId());
     }
@@ -77,7 +79,7 @@ public class EventCrudService {
 
     private SubcategoryJpa resolveSubcategory(CategoryJpa categoryJpa, CreatableEvent sample) {
         return findFirst(categoryJpa.getSubcategories(), subcategoryJpa -> equalsIgnoreCase(subcategoryJpa.getName(), sample.getSubcategory()))
-                .orElseThrow(() -> new ReasonableException(SUBCATEGORY_NOT_FOUND_ERROR));
+                .orElseThrow(() -> new FlowInterruptedException(SUBCATEGORY_NOT_FOUND_ERROR));
     }
 
     @Transactional

@@ -13,8 +13,8 @@ public class Randomizer {
         return random.nextInt(upperBound);
     }
 
-    public static String sixDigitInt(int upperBound) {
-        return String.format("%06d", randomInt(upperBound));
+    public static String sixDigitInt() {
+        return String.format("%06d", randomInt(999999));
     }
 
     public static String uuid() {
