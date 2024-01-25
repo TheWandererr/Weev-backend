@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.service.auth;
+package com.pivo.weev.backend.domain.service.user;
 
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.UserRoles.USER;
 import static org.mapstruct.factory.Mappers.getMapper;

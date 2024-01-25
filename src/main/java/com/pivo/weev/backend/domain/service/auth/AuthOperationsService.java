@@ -1,8 +1,6 @@
 package com.pivo.weev.backend.domain.service.auth;
 
 import static com.pivo.weev.backend.domain.model.auth.VerificationScope.REGISTRATION;
-import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType.NICKNAME;
-import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.buildUserSearchSpecification;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getAuthenticationDetails;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.ACTIVE_VERIFICATION_REQUEST_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.EMAIL_ALREADY_USED_ERROR;
@@ -24,15 +22,14 @@ import com.pivo.weev.backend.domain.model.user.UserSnapshot;
 import com.pivo.weev.backend.domain.persistance.document.ValidityPeriod;
 import com.pivo.weev.backend.domain.persistance.jpa.model.auth.VerificationRequestJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.VerificationRequestRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.config.ConfigService;
 import com.pivo.weev.backend.domain.service.message.MessagingService;
+import com.pivo.weev.backend.domain.service.user.UsersService;
 import java.time.Instant;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,8 +42,7 @@ public class AuthOperationsService {
     private final MessagingService messagingService;
     private final ConfigService configService;
     private final VerificationRequestRepositoryWrapper verificationRequestRepository;
-    private final UserRepositoryWrapper userRepository;
-    private final UserFactory userFactory;
+    private final UsersService usersService;
 
     public void logout() {
         Jwt jwt = getAuthenticationDetails();
@@ -64,12 +60,11 @@ public class AuthOperationsService {
     }
 
     public void verifyContactsAvailability(Contacts contacts) {
-        Specification<UserJpa> specification = buildUserSearchSpecification(null, contacts.getEmail(), contacts.getPhoneNumber());
-        userRepository.find(specification)
-                      .ifPresent(existingUser -> {
-                          String code = defineContactsInaccessibilityError(existingUser, contacts);
-                          throw new FlowInterruptedException(code);
-                      });
+        usersService.findUser(contacts)
+                    .ifPresent(existingUser -> {
+                        String code = defineContactsInaccessibilityError(existingUser, contacts);
+                        throw new FlowInterruptedException(code);
+                    });
     }
 
     private String defineContactsInaccessibilityError(UserJpa user, Contacts providedContacts) {
@@ -134,19 +129,16 @@ public class AuthOperationsService {
         VerificationRequestJpa verificationRequest = verificationRequestRepository.findByEmail(userSnapshot.getContacts().getEmail())
                                                                                   .filter(VerificationRequestJpa::isCompleted)
                                                                                   .orElseThrow(() -> new FlowInterruptedException(VERIFICATION_NOT_COMPLETED, null, BAD_REQUEST));
-        UserJpa user = userFactory.createUser(userSnapshot);
-        userRepository.save(user);
+        usersService.createNewUser(userSnapshot);
         verificationRequestRepository.forceDelete(verificationRequest);
     }
 
     private void verifyRegistrationAvailability(UserSnapshot userSnapshot) {
-        Contacts contacts = userSnapshot.getContacts();
-        Specification<UserJpa> specification = buildUserSearchSpecification(userSnapshot.getNickname(), contacts.getEmail(), contacts.getPhoneNumber());
-        userRepository.find(specification)
-                      .ifPresent(existingUser -> {
-                          String code = defineRegistrationInaccessibilityError(existingUser, userSnapshot);
-                          throw new FlowInterruptedException(code, null, BAD_REQUEST);
-                      });
+        usersService.findUser(userSnapshot)
+                    .ifPresent(existingUser -> {
+                        String code = defineRegistrationInaccessibilityError(existingUser, userSnapshot);
+                        throw new FlowInterruptedException(code, null, BAD_REQUEST);
+                    });
     }
 
     private String defineRegistrationInaccessibilityError(UserJpa existingUser, UserSnapshot userSnapshot) {
@@ -154,10 +146,5 @@ public class AuthOperationsService {
             return NICKNAME_ALREADY_USED;
         }
         return defineContactsInaccessibilityError(existingUser, userSnapshot.getContacts());
-    }
-
-    public boolean isNicknameAvailable(String nickname) {
-        Specification<UserJpa> specification = buildUserSearchSpecification(nickname, NICKNAME);
-        return userRepository.find(specification).isEmpty();
     }
 }
