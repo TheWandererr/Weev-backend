@@ -10,7 +10,7 @@ import com.pivo.weev.backend.domain.model.common.MapPointCluster;
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.model.event.Event;
 import com.pivo.weev.backend.domain.model.event.SearchParams;
-import com.pivo.weev.backend.domain.service.event.EventCrudService;
+import com.pivo.weev.backend.domain.service.event.EventsCrudService;
 import com.pivo.weev.backend.domain.service.event.EventsSearchService;
 import com.pivo.weev.backend.rest.mapping.domain.CreatableEventMapper;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
@@ -51,7 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class EventsController {
 
-    private final EventCrudService eventCrudService;
+    private final EventsCrudService eventsCrudService;
     private final EventsSearchService eventsSearchService;
 
     @PostMapping("/search")
@@ -77,7 +77,7 @@ public class EventsController {
     public BaseResponse createEvent(@Valid @ModelAttribute EventSaveRequest request) {
         CreatableEvent sample = getMapper(CreatableEventMapper.class).map(request);
         sample.setUpdatePhoto(true);
-        eventCrudService.save(sample);
+        eventsCrudService.save(sample);
         return new BaseResponse(ResponseMessage.CREATED);
     }
 
@@ -91,19 +91,19 @@ public class EventsController {
     @PutMapping("/{id}")
     public BaseResponse updateEvent(@Valid @ModelAttribute EventSaveRequest request) {
         CreatableEvent sample = getMapper(CreatableEventMapper.class).map(request);
-        eventCrudService.updateEvent(sample);
+        eventsCrudService.updateEvent(sample);
         return new BaseResponse(ResponseMessage.SUCCESS);
     }
 
     @PutMapping("/{id}/cancellation")
     public BaseResponse cancelEvent(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
-        eventCrudService.cancel(id);
+        eventsCrudService.cancel(id);
         return new BaseResponse(ResponseMessage.SUCCESS);
     }
 
     @DeleteMapping("/{id}")
     public BaseResponse deleteEvent(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
-        eventCrudService.delete(id);
+        eventsCrudService.delete(id);
         return new BaseResponse(ResponseMessage.SUCCESS);
     }
 

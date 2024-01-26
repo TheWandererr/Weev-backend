@@ -9,9 +9,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EventRepositoryWrapper extends GenericRepositoryWrapper<Long, EventJpa, IEventRepository> {
+public class EventsRepositoryWrapper extends GenericRepositoryWrapper<Long, EventJpa, IEventRepository> {
 
-    protected EventRepositoryWrapper(IEventRepository repository) {
+    protected EventsRepositoryWrapper(IEventRepository repository) {
         super(repository, ResourceName.EVENT);
     }
 

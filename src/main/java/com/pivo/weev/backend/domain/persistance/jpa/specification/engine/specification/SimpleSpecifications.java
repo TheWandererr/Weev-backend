@@ -121,6 +121,20 @@ public class SimpleSpecifications {
                 : buildEqualSpecification(buildCriteriaParams(fieldPath, joins, value, clazz));
     }
 
+    public static <T, E> Specification<T> notEqual(Attribute<?, ?> attribute, E value, Class<E> clazz) {
+        return notEqual(attribute.getName(), value, 0, clazz);
+    }
+
+    public static <T, E> Specification<T> notEqual(String fieldPath, E value, Class<E> clazz) {
+        return equal(fieldPath, value, 0, clazz);
+    }
+
+    public static <T, E> Specification<T> notEqual(String fieldPath, E value, int joins, Class<E> clazz) {
+        return Objects.isNull(value)
+                ? empty()
+                : buildNotEqualSpecification(buildCriteriaParams(fieldPath, joins, value, clazz));
+    }
+
     public static <T, E> Specification<T> isNull(String fieldPath, Class<E> clazz) {
         return isNull(fieldPath, 0, clazz);
     }
@@ -289,6 +303,12 @@ public class SimpleSpecifications {
     private static <T, E> Specification<T> buildEqualSpecification(CriteriaParams<E> params) {
         return params.isSuitableForExpression()
                 ? (root, query, builder) -> builder.equal(getExpression(params, root), params.getCriteriaValue())
+                : empty();
+    }
+
+    private static <T, E> Specification<T> buildNotEqualSpecification(CriteriaParams<E> params) {
+        return params.isSuitableForExpression()
+                ? (root, query, builder) -> builder.notEqual(getExpression(params, root), params.getCriteriaValue())
                 : empty();
     }
 

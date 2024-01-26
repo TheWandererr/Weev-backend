@@ -13,7 +13,7 @@ import com.pivo.weev.backend.domain.model.event.Event;
 import com.pivo.weev.backend.domain.model.event.SearchParams;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventsRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.clusterization.MapClusterizationService;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EventsSearchService {
 
-    private final EventRepositoryWrapper eventRepository;
+    private final EventsRepositoryWrapper eventsRepository;
 
     private final MapClusterizationService mapClusterizationService;
 
@@ -41,16 +41,16 @@ public class EventsSearchService {
     private <T> Page<T> search(SearchParams searchParams, Function<List<EventJpa>, List<T>> mapper) {
         Pageable pageable = build(searchParams.getPage(), searchParams.getPageSize(), searchParams.getSortFields());
         Specification<EventJpa> specification = buildEventsSearchSpecification(searchParams);
-        Page<EventJpa> jpaPage = eventRepository.findAll(specification, pageable);
+        Page<EventJpa> jpaPage = eventsRepository.findAll(specification, pageable);
         List<T> content = mapper.apply(jpaPage.getContent());
         return new PageImpl<>(content, jpaPage.getPageable(), jpaPage.getTotalElements());
     }
 
     @Transactional
     public Event search(Long id) {
-        return eventRepository.findById(id)
-                              .map(event -> getMapper(EventMapper.class).map(event))
-                              .orElse(null);
+        return eventsRepository.findById(id)
+                               .map(event -> getMapper(EventMapper.class).map(event))
+                               .orElse(null);
     }
 
     @Transactional

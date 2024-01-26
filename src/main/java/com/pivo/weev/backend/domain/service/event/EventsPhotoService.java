@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class EventImageService {
+public class EventsPhotoService {
 
     private final CloudResourceRepositoryWrapper cloudResourceRepository;
 

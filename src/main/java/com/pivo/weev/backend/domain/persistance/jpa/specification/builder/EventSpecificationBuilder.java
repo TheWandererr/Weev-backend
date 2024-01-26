@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.persistance.jpa.specification.builder;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CONFIRMED;
+import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DELETED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.HAS_MODERATION_INSTANCE;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.ON_MODERATION;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.contains;
@@ -8,6 +9,7 @@ import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.empty;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.equal;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.in;
+import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.notEqual;
 import static com.pivo.weev.backend.domain.persistance.utils.CustomGeometryFactory.createPoint;
 import static com.pivo.weev.backend.domain.persistance.utils.SpecificationUtils.fieldPathFrom;
 import static java.util.List.of;
@@ -59,7 +61,7 @@ public class EventSpecificationBuilder {
         if (searchParams.isPublished()) {
             return in(EventJpa_.status, of(CONFIRMED, HAS_MODERATION_INSTANCE));
         }
-        return empty();
+        return notEqual(EventJpa_.status, DELETED.name(), String.class);
     }
 
     private Specification<EventJpa> buildRadiusSpecification(SearchParams searchParams) {

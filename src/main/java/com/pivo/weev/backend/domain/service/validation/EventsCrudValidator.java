@@ -16,6 +16,7 @@ import static java.lang.String.format;
 import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.HOURS;
 import static java.util.Objects.nonNull;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
@@ -27,7 +28,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EventCrudValidator {
+public class EventsCrudValidator {
 
     private static final Set<EventStatus> CANCELLABLE_EVENT_STATUSES = Set.of(ON_MODERATION, HAS_MODERATION_INSTANCE, CONFIRMED);
     private static final Set<EventStatus> UPDATABLE_EVENT_STATUSES = Set.of(ON_MODERATION, HAS_MODERATION_INSTANCE, CONFIRMED, DECLINED, CANCELED);
@@ -99,7 +100,7 @@ public class EventCrudValidator {
 
     public void validateDeletion(EventJpa deletable) {
         if (!DELETABLE_EVENT_STATUSES.contains(deletable.getStatus())) {
-            throw new FlowInterruptedException(ACCESS_DENIED_ERROR);
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
     }
 }
