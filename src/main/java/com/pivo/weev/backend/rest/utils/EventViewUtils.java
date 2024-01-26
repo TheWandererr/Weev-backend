@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.utils;
+package com.pivo.weev.backend.rest.utils;
 
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getNullableUserId;
 import static java.util.Objects.isNull;
@@ -8,9 +8,9 @@ import java.util.Objects;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public final class EventDataUtils {
+public final class EventViewUtils {
 
-    public static boolean hasHiddenData(Event source) {
+    public static boolean hasPrivateData(Event source) {
         if (!source.hasRestrictions()) {
             return false;
         }

@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.mapping.rest;
 
-import static com.pivo.weev.backend.domain.utils.EventDataUtils.hasHiddenData;
+import static com.pivo.weev.backend.rest.utils.EventViewUtils.hasPrivateData;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.model.event.Event;
@@ -23,13 +23,13 @@ public interface EventCompactedRestMapper {
     @Mapping(target = "location", ignore = true)
     EventCompactedRest map(Event source);
 
-    List<EventCompactedRest> map(List<Event> source);
+    List<EventCompactedRest> mapCompacted(List<Event> source);
 
     @AfterMapping
-    default void mapHiddenData(Event source, @MappingTarget EventCompactedRest target) {
-        boolean hasHiddenData = hasHiddenData(source);
+    default void mapPrivateData(Event source, @MappingTarget EventCompactedRest target) {
+        boolean hasHiddenData = hasPrivateData(source);
         LocationRest restLocation = hasHiddenData
-                ? LOCATION_REST_MAPPER.mapHidden(source.getLocation())
+                ? LOCATION_REST_MAPPER.mapPrivate(source.getLocation())
                 : LOCATION_REST_MAPPER.map(source.getLocation());
         target.setLocation(restLocation);
     }

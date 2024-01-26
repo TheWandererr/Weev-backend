@@ -54,6 +54,10 @@ public class SearchParams {
         return hasFieldsCriteria() && getFieldsCriteria().hasRestrictions();
     }
 
+    public boolean hasAuthorId() {
+        return nonNull(authorId);
+    }
+
     @Getter
     @Setter
     public static class PageCriteria {
@@ -97,6 +101,8 @@ public class SearchParams {
 
         private boolean onModeration;
         private boolean published;
+        private boolean canceled;
+        private boolean declined;
 
         public VisibilityCriteria() {
             this.published = true;

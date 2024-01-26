@@ -58,7 +58,7 @@ public class EventsController {
     public EventsSearchResponse search(@Valid @RequestBody EventsSearchRequest searchRequest) {
         SearchParams searchParams = getMapper(SearchParamsMapper.class).map(searchRequest, published());
         Page<Event> eventsPage = eventsSearchService.search(searchParams);
-        List<EventCompactedRest> restEvents = getMapper(EventCompactedRestMapper.class).map(eventsPage.getContent());
+        List<EventCompactedRest> restEvents = getMapper(EventCompactedRestMapper.class).mapCompacted(eventsPage.getContent());
         PageRest<EventCompactedRest> restEventsPage = new PageRest<>(restEvents, eventsPage.getNumber());
         return new EventsSearchResponse(restEventsPage, eventsPage.getTotalElements(), eventsPage.getTotalPages());
     }

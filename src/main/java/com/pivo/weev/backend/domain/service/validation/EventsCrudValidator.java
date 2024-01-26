@@ -88,13 +88,13 @@ public class EventsCrudValidator {
             throw new FlowInterruptedException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
         }
         if (!Objects.equals(getUserId(), cancellable.getCreator().getId())) {
-            throw new FlowInterruptedException(ACCESS_DENIED_ERROR);
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
         if (nonNull(cancellable.getUpdatableTarget())) {
-            throw new FlowInterruptedException(ACCESS_DENIED_ERROR);
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
         if (!CANCELLABLE_EVENT_STATUSES.contains(cancellable.getStatus())) {
-            throw new FlowInterruptedException(ACCESS_DENIED_ERROR);
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
     }
 

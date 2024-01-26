@@ -14,6 +14,7 @@ public interface SearchParamsMapper {
     @Mapping(target = "mapCriteria", source = "source")
     @Mapping(target = "fieldsCriteria", source = "source")
     @Mapping(target = "pageCriteria", expression = "java(mapPageCriteria(source, searchContext))")
+    @Mapping(target = "authorId", source = "searchContext.authorId")
     SearchParams map(EventsSearchRequest source, SearchContextRest searchContext);
 
     @Mapping(target = "sortFields", source = "searchContext.pageCriteria.sortFields")

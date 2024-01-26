@@ -21,7 +21,11 @@ public interface MapPointMapper {
     }
 
     default MapPoint map(LocationJpa source) {
-        return map(source.getPoint(), GEO_HASH_MAPPER.map(source.getHash()));
+        return map(source.getPoint(), source.getHash());
+    }
+
+    default MapPoint map(Point source, String hashString) {
+        return map(source, GEO_HASH_MAPPER.map(hashString));
     }
 
     List<MapPoint> map(List<LocationJpa> source);

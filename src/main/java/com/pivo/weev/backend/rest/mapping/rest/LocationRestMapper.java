@@ -14,5 +14,5 @@ public interface LocationRestMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "country", source = "source.country")
     @Mapping(target = "city", source = "source.city")
-    LocationRest mapHidden(Location source);
+    LocationRest mapPrivate(Location source);
 }

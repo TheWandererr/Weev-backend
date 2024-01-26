@@ -37,12 +37,34 @@ public class SearchContextRest {
         return context;
     }
 
+    public static SearchContextRest onModeration(Long authorId) {
+        SearchContextRest context = onModeration();
+        context.setAuthorId(authorId);
+        return context;
+    }
+
+    public static SearchContextRest canceled(Long authorId) {
+        SearchContextRest context = new SearchContextRest();
+        context.setVisibilityCriteria(VisibilityCriteriaRest.canceled());
+        context.setAuthorId(authorId);
+        return context;
+    }
+
+    public static SearchContextRest declined(Long authorId) {
+        SearchContextRest context = new SearchContextRest();
+        context.setVisibilityCriteria(VisibilityCriteriaRest.declined());
+        context.setAuthorId(authorId);
+        return context;
+    }
+
     @Getter
     @Setter
     public static class VisibilityCriteriaRest {
 
         private boolean published;
         private boolean onModeration;
+        private boolean canceled;
+        private boolean declined;
 
         public static VisibilityCriteriaRest published() {
             VisibilityCriteriaRest criteria = new VisibilityCriteriaRest();
@@ -53,6 +75,18 @@ public class SearchContextRest {
         public static VisibilityCriteriaRest onModeration() {
             VisibilityCriteriaRest criteria = new VisibilityCriteriaRest();
             criteria.setOnModeration(true);
+            return criteria;
+        }
+
+        public static VisibilityCriteriaRest canceled() {
+            VisibilityCriteriaRest criteria = new VisibilityCriteriaRest();
+            criteria.setCanceled(true);
+            return criteria;
+        }
+
+        public static VisibilityCriteriaRest declined() {
+            VisibilityCriteriaRest criteria = new VisibilityCriteriaRest();
+            criteria.setDeclined(true);
             return criteria;
         }
     }

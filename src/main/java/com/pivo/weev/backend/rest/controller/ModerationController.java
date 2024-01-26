@@ -63,7 +63,7 @@ public class ModerationController {
     public EventsSearchResponse searchEvents(@PathVariable @Min(0) Integer page) {
         SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new EventsSearchRequest(page), onModeration());
         Page<Event> eventsPage = eventsSearchService.search(searchParams);
-        List<EventCompactedRest> restEvents = getMapper(EventCompactedRestMapper.class).map(eventsPage.getContent());
+        List<EventCompactedRest> restEvents = getMapper(EventCompactedRestMapper.class).mapCompacted(eventsPage.getContent());
         PageRest<EventCompactedRest> pageRest = new PageRest<>(restEvents, eventsPage.getNumber());
         return new EventsSearchResponse(pageRest, eventsPage.getTotalElements(), eventsPage.getTotalPages());
     }
