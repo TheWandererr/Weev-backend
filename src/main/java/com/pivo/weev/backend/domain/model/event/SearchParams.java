@@ -12,41 +12,108 @@ import lombok.Setter;
 @Setter
 public class SearchParams {
 
-    private int page;
-    private int pageSize;
-    private String[] sortFields;
+    private PageCriteria pageCriteria = new PageCriteria();
+    private MapCriteria mapCriteria;
+    private VisibilityCriteria visibilityCriteria = new VisibilityCriteria();
+    private FieldsCriteria fieldsCriteria;
+    private Long authorId;
 
-    private String header;
-    private String category;
-    private String subcategory;
-    private Radius radius;
-    private int zoom;
-    private String geoHash;
-    private Restrictions restrictions;
-
-    private boolean onModeration;
-    private boolean published;
-
-    public String[] getSortFields() {
-        if (isNull(sortFields)) {
-            sortFields = new String[]{};
-        }
-        return sortFields;
+    public boolean hasMapCriteria() {
+        return nonNull(mapCriteria);
     }
 
-    public boolean hasRadius() {
-        return nonNull(radius);
+    public boolean hasVisibilityCriteria() {
+        return nonNull(visibilityCriteria);
+    }
+
+    public boolean hasFieldsCriteria() {
+        return nonNull(fieldsCriteria);
+    }
+
+    public Integer getPage() {
+        return getPageCriteria().getPage();
+    }
+
+    public Integer getPageSize() {
+        return getPageCriteria().getPageSize();
+    }
+
+    public String[] getSortFields() {
+        return getPageCriteria().getSortFields();
+    }
+
+    public int getZoom() {
+        return hasMapCriteria() ? getMapCriteria().getZoom() : 0;
     }
 
     public boolean hasSortFields() {
-        return !isEmpty(getSortFields());
-    }
-
-    public boolean hasGeoHash() {
-        return isNotBlank(geoHash);
+        return getPageCriteria().hasSortFields();
     }
 
     public boolean hasRestrictions() {
-        return nonNull(restrictions);
+        return hasFieldsCriteria() && getFieldsCriteria().hasRestrictions();
+    }
+
+    @Getter
+    @Setter
+    public static class PageCriteria {
+
+        private int page;
+        private int pageSize;
+        private String[] sortFields;
+
+        public String[] getSortFields() {
+            if (isNull(sortFields)) {
+                sortFields = new String[]{};
+            }
+            return sortFields;
+        }
+
+        public boolean hasSortFields() {
+            return !isEmpty(getSortFields());
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class MapCriteria {
+
+        private Radius radius;
+        private int zoom;
+        private String geoHash;
+
+        public boolean hasRadius() {
+            return nonNull(radius);
+        }
+
+        public boolean hasGeoHash() {
+            return isNotBlank(geoHash);
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class VisibilityCriteria {
+
+        private boolean onModeration;
+        private boolean published;
+
+        public VisibilityCriteria() {
+            this.published = true;
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class FieldsCriteria {
+
+        private String header;
+        private String category;
+        private String subcategory;
+        private Restrictions restrictions;
+
+        public boolean hasRestrictions() {
+            return nonNull(restrictions);
+        }
     }
 }

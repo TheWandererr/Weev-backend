@@ -48,6 +48,12 @@ public abstract class GenericRepositoryWrapper<PK extends Serializable, E extend
         }
     }
 
+    public void logicalDelete(E resource) {
+        if (nonNull(resource)) {
+            resource.logicalDeleted();
+        }
+    }
+
     public void forceDeleteById(PK id) {
         repository.deleteById(id);
     }

@@ -62,7 +62,7 @@ public class ModerationService {
         updatable.setModeratedBy(getUserId());
         updatable.setStatus(CONFIRMED);
 
-        Set<UserJpa> recipients = updatable.getUsers();
+        Set<UserJpa> recipients = updatable.getMembersWithCreator();
         notificationService.notifyAll(recipients, updatable, EVENT_UPDATE_SUCCESSFUL);
     }
 

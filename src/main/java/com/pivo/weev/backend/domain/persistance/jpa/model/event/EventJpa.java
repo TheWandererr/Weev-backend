@@ -143,7 +143,7 @@ public class EventJpa extends ModifiableJpa<Long> {
         return membersCopy;
     }
 
-    public Set<UserJpa> getUsers() {
+    public Set<UserJpa> getMembersWithCreator() {
         Set<UserJpa> users = new HashSet<>(this.members);
         users.add(creator);
         return users;
@@ -184,5 +184,12 @@ public class EventJpa extends ModifiableJpa<Long> {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy hibernateProxy ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    @Override
+    public void logicalDeleted() {
+        setPhoto(null);
+        getMembers().clear();
+        setStatus(DELETED);
     }
 }

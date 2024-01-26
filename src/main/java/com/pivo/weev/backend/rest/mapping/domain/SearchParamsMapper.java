@@ -1,24 +1,27 @@
 package com.pivo.weev.backend.rest.mapping.domain;
 
-import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.EVENTS_PER_PAGE;
-
 import com.pivo.weev.backend.domain.model.event.SearchParams;
 import com.pivo.weev.backend.rest.model.event.SearchContextRest;
+import com.pivo.weev.backend.rest.model.event.SearchContextRest.VisibilityCriteriaRest;
 import com.pivo.weev.backend.rest.model.request.EventsSearchRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 @Mapper(uses = {MapPointMapper.class})
 public interface SearchParamsMapper {
 
-    @Mapping(target = "published", source = "searchContext.published")
-    @Mapping(target = "onModeration", source = "searchContext.onModeration")
-    @Mapping(target = "pageSize", source = "source", qualifiedByName = "extractPageSize")
+    @Mapping(target = "visibilityCriteria", source = "searchContext.visibilityCriteria")
+    @Mapping(target = "mapCriteria", source = "source")
+    @Mapping(target = "fieldsCriteria", source = "source")
+    @Mapping(target = "pageCriteria", expression = "java(mapPageCriteria(source, searchContext))")
     SearchParams map(EventsSearchRequest source, SearchContextRest searchContext);
 
-    @Named("extractPageSize")
-    default Integer extractPageSize(EventsSearchRequest source) {
-        return source.hasPageSize() ? source.getPageSize() : EVENTS_PER_PAGE;
-    }
+    @Mapping(target = "sortFields", source = "searchContext.pageCriteria.sortFields")
+    SearchParams.PageCriteria mapPageCriteria(EventsSearchRequest source, SearchContextRest searchContext);
+
+    SearchParams.MapCriteria mapMapCriteria(EventsSearchRequest source);
+
+    SearchParams.VisibilityCriteria mapVisibilityCriteria(VisibilityCriteriaRest source);
+
+    SearchParams.FieldsCriteria mapFieldsCriteria(EventsSearchRequest source);
 }

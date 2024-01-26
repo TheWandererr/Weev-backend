@@ -1,7 +1,6 @@
 package com.pivo.weev.backend.rest.model.request;
 
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_AMOUNT_ERROR;
-import static java.util.Objects.nonNull;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -20,9 +19,4 @@ public class PageableRequest {
     @Max(value = 1000, message = INVALID_AMOUNT_ERROR)
     @Min(value = 5, message = INVALID_AMOUNT_ERROR)
     private Integer pageSize;
-
-    public boolean hasPageSize() {
-        return nonNull(pageSize);
-    }
-
 }

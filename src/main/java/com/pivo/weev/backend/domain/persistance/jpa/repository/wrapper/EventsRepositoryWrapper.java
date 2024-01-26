@@ -1,7 +1,5 @@
 package com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper;
 
-import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DELETED;
-
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ResourceName;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.IEventRepository;
@@ -21,11 +19,6 @@ public class EventsRepositoryWrapper extends GenericRepositoryWrapper<Long, Even
 
     public void deleteByUpdatableTargetId(Long id) {
         repository.deleteByUpdatableTargetId(id);
-    }
-
-    public void logicalDelete(EventJpa resource) {
-        resource.setPhoto(null);
-        resource.setStatus(DELETED);
     }
 
     @Override
