@@ -24,6 +24,7 @@ public class Constants {
     public static final class ErrorCodes {
 
         public static final String CREDENTIALS_ERROR = "bad.credentials";
+        public static final String USER_NOT_FOUND_ERROR = "user.not.found";
         public static final String PERMISSIONS_ERROR = "not.enough.permissions";
         public static final String UNAUTHORIZED_ERROR = "unauthorized";
         public static final String FIELD_VALIDATION_FAILED_ERROR = "field.validation.failed";
@@ -56,6 +57,7 @@ public class Constants {
         public static final String EMAIL_ALREADY_USED_ERROR = "email.already.used";
         public static final String PHONE_NUMBER_ALREADY_USED = "phone.number.already.used";
         public static final String NICKNAME_ALREADY_USED = "nickname.already.used";
+        public static final String MULTI_CONTACT_ERROR = "only.single.contact.supported.for.verification";
 
         public static final String FIELD_VALIDATION_FAILED_ERROR_PATTERN = "%s.incorrect";
 
@@ -68,5 +70,18 @@ public class Constants {
 
         public static final String EVENT_CAPACITY_EXCEEDED = "event.capacity.exceeded";
 
+    }
+
+    @UtilityClass
+    public static final class EventAvailabilities {
+
+        public static final String PUBLIC = "PUBLIC";
+    }
+
+    @UtilityClass
+    public static final class VerificationMethods {
+
+        public static final String EMAIL = "email";
+        public static final String PHONE_NUMBER = "phone_number";
     }
 }

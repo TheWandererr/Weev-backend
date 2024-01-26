@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.model.event;
 
-import static com.pivo.weev.backend.rest.utils.Constants.EventAvailabilities.PUBLIC;
+import static com.pivo.weev.backend.utils.Constants.EventAvailabilities.PUBLIC;
 
 import lombok.Getter;
 import lombok.Setter;

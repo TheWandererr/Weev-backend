@@ -11,6 +11,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepos
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +20,7 @@ public class UsersService {
 
     private final UserRepositoryWrapper userRepository;
     private final UserFactory userFactory;
+    private final PasswordEncoder passwordEncoder;
 
     public Optional<UserJpa> findUser(Contacts contacts) {
         Specification<UserJpa> specification = buildUserSearchSpecification(null, contacts.getEmail(), contacts.getPhoneNumber());
@@ -38,6 +40,7 @@ public class UsersService {
 
     public UserJpa createNewUser(UserSnapshot userSnapshot) {
         UserJpa user = userFactory.createUser(userSnapshot);
+        updatePassword(user, userSnapshot.getPassword());
         userRepository.save(user);
         return user;
     }
@@ -45,5 +48,9 @@ public class UsersService {
     public boolean isNicknameAvailable(String nickname) {
         Specification<UserJpa> specification = buildUserSearchSpecification(nickname, NICKNAME);
         return userRepository.find(specification).isEmpty();
+    }
+
+    public void updatePassword(UserJpa user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
     }
 }

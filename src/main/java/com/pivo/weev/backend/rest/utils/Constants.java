@@ -29,6 +29,9 @@ public class Constants {
         public static final String EVENTS_SEARCH_URI = "/api/events/search";
         public static final String EVENTS_SEARCH_MAP_URI = "/api/events/map/search";
         public static final String REGISTRATION_URI = "/auth/registration";
+        public static final String EMAILS_URI = "/auth/email";
+        public static final String PASSWORD_RESET_URI = "/auth/password/reset";
+        public static final String VERIFICATION_COMPLETION_URI = "/auth/verification/completion";
     }
 
     @UtilityClass
@@ -109,11 +112,5 @@ public class Constants {
         public static final String CANCEL = "cancel";
         public static final String LOGIN = "login";
 
-    }
-
-    @UtilityClass
-    public static final class EventAvailabilities {
-
-        public static final String PUBLIC = "PUBLIC";
     }
 }

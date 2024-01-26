@@ -9,6 +9,7 @@ import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ModifiableJpa;
@@ -110,5 +111,13 @@ public class UserJpa extends ModifiableJpa<Long> {
         return this instanceof HibernateProxy proxy
                 ? proxy.getHibernateLazyInitializer().getPersistentClass().hashCode()
                 : getClass().hashCode();
+    }
+
+    public boolean hasEmail() {
+        return isNotBlank(email);
+    }
+
+    public boolean hasPhoneNumber() {
+        return isNotBlank(phoneNumber);
     }
 }

@@ -1,5 +1,8 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.auth;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
+import com.pivo.weev.backend.domain.model.user.Contacts;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,6 +27,8 @@ public class VerificationRequestJpa extends SequencedPersistable<Long> {
     private String code;
     @Column(unique = true)
     private String email;
+    @Column(unique = true)
+    private String phoneNumber;
     @Column
     private Instant retryAfter;
     @Column
@@ -31,11 +36,15 @@ public class VerificationRequestJpa extends SequencedPersistable<Long> {
     @Column
     private boolean completed;
 
-    public VerificationRequestJpa(String code, String email, Instant retryAfter, Instant expiresAt) {
+    public VerificationRequestJpa(String code, Contacts contacts, Instant retryAfter, Instant expiresAt) {
         this.code = code;
-        this.email = email;
         this.retryAfter = retryAfter;
         this.expiresAt = expiresAt;
+        if (contacts.hasEmail()) {
+            this.email = contacts.getEmail();
+        } else {
+            this.phoneNumber = contacts.getPhoneNumber();
+        }
     }
 
     public boolean isRetryable() {
@@ -72,5 +81,13 @@ public class VerificationRequestJpa extends SequencedPersistable<Long> {
         return this instanceof HibernateProxy hibernateProxy
                 ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass().hashCode()
                 : getClass().hashCode();
+    }
+
+    public boolean hasEmail() {
+        return isNotBlank(email);
+    }
+
+    public boolean hasPhoneNumber() {
+        return isNotBlank(phoneNumber);
     }
 }

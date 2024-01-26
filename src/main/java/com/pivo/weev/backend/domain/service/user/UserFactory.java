@@ -9,7 +9,6 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserRoleJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRolesRepositoryWrapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,12 +16,9 @@ import org.springframework.stereotype.Service;
 public class UserFactory {
 
     private final UserRolesRepositoryWrapper userRolesRepository;
-    private final PasswordEncoder passwordEncoder;
 
     public UserJpa createUser(UserSnapshot userSnapshot) {
         UserJpa user = getMapper(UserJpaMapper.class).map(userSnapshot);
-        user.setPassword(passwordEncoder.encode(userSnapshot.getPassword()));
-
         fillPersistenceData(user);
         return user;
     }

@@ -1,9 +1,12 @@
 package com.pivo.weev.backend.config.security;
 
+import static com.pivo.weev.backend.rest.utils.Constants.Api.EMAILS_URI;
 import static com.pivo.weev.backend.rest.utils.Constants.Api.EVENTS_SEARCH_MAP_URI;
 import static com.pivo.weev.backend.rest.utils.Constants.Api.EVENTS_SEARCH_URI;
 import static com.pivo.weev.backend.rest.utils.Constants.Api.LOGIN_URL;
+import static com.pivo.weev.backend.rest.utils.Constants.Api.PASSWORD_RESET_URI;
 import static com.pivo.weev.backend.rest.utils.Constants.Api.REGISTRATION_URI;
+import static com.pivo.weev.backend.rest.utils.Constants.Api.VERIFICATION_COMPLETION_URI;
 import static com.pivo.weev.backend.rest.utils.Constants.Authorities.WRITE;
 import static com.pivo.weev.backend.rest.utils.Constants.RequestParameters.PASSWORD;
 import static com.pivo.weev.backend.rest.utils.Constants.RequestParameters.USERNAME;
@@ -65,9 +68,18 @@ public class SecurityConfig {
             throws Exception {
         http.authorizeHttpRequests(customizer ->
                                            customizer.requestMatchers(GET).permitAll()
-                                                     .requestMatchers(POST, EVENTS_SEARCH_URI, EVENTS_SEARCH_MAP_URI, REGISTRATION_URI + "/**").permitAll()
+                                                     .requestMatchers(POST,
+                                                                      EVENTS_SEARCH_URI,
+                                                                      EVENTS_SEARCH_MAP_URI,
+                                                                      PASSWORD_RESET_URI + "/**",
+                                                                      REGISTRATION_URI + "/**",
+                                                                      EMAILS_URI + "/**").permitAll()
                                                      .requestMatchers(POST).hasAnyAuthority(WRITE)
-                                                     .requestMatchers(PUT, REGISTRATION_URI + "/**").permitAll()
+                                                     .requestMatchers(PUT,
+                                                                      PASSWORD_RESET_URI + "/**",
+                                                                      REGISTRATION_URI + "/**",
+                                                                      EMAILS_URI + "/**",
+                                                                      VERIFICATION_COMPLETION_URI).permitAll()
                                                      .requestMatchers(PUT).hasAnyAuthority(WRITE)
                                                      .requestMatchers(DELETE).hasAnyAuthority(WRITE)
         );
