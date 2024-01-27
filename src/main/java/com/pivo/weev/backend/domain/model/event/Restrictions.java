@@ -14,7 +14,7 @@ public class Restrictions {
 
     public enum Availability {
         PUBLIC,
-        REQUEST,
+        RESTRICTED,
         PRIVATE
     }
 

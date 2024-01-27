@@ -1,7 +1,6 @@
 package com.pivo.weev.backend.rest.controller;
 
 import static com.pivo.weev.backend.rest.model.event.SearchContextRest.onModeration;
-import static com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage.SUCCESS;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.model.event.Event;
@@ -50,13 +49,13 @@ public class ModerationController {
     @PutMapping("/events/{id}/confirmation")
     public BaseResponse confirmEvent(@PathVariable Long id) {
         moderationService.confirmEvent(id);
-        return new BaseResponse(SUCCESS);
+        return new BaseResponse();
     }
 
     @PutMapping("/events/{id}/declination")
     public BaseResponse declineEvent(@PathVariable Long id, @Valid @RequestBody EventDeclineRequest request) {
         moderationService.declineEvent(id, request.getDeclinationReason());
-        return new BaseResponse(SUCCESS);
+        return new BaseResponse();
     }
 
     @GetMapping("/events/{page}")

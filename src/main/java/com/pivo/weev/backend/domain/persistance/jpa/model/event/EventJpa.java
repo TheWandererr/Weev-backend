@@ -1,13 +1,16 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.event;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CANCELED;
+import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CONFIRMED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DECLINED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DELETED;
+import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.HAS_MODERATION_INSTANCE;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.ON_MODERATION;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.EVENT_HEADER;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.EVENT_STATUS;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.EVENT_UTC_END_DATE_TIME;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.EVENT_UTC_START_DATE_TIME;
+import static com.pivo.weev.backend.utils.Constants.Amount.INFINITY;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
 import static com.pivo.weev.backend.utils.Constants.Reasons.EVENT_CAPACITY_EXCEEDED;
 import static jakarta.persistence.CascadeType.ALL;
@@ -15,6 +18,7 @@ import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
+import static java.time.Instant.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -110,6 +114,14 @@ public class EventJpa extends ModifiableJpa<Long> {
         return nonNull(restrictions);
     }
 
+    public boolean isConfirmed() {
+        return status == CONFIRMED;
+    }
+
+    public boolean isHasModerationInstance() {
+        return status == HAS_MODERATION_INSTANCE;
+    }
+
     public boolean isOnModeration() {
         return status == ON_MODERATION;
     }
@@ -132,6 +144,18 @@ public class EventJpa extends ModifiableJpa<Long> {
 
     public boolean hasPhoto() {
         return nonNull(photo);
+    }
+
+    public boolean isEnded() {
+        return now().isAfter(utcEndDateTime);
+    }
+
+    public boolean isStarted() {
+        return !isEnded() && now().isAfter(utcStartDateTime);
+    }
+
+    public boolean hasMembersLimit() {
+        return nonNull(membersLimit) && !INFINITY.equals(membersLimit);
     }
 
     public Set<UserJpa> dissolve() {

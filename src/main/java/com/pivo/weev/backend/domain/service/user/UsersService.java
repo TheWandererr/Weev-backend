@@ -7,7 +7,7 @@ import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder
 import com.pivo.weev.backend.domain.model.user.Contacts;
 import com.pivo.weev.backend.domain.model.user.UserSnapshot;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,36 +18,36 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UsersService {
 
-    private final UserRepositoryWrapper userRepository;
+    private final UsersRepositoryWrapper usersRepository;
     private final UserFactory userFactory;
     private final PasswordEncoder passwordEncoder;
 
     public Optional<UserJpa> findUser(Contacts contacts) {
         Specification<UserJpa> specification = buildUserSearchSpecification(null, contacts.getEmail(), contacts.getPhoneNumber());
-        return userRepository.find(specification);
+        return usersRepository.find(specification);
     }
 
     public Optional<UserJpa> findUser(UserSnapshot userSnapshot) {
         Contacts contacts = userSnapshot.getContacts();
         Specification<UserJpa> specification = buildUserSearchSpecification(userSnapshot.getNickname(), contacts.getEmail(), contacts.getPhoneNumber());
-        return userRepository.find(specification);
+        return usersRepository.find(specification);
     }
 
     public Optional<UserJpa> findUser(String username) {
         Specification<UserJpa> specification = buildUserSearchSpecification(username, ANY);
-        return userRepository.find(specification);
+        return usersRepository.find(specification);
     }
 
     public UserJpa createNewUser(UserSnapshot userSnapshot) {
         UserJpa user = userFactory.createUser(userSnapshot);
         updatePassword(user, userSnapshot.getPassword());
-        userRepository.save(user);
+        usersRepository.save(user);
         return user;
     }
 
     public boolean isNicknameAvailable(String nickname) {
         Specification<UserJpa> specification = buildUserSearchSpecification(nickname, NICKNAME);
-        return userRepository.find(specification).isEmpty();
+        return usersRepository.find(specification).isEmpty();
     }
 
     public void updatePassword(UserJpa user, String newPassword) {

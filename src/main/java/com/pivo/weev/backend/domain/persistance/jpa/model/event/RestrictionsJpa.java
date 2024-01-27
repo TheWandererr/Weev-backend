@@ -11,8 +11,8 @@ import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
 @Entity
-@Table(name = "restrictions")
-@SequenceGenerator(sequenceName = "restrictions_id_sequence", allocationSize = 1, name = "sequence_generator")
+@Table(name = "event_restrictions")
+@SequenceGenerator(sequenceName = "event_restrictions_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
 public class RestrictionsJpa extends SequencedPersistable<Long> {

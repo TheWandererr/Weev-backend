@@ -1,7 +1,6 @@
 package com.pivo.weev.backend.rest.controller;
 
 import static com.pivo.weev.backend.domain.model.auth.VerificationScope.REGISTRATION;
-import static com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage.SUCCESS;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.model.auth.AuthTokens;
@@ -48,27 +47,27 @@ public class AuthController {
     public BaseResponse requestVerification(@RequestBody @Valid VerificationRequest request) {
         Contacts contacts = getMapper(ContactsMapper.class).map(request);
         authOperationsService.requestVerification(contacts, REGISTRATION);
-        return new BaseResponse(SUCCESS);
+        return new BaseResponse();
     }
 
     @PutMapping("/verification/completion")
     public BaseResponse completeVerification(@RequestBody @Valid VerificationCompletionRequest request) {
         Contacts contacts = getMapper(ContactsMapper.class).map(request);
         authOperationsService.completeVerification(contacts, request.getCode());
-        return new BaseResponse(SUCCESS);
+        return new BaseResponse();
     }
 
     @PostMapping("/registration")
     public BaseResponse register(@RequestBody @Valid RegistrationRequest request) {
         UserSnapshot userSnapshot = getMapper(UserSnapshotMapper.class).map(request);
         authOperationsService.register(userSnapshot);
-        return new BaseResponse(SUCCESS);
+        return new BaseResponse();
     }
 
     @PostMapping("/logout")
     public BaseResponse logout() {
         authOperationsService.logout();
-        return new BaseResponse(SUCCESS);
+        return new BaseResponse();
     }
 
     @PostMapping("/password/reset/request")
@@ -81,6 +80,6 @@ public class AuthController {
     @PutMapping("/password/reset")
     public BaseResponse setNewPassword(@RequestBody @Valid NewPasswordRequest request) {
         authOperationsService.setNewPassword(request.newPassword(), request.username().toLowerCase());
-        return new BaseResponse(SUCCESS);
+        return new BaseResponse();
     }
 }

@@ -20,16 +20,16 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.event.SubcategoryJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventCategoryRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventsRepositoryWrapper;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.LocationService;
 import com.pivo.weev.backend.domain.service.NotificationService;
 import com.pivo.weev.backend.domain.service.TimeZoneService;
 import com.pivo.weev.backend.domain.service.validation.EventsCrudValidator;
-import jakarta.transaction.Transactional;
 import java.time.ZoneId;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +37,7 @@ public class EventsCrudService {
 
     private final EventsRepositoryWrapper eventsRepository;
     private final EventCategoryRepositoryWrapper eventCategoryRepository;
-    private final UserRepositoryWrapper userRepository;
+    private final UsersRepositoryWrapper usersRepository;
 
     private final EventsCrudValidator eventsCrudValidator;
     private final LocationService locationService;
@@ -46,7 +46,7 @@ public class EventsCrudService {
     private final NotificationService notificationService;
 
     @Transactional
-    public void save(CreatableEvent sample) {
+    public void create(CreatableEvent sample) {
         setTimeZones(sample);
         eventsCrudValidator.validateCreation(sample);
         EventJpa jpaEvent = preparePersistableEvent(sample);
@@ -62,7 +62,7 @@ public class EventsCrudService {
     }
 
     private EventJpa preparePersistableEvent(CreatableEvent sample) {
-        UserJpa creator = userRepository.fetch(getUserId());
+        UserJpa creator = usersRepository.fetch(getUserId());
         EventJpa eventJpa = new EventJpa(creator);
         getMapper(EventJpaMapper.class).map(sample, eventJpa);
         LocationJpa location = locationService.resolveLocation(sample);
@@ -83,7 +83,7 @@ public class EventsCrudService {
     }
 
     @Transactional
-    public void updateEvent(CreatableEvent sample) {
+    public void update(CreatableEvent sample) {
         setTimeZones(sample);
         EventJpa updatableTarget = eventsRepository.fetch(sample.getId());
         eventsCrudValidator.validateUpdate(updatableTarget, sample);
@@ -125,5 +125,17 @@ public class EventsCrudService {
         eventsCrudValidator.validateDeletion(deletable);
         eventsPhotoService.deletePhoto(deletable);
         eventsRepository.logicalDelete(deletable);
+    }
+
+    @Transactional
+    public void join(Long id) {
+        EventJpa event = eventsRepository.fetch(id);
+        eventsCrudValidator.validateJoin(event);
+        UserJpa user = usersRepository.fetch(getUserId());
+        event.addMember(user);
+    }
+
+    public void createJoinRequest(Long id) {
+
     }
 }

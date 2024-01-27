@@ -28,6 +28,7 @@ public class Constants {
         public static final String PERMISSIONS_ERROR = "not.enough.permissions";
         public static final String UNAUTHORIZED_ERROR = "unauthorized";
         public static final String FIELD_VALIDATION_FAILED_ERROR = "field.validation.failed";
+        public static final String FIELD_VALIDATION_FAILED_ERROR_PATTERN = "%s.validation.failed";
         public static final String MUST_BE_NOT_NULL_ERROR = "must.be.not.null";
         public static final String MUST_BE_NOT_BLANK_ERROR = "must.be.not.blank";
         public static final String MUST_BE_NULL_OR_NOT_BLANK_ERROR = "must.be.null.or.not.blank";
@@ -57,12 +58,9 @@ public class Constants {
         public static final String EMAIL_ALREADY_USED_ERROR = "email.already.used";
         public static final String PHONE_NUMBER_ALREADY_USED = "phone.number.already.used";
         public static final String NICKNAME_ALREADY_USED = "nickname.already.used";
-        public static final String MULTI_CONTACT_ERROR = "only.single.contact.supported.for.verification";
-
-        public static final String FIELD_VALIDATION_FAILED_ERROR_PATTERN = "%s.incorrect";
-
         public static final String ACCESS_DENIED_ERROR = "access.denied";
         public static final String OPERATION_IMPOSSIBLE_ERROR = "operation.impossible";
+        public static final String EVENT_FINISHED_ERROR = "event.is.finished";
     }
 
     @UtilityClass

@@ -25,6 +25,7 @@ import com.pivo.weev.backend.rest.model.request.EventSaveRequest;
 import com.pivo.weev.backend.rest.model.request.EventsSearchRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
+import com.pivo.weev.backend.rest.model.response.EventJoinResponse;
 import com.pivo.weev.backend.rest.model.response.EventSearchResponse;
 import com.pivo.weev.backend.rest.model.response.EventsMapPointClusterSearchResponse;
 import com.pivo.weev.backend.rest.model.response.EventsSearchResponse;
@@ -74,10 +75,10 @@ public class EventsController {
 
     @PostMapping
     @ResponseStatus(value = CREATED)
-    public BaseResponse createEvent(@Valid @ModelAttribute EventSaveRequest request) {
+    public BaseResponse create(@Valid @ModelAttribute EventSaveRequest request) {
         CreatableEvent sample = getMapper(CreatableEventMapper.class).map(request);
         sample.setUpdatePhoto(true);
-        eventsCrudService.save(sample);
+        eventsCrudService.create(sample);
         return new BaseResponse(ResponseMessage.CREATED);
     }
 
@@ -89,22 +90,35 @@ public class EventsController {
     }
 
     @PutMapping("/{id}")
-    public BaseResponse updateEvent(@Valid @ModelAttribute EventSaveRequest request) {
+    public BaseResponse update(@Valid @ModelAttribute EventSaveRequest request) {
         CreatableEvent sample = getMapper(CreatableEventMapper.class).map(request);
-        eventsCrudService.updateEvent(sample);
-        return new BaseResponse(ResponseMessage.SUCCESS);
+        eventsCrudService.update(sample);
+        return new BaseResponse();
     }
 
     @PutMapping("/{id}/cancellation")
-    public BaseResponse cancelEvent(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
+    public BaseResponse cancel(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
         eventsCrudService.cancel(id);
-        return new BaseResponse(ResponseMessage.SUCCESS);
+        return new BaseResponse();
     }
 
     @DeleteMapping("/{id}")
-    public BaseResponse deleteEvent(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
+    public BaseResponse delete(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
         eventsCrudService.delete(id);
-        return new BaseResponse(ResponseMessage.SUCCESS);
+        return new BaseResponse();
+    }
+
+    @PutMapping("/{id}/join")
+    public EventJoinResponse join(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
+        eventsCrudService.join(id);
+        return new EventJoinResponse(true);
+    }
+
+    @PostMapping("/{id}/join/request")
+    @ResponseStatus(value = CREATED)
+    public EventJoinResponse createJoinRequest(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
+        eventsCrudService.createJoinRequest(id);
+        return new EventJoinResponse(false);
     }
 
 }

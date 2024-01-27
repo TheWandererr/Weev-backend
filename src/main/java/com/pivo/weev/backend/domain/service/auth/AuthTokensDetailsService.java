@@ -14,7 +14,6 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.auth.AuthTokensDetails
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.AuthTokensDetailsRepositoryWrapper;
 import com.pivo.weev.backend.rest.mapping.domain.AuthTokenDetailsMapper;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

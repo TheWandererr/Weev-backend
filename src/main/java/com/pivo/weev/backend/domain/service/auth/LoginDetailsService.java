@@ -9,12 +9,12 @@ import com.pivo.weev.backend.domain.model.auth.LoginDetails;
 import com.pivo.weev.backend.domain.service.user.UsersService;
 import com.pivo.weev.backend.rest.utils.HttpServletUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.rest.model.response;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+import static com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage.SUCCESS;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -12,11 +13,9 @@ import com.pivo.weev.backend.rest.model.error.PopupRest;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @JsonInclude(NON_EMPTY)
-@NoArgsConstructor
 @Getter
 @Setter
 public class BaseResponse {
@@ -26,6 +25,10 @@ public class BaseResponse {
     private NotificationRest notification;
     private ResponseMessage message;
     private Map<String, Object> details;
+
+    public BaseResponse() {
+        this(SUCCESS);
+    }
 
     public BaseResponse(PopupRest popup, ResponseMessage responseMessage) {
         this(popup, responseMessage, null);

@@ -19,11 +19,11 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventsRep
 import com.pivo.weev.backend.domain.service.NotificationService;
 import com.pivo.weev.backend.domain.service.event.EventsPhotoService;
 import com.pivo.weev.backend.domain.service.validation.ModerationValidator;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

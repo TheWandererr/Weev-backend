@@ -2,13 +2,13 @@ package com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ResourceName;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.IUserRepository;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.IUsersRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserRepositoryWrapper extends GenericRepositoryWrapper<Long, UserJpa, IUserRepository> {
+public class UsersRepositoryWrapper extends GenericRepositoryWrapper<Long, UserJpa, IUsersRepository> {
 
-    public UserRepositoryWrapper(IUserRepository repository) {
+    public UsersRepositoryWrapper(IUsersRepository repository) {
         super(repository, ResourceName.USER);
     }
 }
