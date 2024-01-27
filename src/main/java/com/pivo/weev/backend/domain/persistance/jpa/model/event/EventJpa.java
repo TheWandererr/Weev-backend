@@ -177,7 +177,7 @@ public class EventJpa extends ModifiableJpa<Long> {
         if (isNull(user)) {
             return;
         }
-        if (nonNull(membersLimit) && membersLimit > 0 && getMembers().size() == membersLimit) {
+        if (hasMembersLimit() && getMembers().size() == membersLimit) {
             throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, EVENT_CAPACITY_EXCEEDED);
         }
         getMembers().add(user);
