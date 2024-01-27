@@ -3,22 +3,29 @@ package com.pivo.weev.backend.domain.service.event;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CANCELED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.HAS_MODERATION_INSTANCE;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.REQUESTER;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_CANCELLATION;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_NEW_JOIN_REQUEST;
 import static com.pivo.weev.backend.utils.CollectionUtils.findFirst;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.SUBCATEGORY_NOT_FOUND_ERROR;
+import static com.pivo.weev.backend.utils.Constants.Reasons.EVENT_JOIN_REQUEST_ALREADY_CREATED;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.mapstruct.factory.Mappers.getMapper;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 import com.pivo.weev.backend.domain.mapping.jpa.EventJpaMapper;
 import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
+import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.CategoryJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventRequestJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.SubcategoryJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventCategoryRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRequestsRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventsRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.LocationService;
@@ -26,6 +33,7 @@ import com.pivo.weev.backend.domain.service.NotificationService;
 import com.pivo.weev.backend.domain.service.TimeZoneService;
 import com.pivo.weev.backend.domain.service.validation.EventsCrudValidator;
 import java.time.ZoneId;
+import java.util.Map;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,6 +46,7 @@ public class EventsCrudService {
     private final EventsRepositoryWrapper eventsRepository;
     private final EventCategoryRepositoryWrapper eventCategoryRepository;
     private final UsersRepositoryWrapper usersRepository;
+    private final EventRequestsRepositoryWrapper eventRequestsRepository;
 
     private final EventsCrudValidator eventsCrudValidator;
     private final LocationService locationService;
@@ -113,7 +122,7 @@ public class EventsCrudService {
         eventsCrudValidator.validateCancellation(cancellable);
 
         Set<UserJpa> dissolvedMembers = cancellable.dissolve();
-        notificationService.notifyAll(dissolvedMembers, cancellable, EVENT_CANCELLATION);
+        notificationService.notifyAll(cancellable, dissolvedMembers, EVENT_CANCELLATION);
 
         eventsRepository.deleteByUpdatableTargetId(id);
         cancellable.setStatus(CANCELED);
@@ -135,7 +144,16 @@ public class EventsCrudService {
         event.addMember(user);
     }
 
+    @Transactional
     public void createJoinRequest(Long id) {
-
+        EventJpa event = eventsRepository.fetch(id);
+        eventsCrudValidator.validateCreateJoinRequest(event);
+        UserJpa user = usersRepository.fetch(getUserId());
+        eventRequestsRepository.findByEventIdAndUserId(event.getId(), user.getId())
+                               .ifPresent(request -> {
+                                   throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, EVENT_JOIN_REQUEST_ALREADY_CREATED, FORBIDDEN);
+                               });
+        notificationService.notify(event, event.getCreator(), EVENT_NEW_JOIN_REQUEST, Map.of(REQUESTER, user.getId()));
+        eventRequestsRepository.save(new EventRequestJpa(event, user));
     }
 }

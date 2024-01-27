@@ -1,9 +1,8 @@
-package com.pivo.weev.backend.domain.persistance.jpa.model.event;
+package com.pivo.weev.backend.domain.persistance.jpa.model.common;
 
 import static jakarta.persistence.AccessType.FIELD;
 import static java.util.Objects.nonNull;
 
-import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
 import jakarta.persistence.Access;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;

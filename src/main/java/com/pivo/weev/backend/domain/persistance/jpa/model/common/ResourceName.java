@@ -9,6 +9,7 @@ public enum ResourceName implements Enumerated {
     AUTH_TOKEN_DETAILS,
     EVENT,
     EVENT_CATEGORY,
+    EVENT_REQUEST,
     LOCATION,
     NOTIFICATION,
     DECLINATION_REASON,

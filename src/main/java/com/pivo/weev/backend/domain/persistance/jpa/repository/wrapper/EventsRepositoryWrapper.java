@@ -2,14 +2,14 @@ package com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ResourceName;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.IEventRepository;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.IEventsRepository;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EventsRepositoryWrapper extends GenericRepositoryWrapper<Long, EventJpa, IEventRepository> {
+public class EventsRepositoryWrapper extends GenericRepositoryWrapper<Long, EventJpa, IEventsRepository> {
 
-    protected EventsRepositoryWrapper(IEventRepository repository) {
+    protected EventsRepositoryWrapper(IEventsRepository repository) {
         super(repository, ResourceName.EVENT);
     }
 

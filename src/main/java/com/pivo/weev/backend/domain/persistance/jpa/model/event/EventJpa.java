@@ -24,6 +24,7 @@ import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ModifiableJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import jakarta.persistence.Column;
@@ -31,8 +32,10 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -74,12 +77,12 @@ public class EventJpa extends ModifiableJpa<Long> {
     @Embedded
     private EntryFeeJpa entryFee;
     private Integer membersLimit;
-    @Column(columnDefinition = "TEXT")
+    @Lob
     private String description;
     @OneToOne(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "photo_id")
     private CloudResourceJpa photo;
-    private Boolean reminded;
+    private Boolean reminded = false;
     private Long moderatedBy;
     @OneToOne(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "restrictions_id")
@@ -97,6 +100,8 @@ public class EventJpa extends ModifiableJpa<Long> {
     private EventStatus status;
     @ManyToMany(mappedBy = "participatedEvents", fetch = LAZY)
     private Set<UserJpa> members = new HashSet<>();
+    @OneToMany(fetch = LAZY, mappedBy = "event")
+    private Set<EventRequestJpa> requests = new HashSet<>();
 
     public EventJpa(UserJpa creator) {
         this.creator = creator;
@@ -112,6 +117,10 @@ public class EventJpa extends ModifiableJpa<Long> {
 
     public boolean hasRestrictions() {
         return nonNull(restrictions);
+    }
+
+    public boolean isPublished() {
+        return isConfirmed() || isHasModerationInstance();
     }
 
     public boolean isConfirmed() {

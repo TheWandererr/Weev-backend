@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.service.validation;
 
 import static com.pivo.weev.backend.domain.model.event.Restrictions.Availability.PUBLIC;
+import static com.pivo.weev.backend.domain.model.event.Restrictions.Availability.RESTRICTED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CANCELED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CONFIRMED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DECLINED;
@@ -10,10 +11,12 @@ import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.LOCAL_END_DATE_TIME;
 import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.LOCAL_START_DATE_TIME;
 import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.MEMBERS_LIMIT;
+import static com.pivo.weev.backend.utils.CollectionUtils.isPresent;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.ACCESS_DENIED_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.EVENT_FINISHED_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.FIELD_VALIDATION_FAILED_ERROR_PATTERN;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
+import static com.pivo.weev.backend.utils.Constants.Reasons.EVENT_ALREADY_JOINED;
 import static com.pivo.weev.backend.utils.Constants.Reasons.EVENT_CAPACITY_EXCEEDED;
 import static com.pivo.weev.backend.utils.DateTimeUtils.toInstant;
 import static java.lang.String.format;
@@ -111,26 +114,33 @@ public class EventsCrudValidator {
     }
 
     /**
+     * для ивента не требуется заявка или приглашение
      * создатель не может присоединиться
      * ивент должен быть общедоступным
-     * для ивента не требуется заявка или приглашение
-     * ивент должен активным
+     * ивент должен быть активным
      * в ивенте должны быть места
+     * юзер не должен быть участником
      */
     public void validateJoin(EventJpa event) {
-        if (Objects.equals(getUserId(), event.getCreator().getId())) {
-            throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
-        }
-        if (!(event.isConfirmed() || event.isHasModerationInstance())) {
-            throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
-        }
+        validateJoinAvailability(event);
         RestrictionsJpa restrictions = event.getRestrictions();
         if (!PUBLIC.name().equals(restrictions.getAvailability())) {
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
+        }
+    }
+
+    private void validateJoinAvailability(EventJpa event) {
+        Long userId = getUserId();
+        if (Objects.equals(userId, event.getCreator().getId())) {
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
+        }
+        if (!event.isPublished()) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
         if (event.isEnded()) {
             throw new FlowInterruptedException(EVENT_FINISHED_ERROR, null, FORBIDDEN);
         }
+        RestrictionsJpa restrictions = event.getRestrictions();
         if (event.isStarted() && isTrue(restrictions.getJoinAfterStartDisallowed())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
@@ -140,5 +150,24 @@ public class EventsCrudValidator {
                 throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, EVENT_CAPACITY_EXCEEDED);
             }
         }
+        if (isPresent(event.getMembers(), member -> Objects.equals(member.getId(), userId))) {
+            throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, EVENT_ALREADY_JOINED);
+        }
+    }
+
+    /**
+     * для ивента требуется заявка
+     * создатель не может присоединиться
+     * ивент должен быть общедоступным
+     * ивент должен быть активным
+     * в ивенте должны быть места
+     * юзер не должен быть участником
+     */
+    public void validateCreateJoinRequest(EventJpa event) {
+        RestrictionsJpa restrictions = event.getRestrictions();
+        if (!RESTRICTED.name().equals(restrictions.getAvailability())) {
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
+        }
+        validateJoinAvailability(event);
     }
 }

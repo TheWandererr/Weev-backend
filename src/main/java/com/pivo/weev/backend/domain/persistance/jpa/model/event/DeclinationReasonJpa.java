@@ -17,7 +17,7 @@ import org.hibernate.proxy.HibernateProxy;
 @SequenceGenerator(sequenceName = "declination_reason_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
-public class DeclinationReason extends SequencedPersistable<Long> {
+public class DeclinationReasonJpa extends SequencedPersistable<Long> {
 
     @Column(unique = true)
     private String title;
@@ -39,7 +39,7 @@ public class DeclinationReason extends SequencedPersistable<Long> {
         if (thisEffectiveClass != oEffectiveClass) {
             return false;
         }
-        DeclinationReason that = (DeclinationReason) o;
+        DeclinationReasonJpa that = (DeclinationReasonJpa) o;
         return nonNull(id) && Objects.equals(getId(), that.getId());
     }
 

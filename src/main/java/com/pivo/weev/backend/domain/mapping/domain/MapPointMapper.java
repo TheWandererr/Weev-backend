@@ -5,7 +5,7 @@ import static org.mapstruct.factory.Mappers.getMapper;
 import ch.hsr.geohash.GeoHash;
 import ch.hsr.geohash.WGS84Point;
 import com.pivo.weev.backend.domain.model.common.MapPoint;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import com.pivo.weev.backend.rest.mapping.domain.GeoHashMapper;
 import java.util.List;
 import org.locationtech.jts.geom.Point;

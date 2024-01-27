@@ -6,9 +6,9 @@ import static com.pivo.weev.backend.domain.persistance.utils.Constants.CriteriaF
 import static com.pivo.weev.backend.domain.persistance.utils.SpecificationUtils.fieldPathFrom;
 import static com.pivo.weev.backend.utils.ArrayUtils.toArray;
 
+import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa_;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa_;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa_;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.criteria.model.CriteriaParams;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;

@@ -6,6 +6,8 @@ import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.U
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.USER_PASSWORD;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.USER_PHONE_NUMBER;
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static java.util.Objects.nonNull;
@@ -82,7 +84,7 @@ public class UserJpa extends ModifiableJpa<Long> {
     private CloudResourceJpa avatar;
     @OneToMany(fetch = LAZY, mappedBy = "creator")
     private Set<EventJpa> createdEvents = new HashSet<>();
-    @OneToMany(fetch = LAZY, mappedBy = "recipient")
+    @OneToMany(fetch = LAZY, mappedBy = "recipient", cascade = {PERSIST, MERGE})
     private Set<NotificationJpa> notifications = new HashSet<>();
 
     @Override

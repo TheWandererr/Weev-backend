@@ -8,10 +8,14 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Getter
@@ -24,7 +28,9 @@ public class EventNotificationJpa extends NotificationJpa {
     private EventJpa event;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "declination_reason_id")
-    private DeclinationReason declinationReason;
+    private DeclinationReasonJpa declinationReasonJpa;
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Map<String, Object> details = new HashMap<>();
 
     @Override
     public boolean equals(Object o) {

@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.persistance.jpa.repository;
 
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import java.util.Optional;
 import org.locationtech.jts.geom.Point;
 

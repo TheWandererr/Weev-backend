@@ -8,7 +8,7 @@ import com.pivo.weev.backend.domain.mapping.jpa.LocationJpaMapper;
 import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.model.event.Location;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.LocationRepositoryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

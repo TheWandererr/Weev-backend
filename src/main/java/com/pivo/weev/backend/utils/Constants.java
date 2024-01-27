@@ -67,6 +67,8 @@ public class Constants {
     public static final class Reasons {
 
         public static final String EVENT_CAPACITY_EXCEEDED = "event.capacity.exceeded";
+        public static final String EVENT_ALREADY_JOINED = "event.already.joined";
+        public static final String EVENT_JOIN_REQUEST_ALREADY_CREATED = "event.join.request.already.created";
 
     }
 

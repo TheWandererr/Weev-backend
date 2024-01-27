@@ -33,6 +33,13 @@ public final class Constants {
         public static final String EVENT_UPDATE_FAILED = "event.update.failed";
         public static final String EVENT_DECLINATION = "event.declination";
         public static final String EVENT_CANCELLATION = "event.cancellation";
+        public static final String EVENT_NEW_JOIN_REQUEST = "event.new.join.request";
+    }
+
+    @UtilityClass
+    public static final class NotificationDetails {
+
+        public static final String REQUESTER = "requester";
     }
 
     @UtilityClass

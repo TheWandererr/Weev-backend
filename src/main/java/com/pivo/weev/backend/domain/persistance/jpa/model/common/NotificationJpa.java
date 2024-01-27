@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.common;
 
-import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 import static java.util.Objects.nonNull;
@@ -33,7 +34,7 @@ import org.hibernate.proxy.HibernateProxy;
 @DiscriminatorColumn(name = "notification_type", discriminatorType = DiscriminatorType.STRING)
 public class NotificationJpa extends ModifiableJpa<Long> {
 
-    @ManyToOne(fetch = LAZY, cascade = ALL)
+    @ManyToOne(fetch = LAZY, cascade = {PERSIST, MERGE})
     @JoinColumn(name = "recipient_id")
     private UserJpa recipient;
     @Column

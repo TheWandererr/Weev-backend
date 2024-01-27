@@ -3,7 +3,7 @@ package com.pivo.weev.backend.domain.mapping.jpa;
 import static java.util.Optional.ofNullable;
 
 import com.pivo.weev.backend.domain.model.event.Location;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.LocationJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.utils.CustomGeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.mapstruct.Mapper;

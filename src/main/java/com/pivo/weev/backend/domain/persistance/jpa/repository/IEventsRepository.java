@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-public interface IEventRepository extends IGenericRepository<Long, EventJpa> {
+public interface IEventsRepository extends IGenericRepository<Long, EventJpa> {
 
     @Query(value = "select * from events e where e.updatable_event_id =?1", nativeQuery = true)
     Optional<EventJpa> findByUpdatableTargetId(Long id);

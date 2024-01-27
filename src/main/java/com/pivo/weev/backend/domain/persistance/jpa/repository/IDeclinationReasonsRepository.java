@@ -1,9 +1,9 @@
 package com.pivo.weev.backend.domain.persistance.jpa.repository;
 
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.DeclinationReason;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.DeclinationReasonJpa;
 import java.util.Optional;
 
-public interface IDeclinationReasonsRepository extends IGenericRepository<Long, DeclinationReason> {
+public interface IDeclinationReasonsRepository extends IGenericRepository<Long, DeclinationReasonJpa> {
 
-    Optional<DeclinationReason> findByTitle(String title);
+    Optional<DeclinationReasonJpa> findByTitle(String title);
 }

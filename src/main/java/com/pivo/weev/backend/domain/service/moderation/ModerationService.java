@@ -11,7 +11,7 @@ import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.jpa.EventJpaMapper;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.DeclinationReason;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.DeclinationReasonJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeclinationReasonsRepositoryWrapper;
@@ -63,34 +63,34 @@ public class ModerationService {
         updatable.setStatus(CONFIRMED);
 
         Set<UserJpa> recipients = updatable.getMembersWithCreator();
-        notificationService.notifyAll(recipients, updatable, EVENT_UPDATE_SUCCESSFUL);
+        notificationService.notifyAll(updatable, recipients, EVENT_UPDATE_SUCCESSFUL);
     }
 
     public List<String> getDeclinationReasons() {
-        return mapToList(declinationReasonsRepository.getAll(), DeclinationReason::getTitle);
+        return mapToList(declinationReasonsRepository.getAll(), DeclinationReasonJpa::getTitle);
     }
 
     @Transactional
     public void declineEvent(Long id, String declinationTitle) {
-        DeclinationReason declinationReason = declinationReasonsRepository.fetchByTitle(declinationTitle);
+        DeclinationReasonJpa declinationReasonJpa = declinationReasonsRepository.fetchByTitle(declinationTitle);
         EventJpa declinable = eventsRepository.fetch(id);
         if (declinable.hasUpdatableTarget()) {
             EventJpa updatableTarget = declinable.getUpdatableTarget();
-            declineEventUpdate(declinable, updatableTarget, declinationReason);
+            declineEventUpdate(declinable, updatableTarget, declinationReasonJpa);
         } else {
-            declineNewEvent(declinable, declinationReason);
+            declineNewEvent(declinable, declinationReasonJpa);
         }
     }
 
-    private void declineEventUpdate(EventJpa declinable, EventJpa updatableTarget, DeclinationReason declinationReason) {
+    private void declineEventUpdate(EventJpa declinable, EventJpa updatableTarget, DeclinationReasonJpa declinationReasonJpa) {
         eventsPhotoService.deletePhoto(declinable);
         eventsRepository.forceDelete(declinable);
-        notificationService.notify(updatableTarget, updatableTarget.getCreator(), EVENT_UPDATE_FAILED, declinationReason);
+        notificationService.notify(updatableTarget, updatableTarget.getCreator(), EVENT_UPDATE_FAILED, declinationReasonJpa);
     }
 
-    private void declineNewEvent(EventJpa declinable, DeclinationReason declinationReason) {
+    private void declineNewEvent(EventJpa declinable, DeclinationReasonJpa declinationReasonJpa) {
         declinable.setModeratedBy(getUserId());
         declinable.setStatus(DECLINED);
-        notificationService.notify(declinable, declinable.getCreator(), EVENT_DECLINATION, declinationReason);
+        notificationService.notify(declinable, declinable.getCreator(), EVENT_DECLINATION, declinationReasonJpa);
     }
 }
