@@ -61,10 +61,10 @@ public class Constants {
     @UtilityClass
     public static final class Configs {
 
-        public static final String IMAGE_COMPRESSING_SCALE = "image.compressing.scale";
-        public static final String ACCESS_TOKEN_EXPIRES_AMOUNT = "access.token.expires.amount";
-        public static final String REFRESH_TOKEN_EXPIRES_AMOUNT = "refresh.token.expires.amount";
-        public static final String VERIFICATION_REQUEST_VALIDITY_PERIOD = "verification.request.validity.period";
+        public static final String IMAGE_COMPRESSING_SCALE = "_image_compressing_scale";
+        public static final String ACCESS_TOKEN_EXPIRES_AMOUNT = "_access_token_expires_amount";
+        public static final String REFRESH_TOKEN_EXPIRES_AMOUNT = "_refresh_token_expires_amount";
+        public static final String VERIFICATION_REQUEST_VALIDITY_PERIOD = "_verification_request_validity_period";
     }
 
     @UtilityClass

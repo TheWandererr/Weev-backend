@@ -3,7 +3,7 @@ package com.pivo.weev.backend.logging;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.getCurrentRequest;
 import static java.util.Optional.ofNullable;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.pivo.weev.backend.rest.model.common.LogMessageRest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.utils.Constants.ResponseDetails;
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApplicationLoggingHelper {
 
-    private final ObjectMapper mapper;
+    private final Gson gson;
 
     public String buildLoggingError(Exception exception, String failure) {
         LogMessageRest message = buildLogMessage(exception, failure, true);
@@ -68,7 +68,7 @@ public class ApplicationLoggingHelper {
 
     private String toJson(LogMessageRest logMessageRest) {
         try {
-            return mapper.writeValueAsString(logMessageRest);
+            return gson.toJson(logMessageRest);
         } catch (Exception e) {
             return logMessageRest.toString();
         }

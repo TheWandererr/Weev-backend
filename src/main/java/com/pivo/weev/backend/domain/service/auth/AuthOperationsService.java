@@ -18,12 +18,12 @@ import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
+import com.pivo.weev.backend.config.model.ValidityPeriod;
 import com.pivo.weev.backend.domain.mapping.domain.ContactsMapper;
 import com.pivo.weev.backend.domain.model.auth.VerificationScope;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.user.Contacts;
 import com.pivo.weev.backend.domain.model.user.UserSnapshot;
-import com.pivo.weev.backend.domain.persistance.document.ValidityPeriod;
 import com.pivo.weev.backend.domain.persistance.jpa.model.auth.VerificationRequestJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.VerificationRequestRepositoryWrapper;
