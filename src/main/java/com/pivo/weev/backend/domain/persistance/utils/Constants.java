@@ -50,6 +50,8 @@ public class Constants {
 
         public static final String DISTANCE_3D = "st_dwithin";
         public static final String DATE_PART = "date_part";
+        public static final String ST_CONTAINS = "st_contains";
+        public static final String ST_MAKE_ENVELOPE = "st_MakeEnvelope";
     }
 
     @UtilityClass

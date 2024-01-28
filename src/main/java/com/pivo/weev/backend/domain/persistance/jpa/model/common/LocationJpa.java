@@ -7,6 +7,7 @@ import jakarta.persistence.Access;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.util.Objects;
@@ -17,7 +18,8 @@ import org.hibernate.validator.constraints.Length;
 import org.locationtech.jts.geom.Point;
 
 @Entity
-@Table(name = "locations")
+@Table(name = "locations",
+       indexes = {@Index(name = "location_geo_hash_index", columnList = "geo_hash")})
 @SequenceGenerator(sequenceName = "location_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
@@ -45,7 +47,7 @@ public class LocationJpa extends SequencedPersistable<Long> {
     private Point point;
     @Length(max = 12)
     @Column(nullable = false, length = 12)
-    private String hash;
+    private String geoHash;
 
     @Override
     public boolean equals(Object o) {

@@ -5,6 +5,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import ch.hsr.geohash.BoundingBox;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -85,6 +86,7 @@ public class SearchParams {
         private Radius radius;
         private int zoom;
         private String geoHash;
+        private BoundingBox bbox;
 
         public boolean hasRadius() {
             return nonNull(radius);
@@ -92,6 +94,10 @@ public class SearchParams {
 
         public boolean hasGeoHash() {
             return isNotBlank(geoHash);
+        }
+
+        public boolean hasBbox() {
+            return nonNull(bbox);
         }
     }
 

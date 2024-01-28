@@ -30,7 +30,7 @@ public class LocationService {
         LocationJpa locationJpa = getMapper(LocationJpaMapper.class).map(sample);
         MapPoint point = sample.getPoint();
         GeoHash geoHash = withCharacterPrecision(point.getLtd(), point.getLng(), 12);
-        locationJpa.setHash(geoHash.toBase32());
+        locationJpa.setGeoHash(geoHash.toBase32());
         return locationJpa;
     }
 }

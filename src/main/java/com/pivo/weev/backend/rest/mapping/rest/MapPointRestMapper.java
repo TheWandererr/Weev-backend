@@ -8,6 +8,6 @@ import org.mapstruct.Mapping;
 @Mapper
 public interface MapPointRestMapper {
 
-    @Mapping(target = "hash", expression = "java(source.getGeoHashString())")
+    @Mapping(target = "geoHash", expression = "java(source.getGeoHashString())")
     MapPointRest map(MapPoint source);
 }

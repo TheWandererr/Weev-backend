@@ -14,5 +14,5 @@ public class MapPointRest {
     private Double lng;
     @NotNull(message = MUST_BE_NOT_NULL_ERROR)
     private Double ltd;
-    private String hash;
+    private String geoHash;
 }

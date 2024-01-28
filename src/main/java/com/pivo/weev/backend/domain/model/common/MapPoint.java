@@ -16,9 +16,9 @@ public class MapPoint {
 
     private double lng;
     private double ltd;
-    private GeoHash hash;
+    private GeoHash geoHash;
 
     public String getGeoHashString() {
-        return isNull(hash) ? null : hash.toBase32();
+        return isNull(geoHash) ? null : geoHash.toBase32();
     }
 }

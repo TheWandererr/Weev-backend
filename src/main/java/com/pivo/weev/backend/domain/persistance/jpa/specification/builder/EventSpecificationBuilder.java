@@ -34,6 +34,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.event.RestrictionsJpa_
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.SubcategoryJpa_;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SpecificationBuilder;
+import com.pivo.weev.backend.domain.persistance.jpa.specification.template.EventBBoxSpecification;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.template.EventRadiusSpecification;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.template.EventsSortSpecification;
 import java.util.List;
@@ -63,6 +64,7 @@ public class EventSpecificationBuilder {
                 .and(buildRadiusSpecification(searchParams))
                 .and(buildSortSpecification(searchParams))
                 .and(buildGeoHashSpecification(searchParams))
+                .and(buildBoundingBoxSpecification(searchParams))
                 .and(buildRestrictionsSpecification(searchParams))
                 .build();
     }
@@ -127,7 +129,15 @@ public class EventSpecificationBuilder {
         if (isNull(mapCriteria) || !mapCriteria.hasGeoHash()) {
             return empty();
         }
-        return contains(fieldPathFrom(EventJpa_.location, LocationJpa_.hash), mapCriteria.getGeoHash(), 1);
+        return contains(fieldPathFrom(EventJpa_.location, LocationJpa_.geoHash), mapCriteria.getGeoHash(), 1);
+    }
+
+    private Specification<EventJpa> buildBoundingBoxSpecification(SearchParams searchParams) {
+        MapCriteria mapCriteria = searchParams.getMapCriteria();
+        if (isNull(mapCriteria) || !mapCriteria.hasBbox()) {
+            return empty();
+        }
+        return new EventBBoxSpecification(mapCriteria.getBbox());
     }
 
     private Specification<EventJpa> buildRestrictionsSpecification(SearchParams searchParams) {

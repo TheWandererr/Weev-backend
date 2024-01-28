@@ -7,7 +7,7 @@ import com.pivo.weev.backend.rest.model.request.EventsSearchRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(uses = {MapPointMapper.class})
+@Mapper(uses = {MapPointMapper.class, BoundingBoxMapper.class})
 public interface SearchParamsMapper {
 
     @Mapping(target = "visibilityCriteria", source = "searchContext.visibilityCriteria")
@@ -20,6 +20,7 @@ public interface SearchParamsMapper {
     @Mapping(target = "sortFields", source = "searchContext.pageCriteria.sortFields")
     SearchParams.PageCriteria mapPageCriteria(EventsSearchRequest source, SearchContextRest searchContext);
 
+    @Mapping(target = "bbox", source = "bbox")
     SearchParams.MapCriteria mapMapCriteria(EventsSearchRequest source);
 
     SearchParams.VisibilityCriteria mapVisibilityCriteria(VisibilityCriteriaRest source);
