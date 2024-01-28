@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class LoggingBeans {
 
     @Bean
-    public ApplicationLoggingHelper applicationLoggingHelper(ObjectMapper mapper) {
-        return new ApplicationLoggingHelper(mapper);
+    public ApplicationLoggingHelper applicationLoggingHelper(Gson gson) {
+        return new ApplicationLoggingHelper(gson);
     }
 }
