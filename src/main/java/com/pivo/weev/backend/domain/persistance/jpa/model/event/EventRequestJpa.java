@@ -5,6 +5,7 @@ import static jakarta.persistence.FetchType.LAZY;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -12,6 +13,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.time.Instant;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +37,8 @@ public class EventRequestJpa extends SequencedPersistable<Long> {
     @OneToOne(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     private UserJpa user;
+    @Column
+    private Instant expiresAt;
 
     @Override
     public final boolean equals(Object other) {
@@ -58,5 +62,9 @@ public class EventRequestJpa extends SequencedPersistable<Long> {
         return this instanceof HibernateProxy hibernateProxy
                 ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass().hashCode()
                 : getClass().hashCode();
+    }
+
+    public boolean isExpired() {
+        return Instant.now().isAfter(expiresAt);
     }
 }

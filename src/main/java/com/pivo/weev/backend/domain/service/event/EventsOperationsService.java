@@ -1,39 +1,34 @@
 package com.pivo.weev.backend.domain.service.event;
 
+import static com.pivo.weev.backend.domain.model.event.Restrictions.Availability.PUBLIC;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CANCELED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.HAS_MODERATION_INSTANCE;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.REQUESTER;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_CANCELLATION;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_NEW_JOIN_REQUEST;
 import static com.pivo.weev.backend.utils.CollectionUtils.findFirst;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.SUBCATEGORY_NOT_FOUND_ERROR;
-import static com.pivo.weev.backend.utils.Constants.Reasons.EVENT_JOIN_REQUEST_ALREADY_CREATED;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.mapstruct.factory.Mappers.getMapper;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 import com.pivo.weev.backend.domain.mapping.jpa.EventJpaMapper;
 import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
+import com.pivo.weev.backend.domain.model.event.Restrictions.Availability;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.CategoryJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventRequestJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.RestrictionsJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.SubcategoryJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventCategoryRepositoryWrapper;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventRequestsRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventsRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.LocationService;
 import com.pivo.weev.backend.domain.service.NotificationService;
 import com.pivo.weev.backend.domain.service.TimeZoneService;
-import com.pivo.weev.backend.domain.service.validation.EventsCrudValidator;
+import com.pivo.weev.backend.domain.service.validation.EventsOperationsValidator;
 import java.time.ZoneId;
-import java.util.Map;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,14 +36,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class EventsCrudService {
+public class EventsOperationsService {
 
     private final EventsRepositoryWrapper eventsRepository;
     private final EventCategoryRepositoryWrapper eventCategoryRepository;
     private final UsersRepositoryWrapper usersRepository;
-    private final EventRequestsRepositoryWrapper eventRequestsRepository;
 
-    private final EventsCrudValidator eventsCrudValidator;
+    private final EventsOperationsValidator eventsOperationsValidator;
     private final LocationService locationService;
     private final TimeZoneService timeZoneService;
     private final EventsPhotoService eventsPhotoService;
@@ -57,7 +51,7 @@ public class EventsCrudService {
     @Transactional
     public void create(CreatableEvent sample) {
         setTimeZones(sample);
-        eventsCrudValidator.validateCreation(sample);
+        eventsOperationsValidator.validateCreation(sample);
         EventJpa jpaEvent = preparePersistableEvent(sample);
         eventsRepository.save(jpaEvent);
     }
@@ -95,7 +89,7 @@ public class EventsCrudService {
     public void update(CreatableEvent sample) {
         setTimeZones(sample);
         EventJpa updatableTarget = eventsRepository.fetch(sample.getId());
-        eventsCrudValidator.validateUpdate(updatableTarget, sample);
+        eventsOperationsValidator.validateUpdate(updatableTarget, sample);
 
         EventJpa jpaEvent = preparePersistableEvent(sample);
         jpaEvent.setUpdatableTarget(updatableTarget);
@@ -119,7 +113,7 @@ public class EventsCrudService {
     @Transactional
     public void cancel(Long id) {
         EventJpa cancellable = eventsRepository.fetch(id);
-        eventsCrudValidator.validateCancellation(cancellable);
+        eventsOperationsValidator.validateCancellation(cancellable);
 
         Set<UserJpa> dissolvedMembers = cancellable.dissolve();
         notificationService.notifyAll(cancellable, dissolvedMembers, EVENT_CANCELLATION);
@@ -131,29 +125,22 @@ public class EventsCrudService {
     @Transactional
     public void delete(Long id) {
         EventJpa deletable = eventsRepository.fetch(id);
-        eventsCrudValidator.validateDeletion(deletable);
+        eventsOperationsValidator.validateDeletion(deletable);
         eventsPhotoService.deletePhoto(deletable);
         eventsRepository.logicalDelete(deletable);
     }
 
     @Transactional
-    public void join(Long id) {
-        EventJpa event = eventsRepository.fetch(id);
-        eventsCrudValidator.validateJoin(event);
-        UserJpa user = usersRepository.fetch(getUserId());
-        event.addMember(user);
+    public void join(Long eventId, Long joinerId) {
+        EventJpa event = eventsRepository.fetch(eventId);
+        eventsOperationsValidator.validateJoin(event, joinerId, PUBLIC);
+        UserJpa joiner = usersRepository.fetch(joinerId);
+        event.addMember(joiner);
     }
 
-    @Transactional
-    public void createJoinRequest(Long id) {
-        EventJpa event = eventsRepository.fetch(id);
-        eventsCrudValidator.validateCreateJoinRequest(event);
-        UserJpa user = usersRepository.fetch(getUserId());
-        eventRequestsRepository.findByEventIdAndUserId(event.getId(), user.getId())
-                               .ifPresent(request -> {
-                                   throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, EVENT_JOIN_REQUEST_ALREADY_CREATED, FORBIDDEN);
-                               });
-        notificationService.notify(event, event.getCreator(), EVENT_NEW_JOIN_REQUEST, Map.of(REQUESTER, user.getId()));
-        eventRequestsRepository.save(new EventRequestJpa(event, user));
+    public void joinViaRequest(EventJpa event, UserJpa joiner) {
+        RestrictionsJpa restrictions = event.getRestrictions();
+        eventsOperationsValidator.validateJoin(event, joiner.getId(), Availability.valueOf(restrictions.getAvailability()));
+        event.addMember(joiner);
     }
 }

@@ -129,7 +129,7 @@ public class AuthOperationsService {
         authOperationsValidator.validateRegistrationAvailability(userSnapshot);
         VerificationRequestJpa verificationRequest = findVerificationRequest(userSnapshot.getContacts(), VerificationRequestJpa::isCompleted)
                 .orElseThrow(() -> new FlowInterruptedException(VERIFICATION_NOT_COMPLETED, null, BAD_REQUEST));
-        usersService.createNewUser(userSnapshot);
+        usersService.createUser(userSnapshot);
         verificationRequestRepository.forceDelete(verificationRequest);
     }
 

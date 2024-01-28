@@ -34,6 +34,7 @@ public final class Constants {
         public static final String EVENT_DECLINATION = "event.declination";
         public static final String EVENT_CANCELLATION = "event.cancellation";
         public static final String EVENT_NEW_JOIN_REQUEST = "event.new.join.request";
+        public static final String EVENT_JOIN_REQUEST_CONFIRMATION = "event.join.request.confirmation";
     }
 
     @UtilityClass

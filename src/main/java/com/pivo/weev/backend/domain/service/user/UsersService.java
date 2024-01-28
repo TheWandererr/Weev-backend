@@ -3,10 +3,15 @@ package com.pivo.weev.backend.domain.service.user;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType.ANY;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType.NICKNAME;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.buildUserSearchSpecification;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.UserRoles.USER;
+import static org.mapstruct.factory.Mappers.getMapper;
 
+import com.pivo.weev.backend.domain.mapping.jpa.UserJpaMapper;
 import com.pivo.weev.backend.domain.model.user.Contacts;
 import com.pivo.weev.backend.domain.model.user.UserSnapshot;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserRoleJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRolesRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +24,7 @@ import org.springframework.stereotype.Service;
 public class UsersService {
 
     private final UsersRepositoryWrapper usersRepository;
-    private final UserFactory userFactory;
+    private final UserRolesRepositoryWrapper userRolesRepository;
     private final PasswordEncoder passwordEncoder;
 
     public Optional<UserJpa> findUser(Contacts contacts) {
@@ -38,11 +43,16 @@ public class UsersService {
         return usersRepository.find(specification);
     }
 
-    public UserJpa createNewUser(UserSnapshot userSnapshot) {
-        UserJpa user = userFactory.createUser(userSnapshot);
+    public UserJpa createUser(UserSnapshot userSnapshot) {
+        UserJpa user = getMapper(UserJpaMapper.class).map(userSnapshot);
+        fillPersistenceData(user);
         updatePassword(user, userSnapshot.getPassword());
-        usersRepository.save(user);
-        return user;
+        return usersRepository.save(user);
+    }
+
+    private void fillPersistenceData(UserJpa user) {
+        UserRoleJpa role = userRolesRepository.fetchByName(USER);
+        user.setRole(role);
     }
 
     public boolean isNicknameAvailable(String nickname) {

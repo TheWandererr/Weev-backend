@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.rest.controller;
 
+import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.rest.model.event.SearchContextRest.published;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.ID_FORMAT_ERROR;
@@ -10,7 +11,8 @@ import com.pivo.weev.backend.domain.model.common.MapPointCluster;
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
 import com.pivo.weev.backend.domain.model.event.Event;
 import com.pivo.weev.backend.domain.model.event.SearchParams;
-import com.pivo.weev.backend.domain.service.event.EventsCrudService;
+import com.pivo.weev.backend.domain.service.event.EventRequestsService;
+import com.pivo.weev.backend.domain.service.event.EventsOperationsService;
 import com.pivo.weev.backend.domain.service.event.EventsSearchService;
 import com.pivo.weev.backend.rest.mapping.domain.CreatableEventMapper;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
@@ -52,8 +54,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class EventsController {
 
-    private final EventsCrudService eventsCrudService;
+    private final EventsOperationsService eventsOperationsService;
     private final EventsSearchService eventsSearchService;
+    private final EventRequestsService eventRequestsService;
 
     @PostMapping("/search")
     public EventsSearchResponse search(@Valid @RequestBody EventsSearchRequest searchRequest) {
@@ -78,7 +81,7 @@ public class EventsController {
     public BaseResponse create(@Valid @ModelAttribute EventSaveRequest request) {
         CreatableEvent sample = getMapper(CreatableEventMapper.class).map(request);
         sample.setUpdatePhoto(true);
-        eventsCrudService.create(sample);
+        eventsOperationsService.create(sample);
         return new BaseResponse(ResponseMessage.CREATED);
     }
 
@@ -92,32 +95,32 @@ public class EventsController {
     @PutMapping("/{id}")
     public BaseResponse update(@Valid @ModelAttribute EventSaveRequest request) {
         CreatableEvent sample = getMapper(CreatableEventMapper.class).map(request);
-        eventsCrudService.update(sample);
+        eventsOperationsService.update(sample);
         return new BaseResponse();
     }
 
     @PutMapping("/{id}/cancellation")
     public BaseResponse cancel(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
-        eventsCrudService.cancel(id);
+        eventsOperationsService.cancel(id);
         return new BaseResponse();
     }
 
     @DeleteMapping("/{id}")
     public BaseResponse delete(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
-        eventsCrudService.delete(id);
+        eventsOperationsService.delete(id);
         return new BaseResponse();
     }
 
-    @PutMapping("/{id}/join")
+    @PutMapping("/{id}/joining")
     public EventJoinResponse join(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
-        eventsCrudService.join(id);
+        eventsOperationsService.join(id, getUserId());
         return new EventJoinResponse(true);
     }
 
-    @PostMapping("/{id}/join/request")
+    @PostMapping("/{id}/joining/requests")
     @ResponseStatus(value = CREATED)
     public EventJoinResponse createJoinRequest(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
-        eventsCrudService.createJoinRequest(id);
+        eventRequestsService.createJoinRequest(id);
         return new EventJoinResponse(false);
     }
 

@@ -1,6 +1,5 @@
 package com.pivo.weev.backend.domain.service.validation;
 
-import static com.pivo.weev.backend.domain.model.event.Restrictions.Availability.PUBLIC;
 import static com.pivo.weev.backend.domain.model.event.Restrictions.Availability.RESTRICTED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CANCELED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CONFIRMED;
@@ -18,6 +17,7 @@ import static com.pivo.weev.backend.utils.Constants.ErrorCodes.FIELD_VALIDATION_
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
 import static com.pivo.weev.backend.utils.Constants.Reasons.EVENT_ALREADY_JOINED;
 import static com.pivo.weev.backend.utils.Constants.Reasons.EVENT_CAPACITY_EXCEEDED;
+import static com.pivo.weev.backend.utils.Constants.Reasons.EVENT_JOIN_REQUEST_EXPIRED;
 import static com.pivo.weev.backend.utils.DateTimeUtils.toInstant;
 import static java.lang.String.format;
 import static java.time.Instant.now;
@@ -27,8 +27,10 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 import com.pivo.weev.backend.domain.model.event.CreatableEvent;
+import com.pivo.weev.backend.domain.model.event.Restrictions.Availability;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventRequestJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus;
 import com.pivo.weev.backend.domain.persistance.jpa.model.event.RestrictionsJpa;
 import java.time.Instant;
@@ -37,7 +39,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EventsCrudValidator {
+public class EventsOperationsValidator {
 
     private static final Set<EventStatus> CANCELLABLE_EVENT_STATUSES = Set.of(ON_MODERATION, HAS_MODERATION_INSTANCE, CONFIRMED);
     private static final Set<EventStatus> UPDATABLE_EVENT_STATUSES = Set.of(ON_MODERATION, HAS_MODERATION_INSTANCE, CONFIRMED, DECLINED, CANCELED);
@@ -121,17 +123,16 @@ public class EventsCrudValidator {
      * в ивенте должны быть места
      * юзер не должен быть участником
      */
-    public void validateJoin(EventJpa event) {
-        validateJoinAvailability(event);
+    public void validateJoin(EventJpa event, Long joinerId, Availability expectedAvailability) {
+        validateJoinAvailability(event, joinerId);
         RestrictionsJpa restrictions = event.getRestrictions();
-        if (!PUBLIC.name().equals(restrictions.getAvailability())) {
+        if (!expectedAvailability.name().equals(restrictions.getAvailability())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
     }
 
-    private void validateJoinAvailability(EventJpa event) {
-        Long userId = getUserId();
-        if (Objects.equals(userId, event.getCreator().getId())) {
+    private void validateJoinAvailability(EventJpa event, Long joinerId) {
+        if (Objects.equals(joinerId, event.getCreator().getId())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
         if (!event.isPublished()) {
@@ -150,24 +151,32 @@ public class EventsCrudValidator {
                 throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, EVENT_CAPACITY_EXCEEDED);
             }
         }
-        if (isPresent(event.getMembers(), member -> Objects.equals(member.getId(), userId))) {
+        if (isPresent(event.getMembers(), member -> Objects.equals(member.getId(), joinerId))) {
             throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, EVENT_ALREADY_JOINED);
         }
     }
 
-    /**
-     * для ивента требуется заявка
+    /*
      * создатель не может присоединиться
      * ивент должен быть общедоступным
      * ивент должен быть активным
      * в ивенте должны быть места
      * юзер не должен быть участником
      */
-    public void validateCreateJoinRequest(EventJpa event) {
-        RestrictionsJpa restrictions = event.getRestrictions();
-        if (!RESTRICTED.name().equals(restrictions.getAvailability())) {
+    public void validateJoinRequestCreation(EventJpa event, Long joinerId) {
+        validateJoin(event, joinerId, RESTRICTED);
+    }
+
+    /**
+     * Заявка должна быть актуальной
+     * Заявку принимает владелец ивента
+     */
+    public void validateJoinRequestConfirmation(EventRequestJpa request, EventJpa event) {
+        if (request.isExpired()) {
+            throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, EVENT_JOIN_REQUEST_EXPIRED, FORBIDDEN);
+        }
+        if (!Objects.equals(getUserId(), event.getCreator().getId())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
-        validateJoinAvailability(event);
     }
 }
