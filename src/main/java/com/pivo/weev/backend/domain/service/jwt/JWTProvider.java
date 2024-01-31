@@ -38,18 +38,18 @@ public class JWTProvider {
     private Jwt generateToken(LoginDetails loginDetails, int expiresAtAmount, String mode) {
         Instant now = Instant.now();
         String scope = JWTModes.ACCESS.equals(mode)
-                ? collect(loginDetails.getAuthenticationAuthorities(), SimpleGrantedAuthority::getAuthority, Collectors.joining(SPACE))
+                ? collect(loginDetails.authenticationAuthorities(), SimpleGrantedAuthority::getAuthority, Collectors.joining(SPACE))
                 : mode;
         JwtClaimsSet claimsSet = JwtClaimsSet.builder()
                                              .subject(loginDetails.getUsername())
                                              .audience(List.of(Api.PREFIX))
-                                             .issuer(loginDetails.getIssuer())
+                                             .issuer(loginDetails.issuer())
                                              .issuedAt(now)
                                              .expiresAt(now.plus(expiresAtAmount, HOURS))
-                                             .claim(Claims.DEVICE_ID, loginDetails.getDeviceId())
+                                             .claim(Claims.DEVICE_ID, loginDetails.deviceId())
                                              .claim(Claims.USER_ID, loginDetails.getUserId())
                                              .claim(Claims.SCOPE, scope)
-                                             .claim(Claims.SERIAL, loginDetails.getSerial())
+                                             .claim(Claims.SERIAL, loginDetails.serial())
                                              .build();
         return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet));
     }

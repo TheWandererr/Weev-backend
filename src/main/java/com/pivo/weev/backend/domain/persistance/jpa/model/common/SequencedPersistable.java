@@ -21,7 +21,7 @@ import org.hibernate.proxy.HibernateProxy;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class SequencedPersistable<PK extends Serializable> implements Entity {
+public abstract class SequencedPersistable<PK extends Serializable> implements Entity, Serializable {
 
     @Id
     @GeneratedValue(strategy = SEQUENCE, generator = "sequence_generator")

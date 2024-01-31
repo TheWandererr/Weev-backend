@@ -1,34 +1,24 @@
 package com.pivo.weev.backend.domain.model.auth;
 
+import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static com.pivo.weev.backend.utils.Randomizer.uuid;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
-import com.pivo.weev.backend.utils.CollectionUtils;
 import java.util.Collection;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@EqualsAndHashCode(of = {"userId", "deviceId", "username", "password"})
-public class LoginDetails implements UserDetails {
-
-    private final Long userId;
-    private final String deviceId;
-    private final String issuer;
-    private final String serial;
-    private final String username;
-    private final String password;
-    private final boolean active;
-    private final List<SimpleGrantedAuthority> authenticationAuthorities;
+public record LoginDetails(UserJpa user,
+                           String deviceId,
+                           String issuer,
+                           String serial,
+                           String username,
+                           String password,
+                           boolean active,
+                           List<SimpleGrantedAuthority> authenticationAuthorities) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -47,37 +37,41 @@ public class LoginDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return isActive();
+        return active();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isActive();
+        return active();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return isActive();
+        return active();
     }
 
     @Override
     public boolean isEnabled() {
-        return isActive();
+        return active();
     }
 
-    public static LoginDetails from(UserJpa userJpa, String username, String deviceId, String issuer) {
-        List<SimpleGrantedAuthority> simpleGrantedAuthorities = CollectionUtils.mapToList(
-                userJpa.getRole().getAuthorities(),
+    public Long getUserId() {
+        return user.getId();
+    }
+
+    public static LoginDetails from(UserJpa user, String username, String deviceId, String issuer) {
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities = mapToList(
+                user.getRole().getAuthorities(),
                 authorityJpa -> new SimpleGrantedAuthority(authorityJpa.getValue())
         );
         return new LoginDetails(
-                userJpa.getId(),
+                user,
                 deviceId,
                 issuer,
                 uuid(),
                 username,
-                userJpa.getPassword(),
-                isTrue(userJpa.getActive()),
+                user.getPassword(),
+                isTrue(user.getActive()),
                 simpleGrantedAuthorities
         );
     }

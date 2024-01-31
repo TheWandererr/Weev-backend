@@ -3,9 +3,11 @@ package com.pivo.weev.backend.domain.persistance.jpa.model.auth;
 import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
+import com.pivo.weev.backend.domain.persistance.jpa.model.user.DeviceJpa;
 import com.pivo.weev.backend.domain.persistance.utils.Constants.Columns;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -25,10 +27,8 @@ import org.hibernate.proxy.HibernateProxy;
 @Setter
 public class AuthTokensDetailsJpa extends SequencedPersistable<Long> {
 
-    @Column(name = Columns.TOKEN_DETAILS_USER_ID, nullable = false)
-    private Long userId;
-    @Column(name = Columns.TOKEN_DETAILS_DEVICE_ID, nullable = false)
-    private String deviceId;
+    @OneToOne(optional = false)
+    private DeviceJpa device;
     @Column(nullable = false)
     private String serial;
     @Column(nullable = false)

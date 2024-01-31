@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface IAuthTokenDetailsRepository extends IGenericRepository<Long, AuthTokensDetailsJpa> {
 
-    AuthTokensDetailsJpa findByUserIdAndDeviceId(Long userId, String deviceId);
+    AuthTokensDetailsJpa findByDevice_User_IdAndDevice_InternalId(Long userId, String deviceId);
 
     List<AuthTokensDetailsJpa> findAllByExpiresAtBefore(Instant instant);
 
-    void deleteByUserIdAndDeviceId(Long userId, String deviceId);
+    void deleteByDevice_User_IdAndDevice_InternalId(Long userId, String deviceId);
 }

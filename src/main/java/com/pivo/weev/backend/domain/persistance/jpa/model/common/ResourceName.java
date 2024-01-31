@@ -5,6 +5,7 @@ import com.pivo.weev.backend.utils.Enumerated;
 public enum ResourceName implements Enumerated {
 
     USER,
+    DEVICE,
     USER_ROLE,
     AUTH_TOKEN_DETAILS,
     EVENT,

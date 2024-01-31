@@ -16,18 +16,18 @@ public class AuthTokensDetailsRepositoryWrapper extends GenericRepositoryWrapper
     }
 
     public AuthTokensDetailsJpa findByUserIdAndDeviceId(Long userId, String deviceId) {
-        return repository.findByUserIdAndDeviceId(userId, deviceId);
+        return repository.findByDevice_User_IdAndDevice_InternalId(userId, deviceId);
     }
 
     public List<AuthTokensDetailsJpa> findAllExpired() {
         return repository.findAllByExpiresAtBefore(Instant.now());
     }
 
-    public void removeAllByIds(Set<Long> ids) {
+    public void deleteAllByIds(Set<Long> ids) {
         repository.deleteAllById(ids);
     }
 
-    public void removeByUserIdAndDeviceId(Long userId, String deviceId) {
-        repository.deleteByUserIdAndDeviceId(userId, deviceId);
+    public void deleteByUserIdAndDeviceId(Long userId, String deviceId) {
+        repository.deleteByDevice_User_IdAndDevice_InternalId(userId, deviceId);
     }
 }

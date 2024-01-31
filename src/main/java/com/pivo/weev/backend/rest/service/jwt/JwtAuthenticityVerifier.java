@@ -28,7 +28,7 @@ public class JwtAuthenticityVerifier {
             if (!StringUtils.equals(getSerial(jwt), tokenDetails.getSerial())) {
                 return new JwtVerificationResult(false, TOKEN_COMPROMISED_ERROR);
             }
-            if (!StringUtils.equals(deviceId, tokenDetails.getDeviceId())) {
+            if (!StringUtils.equals(deviceId, tokenDetails.getDevice().getInternalId())) {
                 return new JwtVerificationResult(false, TOKEN_COMPROMISED_ERROR);
             }
         } catch (Exception exception) {
