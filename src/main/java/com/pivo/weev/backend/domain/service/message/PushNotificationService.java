@@ -2,7 +2,7 @@ package com.pivo.weev.backend.domain.service.message;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.DeviceJpa;
-import com.pivo.weev.backend.integration.firebase.MessagingService;
+import com.pivo.weev.backend.integration.firebase.FirebaseMessagingService;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PushNotificationService {
 
-    private final MessagingService messagingService;
+    private final FirebaseMessagingService firebaseMessagingService;
 
     public void notifyAll(MeetJpa meet, List<DeviceJpa> devices, String title, Map<String, Object> details) {
 

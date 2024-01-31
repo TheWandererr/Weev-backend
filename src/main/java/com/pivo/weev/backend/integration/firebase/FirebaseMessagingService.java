@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MessagingService {
+public class FirebaseMessagingService {
 
     private final MessagingClient client;
 }

@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MessagingService {
+public class MailMessagingService {
 
-    private final MailService mailService;
+    private final MailSender mailSender;
     private final MailMessageFactory mailMessageFactory;
 
-    public void sendEmailVerificationMessage(String email, String verificationCode) {
+    public void sendVerificationMessage(String email, String verificationCode) {
         MailMessage message = mailMessageFactory.buildEmailVerificationMessage(email, verificationCode);
-        mailService.sendHtmlMessage(message);
+        mailSender.sendHtmlMessage(message);
     }
 }

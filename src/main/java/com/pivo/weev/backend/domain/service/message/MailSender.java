@@ -13,21 +13,21 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("serviceMailSender")
 @RequiredArgsConstructor
 @Slf4j
-public class MailService {
+public class MailSender {
 
-    private final JavaMailSender mailSender;
+    private final JavaMailSender instance;
     private final ApplicationLoggingHelper loggingHelper;
 
     @Async(value = "mailExecutor")
     public void sendHtmlMessage(MailMessage message) {
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessage mimeMessage = instance.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             getMapper(MimeMessageHelperMapper.class).map(message, helper);
-            mailSender.send(mimeMessage);
+            instance.send(mimeMessage);
         } catch (Exception exception) {
             log.error(loggingHelper.buildLoggingError(exception, null, true));
         }

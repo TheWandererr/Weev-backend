@@ -28,7 +28,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.auth.VerificationReque
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.VerificationRequestRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.config.ConfigService;
-import com.pivo.weev.backend.domain.service.message.MessagingService;
+import com.pivo.weev.backend.domain.service.message.MailMessagingService;
 import com.pivo.weev.backend.domain.service.user.UsersService;
 import com.pivo.weev.backend.domain.service.validation.AuthOperationsValidator;
 import java.time.Instant;
@@ -45,7 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthOperationsService {
 
     private final AuthTokensDetailsService authTokensDetailsService;
-    private final MessagingService messagingService;
+    private final MailMessagingService mailMessagingService;
     private final ConfigService configService;
     private final VerificationRequestRepositoryWrapper verificationRequestRepository;
     private final UsersService usersService;
@@ -100,7 +100,7 @@ public class AuthOperationsService {
 
     private void sendVerificationCode(VerificationRequestJpa verificationRequest, String verificationCode) {
         if (verificationRequest.hasEmail()) {
-            messagingService.sendEmailVerificationMessage(verificationRequest.getEmail(), verificationCode);
+            mailMessagingService.sendVerificationMessage(verificationRequest.getEmail(), verificationCode);
         }
         if (verificationRequest.hasPhoneNumber()) {
             // TODO
