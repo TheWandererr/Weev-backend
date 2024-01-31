@@ -20,7 +20,7 @@ public class NotificationEventListener {
 
     @Async(value = "commonExecutor")
     @EventListener
-    public void onNotificationEventPublishing(PushNotificationEvent event) {
+    public void onPushNotificationEventPublishing(PushNotificationEvent event) {
         PushNotificationMessage pushNotificationMessage = event.getSource();
         List<DeviceJpa> devices = flatMapToList(pushNotificationMessage.recipients(), recipient -> recipient.getDevices().stream());
         pushNotificationService.notifyAll(
