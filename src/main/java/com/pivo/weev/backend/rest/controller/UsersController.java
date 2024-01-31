@@ -1,24 +1,24 @@
 package com.pivo.weev.backend.rest.controller;
 
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
-import static com.pivo.weev.backend.rest.model.event.SearchContextRest.canceled;
-import static com.pivo.weev.backend.rest.model.event.SearchContextRest.declined;
-import static com.pivo.weev.backend.rest.model.event.SearchContextRest.onModeration;
-import static com.pivo.weev.backend.rest.model.event.SearchContextRest.published;
+import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.canceled;
+import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.declined;
+import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.onModeration;
+import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.published;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK_ERROR;
 import static org.mapstruct.factory.Mappers.getMapper;
 
-import com.pivo.weev.backend.domain.model.event.Event;
-import com.pivo.weev.backend.domain.model.event.SearchParams;
-import com.pivo.weev.backend.domain.service.event.EventsSearchService;
+import com.pivo.weev.backend.domain.model.meet.Meet;
+import com.pivo.weev.backend.domain.model.meet.SearchParams;
+import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
 import com.pivo.weev.backend.domain.service.user.UsersService;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
-import com.pivo.weev.backend.rest.mapping.rest.EventCompactedRestMapper;
+import com.pivo.weev.backend.rest.mapping.rest.MeetCompactedRestMapper;
 import com.pivo.weev.backend.rest.model.common.PageRest;
-import com.pivo.weev.backend.rest.model.event.EventCompactedRest;
-import com.pivo.weev.backend.rest.model.request.EventsSearchRequest;
+import com.pivo.weev.backend.rest.model.meet.MeetCompactedRest;
+import com.pivo.weev.backend.rest.model.request.MeetsSearchRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
-import com.pivo.weev.backend.rest.model.response.EventsSearchResponse;
+import com.pivo.weev.backend.rest.model.response.MeetsSearchResponse;
 import com.pivo.weev.backend.rest.model.response.NicknameAvailabilityResponse;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsersController {
 
     private final UsersService usersService;
-    private final EventsSearchService eventsSearchService;
+    private final MeetSearchService meetSearchService;
 
     @GetMapping("/nickname/availability")
     public BaseResponse isNicknameAvailable(@RequestParam @NotBlank(message = MUST_BE_NOT_BLANK_ERROR) String nickname) {
@@ -45,34 +45,34 @@ public class UsersController {
         return new NicknameAvailabilityResponse(nicknameAvailable);
     }
 
-    @GetMapping("/{id}/events/confirmed/{page}")
-    public EventsSearchResponse searchConfirmedEvents(@PathVariable String id, @PathVariable @Min(0) Integer page) {
-        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new EventsSearchRequest(page), published(getUserId()));
+    @GetMapping("/{id}/meets/confirmed/{page}")
+    public MeetsSearchResponse searchConfirmedMeets(@PathVariable String id, @PathVariable @Min(0) Integer page) {
+        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new MeetsSearchRequest(page), published(getUserId()));
         return performSearch(searchParams);
     }
 
-    private EventsSearchResponse performSearch(SearchParams searchParams) {
-        Page<Event> eventsPage = eventsSearchService.search(searchParams);
-        List<EventCompactedRest> restEvents = getMapper(EventCompactedRestMapper.class).mapCompacted(eventsPage.getContent());
-        PageRest<EventCompactedRest> pageRest = new PageRest<>(restEvents, eventsPage.getNumber());
-        return new EventsSearchResponse(pageRest, eventsPage.getTotalElements(), eventsPage.getTotalPages());
+    private MeetsSearchResponse performSearch(SearchParams searchParams) {
+        Page<Meet> meetsPage = meetSearchService.search(searchParams);
+        List<MeetCompactedRest> restMeets = getMapper(MeetCompactedRestMapper.class).mapCompacted(meetsPage.getContent());
+        PageRest<MeetCompactedRest> pageRest = new PageRest<>(restMeets, meetsPage.getNumber());
+        return new MeetsSearchResponse(pageRest, meetsPage.getTotalElements(), meetsPage.getTotalPages());
     }
 
-    @GetMapping("/{id}/events/on-moderation/{page}")
-    public EventsSearchResponse searchOnModerationEvents(@PathVariable String id, @PathVariable @Min(0) Integer page) {
-        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new EventsSearchRequest(page), onModeration(getUserId()));
+    @GetMapping("/{id}/meets/on-moderation/{page}")
+    public MeetsSearchResponse searchOnModerationMeets(@PathVariable String id, @PathVariable @Min(0) Integer page) {
+        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new MeetsSearchRequest(page), onModeration(getUserId()));
         return performSearch(searchParams);
     }
 
-    @GetMapping("/{id}/events/canceled/{page}")
-    public EventsSearchResponse searchCanceledEvents(@PathVariable String id, @PathVariable @Min(0) Integer page) {
-        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new EventsSearchRequest(page), canceled(getUserId()));
+    @GetMapping("/{id}/meets/canceled/{page}")
+    public MeetsSearchResponse searchCanceledMeets(@PathVariable String id, @PathVariable @Min(0) Integer page) {
+        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new MeetsSearchRequest(page), canceled(getUserId()));
         return performSearch(searchParams);
     }
 
-    @GetMapping("/{id}/events/declined/{page}")
-    public EventsSearchResponse searchDeclinedEvents(@PathVariable String id, @PathVariable @Min(0) Integer page) {
-        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new EventsSearchRequest(page), declined(getUserId()));
+    @GetMapping("/{id}/meets/declined/{page}")
+    public MeetsSearchResponse searchDeclinedMeets(@PathVariable String id, @PathVariable @Min(0) Integer page) {
+        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new MeetsSearchRequest(page), declined(getUserId()));
         return performSearch(searchParams);
     }
 }

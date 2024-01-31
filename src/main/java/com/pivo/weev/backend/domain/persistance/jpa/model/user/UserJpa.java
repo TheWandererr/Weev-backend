@@ -18,7 +18,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ModifiableJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
@@ -68,24 +68,24 @@ public class UserJpa extends ModifiableJpa<Long> {
     @JoinColumn(name = "role_id")
     private UserRoleJpa role;
     private Boolean active = false;
-    @GenericGenerator(name = "event_member_id_generator", type = SequenceStyleGenerator.class)
+    @GenericGenerator(name = "meet_member_id_generator", type = SequenceStyleGenerator.class)
     @JoinTable(
-            name = "event_members",
+            name = "meet_members",
             joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "event_id")},
-            uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "event_id"})},
+            inverseJoinColumns = {@JoinColumn(name = "meet_id")},
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "meet_id"})},
             indexes = {
-                    @Index(name = "event_members_event_id_index", columnList = "event_id"),
-                    @Index(name = "event_members_user_id_index", columnList = "user_id"),
+                    @Index(name = "meet_members_meet_id_index", columnList = "meet_id"),
+                    @Index(name = "meet_members_user_id_index", columnList = "user_id"),
             }
     )
     @ManyToMany(cascade = {DETACH, MERGE, PERSIST, REFRESH})
-    private Set<EventJpa> participatedEvents = new HashSet<>();
+    private Set<MeetJpa> participatedMeets = new HashSet<>();
     @OneToOne(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "avatar_id")
     private CloudResourceJpa avatar;
     @OneToMany(fetch = LAZY, mappedBy = "creator")
-    private Set<EventJpa> createdEvents = new HashSet<>();
+    private Set<MeetJpa> createdMeets = new HashSet<>();
     @OneToMany(fetch = LAZY, mappedBy = "recipient", cascade = {PERSIST, MERGE})
     private Set<NotificationJpa> notifications = new HashSet<>();
     @OneToMany(fetch = LAZY, mappedBy = "user", cascade = {PERSIST, MERGE})

@@ -1,23 +1,23 @@
 package com.pivo.weev.backend.domain.service.moderation;
 
-import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.CONFIRMED;
-import static com.pivo.weev.backend.domain.persistance.jpa.model.event.EventStatus.DECLINED;
+import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.CONFIRMED;
+import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.DECLINED;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_CONFIRMATION;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_DECLINATION;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_UPDATE_FAILED;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.EVENT_UPDATE_SUCCESSFUL;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.MEET_CONFIRMATION;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.MEET_DECLINATION;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.MEET_UPDATE_FAILED;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.MEET_UPDATE_SUCCESSFUL;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static org.mapstruct.factory.Mappers.getMapper;
 
-import com.pivo.weev.backend.domain.mapping.jpa.EventJpaMapper;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.DeclinationReasonJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
+import com.pivo.weev.backend.domain.mapping.jpa.MeetJpaMapper;
+import com.pivo.weev.backend.domain.persistance.jpa.model.meet.DeclinationReasonJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeclinationReasonsRepositoryWrapper;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.EventsRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.NotificationService;
-import com.pivo.weev.backend.domain.service.event.EventsPhotoService;
+import com.pivo.weev.backend.domain.service.meet.MeetPhotoService;
 import com.pivo.weev.backend.domain.service.validation.ModerationValidator;
 import java.util.List;
 import java.util.Set;
@@ -29,41 +29,41 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ModerationService {
 
-    private final EventsRepositoryWrapper eventsRepository;
+    private final MeetRepositoryWrapper meetRepository;
     private final DeclinationReasonsRepositoryWrapper declinationReasonsRepository;
 
     private final ModerationValidator moderationValidator;
-    private final EventsPhotoService eventsPhotoService;
+    private final MeetPhotoService meetPhotoService;
     private final NotificationService notificationService;
 
     @Transactional
     public void confirmEvent(Long id) {
-        EventJpa confirmable = eventsRepository.fetch(id);
+        MeetJpa confirmable = meetRepository.fetch(id);
         moderationValidator.validateConfirmation(confirmable);
         if (confirmable.hasUpdatableTarget()) {
-            EventJpa updatable = confirmable.getUpdatableTarget();
+            MeetJpa updatable = confirmable.getUpdatableTarget();
             confirmEventUpdate(confirmable, updatable);
         } else {
             confirmNewEvent(confirmable);
         }
     }
 
-    private void confirmNewEvent(EventJpa confirmable) {
+    private void confirmNewEvent(MeetJpa confirmable) {
         confirmable.setModeratedBy(getUserId());
         confirmable.setStatus(CONFIRMED);
-        notificationService.notify(confirmable, confirmable.getCreator(), EVENT_CONFIRMATION);
+        notificationService.notify(confirmable, confirmable.getCreator(), MEET_CONFIRMATION);
     }
 
-    private void confirmEventUpdate(EventJpa confirmable, EventJpa updatable) {
-        eventsPhotoService.deletePhoto(updatable);
-        eventsRepository.forceDelete(confirmable);
+    private void confirmEventUpdate(MeetJpa confirmable, MeetJpa updatable) {
+        meetPhotoService.deletePhoto(updatable);
+        meetRepository.forceDelete(confirmable);
 
-        getMapper(EventJpaMapper.class).remap(confirmable, updatable);
+        getMapper(MeetJpaMapper.class).remap(confirmable, updatable);
         updatable.setModeratedBy(getUserId());
         updatable.setStatus(CONFIRMED);
 
         Set<UserJpa> recipients = updatable.getMembersWithCreator();
-        notificationService.notifyAll(updatable, recipients, EVENT_UPDATE_SUCCESSFUL);
+        notificationService.notifyAll(updatable, recipients, MEET_UPDATE_SUCCESSFUL);
     }
 
     public List<String> getDeclinationReasons() {
@@ -73,24 +73,24 @@ public class ModerationService {
     @Transactional
     public void declineEvent(Long id, String declinationTitle) {
         DeclinationReasonJpa declinationReasonJpa = declinationReasonsRepository.fetchByTitle(declinationTitle);
-        EventJpa declinable = eventsRepository.fetch(id);
+        MeetJpa declinable = meetRepository.fetch(id);
         if (declinable.hasUpdatableTarget()) {
-            EventJpa updatableTarget = declinable.getUpdatableTarget();
+            MeetJpa updatableTarget = declinable.getUpdatableTarget();
             declineEventUpdate(declinable, updatableTarget, declinationReasonJpa);
         } else {
             declineNewEvent(declinable, declinationReasonJpa);
         }
     }
 
-    private void declineEventUpdate(EventJpa declinable, EventJpa updatableTarget, DeclinationReasonJpa declinationReasonJpa) {
-        eventsPhotoService.deletePhoto(declinable);
-        eventsRepository.forceDelete(declinable);
-        notificationService.notify(updatableTarget, updatableTarget.getCreator(), EVENT_UPDATE_FAILED, declinationReasonJpa);
+    private void declineEventUpdate(MeetJpa declinable, MeetJpa updatableTarget, DeclinationReasonJpa declinationReasonJpa) {
+        meetPhotoService.deletePhoto(declinable);
+        meetRepository.forceDelete(declinable);
+        notificationService.notify(updatableTarget, updatableTarget.getCreator(), MEET_UPDATE_FAILED, declinationReasonJpa);
     }
 
-    private void declineNewEvent(EventJpa declinable, DeclinationReasonJpa declinationReasonJpa) {
+    private void declineNewEvent(MeetJpa declinable, DeclinationReasonJpa declinationReasonJpa) {
         declinable.setModeratedBy(getUserId());
         declinable.setStatus(DECLINED);
-        notificationService.notify(declinable, declinable.getCreator(), EVENT_DECLINATION, declinationReasonJpa);
+        notificationService.notify(declinable, declinable.getCreator(), MEET_DECLINATION, declinationReasonJpa);
     }
 }

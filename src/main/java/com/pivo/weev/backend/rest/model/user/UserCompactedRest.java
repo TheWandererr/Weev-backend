@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.model.user;
 
-import com.pivo.weev.backend.rest.model.event.ImageRest;
+import com.pivo.weev.backend.rest.model.meet.ImageRest;
 import lombok.Getter;
 import lombok.Setter;
 

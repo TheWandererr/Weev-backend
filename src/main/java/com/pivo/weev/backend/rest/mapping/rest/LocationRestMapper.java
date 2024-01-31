@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.rest.mapping.rest;
 
-import com.pivo.weev.backend.domain.model.event.Location;
-import com.pivo.weev.backend.rest.model.event.LocationRest;
+import com.pivo.weev.backend.domain.model.meet.Location;
+import com.pivo.weev.backend.rest.model.meet.LocationRest;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

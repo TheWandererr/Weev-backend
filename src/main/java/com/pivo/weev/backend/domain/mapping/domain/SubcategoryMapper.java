@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.mapping.domain;
 
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.SubcategoryJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.meet.SubcategoryJpa;
 import org.mapstruct.Mapper;
 
 @Mapper

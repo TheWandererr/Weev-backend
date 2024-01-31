@@ -26,8 +26,8 @@ public class Constants {
 
         public static final String PREFIX = "/api";
         public static final String LOGIN_URL = "/auth/login";
-        public static final String EVENTS_SEARCH_URI = "/api/events/search";
-        public static final String EVENTS_SEARCH_MAP_URI = "/api/events/map/search";
+        public static final String MEETS_SEARCH_URI = "/api/meets/search";
+        public static final String MEETS_SEARCH_MAP_URI = "/api/meets/map/search";
         public static final String REGISTRATION_URI = "/auth/registration";
         public static final String EMAILS_URI = "/auth/email";
         public static final String PASSWORD_RESET_URI = "/auth/password/reset";
@@ -95,7 +95,7 @@ public class Constants {
     @UtilityClass
     public static final class PageableParams {
 
-        public static final Integer EVENTS_PER_PAGE = 5;
+        public static final Integer MEETS_PER_PAGE = 5;
     }
 
     @UtilityClass

@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.rest.mapping.rest;
 
-import com.pivo.weev.backend.domain.model.event.EntryFee;
-import com.pivo.weev.backend.rest.model.event.EntryFeeRest;
+import com.pivo.weev.backend.domain.model.meet.EntryFee;
+import com.pivo.weev.backend.rest.model.meet.EntryFeeRest;
 import org.mapstruct.Mapper;
 
 @Mapper

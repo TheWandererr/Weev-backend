@@ -6,8 +6,8 @@ import static org.mapstruct.factory.Mappers.getMapper;
 import ch.hsr.geohash.GeoHash;
 import com.pivo.weev.backend.domain.mapping.jpa.LocationJpaMapper;
 import com.pivo.weev.backend.domain.model.common.MapPoint;
-import com.pivo.weev.backend.domain.model.event.CreatableEvent;
-import com.pivo.weev.backend.domain.model.event.Location;
+import com.pivo.weev.backend.domain.model.meet.CreatableMeet;
+import com.pivo.weev.backend.domain.model.meet.Location;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.LocationRepositoryWrapper;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class LocationService {
 
     private final LocationRepositoryWrapper locationRepository;
 
-    public LocationJpa resolveLocation(CreatableEvent sample) {
+    public LocationJpa resolveLocation(CreatableMeet sample) {
         Location location = sample.getLocation();
         MapPoint mapPoint = location.getPoint();
         return locationRepository.findByCoordinates(mapPoint.getLng(), mapPoint.getLtd())

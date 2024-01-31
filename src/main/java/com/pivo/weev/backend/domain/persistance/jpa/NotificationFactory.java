@@ -2,9 +2,9 @@ package com.pivo.weev.backend.domain.persistance.jpa;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa.Type.IMPORTANT;
 
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.DeclinationReasonJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.model.event.EventNotificationJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.meet.DeclinationReasonJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetNotificationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,25 +13,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class NotificationFactory {
 
-    public EventNotificationJpa createEventNotification(EventJpa event, UserJpa recipient, String title) {
-        return createEventNotification(event, recipient, title, new HashMap<>());
+    public MeetNotificationJpa createMeetNotification(MeetJpa meet, UserJpa recipient, String title) {
+        return createMeetNotification(meet, recipient, title, new HashMap<>());
     }
 
-    public EventNotificationJpa createEventNotification(EventJpa event, UserJpa recipient, String title, Map<String, Object> details) {
-        EventNotificationJpa eventNotificationJpa = new EventNotificationJpa();
-        eventNotificationJpa.setEvent(event);
-        eventNotificationJpa.setType(IMPORTANT);
-        eventNotificationJpa.setRecipient(recipient);
-        eventNotificationJpa.setViewed(false);
-        eventNotificationJpa.setTitle(title);
-        eventNotificationJpa.setDetails(details);
-        return eventNotificationJpa;
+    public MeetNotificationJpa createMeetNotification(MeetJpa meet, UserJpa recipient, String title, Map<String, Object> details) {
+        MeetNotificationJpa meetNotification = new MeetNotificationJpa();
+        meetNotification.setMeet(meet);
+        meetNotification.setType(IMPORTANT);
+        meetNotification.setRecipient(recipient);
+        meetNotification.setViewed(false);
+        meetNotification.setTitle(title);
+        meetNotification.setDetails(details);
+        return meetNotification;
     }
 
 
-    public EventNotificationJpa createEventNotification(EventJpa event, UserJpa recipient, String title, DeclinationReasonJpa declinationReasonJpa) {
-        EventNotificationJpa eventNotification = createEventNotification(event, recipient, title);
-        eventNotification.setDeclinationReasonJpa(declinationReasonJpa);
-        return eventNotification;
+    public MeetNotificationJpa createMeetNotification(MeetJpa meet, UserJpa recipient, String title, DeclinationReasonJpa declinationReasonJpa) {
+        MeetNotificationJpa meetNotification = createMeetNotification(meet, recipient, title);
+        meetNotification.setDeclinationReasonJpa(declinationReasonJpa);
+        return meetNotification;
     }
 }

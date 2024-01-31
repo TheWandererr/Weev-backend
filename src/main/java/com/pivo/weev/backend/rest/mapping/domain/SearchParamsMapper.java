@@ -1,9 +1,9 @@
 package com.pivo.weev.backend.rest.mapping.domain;
 
-import com.pivo.weev.backend.domain.model.event.SearchParams;
-import com.pivo.weev.backend.rest.model.event.SearchContextRest;
-import com.pivo.weev.backend.rest.model.event.SearchContextRest.VisibilityCriteriaRest;
-import com.pivo.weev.backend.rest.model.request.EventsSearchRequest;
+import com.pivo.weev.backend.domain.model.meet.SearchParams;
+import com.pivo.weev.backend.rest.model.meet.SearchContextRest;
+import com.pivo.weev.backend.rest.model.meet.SearchContextRest.VisibilityCriteriaRest;
+import com.pivo.weev.backend.rest.model.request.MeetsSearchRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -15,15 +15,15 @@ public interface SearchParamsMapper {
     @Mapping(target = "fieldsCriteria", source = "source")
     @Mapping(target = "pageCriteria", expression = "java(mapPageCriteria(source, searchContext))")
     @Mapping(target = "authorId", source = "searchContext.authorId")
-    SearchParams map(EventsSearchRequest source, SearchContextRest searchContext);
+    SearchParams map(MeetsSearchRequest source, SearchContextRest searchContext);
 
     @Mapping(target = "sortFields", source = "searchContext.pageCriteria.sortFields")
-    SearchParams.PageCriteria mapPageCriteria(EventsSearchRequest source, SearchContextRest searchContext);
+    SearchParams.PageCriteria mapPageCriteria(MeetsSearchRequest source, SearchContextRest searchContext);
 
     @Mapping(target = "bbox", source = "bbox")
-    SearchParams.MapCriteria mapMapCriteria(EventsSearchRequest source);
+    SearchParams.MapCriteria mapMapCriteria(MeetsSearchRequest source);
 
     SearchParams.VisibilityCriteria mapVisibilityCriteria(VisibilityCriteriaRest source);
 
-    SearchParams.FieldsCriteria mapFieldsCriteria(EventsSearchRequest source);
+    SearchParams.FieldsCriteria mapFieldsCriteria(MeetsSearchRequest source);
 }

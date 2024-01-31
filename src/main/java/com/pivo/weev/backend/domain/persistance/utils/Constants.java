@@ -29,13 +29,13 @@ public class Constants {
         public static final String TOKEN_DETAILS_USER_ID = "userId";
         public static final String TOKEN_DETAILS_DEVICE_ID = "deviceId";
 
-        public static final String EVENT_HEADER = "header";
-        public static final String EVENT_STATUS = "status";
-        public static final String EVENT_UTC_START_DATE_TIME = "utcStartDateTime";
-        public static final String EVENT_UTC_END_DATE_TIME = "utcEndDateTime";
+        public static final String MEET_HEADER = "header";
+        public static final String MEET_STATUS = "status";
+        public static final String MEET_UTC_START_DATE_TIME = "utcStartDateTime";
+        public static final String MEET_UTC_END_DATE_TIME = "utcEndDateTime";
 
-        public static final String EVENT_CATEGORY_NAME = "name";
-        public static final String EVENT_SUBCATEGORY_NAME = "name";
+        public static final String MEET_CATEGORY_NAME = "name";
+        public static final String MEET_SUBCATEGORY_NAME = "name";
     }
 
     @UtilityClass
