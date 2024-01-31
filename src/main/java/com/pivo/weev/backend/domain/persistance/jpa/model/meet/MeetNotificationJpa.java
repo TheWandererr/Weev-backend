@@ -4,6 +4,7 @@ import static jakarta.persistence.FetchType.LAZY;
 import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -24,12 +25,13 @@ import org.hibernate.type.SqlTypes;
 public class MeetNotificationJpa extends NotificationJpa {
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "meet_id")
+    @JoinColumn(name = "meet_id", updatable = false)
     private MeetJpa meet;
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "declination_reason_id")
+    @JoinColumn(name = "declination_reason_id", updatable = false)
     private DeclinationReasonJpa declinationReasonJpa;
     @JdbcTypeCode(SqlTypes.JSON)
+    @Column(updatable = false)
     private Map<String, Object> details = new HashMap<>();
 
     @Override

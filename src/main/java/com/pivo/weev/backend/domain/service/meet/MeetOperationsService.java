@@ -25,8 +25,8 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetCateg
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.LocationService;
-import com.pivo.weev.backend.domain.service.NotificationService;
 import com.pivo.weev.backend.domain.service.TimeZoneService;
+import com.pivo.weev.backend.domain.service.message.NotificationService;
 import com.pivo.weev.backend.domain.service.validation.MeetOperationsValidator;
 import java.time.ZoneId;
 import java.util.Set;
@@ -52,7 +52,7 @@ public class MeetOperationsService {
     public void create(CreatableMeet sample) {
         setTimeZones(sample);
         meetOperationsValidator.validateCreation(sample);
-        MeetJpa meet = preparePersistableEvent(sample);
+        MeetJpa meet = preparePersistableMeet(sample);
         meetRepository.save(meet);
     }
 
@@ -64,7 +64,7 @@ public class MeetOperationsService {
         sample.setEndTimeZoneId(zoneId.getId());
     }
 
-    private MeetJpa preparePersistableEvent(CreatableMeet sample) {
+    private MeetJpa preparePersistableMeet(CreatableMeet sample) {
         UserJpa creator = usersRepository.fetch(getUserId());
         MeetJpa meetJpa = new MeetJpa(creator);
         getMapper(MeetJpaMapper.class).map(sample, meetJpa);
@@ -91,23 +91,23 @@ public class MeetOperationsService {
         MeetJpa updatableTarget = meetRepository.fetch(sample.getId());
         meetOperationsValidator.validateUpdate(updatableTarget, sample);
 
-        MeetJpa jpaEvent = preparePersistableEvent(sample);
-        jpaEvent.setUpdatableTarget(updatableTarget);
+        MeetJpa meet = preparePersistableMeet(sample);
+        meet.setUpdatableTarget(updatableTarget);
 
         if (updatableTarget.isOnModeration() || updatableTarget.isCanceled() || updatableTarget.isDeclined()) {
-            replaceExistingEvent(jpaEvent, updatableTarget);
+            replaceExistingMeet(meet, updatableTarget);
         } else {
             meetRepository.findByUpdatableTargetId(sample.getId())
-                          .ifPresentOrElse(existingJpaEvent -> replaceExistingEvent(jpaEvent, existingJpaEvent), () -> {
+                          .ifPresentOrElse(existingMeet -> replaceExistingMeet(meet, existingMeet), () -> {
                               updatableTarget.setStatus(HAS_MODERATION_INSTANCE);
-                              meetRepository.save(jpaEvent);
+                              meetRepository.save(meet);
                           });
         }
     }
 
-    private void replaceExistingEvent(MeetJpa jpaEvent, MeetJpa existingJpaEvent) {
-        meetPhotoService.deletePhoto(existingJpaEvent);
-        getMapper(MeetJpaMapper.class).remap(jpaEvent, existingJpaEvent);
+    private void replaceExistingMeet(MeetJpa meet, MeetJpa existingMeet) {
+        meetPhotoService.deletePhoto(existingMeet);
+        getMapper(MeetJpaMapper.class).remap(meet, existingMeet);
     }
 
     @Transactional
@@ -131,16 +131,16 @@ public class MeetOperationsService {
     }
 
     @Transactional
-    public void join(Long eventId, Long joinerId) {
-        MeetJpa event = meetRepository.fetch(eventId);
-        meetOperationsValidator.validateJoin(event, joinerId, PUBLIC);
+    public void join(Long meetId, Long joinerId) {
+        MeetJpa meet = meetRepository.fetch(meetId);
+        meetOperationsValidator.validateJoin(meet, joinerId, PUBLIC);
         UserJpa joiner = usersRepository.fetch(joinerId);
-        event.addMember(joiner);
+        meet.addMember(joiner);
     }
 
-    public void joinViaRequest(MeetJpa event, UserJpa joiner) {
-        RestrictionsJpa restrictions = event.getRestrictions();
-        meetOperationsValidator.validateJoin(event, joiner.getId(), Availability.valueOf(restrictions.getAvailability()));
-        event.addMember(joiner);
+    public void joinViaRequest(MeetJpa meet, UserJpa joiner) {
+        RestrictionsJpa restrictions = meet.getRestrictions();
+        meetOperationsValidator.validateJoin(meet, joiner.getId(), Availability.valueOf(restrictions.getAvailability()));
+        meet.addMember(joiner);
     }
 }

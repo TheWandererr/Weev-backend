@@ -32,7 +32,7 @@ import org.hibernate.proxy.HibernateProxy;
 public class MeetRequestJpa extends SequencedPersistable<Long> {
 
     @ManyToOne(fetch = LAZY, cascade = ALL, optional = false)
-    @JoinColumn(name = "event_id")
+    @JoinColumn(name = "meet_id")
     private MeetJpa meet;
     @OneToOne(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id")

@@ -171,11 +171,11 @@ public class MeetOperationsValidator {
      * Заявка должна быть актуальной
      * Заявку принимает владелец ивента
      */
-    public void validateJoinRequestConfirmation(MeetRequestJpa request, MeetJpa event) {
+    public void validateJoinRequestConfirmation(MeetRequestJpa request, MeetJpa meet) {
         if (request.isExpired()) {
             throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, MEET_JOIN_REQUEST_IS_EXPIRED, FORBIDDEN);
         }
-        if (!Objects.equals(getUserId(), event.getCreator().getId())) {
+        if (!Objects.equals(getUserId(), meet.getCreator().getId())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
     }

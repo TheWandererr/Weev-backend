@@ -5,11 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EventJoinResponse {
+public class MeetJoinResponse {
 
     private boolean joined;
 
-    public EventJoinResponse(boolean joined) {
+    public MeetJoinResponse(boolean joined) {
         this.joined = joined;
     }
 }

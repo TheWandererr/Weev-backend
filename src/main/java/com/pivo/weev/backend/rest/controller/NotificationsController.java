@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.controller;
 
-import com.pivo.weev.backend.domain.service.NotificationService;
+import com.pivo.weev.backend.domain.service.message.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

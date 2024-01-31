@@ -74,6 +74,10 @@ public abstract class GenericRepositoryWrapper<PK extends Serializable, E extend
         return repository.findAll(specification);
     }
 
+    public List<E> findAll(Iterable<PK> ids) {
+        return repository.findAllById(ids);
+    }
+
     public void checkNotExists(Example<E> example, Function<String, ? extends RuntimeException> throwable) {
         final boolean exists = repository.exists(example);
         if (exists) {

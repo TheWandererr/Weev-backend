@@ -32,14 +32,14 @@ import org.hibernate.proxy.HibernateProxy;
 @NoArgsConstructor
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "notification_type", discriminatorType = DiscriminatorType.STRING)
-public class NotificationJpa extends ModifiableJpa<Long> {
+public class NotificationJpa extends SequencedPersistable<Long> {
 
     @ManyToOne(fetch = LAZY, cascade = {PERSIST, MERGE})
-    @JoinColumn(name = "recipient_id")
+    @JoinColumn(name = "recipient_id", updatable = false)
     private UserJpa recipient;
-    @Column
+    @Column(nullable = false, updatable = false)
     private String title;
-    @Column
+    @Column(updatable = false)
     @Enumerated(EnumType.STRING)
     private Type type;
     @Column

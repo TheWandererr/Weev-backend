@@ -16,8 +16,8 @@ import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
 @Entity
-@Table(name = "event_subcategories")
-@SequenceGenerator(sequenceName = "event_subcategories_id_sequence", allocationSize = 1, name = "sequence_generator")
+@Table(name = "meet_subcategories")
+@SequenceGenerator(sequenceName = "meet_subcategories_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
 public class SubcategoryJpa extends SequencedPersistable<Long> {

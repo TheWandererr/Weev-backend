@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.utils;
 
+import static com.pivo.weev.backend.utils.StreamUtils.flatMap;
 import static com.pivo.weev.backend.utils.StreamUtils.flatStream;
 import static com.pivo.weev.backend.utils.StreamUtils.map;
 import static com.pivo.weev.backend.utils.StreamUtils.nullableStream;
@@ -16,6 +17,7 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -67,6 +69,10 @@ public class CollectionUtils {
 
     public static <S, T> Set<T> mapToSet(Collection<S> collection, Function<S, T> mapper, Predicate<? super T> condition) {
         return map(collection, mapper).filter(condition).collect(Collectors.toSet());
+    }
+
+    public static <S, T> List<T> flatMapToList(Collection<S> collection, Function<? super S, ? extends Stream<? extends T>> mapper) {
+        return flatMap(collection, mapper).collect(Collectors.toList());
     }
 
     public static <T> List<T> list(Collection<T> collection) {

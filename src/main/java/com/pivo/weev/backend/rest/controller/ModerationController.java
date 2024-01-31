@@ -47,14 +47,14 @@ public class ModerationController {
     }
 
     @PutMapping("/meets/{id}/confirmation")
-    public BaseResponse confirmEvent(@PathVariable Long id) {
-        moderationService.confirmEvent(id);
+    public BaseResponse confirmMeet(@PathVariable Long id) {
+        moderationService.confirmMeet(id);
         return new BaseResponse();
     }
 
     @PutMapping("/meets/{id}/declination")
-    public BaseResponse declineEvent(@PathVariable Long id, @Valid @RequestBody MeetDeclineRequest request) {
-        moderationService.declineEvent(id, request.getDeclinationReason());
+    public BaseResponse declineMeet(@PathVariable Long id, @Valid @RequestBody MeetDeclineRequest request) {
+        moderationService.declineMeet(id, request.getDeclinationReason());
         return new BaseResponse();
     }
 

@@ -60,16 +60,16 @@ public class Constants {
         public static final String NICKNAME_ALREADY_USED = "nickname.already.used";
         public static final String ACCESS_DENIED_ERROR = "access.denied";
         public static final String OPERATION_IMPOSSIBLE_ERROR = "operation.impossible";
-        public static final String MEET_IS_FINISHED = "meet.is.finished";
+        public static final String MEET_IS_FINISHED = "meetId.is.finished";
     }
 
     @UtilityClass
     public static final class Reasons {
 
-        public static final String MEET_CAPACITY_EXCEEDED = "meet.capacity.exceeded";
-        public static final String MEET_ALREADY_JOINED = "meet.already.joined";
-        public static final String MEET_JOIN_REQUEST_ALREADY_CREATED = "meet.join.request.already.created";
-        public static final String MEET_JOIN_REQUEST_IS_EXPIRED = "meet.join.request.is.expired";
+        public static final String MEET_CAPACITY_EXCEEDED = "meetId.capacity.exceeded";
+        public static final String MEET_ALREADY_JOINED = "meetId.already.joined";
+        public static final String MEET_JOIN_REQUEST_ALREADY_CREATED = "meetId.join.request.already.created";
+        public static final String MEET_JOIN_REQUEST_IS_EXPIRED = "meetId.join.request.is.expired";
 
     }
 

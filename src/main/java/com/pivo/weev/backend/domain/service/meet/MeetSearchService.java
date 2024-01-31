@@ -49,7 +49,7 @@ public class MeetSearchService {
     @Transactional
     public Meet search(Long id) {
         return meetRepository.findById(id)
-                             .map(event -> getMapper(MeetMapper.class).map(event))
+                             .map(meet -> getMapper(MeetMapper.class).map(meet))
                              .orElse(null);
     }
 

@@ -17,11 +17,14 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRequestsRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
-import com.pivo.weev.backend.domain.service.NotificationService;
+import com.pivo.weev.backend.domain.service.event.ApplicationEventFactory;
+import com.pivo.weev.backend.domain.service.event.model.PushNotificationEvent;
+import com.pivo.weev.backend.domain.service.message.NotificationService;
 import com.pivo.weev.backend.domain.service.validation.MeetOperationsValidator;
 import java.time.Instant;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,42 +33,51 @@ import org.springframework.transaction.annotation.Transactional;
 public class MeetRequestsService {
 
     private final MeetRepositoryWrapper meetRepository;
-    private final MeetRequestsRepositoryWrapper eventRequestsRepository;
+    private final MeetRequestsRepositoryWrapper meetRequestsRepository;
     private final UsersRepositoryWrapper usersRepository;
 
     private final MeetOperationsValidator meetOperationsValidator;
     private final NotificationService notificationService;
     private final MeetOperationsService meetOperationsService;
 
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final ApplicationEventFactory applicationEventFactory;
+
     @Transactional
     public void createJoinRequest(Long id) {
-        MeetJpa event = meetRepository.fetch(id);
-        meetOperationsValidator.validateJoinRequestCreation(event, getUserId());
+        MeetJpa meet = meetRepository.fetch(id);
+        meetOperationsValidator.validateJoinRequestCreation(meet, getUserId());
         UserJpa user = usersRepository.fetch(getUserId());
-        eventRequestsRepository.findByMeetIdAndUserId(event.getId(), user.getId())
-                               .ifPresent(request -> {
-                                   throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, MEET_JOIN_REQUEST_ALREADY_CREATED, FORBIDDEN);
-                               });
-        notificationService.notify(event, event.getCreator(), MEET_NEW_JOIN_REQUEST, Map.of(REQUESTER, user.getId()));
-        eventRequestsRepository.save(new MeetRequestJpa(event, user, getEventRequestExpirationTime(event)));
+        meetRequestsRepository.findByMeetIdAndUserId(meet.getId(), user.getId())
+                              .ifPresent(request -> {
+                                  throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, MEET_JOIN_REQUEST_ALREADY_CREATED, FORBIDDEN);
+                              });
+        notify(meet, meet.getCreator(), MEET_NEW_JOIN_REQUEST, Map.of(REQUESTER, user.getId()));
+        meetRequestsRepository.save(new MeetRequestJpa(meet, user, getMeetRequestExpirationTime(meet)));
     }
 
-    private Instant getEventRequestExpirationTime(MeetJpa event) {
-        RestrictionsJpa restrictions = event.getRestrictions();
+    private void notify(MeetJpa meet, UserJpa user, String title, Map<String, Object> details) {
+        notificationService.notify(meet, user, title, details);
+        PushNotificationEvent event = applicationEventFactory.buildNotificationEvent(meet, user, title, details);
+        applicationEventPublisher.publishEvent(event);
+    }
+
+    private Instant getMeetRequestExpirationTime(MeetJpa meet) {
+        RestrictionsJpa restrictions = meet.getRestrictions();
         if (isTrue(restrictions.getJoinAfterStartDisallowed())) {
-            return event.getUtcStartDateTime();
+            return meet.getUtcStartDateTime();
         }
-        return event.getUtcEndDateTime();
+        return meet.getUtcEndDateTime();
     }
 
     @Transactional
-    public void confirmJoinRequest(Long eventId, Long requestId) {
-        MeetRequestJpa request = eventRequestsRepository.fetch(requestId);
-        MeetJpa event = meetRepository.fetch(eventId);
-        meetOperationsValidator.validateJoinRequestConfirmation(request, event);
+    public void confirmJoinRequest(Long meetId, Long requestId) {
+        MeetRequestJpa request = meetRequestsRepository.fetch(requestId);
+        MeetJpa meet = meetRepository.fetch(meetId);
+        meetOperationsValidator.validateJoinRequestConfirmation(request, meet);
         UserJpa joiner = request.getUser();
-        meetOperationsService.joinViaRequest(event, joiner);
-        notificationService.notify(event, joiner, MEET_JOIN_REQUEST_CONFIRMATION);
-        eventRequestsRepository.forceDelete(request);
+        meetOperationsService.joinViaRequest(meet, joiner);
+        notify(meet, joiner, MEET_JOIN_REQUEST_CONFIRMATION, null);
+        meetRequestsRepository.forceDelete(request);
     }
 }

@@ -27,7 +27,7 @@ import com.pivo.weev.backend.rest.model.request.MeetSaveRequest;
 import com.pivo.weev.backend.rest.model.request.MeetsSearchRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
-import com.pivo.weev.backend.rest.model.response.EventJoinResponse;
+import com.pivo.weev.backend.rest.model.response.MeetJoinResponse;
 import com.pivo.weev.backend.rest.model.response.MeetSearchResponse;
 import com.pivo.weev.backend.rest.model.response.MeetsMapPointClusterSearchResponse;
 import com.pivo.weev.backend.rest.model.response.MeetsSearchResponse;
@@ -88,8 +88,8 @@ public class MeetsController {
     @GetMapping("/{id}")
     public MeetSearchResponse search(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
         Meet meet = meetSearchService.search(id);
-        MeetDetailedRest restEvent = getMapper(MeetDetailedRestMapper.class).map(meet);
-        return new MeetSearchResponse(restEvent);
+        MeetDetailedRest restMeet = getMapper(MeetDetailedRestMapper.class).map(meet);
+        return new MeetSearchResponse(restMeet);
     }
 
     @PutMapping("/{id}")
@@ -112,16 +112,16 @@ public class MeetsController {
     }
 
     @PutMapping("/{id}/joining")
-    public EventJoinResponse join(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
+    public MeetJoinResponse join(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
         meetOperationsService.join(id, getUserId());
-        return new EventJoinResponse(true);
+        return new MeetJoinResponse(true);
     }
 
     @PostMapping("/{id}/joining/requests")
     @ResponseStatus(value = CREATED)
-    public EventJoinResponse createJoinRequest(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
+    public MeetJoinResponse createJoinRequest(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
         meetRequestsService.createJoinRequest(id);
-        return new EventJoinResponse(false);
+        return new MeetJoinResponse(false);
     }
 
 }

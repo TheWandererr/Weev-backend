@@ -28,13 +28,13 @@ public final class Constants {
     @UtilityClass
     public static final class NotificationTitles {
 
-        public static final String MEET_CONFIRMATION = "meet.confirmation";
-        public static final String MEET_UPDATE_SUCCESSFUL = "meet.update.successful";
-        public static final String MEET_UPDATE_FAILED = "meet.update.failed";
-        public static final String MEET_DECLINATION = "meet.declination";
-        public static final String MEET_CANCELLATION = "meet.cancellation";
-        public static final String MEET_NEW_JOIN_REQUEST = "meet.new.join.request";
-        public static final String MEET_JOIN_REQUEST_CONFIRMATION = "meet.join.request.confirmation";
+        public static final String MEET_CONFIRMATION = "meetId.confirmation";
+        public static final String MEET_UPDATE_SUCCESSFUL = "meetId.update.successful";
+        public static final String MEET_UPDATE_FAILED = "meetId.update.failed";
+        public static final String MEET_DECLINATION = "meetId.declination";
+        public static final String MEET_CANCELLATION = "meetId.cancellation";
+        public static final String MEET_NEW_JOIN_REQUEST = "meetId.new.join.request";
+        public static final String MEET_JOIN_REQUEST_CONFIRMATION = "meetId.join.request.confirmation";
     }
 
     @UtilityClass

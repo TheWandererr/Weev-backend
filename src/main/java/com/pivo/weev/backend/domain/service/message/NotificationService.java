@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.service;
+package com.pivo.weev.backend.domain.service.message;
 
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToSet;
 
@@ -9,6 +9,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetNotificationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.NotificationRepositoryWrapper;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -37,8 +38,12 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
-    public void notifyAll(MeetJpa target, Set<UserJpa> recipients, String title) {
-        Set<NotificationJpa> notifications = mapToSet(recipients, recipient -> notificationFactory.createMeetNotification(target, recipient, title));
+    public void notifyAll(MeetJpa target, Collection<UserJpa> recipients, String title) {
+        notifyAll(target, recipients, title, null);
+    }
+
+    public void notifyAll(MeetJpa target, Collection<UserJpa> recipients, String title, Map<String, Object> details) {
+        Set<NotificationJpa> notifications = mapToSet(recipients, recipient -> notificationFactory.createMeetNotification(target, recipient, title, details));
         notificationRepository.saveAll(notifications);
     }
 }
