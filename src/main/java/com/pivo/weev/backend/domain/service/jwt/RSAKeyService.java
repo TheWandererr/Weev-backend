@@ -26,17 +26,17 @@ public class RSAKeyService {
     private final RSAPublicKey rsaPublicKey;
     private final Cipher cipherInstance;
 
-    public RSAKeyService(PKCS8KeyGenerator pkcs8KeyGenerator, PKCS8KeyProperties properties) throws Exception {
+    public RSAKeyService(PKCS8KeyReader pkcs8KeyReader, PKCS8KeyProperties properties) throws Exception {
         LOGGER.info("Initialization of RSA key pair is started");
-        KeyPair keyPair = initKeys(pkcs8KeyGenerator, properties);
+        KeyPair keyPair = initKeys(pkcs8KeyReader, properties);
         this.rsaPrivateKey = (RSAPrivateKey) keyPair.getPrivate();
         this.rsaPublicKey = (RSAPublicKey) keyPair.getPublic();
         this.cipherInstance = Cipher.getInstance(rsaPrivateKey.getAlgorithm());
         LOGGER.info("Initialization of RSA key pair is finished");
     }
 
-    private KeyPair initKeys(PKCS8KeyGenerator pkcs8KeyGenerator, PKCS8KeyProperties properties) throws Exception {
-        return pkcs8KeyGenerator.generateKeyPair(properties.getPrivateKey(), properties.getPassphrase());
+    private KeyPair initKeys(PKCS8KeyReader pkcs8KeyReader, PKCS8KeyProperties properties) throws Exception {
+        return pkcs8KeyReader.readKeyPair(properties.getPrivateKey(), properties.getPassphrase());
     }
 
     public String decrypt(String base64Value) throws GeneralSecurityException {
