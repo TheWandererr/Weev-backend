@@ -33,8 +33,6 @@ public class VerificationRequestJpa extends SequencedPersistable<Long> {
     private Instant retryAfter;
     @Column
     private Instant expiresAt;
-    @Column
-    private boolean completed;
 
     public VerificationRequestJpa(String code, Contacts contacts, Instant retryAfter, Instant expiresAt) {
         this.code = code;

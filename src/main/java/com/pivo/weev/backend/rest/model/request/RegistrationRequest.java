@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RegistrationRequest {
+public class RegistrationRequest extends VerificationCompletionRequest {
 
     @NotBlank(message = MUST_BE_NOT_BLANK_ERROR)
     private String nickname;

@@ -13,7 +13,6 @@ import com.pivo.weev.backend.rest.mapping.domain.UserSnapshotMapper;
 import com.pivo.weev.backend.rest.model.request.NewPasswordRequest;
 import com.pivo.weev.backend.rest.model.request.RegistrationRequest;
 import com.pivo.weev.backend.rest.model.request.UsernameRequest;
-import com.pivo.weev.backend.rest.model.request.VerificationCompletionRequest;
 import com.pivo.weev.backend.rest.model.request.VerificationRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.LoginResponse;
@@ -50,17 +49,10 @@ public class AuthController {
         return new BaseResponse();
     }
 
-    @PutMapping("/verification/completion")
-    public BaseResponse completeVerification(@RequestBody @Valid VerificationCompletionRequest request) {
-        Contacts contacts = getMapper(ContactsMapper.class).map(request);
-        authOperationsService.completeVerification(contacts, request.getCode());
-        return new BaseResponse();
-    }
-
     @PostMapping("/registration")
     public BaseResponse register(@RequestBody @Valid RegistrationRequest request) {
         UserSnapshot userSnapshot = getMapper(UserSnapshotMapper.class).map(request);
-        authOperationsService.register(userSnapshot);
+        authOperationsService.register(userSnapshot, request.getVerificationCode());
         return new BaseResponse();
     }
 
@@ -79,7 +71,7 @@ public class AuthController {
 
     @PutMapping("/password/reset")
     public BaseResponse setNewPassword(@RequestBody @Valid NewPasswordRequest request) {
-        authOperationsService.setNewPassword(request.newPassword(), request.username().toLowerCase());
+        authOperationsService.setNewPassword(request.getNewPassword(), request.getUsername().toLowerCase(), request.getVerificationCode());
         return new BaseResponse();
     }
 }

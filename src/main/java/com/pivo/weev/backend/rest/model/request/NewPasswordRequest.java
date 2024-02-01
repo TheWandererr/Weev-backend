@@ -4,14 +4,19 @@ import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
 
 
-public record NewPasswordRequest(@NotBlank(message = MUST_BE_NOT_BLANK_ERROR)
-                                 @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")
-                                 String newPassword,
-                                 @NotBlank(message = MUST_BE_NOT_BLANK_ERROR)
-                                 String username) {
+@Getter
+@Setter
+public class NewPasswordRequest extends VerificationCompletionRequest {
 
+    @NotBlank(message = MUST_BE_NOT_BLANK_ERROR)
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")
+    private String newPassword;
+    @NotBlank(message = MUST_BE_NOT_BLANK_ERROR)
+    private String username;
 }
 
 

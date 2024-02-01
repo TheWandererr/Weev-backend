@@ -5,7 +5,6 @@ import static com.pivo.weev.backend.domain.model.auth.VerificationScope.REGISTRA
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getAuthenticationDetails;
 import static com.pivo.weev.backend.rest.utils.Constants.ResponseDetails.TITLE;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.ACTIVE_VERIFICATION_REQUEST_ERROR;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.NO_VERIFICATION_REQUEST_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.USER_NOT_FOUND_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.VERIFICATION_CODE_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.VERIFICATION_NOT_COMPLETED;
@@ -33,7 +32,6 @@ import com.pivo.weev.backend.domain.service.user.UsersService;
 import com.pivo.weev.backend.domain.service.validation.AuthOperationsValidator;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -67,12 +65,12 @@ public class AuthOperationsService {
     }
 
     private VerificationRequestJpa provideVerificationRequest(Contacts contacts, String verificationCode) {
-        Optional<VerificationRequestJpa> optionalExistingRequest = findVerificationRequest(contacts, request -> true);
+        Optional<VerificationRequestJpa> optionalExistingRequest = findVerificationRequest(contacts);
         if (optionalExistingRequest.isEmpty()) {
             return createVerificationRequest(contacts, verificationCode);
         }
         VerificationRequestJpa existingRequest = optionalExistingRequest.get();
-        if (existingRequest.isCompleted() || existingRequest.isRetryable() || existingRequest.isExpired()) {
+        if (existingRequest.isRetryable() || existingRequest.isExpired()) {
             extendVerificationRequest(existingRequest, verificationCode);
             return existingRequest;
         }
@@ -95,7 +93,6 @@ public class AuthOperationsService {
         verificationRequest.setCode(verificationCode);
         verificationRequest.setExpiresAt(now.plus(validityPeriod.getExpiresAfterHours(), HOURS));
         verificationRequest.setRetryAfter(now.plusSeconds(validityPeriod.getRetryAfterSeconds()));
-        verificationRequest.setCompleted(false);
     }
 
     private void sendVerificationCode(VerificationRequestJpa verificationRequest, String verificationCode) {
@@ -107,13 +104,6 @@ public class AuthOperationsService {
         }
     }
 
-    @Transactional
-    public void completeVerification(Contacts contacts, String code) {
-        VerificationRequestJpa verificationRequest = findVerificationRequest(contacts, request -> true)
-                .orElseThrow(() -> new FlowInterruptedException(NO_VERIFICATION_REQUEST_ERROR, null, BAD_REQUEST));
-        completeVerification(verificationRequest, code);
-    }
-
     private void completeVerification(VerificationRequestJpa verificationRequest, String code) {
         if (verificationRequest.isExpired()) {
             throw new FlowInterruptedException(VERIFICATION_REQUEST_IS_EXPIRED_ERROR, null, BAD_REQUEST);
@@ -121,21 +111,20 @@ public class AuthOperationsService {
         if (!verificationRequest.getCode().equals(code)) {
             throw new FlowInterruptedException(VERIFICATION_CODE_ERROR, null, BAD_REQUEST);
         }
-        verificationRequest.setCompleted(true);
-    }
-
-    @Transactional
-    public void register(UserSnapshot userSnapshot) {
-        authOperationsValidator.validateRegistrationAvailability(userSnapshot);
-        VerificationRequestJpa verificationRequest = findVerificationRequest(userSnapshot.getContacts(), VerificationRequestJpa::isCompleted)
-                .orElseThrow(() -> new FlowInterruptedException(VERIFICATION_NOT_COMPLETED, null, BAD_REQUEST));
-        usersService.createUser(userSnapshot);
         verificationRequestRepository.forceDelete(verificationRequest);
     }
 
-    private Optional<VerificationRequestJpa> findVerificationRequest(Contacts contacts, Predicate<VerificationRequestJpa> filter) {
-        return verificationRequestRepository.findByContacts(contacts)
-                                            .filter(filter);
+    @Transactional
+    public void register(UserSnapshot userSnapshot, String verificationCode) {
+        authOperationsValidator.validateRegistrationAvailability(userSnapshot);
+        VerificationRequestJpa verificationRequest = findVerificationRequest(userSnapshot.getContacts())
+                .orElseThrow(() -> new FlowInterruptedException(VERIFICATION_NOT_COMPLETED, null, BAD_REQUEST));
+        completeVerification(verificationRequest, verificationCode);
+        usersService.createUser(userSnapshot);
+    }
+
+    private Optional<VerificationRequestJpa> findVerificationRequest(Contacts contacts) {
+        return verificationRequestRepository.findByContacts(contacts);
     }
 
     @Transactional
@@ -148,13 +137,13 @@ public class AuthOperationsService {
     }
 
     @Transactional
-    public void setNewPassword(String newPassword, String username) {
+    public void setNewPassword(String newPassword, String username, String verificationCode) {
         UserJpa user = usersService.findUser(username)
                                    .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_ERROR + TITLE));
         Contacts contacts = getMapper(ContactsMapper.class).map(user);
-        VerificationRequestJpa verificationRequest = findVerificationRequest(contacts, VerificationRequestJpa::isCompleted)
+        VerificationRequestJpa verificationRequest = findVerificationRequest(contacts)
                 .orElseThrow(() -> new FlowInterruptedException(VERIFICATION_NOT_COMPLETED, null, BAD_REQUEST));
+        completeVerification(verificationRequest, verificationCode);
         usersService.updatePassword(user, newPassword);
-        verificationRequestRepository.forceDelete(verificationRequest);
     }
 }
