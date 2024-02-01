@@ -2,7 +2,7 @@ package com.pivo.weev.backend.config.web;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-import com.pivo.weev.backend.rest.utils.LocaleUtils;
+import com.pivo.weev.backend.utils.LocaleUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

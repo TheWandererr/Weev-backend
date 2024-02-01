@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.config.messaging;
 
-import static com.pivo.weev.backend.rest.utils.LocaleUtils.getAcceptedLocale;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.TEMPLATE_PROCESSING_ERROR;
+import static com.pivo.weev.backend.utils.LocaleUtils.getAcceptedLocale;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.ui.freemarker.FreeMarkerTemplateUtils.processTemplateIntoString;
 

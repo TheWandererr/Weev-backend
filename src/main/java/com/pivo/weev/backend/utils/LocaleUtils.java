@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.rest.utils;
+package com.pivo.weev.backend.utils;
 
 import static com.pivo.weev.backend.rest.utils.Constants.Languages.ACCEPTED_LANGUAGES;
 import static com.pivo.weev.backend.rest.utils.Constants.Languages.DEFAULT_LANGUAGE;
@@ -6,8 +6,6 @@ import static com.pivo.weev.backend.utils.Constants.Symbols.DASH;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.LocaleUtils.languagesByCountry;
 
-import com.pivo.weev.backend.utils.ArrayUtils;
-import com.pivo.weev.backend.utils.CollectionUtils;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;

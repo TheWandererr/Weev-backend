@@ -10,9 +10,9 @@ import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.ME
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_NEW_JOIN_REQUEST;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_UPDATE_FAILED;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_UPDATE_SUCCESSFUL;
-import static com.pivo.weev.backend.rest.utils.LocaleUtils.getAcceptedLocale;
 import static com.pivo.weev.backend.utils.CollectionUtils.collect;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToSet;
+import static com.pivo.weev.backend.utils.LocaleUtils.getAcceptedLocale;
 import static java.util.stream.Collectors.groupingBy;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -40,10 +40,18 @@ public class PushNotificationService {
         for (List<DeviceJpa> notifiableDevices : notifiableDevicesByUser.values()) {
             collect(notifiableDevices, groupingBy(DeviceJpa::getLang))
                     .forEach((lang, notifiableDevicesByLang) -> {
-                        Set<String> notificationTokens = mapToSet(notifiableDevicesByLang, DeviceJpa::getNotificationToken);
+                        Set<String> notificationTokens = mapToSet(notifiableDevicesByLang, DeviceJpa::getPushNotificationToken);
                         Object[] titleArgs = resolveTitleArgs(meet, topic, bodyDetails);
                         Object[] bodyArgs = resolveBodyArgs(meet, topic, bodyDetails);
-                        PushNotificationMessage message = pushNotificationsFactory.build(topic + TITLE, titleArgs, topic + BODY, bodyArgs, bodyDetails, notificationTokens, getAcceptedLocale(lang));
+                        PushNotificationMessage message = pushNotificationsFactory.build(
+                                topic + TITLE,
+                                titleArgs,
+                                topic + BODY,
+                                bodyArgs,
+                                bodyDetails,
+                                notificationTokens,
+                                getAcceptedLocale(lang)
+                        );
                         firebaseMessagingService.send(message);
                     });
         }

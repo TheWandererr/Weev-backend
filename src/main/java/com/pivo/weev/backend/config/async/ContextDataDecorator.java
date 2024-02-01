@@ -1,9 +1,9 @@
 package com.pivo.weev.backend.config.async;
 
-import static com.pivo.weev.backend.rest.utils.LocaleUtils.setRequestLocale;
+import static com.pivo.weev.backend.utils.LocaleUtils.setRequestLocale;
 import static org.slf4j.MDC.clear;
 
-import com.pivo.weev.backend.rest.utils.LocaleUtils;
+import com.pivo.weev.backend.utils.LocaleUtils;
 import java.util.Locale;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.stereotype.Component;

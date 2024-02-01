@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.user;
 
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.DEVICE_INTERNAL_ID;
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -10,6 +11,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -31,11 +33,11 @@ public class DeviceJpa extends SequencedPersistable<Long> {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private UserJpa user;
-    @Column(name = DEVICE_INTERNAL_ID, unique = true, nullable = false)
+    @Column(name = DEVICE_INTERNAL_ID, nullable = false)
     private String internalId;
-    private String notificationToken;
-    @Column(nullable = false)
-    private String lang;
+    @OneToOne(cascade = ALL, orphanRemoval = true, optional = false)
+    @JoinColumn(name = "settings_id")
+    private DeviceSettingsJpa settings = new DeviceSettingsJpa();
 
     public DeviceJpa(UserJpa user, String internalId) {
         this.internalId = internalId;
@@ -45,11 +47,19 @@ public class DeviceJpa extends SequencedPersistable<Long> {
     public DeviceJpa(UserJpa user, String internalId, String lang) {
         this.user = user;
         this.internalId = internalId;
-        this.lang = lang;
+        this.settings = new DeviceSettingsJpa(lang);
     }
 
-    public boolean hasNotificationToken() {
-        return isNotBlank(notificationToken);
+    public boolean hasPushNotificationToken() {
+        return isNotBlank(getPushNotificationToken());
+    }
+
+    public String getPushNotificationToken() {
+        return getSettings().getPushNotificationToken();
+    }
+
+    public String getLang() {
+        return getSettings().getLang();
     }
 
     @Override
@@ -75,4 +85,6 @@ public class DeviceJpa extends SequencedPersistable<Long> {
                 ? hibernateProxy.getHibernateLazyInitializer().getPersistentClass().hashCode()
                 : getClass().hashCode();
     }
+
+
 }

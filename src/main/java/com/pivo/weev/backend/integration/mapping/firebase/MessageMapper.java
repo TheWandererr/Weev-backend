@@ -11,7 +11,6 @@ public interface MessageMapper extends NotificationMapper {
 
     default Message map(PushNotificationMessage source) {
         return Message.builder()
-                      .setTopic(source.getTitle())
                       .setNotification(mapToNotification(source))
                       .setToken(first(source.getRecipients()))
                       .putAllData(source.getData())

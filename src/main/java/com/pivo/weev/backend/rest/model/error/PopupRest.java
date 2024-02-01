@@ -1,8 +1,10 @@
 package com.pivo.weev.backend.rest.model.error;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static java.util.Objects.isNull;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,11 +19,22 @@ public class PopupRest {
     private List<ButtonRest> buttons;
     private List<String> details;
 
-    @Getter
-    @AllArgsConstructor
-    public static class ButtonRest {
+    public List<String> getDetails() {
+        if (isNull(details)) {
+            details = new ArrayList<>();
+        }
+        return details;
+    }
 
-        private final String code;
+    public List<ButtonRest> getButtons() {
+        if (isNull(buttons)) {
+            buttons = new ArrayList<>();
+        }
+        return buttons;
+    }
+
+    public record ButtonRest(String code) {
+
     }
 
 }

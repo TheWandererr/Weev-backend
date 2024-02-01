@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.config.messaging;
 
-import static com.pivo.weev.backend.rest.utils.LocaleUtils.getAcceptedLocale;
+import static com.pivo.weev.backend.utils.LocaleUtils.getAcceptedLocale;
 
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;

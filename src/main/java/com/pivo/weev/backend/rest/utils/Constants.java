@@ -60,7 +60,7 @@ public class Constants {
     public static final class ResponseDetails {
 
         public static final String REASON = "reason";
-        public static final String TITLE = ".topic";
+        public static final String TITLE = ".title";
     }
 
     @UtilityClass
