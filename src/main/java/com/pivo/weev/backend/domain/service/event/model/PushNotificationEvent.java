@@ -20,7 +20,7 @@ public class PushNotificationEvent extends ApplicationEvent {
         return (PushNotificationModel) source;
     }
 
-    public record PushNotificationModel(MeetJpa meet, Set<UserJpa> recipients, String title, Map<String, Object> details) {
+    public record PushNotificationModel(MeetJpa meet, Set<UserJpa> recipients, String topic, Map<String, Object> details) {
 
     }
 }

@@ -26,21 +26,30 @@ public final class Constants {
     }
 
     @UtilityClass
-    public static final class NotificationTitles {
+    public static final class NotificationTopics {
 
-        public static final String MEET_CONFIRMATION = "meetId.confirmation";
-        public static final String MEET_UPDATE_SUCCESSFUL = "meetId.update.successful";
-        public static final String MEET_UPDATE_FAILED = "meetId.update.failed";
-        public static final String MEET_DECLINATION = "meetId.declination";
-        public static final String MEET_CANCELLATION = "meetId.cancellation";
-        public static final String MEET_NEW_JOIN_REQUEST = "meetId.new.join.request";
-        public static final String MEET_JOIN_REQUEST_CONFIRMATION = "meetId.join.request.confirmation";
+        public static final String MEET_CONFIRMATION = "meet.confirmation";
+        public static final String MEET_UPDATE_SUCCESSFUL = "meet.update.successful";
+        public static final String MEET_UPDATE_FAILED = "meet.update.failed";
+        public static final String MEET_DECLINATION = "meet.declination";
+        public static final String MEET_CANCELLATION = "meet.cancellation";
+        public static final String MEET_NEW_JOIN_REQUEST = "meet.new.join.request";
+        public static final String MEET_JOIN_REQUEST_CONFIRMATION = "meet.join.request.confirmation";
     }
 
     @UtilityClass
     public static final class NotificationDetails {
 
-        public static final String REQUESTER = "requester";
+        public static final String REQUESTER_ID = "requester_id";
+        public static final String REQUESTER_NICKNAME = "requester_nickname";
+        public static final String DECLINATION_REASON = "declination_reason";
+    }
+
+    @UtilityClass
+    public static final class NotificationHeaders {
+
+        public static final String TITLE = ".title";
+        public static final String BODY = ".body";
     }
 
     @UtilityClass

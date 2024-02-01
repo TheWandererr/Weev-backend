@@ -18,4 +18,13 @@ public class MessageSources {
         messageSource.setCacheSeconds(10);
         return messageSource;
     }
+
+    @Bean
+    public MessageSource pushNotificationMessages() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("classpath:i18n/push-notification-messages");
+        messageSource.setDefaultEncoding(UTF_8.name());
+        messageSource.setCacheSeconds(10);
+        return messageSource;
+    }
 }

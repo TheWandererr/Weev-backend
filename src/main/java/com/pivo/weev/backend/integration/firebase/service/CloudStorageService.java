@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.integration.firebase;
+package com.pivo.weev.backend.integration.firebase.service;
 
 import static com.pivo.weev.backend.utils.IOUtils.getBytes;
 

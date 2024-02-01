@@ -13,24 +13,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class NotificationFactory {
 
-    public MeetNotificationJpa createMeetNotification(MeetJpa meet, UserJpa recipient, String title) {
-        return createMeetNotification(meet, recipient, title, new HashMap<>());
+    public MeetNotificationJpa createMeetNotification(MeetJpa meet, UserJpa recipient, String topic) {
+        return createMeetNotification(meet, recipient, topic, new HashMap<>());
     }
 
-    public MeetNotificationJpa createMeetNotification(MeetJpa meet, UserJpa recipient, String title, Map<String, Object> details) {
+    public MeetNotificationJpa createMeetNotification(MeetJpa meet, UserJpa recipient, String topic, Map<String, Object> details) {
         MeetNotificationJpa meetNotification = new MeetNotificationJpa();
         meetNotification.setMeet(meet);
         meetNotification.setType(IMPORTANT);
         meetNotification.setRecipient(recipient);
         meetNotification.setViewed(false);
-        meetNotification.setTitle(title);
+        meetNotification.setTopic(topic);
         meetNotification.setDetails(details);
         return meetNotification;
     }
 
 
-    public MeetNotificationJpa createMeetNotification(MeetJpa meet, UserJpa recipient, String title, DeclinationReasonJpa declinationReasonJpa) {
-        MeetNotificationJpa meetNotification = createMeetNotification(meet, recipient, title);
+    public MeetNotificationJpa createMeetNotification(MeetJpa meet, UserJpa recipient, String topic, DeclinationReasonJpa declinationReasonJpa) {
+        MeetNotificationJpa meetNotification = createMeetNotification(meet, recipient, topic);
         meetNotification.setDeclinationReasonJpa(declinationReasonJpa);
         return meetNotification;
     }

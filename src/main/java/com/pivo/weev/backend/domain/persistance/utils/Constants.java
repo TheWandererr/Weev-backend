@@ -36,6 +36,9 @@ public class Constants {
 
         public static final String MEET_CATEGORY_NAME = "name";
         public static final String MEET_SUBCATEGORY_NAME = "name";
+
+        public static final String DEVICE_USER_ID = "userId";
+        public static final String DEVICE_INTERNAL_ID = "internalId";
     }
 
     @UtilityClass

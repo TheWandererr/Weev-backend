@@ -132,6 +132,10 @@ public class CollectionUtils {
         return stream(source).map(mapper).collect(collector);
     }
 
+    public static <R, A, T> R collect(Collection<T> source, Predicate<T> filter, Collector<? super T, A, R> collector) {
+        return stream(source).filter(filter).collect(collector);
+    }
+
     public static <R, A, T> R collect(Collection<T> source, Collector<? super T, A, R> collector) {
         return stream(source).collect(collector);
     }

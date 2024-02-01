@@ -24,26 +24,26 @@ public class NotificationService {
 
     private final NotificationFactory notificationFactory;
 
-    public void notify(MeetJpa target, UserJpa recipient, String title) {
-        notify(target, recipient, title, new HashMap<>());
+    public void notify(MeetJpa target, UserJpa recipient, String topic) {
+        notify(target, recipient, topic, new HashMap<>());
     }
 
-    public void notify(MeetJpa target, UserJpa recipient, String title, Map<String, Object> details) {
-        MeetNotificationJpa notification = notificationFactory.createMeetNotification(target, recipient, title, details);
+    public void notify(MeetJpa target, UserJpa recipient, String topic, Map<String, Object> details) {
+        MeetNotificationJpa notification = notificationFactory.createMeetNotification(target, recipient, topic, details);
         notificationRepository.save(notification);
     }
 
-    public void notify(MeetJpa target, UserJpa recipient, String title, DeclinationReasonJpa reason) {
-        NotificationJpa notification = notificationFactory.createMeetNotification(target, recipient, title, reason);
+    public void notify(MeetJpa target, UserJpa recipient, String topic, DeclinationReasonJpa reason) {
+        NotificationJpa notification = notificationFactory.createMeetNotification(target, recipient, topic, reason);
         notificationRepository.save(notification);
     }
 
-    public void notifyAll(MeetJpa target, Collection<UserJpa> recipients, String title) {
-        notifyAll(target, recipients, title, null);
+    public void notifyAll(MeetJpa target, Collection<UserJpa> recipients, String topic) {
+        notifyAll(target, recipients, topic, null);
     }
 
-    public void notifyAll(MeetJpa target, Collection<UserJpa> recipients, String title, Map<String, Object> details) {
-        Set<NotificationJpa> notifications = mapToSet(recipients, recipient -> notificationFactory.createMeetNotification(target, recipient, title, details));
+    public void notifyAll(MeetJpa target, Collection<UserJpa> recipients, String topic, Map<String, Object> details) {
+        Set<NotificationJpa> notifications = mapToSet(recipients, recipient -> notificationFactory.createMeetNotification(target, recipient, topic, details));
         notificationRepository.saveAll(notifications);
     }
 }

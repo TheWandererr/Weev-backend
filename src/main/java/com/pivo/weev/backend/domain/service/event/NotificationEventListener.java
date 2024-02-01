@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.service.event;
 
 import static com.pivo.weev.backend.utils.CollectionUtils.flatMapToList;
+import static com.pivo.weev.backend.utils.StreamUtils.select;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.DeviceJpa;
 import com.pivo.weev.backend.domain.service.event.model.PushNotificationEvent;
@@ -21,13 +22,13 @@ public class NotificationEventListener {
     @Async(value = "commonExecutor")
     @EventListener
     public void onPushNotificationEventPublishing(PushNotificationEvent event) {
-        PushNotificationModel pushNotificationMessage = event.getSource();
-        List<DeviceJpa> devices = flatMapToList(pushNotificationMessage.recipients(), recipient -> recipient.getDevices().stream());
+        PushNotificationModel model = event.getSource();
+        List<DeviceJpa> devices = flatMapToList(model.recipients(), recipient -> select(recipient.getDevices(), DeviceJpa::hasNotificationToken));
         pushNotificationService.notifyAll(
-                pushNotificationMessage.meet(),
+                model.meet(),
                 devices,
-                pushNotificationMessage.title(),
-                pushNotificationMessage.details()
+                model.topic(),
+                model.details()
         );
     }
 }

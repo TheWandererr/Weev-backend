@@ -47,8 +47,8 @@ public class LocaleUtils {
         return CollectionUtils.findFirst(locales, locale -> isSupportedLanguage(locale.getLanguage())).orElse(getDefaultLocale());
     }
 
-    public static String getAcceptedLanguage(String requestedLanguage) {
-        return ACCEPTED_LANGUAGES.contains(requestedLanguage) ? requestedLanguage : DEFAULT_LANGUAGE;
+    public static String getAcceptedLanguage() {
+        return getAcceptedLocale().getLanguage();
     }
 
     public static String getLanguage(String languageTag) {

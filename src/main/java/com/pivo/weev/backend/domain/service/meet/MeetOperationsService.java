@@ -4,7 +4,7 @@ import static com.pivo.weev.backend.domain.model.meet.Restrictions.Availability.
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.CANCELED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.HAS_MODERATION_INSTANCE;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.MEET_CANCELLATION;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CANCELLATION;
 import static com.pivo.weev.backend.utils.CollectionUtils.findFirst;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.SUBCATEGORY_NOT_FOUND_ERROR;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
@@ -26,11 +26,14 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepos
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.LocationService;
 import com.pivo.weev.backend.domain.service.TimeZoneService;
+import com.pivo.weev.backend.domain.service.event.ApplicationEventFactory;
+import com.pivo.weev.backend.domain.service.event.model.PushNotificationEvent;
 import com.pivo.weev.backend.domain.service.message.NotificationService;
 import com.pivo.weev.backend.domain.service.validation.MeetOperationsValidator;
 import java.time.ZoneId;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +50,8 @@ public class MeetOperationsService {
     private final TimeZoneService timeZoneService;
     private final MeetPhotoService meetPhotoService;
     private final NotificationService notificationService;
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final ApplicationEventFactory applicationEventFactory;
 
     @Transactional
     public void create(CreatableMeet sample) {
@@ -116,10 +121,16 @@ public class MeetOperationsService {
         meetOperationsValidator.validateCancellation(cancellable);
 
         Set<UserJpa> dissolvedMembers = cancellable.dissolve();
-        notificationService.notifyAll(cancellable, dissolvedMembers, MEET_CANCELLATION);
+        notifyAll(cancellable, dissolvedMembers, MEET_CANCELLATION);
 
         meetRepository.deleteByUpdatableTargetId(id);
         cancellable.setStatus(CANCELED);
+    }
+
+    private void notifyAll(MeetJpa meet, Set<UserJpa> recipients, String topic) {
+        notificationService.notifyAll(meet, recipients, topic);
+        PushNotificationEvent event = applicationEventFactory.buildNotificationEvent(meet, recipients, topic);
+        applicationEventPublisher.publishEvent(event);
     }
 
     @Transactional

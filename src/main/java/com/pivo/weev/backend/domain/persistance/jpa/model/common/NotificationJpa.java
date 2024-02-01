@@ -38,7 +38,7 @@ public class NotificationJpa extends SequencedPersistable<Long> {
     @JoinColumn(name = "recipient_id", updatable = false)
     private UserJpa recipient;
     @Column(nullable = false, updatable = false)
-    private String title;
+    private String topic;
     @Column(updatable = false)
     @Enumerated(EnumType.STRING)
     private Type type;

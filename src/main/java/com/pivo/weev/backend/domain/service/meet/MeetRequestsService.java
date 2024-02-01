@@ -1,9 +1,10 @@
 package com.pivo.weev.backend.domain.service.meet;
 
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.REQUESTER;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.MEET_JOIN_REQUEST_CONFIRMATION;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationTitles.MEET_NEW_JOIN_REQUEST;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.REQUESTER_ID;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.REQUESTER_NICKNAME;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_JOIN_REQUEST_CONFIRMATION;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_NEW_JOIN_REQUEST;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
 import static com.pivo.weev.backend.utils.Constants.Reasons.MEET_JOIN_REQUEST_ALREADY_CREATED;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -52,13 +53,13 @@ public class MeetRequestsService {
                               .ifPresent(request -> {
                                   throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, MEET_JOIN_REQUEST_ALREADY_CREATED, FORBIDDEN);
                               });
-        notify(meet, meet.getCreator(), MEET_NEW_JOIN_REQUEST, Map.of(REQUESTER, user.getId()));
+        notify(meet, meet.getCreator(), MEET_NEW_JOIN_REQUEST, Map.of(REQUESTER_ID, user.getId(), REQUESTER_NICKNAME, user.getNickname()));
         meetRequestsRepository.save(new MeetRequestJpa(meet, user, getMeetRequestExpirationTime(meet)));
     }
 
-    private void notify(MeetJpa meet, UserJpa user, String title, Map<String, Object> details) {
-        notificationService.notify(meet, user, title, details);
-        PushNotificationEvent event = applicationEventFactory.buildNotificationEvent(meet, user, title, details);
+    private void notify(MeetJpa meet, UserJpa user, String topic, Map<String, Object> details) {
+        notificationService.notify(meet, user, topic, details);
+        PushNotificationEvent event = applicationEventFactory.buildNotificationEvent(meet, user, topic, details);
         applicationEventPublisher.publishEvent(event);
     }
 

@@ -1,13 +1,18 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.user;
 
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.DEVICE_INTERNAL_ID;
 import static jakarta.persistence.FetchType.LAZY;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
+import com.pivo.weev.backend.domain.persistance.utils.Constants.Columns;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +20,8 @@ import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
 @Entity
-@Table(name = "devices")
+@Table(name = "devices",
+       uniqueConstraints = {@UniqueConstraint(columnNames = {Columns.DEVICE_USER_ID, Columns.DEVICE_INTERNAL_ID})})
 @SequenceGenerator(sequenceName = "device_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
@@ -25,12 +31,25 @@ public class DeviceJpa extends SequencedPersistable<Long> {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private UserJpa user;
+    @Column(name = DEVICE_INTERNAL_ID, unique = true, nullable = false)
     private String internalId;
     private String notificationToken;
+    @Column(nullable = false)
+    private String lang;
 
     public DeviceJpa(UserJpa user, String internalId) {
         this.internalId = internalId;
         this.user = user;
+    }
+
+    public DeviceJpa(UserJpa user, String internalId, String lang) {
+        this.user = user;
+        this.internalId = internalId;
+        this.lang = lang;
+    }
+
+    public boolean hasNotificationToken() {
+        return isNotBlank(notificationToken);
     }
 
     @Override
