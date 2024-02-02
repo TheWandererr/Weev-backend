@@ -24,6 +24,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeviceRep
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetJoinRequestsRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRolesRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
+import com.pivo.weev.backend.domain.service.message.MailMessagingService;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,7 @@ public class UsersService {
     private final DeviceRepositoryWrapper deviceRepository;
 
     private final PasswordService passwordService;
+    private final MailMessagingService mailMessagingService;
 
     public Optional<UserJpa> findUser(Contacts contacts) {
         Specification<UserJpa> specification = buildUserSearchSpecification(null, contacts.getEmail(), contacts.getPhoneNumber());
@@ -81,6 +83,9 @@ public class UsersService {
     public void updatePassword(UserJpa user, String newPassword) {
         String encodedPassword = passwordService.encodePassword(newPassword);
         user.setPassword(encodedPassword);
+        if (user.hasEmail()) {
+            mailMessagingService.sendChangePasswordMessage(user.getNickname(), user.getEmail());
+        }
     }
 
     public void updatePassword(UserJpa user, String oldPassword, String newPassword) {

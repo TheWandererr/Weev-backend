@@ -117,8 +117,7 @@ public class AuthOperationsService {
     private void sendVerificationCode(VerificationRequestJpa verificationRequest, String verificationCode) {
         if (verificationRequest.hasEmail()) {
             mailMessagingService.sendVerificationMessage(verificationRequest.getEmail(), verificationCode);
-        }
-        if (verificationRequest.hasPhoneNumber()) {
+        } else if (verificationRequest.hasPhoneNumber()) {
             // TODO
         }
     }

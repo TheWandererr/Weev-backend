@@ -67,12 +67,14 @@ public final class Constants {
         public static final class EmailMessages {
 
             public static final String EMAIL_VERIFICATION_REQUEST_SUBJECT = "email.verification.request.subject";
+            public static final String EMAIL_CHANGE_PASSWORD_SUBJECT = "email.change.password.subject";
         }
 
         @UtilityClass
         public static final class Templates {
 
-            public static final String EMAIL_VERIFICATION_REQUEST = "email-verification.ftl";
+            public static final String EMAIL_VERIFICATION_FTL = "email-verification.ftl";
+            public static final String EMAIL_CHANGE_PASSWORD_FTL = "email-change-password.ftl";
         }
     }
 }
