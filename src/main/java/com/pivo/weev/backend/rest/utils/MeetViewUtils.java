@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class MeetViewUtils {
 
-    public static boolean hasPrivateData(Meet source) {
+    public static boolean hasHiddenData(Meet source) {
         if (!source.hasRestrictions()) {
             return false;
         }

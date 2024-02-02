@@ -69,7 +69,7 @@ public class UsersController {
 
     private MeetsSearchResponse performSearch(SearchParams searchParams) {
         Page<Meet> meetsPage = meetSearchService.search(searchParams);
-        List<MeetCompactedRest> restMeets = getMapper(MeetCompactedRestMapper.class).mapCompacted(meetsPage.getContent());
+        List<MeetCompactedRest> restMeets = getMapper(MeetCompactedRestMapper.class).map(meetsPage.getContent());
         PageRest<MeetCompactedRest> pageRest = new PageRest<>(restMeets, meetsPage.getNumber());
         return new MeetsSearchResponse(pageRest, meetsPage.getTotalElements(), meetsPage.getTotalPages());
     }

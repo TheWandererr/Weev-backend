@@ -7,10 +7,12 @@ import com.pivo.weev.backend.rest.model.common.MapPointRest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class LocationRest {
 
     @NotBlank(message = MUST_BE_NOT_BLANK_ERROR)
@@ -24,4 +26,9 @@ public class LocationRest {
     private String flat;
     @NotNull(message = MUST_BE_NOT_NULL_ERROR)
     private MapPointRest point;
+
+    public LocationRest(String country, String city) {
+        this.country = country;
+        this.city = city;
+    }
 }

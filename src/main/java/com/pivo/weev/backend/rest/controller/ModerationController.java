@@ -62,7 +62,7 @@ public class ModerationController {
     public MeetsSearchResponse searchMeets(@PathVariable @Min(0) Integer page) {
         SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new MeetsSearchRequest(page), onModeration());
         Page<Meet> meetsPage = meetSearchService.search(searchParams);
-        List<MeetCompactedRest> restMeets = getMapper(MeetCompactedRestMapper.class).mapCompacted(meetsPage.getContent());
+        List<MeetCompactedRest> restMeets = getMapper(MeetCompactedRestMapper.class).map(meetsPage.getContent());
         PageRest<MeetCompactedRest> pageRest = new PageRest<>(restMeets, meetsPage.getNumber());
         return new MeetsSearchResponse(pageRest, meetsPage.getTotalElements(), meetsPage.getTotalPages());
     }

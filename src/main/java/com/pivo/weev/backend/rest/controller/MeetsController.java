@@ -62,7 +62,7 @@ public class MeetsController {
     public MeetsSearchResponse search(@Valid @RequestBody MeetsSearchRequest searchRequest) {
         SearchParams searchParams = getMapper(SearchParamsMapper.class).map(searchRequest, published());
         Page<Meet> meetsPage = meetSearchService.search(searchParams);
-        List<MeetCompactedRest> restMeets = getMapper(MeetCompactedRestMapper.class).mapCompacted(meetsPage.getContent());
+        List<MeetCompactedRest> restMeets = getMapper(MeetCompactedRestMapper.class).map(meetsPage.getContent());
         PageRest<MeetCompactedRest> restMeetsPage = new PageRest<>(restMeets, meetsPage.getNumber());
         return new MeetsSearchResponse(restMeetsPage, meetsPage.getTotalElements(), meetsPage.getTotalPages());
     }
