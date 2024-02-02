@@ -51,16 +51,17 @@ public class Constants {
         public static final String TOKEN_COMPROMISED_ERROR = "token.compromised";
         public static final String TEMPLATE_PROCESSING_ERROR = "template.processing.failed";
         public static final String ACTIVE_VERIFICATION_REQUEST_ERROR = "active.verification.request.exists";
-        public static final String NO_VERIFICATION_REQUEST_ERROR = "no.verification.request";
         public static final String VERIFICATION_REQUEST_IS_EXPIRED_ERROR = "verification.request.is.expired";
-        public static final String VERIFICATION_CODE_ERROR = "verification.code.incorrect";
-        public static final String VERIFICATION_NOT_COMPLETED = "verification.not.completed";
+        public static final String VERIFICATION_CODE_MATCHING_ERROR = "verification.code.incorrect";
+        public static final String VERIFICATION_NOT_COMPLETED_ERROR = "verification.not.completed";
         public static final String EMAIL_ALREADY_USED_ERROR = "email.already.used";
-        public static final String PHONE_NUMBER_ALREADY_USED = "phone.number.already.used";
-        public static final String NICKNAME_ALREADY_USED = "nickname.already.used";
+        public static final String USED_PHONE_NUMBER_ERROR = "phone.number.already.used";
+        public static final String USED_NICKNAME_ERROR = "nickname.already.used";
         public static final String ACCESS_DENIED_ERROR = "access.denied";
         public static final String OPERATION_IMPOSSIBLE_ERROR = "operation.impossible";
-        public static final String MEET_IS_FINISHED = "meetId.is.finished";
+        public static final String MEET_IS_FINISHED_ERROR = "meetId.is.finished";
+        public static final String PASSWORD_MATCHING_ERROR = "password.does.not.match";
+        public static final String PASSWORDS_EQUALITY_ERROR = "passwords.must.be.different";
     }
 
     @UtilityClass

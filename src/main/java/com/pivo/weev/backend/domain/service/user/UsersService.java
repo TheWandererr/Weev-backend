@@ -83,6 +83,11 @@ public class UsersService {
         user.setPassword(encodedPassword);
     }
 
+    public void updatePassword(UserJpa user, String oldPassword, String newPassword) {
+        passwordService.validatePasswords(user, oldPassword, newPassword);
+        updatePassword(user, newPassword);
+    }
+
     @Transactional
     public Settings updateDeviceSettings(Device device) {
         DeviceJpa deviceJpa = deviceRepository.fetchByUserIdAndInternalId(device.getUserId(), device.getId());

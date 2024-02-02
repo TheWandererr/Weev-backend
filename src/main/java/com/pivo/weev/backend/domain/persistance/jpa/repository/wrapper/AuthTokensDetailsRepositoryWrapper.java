@@ -30,4 +30,8 @@ public class AuthTokensDetailsRepositoryWrapper extends GenericRepositoryWrapper
     public void deleteByUserIdAndDeviceId(Long userId, String deviceId) {
         repository.deleteByDevice_User_IdAndDevice_InternalId(userId, deviceId);
     }
+
+    public void deleteAllByUserId(Long userId) {
+        repository.deleteAllByDevice_User_Id(userId);
+    }
 }

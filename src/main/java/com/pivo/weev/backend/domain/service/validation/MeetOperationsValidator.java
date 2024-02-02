@@ -13,7 +13,7 @@ import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.MEM
 import static com.pivo.weev.backend.utils.CollectionUtils.isPresent;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.ACCESS_DENIED_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.FIELD_VALIDATION_FAILED_ERROR_PATTERN;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MEET_IS_FINISHED;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MEET_IS_FINISHED_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
 import static com.pivo.weev.backend.utils.Constants.Reasons.MEET_ALREADY_JOINED;
 import static com.pivo.weev.backend.utils.Constants.Reasons.MEET_CAPACITY_EXCEEDED;
@@ -139,7 +139,7 @@ public class MeetOperationsValidator {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
         if (meet.isEnded()) {
-            throw new FlowInterruptedException(MEET_IS_FINISHED, null, FORBIDDEN);
+            throw new FlowInterruptedException(MEET_IS_FINISHED_ERROR, null, FORBIDDEN);
         }
         RestrictionsJpa restrictions = meet.getRestrictions();
         if (meet.isStarted() && isTrue(restrictions.getJoinAfterStartDisallowed())) {

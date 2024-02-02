@@ -30,7 +30,7 @@ public class JWTProvider {
     private final ConfigService configService;
 
     public Jwt provideAccessToken(LoginDetails loginDetails) {
-        return generateToken(loginDetails, configService.getAccessTokenExpiresAmount(), JWTModes.REFRESH);
+        return generateToken(loginDetails, configService.getAccessTokenExpiresAmount(), JWTModes.ACCESS);
     }
 
     public Jwt provideRefreshToken(LoginDetails loginDetails) {

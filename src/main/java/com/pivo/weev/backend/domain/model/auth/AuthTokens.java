@@ -3,11 +3,13 @@ package com.pivo.weev.backend.domain.model.auth;
 import static java.util.Objects.nonNull;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class AuthTokens {
 
     private Jwt accessToken;

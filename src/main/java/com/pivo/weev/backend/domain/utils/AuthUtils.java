@@ -1,6 +1,5 @@
 package com.pivo.weev.backend.domain.utils;
 
-import static com.pivo.weev.backend.rest.utils.Constants.Claims.USER_ID;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.AUTHENTICATION_PRINCIPAL_NOT_FOUND_ERROR;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -52,12 +51,12 @@ public class AuthUtils {
                 .orElse(emptyList());
     }
 
-    public static Jwt getAuthenticationDetails() {
+    private static Jwt getAuthenticationDetails() {
         return getOptionalAuthenticationDetails()
                 .orElseThrow(() -> new AuthorizationServiceException(AUTHENTICATION_PRINCIPAL_NOT_FOUND_ERROR));
     }
 
-    public static Optional<Jwt> getOptionalAuthenticationDetails() {
+    private static Optional<Jwt> getOptionalAuthenticationDetails() {
         return ofNullable(getAuthentication())
                 .map(Authentication::getPrincipal)
                 .filter(Jwt.class::isInstance)
@@ -65,13 +64,12 @@ public class AuthUtils {
     }
 
     public static Long getUserId() {
-        return getAuthenticationDetails()
-                .getClaim(USER_ID);
+        return JwtUtils.getUserId(getAuthenticationDetails());
     }
 
     public static Long getNullableUserId() {
         return getOptionalAuthenticationDetails()
-                .<Long>map(jwt -> jwt.getClaim(USER_ID))
+                .map(JwtUtils::getUserId)
                 .orElse(null);
     }
 }

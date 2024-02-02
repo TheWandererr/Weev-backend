@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class RequestPasswordResetResponse extends BaseResponse {
+public class VerificationRequestResponse extends BaseResponse {
 
     private String method;
 }

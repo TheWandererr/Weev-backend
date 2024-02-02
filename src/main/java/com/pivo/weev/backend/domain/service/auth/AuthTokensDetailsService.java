@@ -1,7 +1,5 @@
 package com.pivo.weev.backend.domain.service.auth;
 
-import static com.pivo.weev.backend.domain.utils.JwtUtils.getDeviceId;
-import static com.pivo.weev.backend.domain.utils.JwtUtils.getUserId;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToSet;
 import static java.util.Objects.isNull;
 
@@ -19,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +37,7 @@ public class AuthTokensDetailsService {
         AuthTokensDetailsJpa tokenDetails = new AuthTokensDetailsJpa();
         tokenDetails.setDevice(device);
         tokenDetails.setSerial(loginDetails.serial());
-        tokenDetails.setExpiresAt(authTokens.refreshToken().getExpiresAt());
+        tokenDetails.setExpiresAt(authTokens.getRefreshToken().getExpiresAt());
         return authTokenDetailsRepository.save(tokenDetails);
     }
 
@@ -51,7 +48,7 @@ public class AuthTokensDetailsService {
             return false;
         }
         tokenDetails.setSerial(loginDetails.serial());
-        tokenDetails.setExpiresAt(authTokens.refreshToken().getExpiresAt());
+        tokenDetails.setExpiresAt(authTokens.getRefreshToken().getExpiresAt());
         return true;
     }
 
@@ -65,8 +62,11 @@ public class AuthTokensDetailsService {
         LOGGER.info("Finished scheduled job Auth Tokens expired removal");
     }
 
-    @Transactional
-    public void revokeTokensDetails(Jwt jwt) {
-        authTokenDetailsRepository.deleteByUserIdAndDeviceId(getUserId(jwt), getDeviceId(jwt));
+    public void revokeTokensDetails(Long userId, String deviceId) {
+        authTokenDetailsRepository.deleteByUserIdAndDeviceId(userId, deviceId);
+    }
+
+    public void revokeTokensDetails(Long userId) {
+        authTokenDetailsRepository.deleteAllByUserId(userId);
     }
 }

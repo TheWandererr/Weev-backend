@@ -1,8 +1,8 @@
 package com.pivo.weev.backend.domain.service.validation;
 
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.EMAIL_ALREADY_USED_ERROR;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.NICKNAME_ALREADY_USED;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.PHONE_NUMBER_ALREADY_USED;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.USED_NICKNAME_ERROR;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.USED_PHONE_NUMBER_ERROR;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
@@ -32,7 +32,7 @@ public class AuthOperationsValidator {
         if (StringUtils.equals(user.getEmail(), providedContacts.getEmail())) {
             return EMAIL_ALREADY_USED_ERROR;
         }
-        return PHONE_NUMBER_ALREADY_USED;
+        return USED_PHONE_NUMBER_ERROR;
     }
 
     public void validateRegistrationAvailability(UserSnapshot userSnapshot) {
@@ -45,7 +45,7 @@ public class AuthOperationsValidator {
 
     private String defineRegistrationInaccessibilityError(UserJpa existingUser, UserSnapshot userSnapshot) {
         if (existingUser.getNickname().equals(userSnapshot.getNickname())) {
-            return NICKNAME_ALREADY_USED;
+            return USED_NICKNAME_ERROR;
         }
         return defineContactsInaccessibilityError(existingUser, userSnapshot.getContacts());
     }

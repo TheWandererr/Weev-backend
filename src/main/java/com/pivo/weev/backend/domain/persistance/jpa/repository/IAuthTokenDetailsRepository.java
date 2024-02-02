@@ -11,4 +11,6 @@ public interface IAuthTokenDetailsRepository extends IGenericRepository<Long, Au
     List<AuthTokensDetailsJpa> findAllByExpiresAtBefore(Instant instant);
 
     void deleteByDevice_User_IdAndDevice_InternalId(Long userId, String deviceId);
+
+    void deleteAllByDevice_User_Id(Long userId);
 }
