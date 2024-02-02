@@ -8,7 +8,6 @@ import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MEET_REQ
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK_ERROR;
 import static org.mapstruct.factory.Mappers.getMapper;
 
-import com.pivo.weev.backend.domain.mapping.domain.DeviceMapper;
 import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.model.meet.MeetJoinRequest;
 import com.pivo.weev.backend.domain.model.meet.SearchParams;
@@ -18,6 +17,7 @@ import com.pivo.weev.backend.domain.model.user.Device.Settings;
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
 import com.pivo.weev.backend.domain.service.user.UsersService;
 import com.pivo.weev.backend.rest.annotation.ResourceOwner;
+import com.pivo.weev.backend.rest.mapping.domain.DeviceMapper;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
 import com.pivo.weev.backend.rest.mapping.rest.DeviceSettingsRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.MeetCompactedRestMapper;

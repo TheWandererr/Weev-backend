@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.mapping.domain;
+package com.pivo.weev.backend.rest.mapping.domain;
 
 import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.rest.model.request.DeviceSettingUpdateRequest;

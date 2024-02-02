@@ -1,6 +1,5 @@
 package com.pivo.weev.backend.rest.controller;
 
-import static com.pivo.weev.backend.domain.model.auth.VerificationScope.REGISTRATION;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -48,7 +47,7 @@ public class AuthController {
     @PostMapping("/registration/verification/request")
     public BaseResponse requestRegistrationVerification(@RequestBody @Valid VerificationRequest request) {
         Contacts contacts = getMapper(ContactsMapper.class).map(request);
-        authOperationsService.requestVerification(contacts, REGISTRATION);
+        authOperationsService.requestRegistrationVerification(contacts);
         return new BaseResponse();
     }
 

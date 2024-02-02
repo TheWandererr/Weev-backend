@@ -15,14 +15,17 @@ import static com.pivo.weev.backend.utils.Constants.VerificationMethods.EMAIL;
 import static com.pivo.weev.backend.utils.Constants.VerificationMethods.PHONE_NUMBER;
 import static com.pivo.weev.backend.utils.Randomizer.sixDigitInt;
 import static java.time.temporal.ChronoUnit.HOURS;
+import static java.util.Optional.empty;
 import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 import com.pivo.weev.backend.config.model.ValidityPeriod;
 import com.pivo.weev.backend.domain.mapping.domain.ContactsMapper;
+import com.pivo.weev.backend.domain.mapping.domain.EmailVerificationSourceMapper;
 import com.pivo.weev.backend.domain.model.auth.VerificationScope;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
+import com.pivo.weev.backend.domain.model.messaging.source.EmailVerificationSource;
 import com.pivo.weev.backend.domain.model.user.Contacts;
 import com.pivo.weev.backend.domain.model.user.UserSnapshot;
 import com.pivo.weev.backend.domain.persistance.jpa.model.auth.VerificationRequestJpa;
@@ -73,13 +76,17 @@ public class AuthOperationsService {
     }
 
     @Transactional
-    public VerificationRequestJpa requestVerification(Contacts contacts, VerificationScope verificationScope) {
+    public void requestRegistrationVerification(Contacts contacts) {
+        requestVerification(contacts, empty(), REGISTRATION);
+    }
+
+    private VerificationRequestJpa requestVerification(Contacts contacts, Optional<UserJpa> user, VerificationScope verificationScope) {
         if (verificationScope == REGISTRATION) {
             authOperationsValidator.validateContactsAvailability(contacts);
         }
         String verificationCode = sixDigitInt();
         VerificationRequestJpa verificationRequest = provideVerificationRequest(contacts, verificationCode);
-        sendVerificationCode(verificationRequest, verificationCode);
+        sendVerificationCode(verificationRequest, user, verificationScope, verificationCode);
         return verificationRequestRepository.save(verificationRequest);
     }
 
@@ -114,9 +121,14 @@ public class AuthOperationsService {
         verificationRequest.setRetryAfter(now.plusSeconds(validityPeriod.getRetryAfterSeconds()));
     }
 
-    private void sendVerificationCode(VerificationRequestJpa verificationRequest, String verificationCode) {
+    private void sendVerificationCode(VerificationRequestJpa verificationRequest,
+                                      Optional<UserJpa> optionalUser,
+                                      VerificationScope verificationScope,
+                                      String verificationCode) {
         if (verificationRequest.hasEmail()) {
-            mailMessagingService.sendVerificationMessage(verificationRequest.getEmail(), verificationCode);
+            UserJpa user = optionalUser.orElse(new UserJpa());
+            EmailVerificationSource source = getMapper(EmailVerificationSourceMapper.class).map(user, verificationCode);
+            mailMessagingService.sendVerificationMessage(verificationRequest.getEmail(), verificationScope, source);
         } else if (verificationRequest.hasPhoneNumber()) {
             // TODO
         }
@@ -159,7 +171,7 @@ public class AuthOperationsService {
         UserJpa user = usersService.findUser(username)
                                    .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_ERROR + TITLE));
         Contacts contacts = getMapper(ContactsMapper.class).map(user);
-        VerificationRequestJpa verificationRequest = requestVerification(contacts, FORGOT_PASSWORD);
+        VerificationRequestJpa verificationRequest = requestVerification(contacts, Optional.of(user), FORGOT_PASSWORD);
         return verificationRequest.hasEmail() ? EMAIL : PHONE_NUMBER;
     }
 
@@ -174,7 +186,9 @@ public class AuthOperationsService {
 
     @Transactional
     public String requestChangePasswordVerification(Contacts contacts) {
-        VerificationRequestJpa verificationRequest = requestVerification(contacts, CHANGE_PASSWORD);
+        Jwt jwt = jwtHolder.getToken();
+        UserJpa user = usersRepository.fetch(getUserId(jwt));
+        VerificationRequestJpa verificationRequest = requestVerification(contacts, Optional.of(user), CHANGE_PASSWORD);
         return verificationRequest.hasEmail() ? EMAIL : PHONE_NUMBER;
     }
 

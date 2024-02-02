@@ -3,7 +3,6 @@ package com.pivo.weev.backend.domain.service.message;
 import static com.pivo.weev.backend.domain.utils.Constants.Messaging.EmailMessages.EMAIL_CHANGE_PASSWORD_SUBJECT;
 import static com.pivo.weev.backend.domain.utils.Constants.Messaging.EmailMessages.EMAIL_VERIFICATION_REQUEST_SUBJECT;
 import static com.pivo.weev.backend.domain.utils.Constants.Messaging.Templates.EMAIL_CHANGE_PASSWORD_FTL;
-import static com.pivo.weev.backend.domain.utils.Constants.Messaging.Templates.EMAIL_VERIFICATION_FTL;
 
 import com.pivo.weev.backend.config.messaging.MessageBundle;
 import com.pivo.weev.backend.config.messaging.TemplatesBundle;
@@ -20,11 +19,11 @@ public class MailMessageFactory {
     private final MessageBundle messageBundle;
     private final TemplatesBundle templatesBundle;
 
-    public MailMessage buildVerificationMessage(String email, String verificationCode) {
+    public MailMessage buildVerificationMessage(String email, String template, EmailVerificationSource source) {
         MailMessage message = new MailMessage();
         String subject = messageBundle.getEmailMessage(EMAIL_VERIFICATION_REQUEST_SUBJECT);
         message.setSubject(subject);
-        String content = templatesBundle.getTemplateContent(EMAIL_VERIFICATION_FTL, new EmailVerificationSource(verificationCode));
+        String content = templatesBundle.getTemplateContent(template, source);
         message.setContent(content);
         message.setRecipient(email);
         return message;
