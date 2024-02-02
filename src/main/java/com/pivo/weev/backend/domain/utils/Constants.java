@@ -35,6 +35,7 @@ public final class Constants {
         public static final String MEET_CANCELLATION = "meet.cancellation";
         public static final String MEET_NEW_JOIN_REQUEST = "meet.new.join.request";
         public static final String MEET_JOIN_REQUEST_CONFIRMATION = "meet.join.request.confirmation";
+        public static final String MEET_JOIN_REQUEST_DECLINATION = "meet.join.request.declination";
     }
 
     @UtilityClass

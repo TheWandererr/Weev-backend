@@ -124,4 +124,20 @@ public class MeetsController {
         return new MeetJoinResponse(false);
     }
 
+    @PostMapping("/{meetId}/joining/requests/{requestId}/confirmation")
+    @ResponseStatus(value = CREATED)
+    public BaseResponse confirmJoinRequest(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long meetId,
+                                           @Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long requestId) {
+        meetRequestsService.confirmJoinRequest(meetId, requestId);
+        return new BaseResponse();
+    }
+
+    @PostMapping("/{meetId}/joining/requests/{requestId}/declination")
+    @ResponseStatus(value = CREATED)
+    public BaseResponse declineJoinRequest(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long meetId,
+                                           @Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long requestId) {
+        meetRequestsService.declineJoinRequest(meetId, requestId);
+        return new BaseResponse();
+    }
+
 }

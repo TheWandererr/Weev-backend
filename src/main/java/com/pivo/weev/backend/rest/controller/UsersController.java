@@ -1,6 +1,5 @@
 package com.pivo.weev.backend.rest.controller;
 
-import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.canceled;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.declined;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.onModeration;
@@ -15,6 +14,7 @@ import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.model.user.Device.Settings;
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
 import com.pivo.weev.backend.domain.service.user.UsersService;
+import com.pivo.weev.backend.rest.annotation.ResourceOwner;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
 import com.pivo.weev.backend.rest.mapping.rest.DeviceSettingsRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.MeetCompactedRestMapper;
@@ -56,8 +56,8 @@ public class UsersController {
     }
 
     @GetMapping("/{id}/meets/confirmed/{page}")
-    public MeetsSearchResponse searchConfirmedMeets(@PathVariable String id, @PathVariable @Min(0) Integer page) {
-        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new MeetsSearchRequest(page), published(getUserId()));
+    public MeetsSearchResponse searchConfirmedMeets(@PathVariable Long id, @PathVariable @Min(0) Integer page) {
+        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new MeetsSearchRequest(page), published(id));
         return performSearch(searchParams);
     }
 
@@ -68,24 +68,28 @@ public class UsersController {
         return new MeetsSearchResponse(pageRest, meetsPage.getTotalElements(), meetsPage.getTotalPages());
     }
 
+    @ResourceOwner
     @GetMapping("/{id}/meets/on-moderation/{page}")
-    public MeetsSearchResponse searchOnModerationMeets(@PathVariable String id, @PathVariable @Min(0) Integer page) {
-        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new MeetsSearchRequest(page), onModeration(getUserId()));
+    public MeetsSearchResponse searchOnModerationMeets(@PathVariable Long id, @PathVariable @Min(0) Integer page) {
+        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new MeetsSearchRequest(page), onModeration(id));
         return performSearch(searchParams);
     }
 
+    @ResourceOwner
     @GetMapping("/{id}/meets/canceled/{page}")
-    public MeetsSearchResponse searchCanceledMeets(@PathVariable String id, @PathVariable @Min(0) Integer page) {
-        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new MeetsSearchRequest(page), canceled(getUserId()));
+    public MeetsSearchResponse searchCanceledMeets(@PathVariable Long id, @PathVariable @Min(0) Integer page) {
+        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new MeetsSearchRequest(page), canceled(id));
         return performSearch(searchParams);
     }
 
+    @ResourceOwner
     @GetMapping("/{id}/meets/declined/{page}")
-    public MeetsSearchResponse searchDeclinedMeets(@PathVariable String id, @PathVariable @Min(0) Integer page) {
-        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new MeetsSearchRequest(page), declined(getUserId()));
+    public MeetsSearchResponse searchDeclinedMeets(@PathVariable Long id, @PathVariable @Min(0) Integer page) {
+        SearchParams searchParams = getMapper(SearchParamsMapper.class).map(new MeetsSearchRequest(page), declined(id));
         return performSearch(searchParams);
     }
 
+    @ResourceOwner
     @PutMapping("/{userId}/devices/{deviceId}/settings")
     public DeviceSettingUpdateResponse updateDeviceSettings(@PathVariable Long userId, @PathVariable String deviceId, @RequestBody @Valid DeviceSettingUpdateRequest request) {
         Device device = getMapper(DeviceMapper.class).map(request, deviceId, userId);

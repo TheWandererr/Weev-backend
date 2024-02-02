@@ -4,6 +4,7 @@ import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.REQUESTER_ID;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.REQUESTER_NICKNAME;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_JOIN_REQUEST_CONFIRMATION;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_JOIN_REQUEST_DECLINATION;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_NEW_JOIN_REQUEST;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
 import static com.pivo.weev.backend.utils.Constants.Reasons.MEET_JOIN_REQUEST_ALREADY_CREATED;
@@ -79,6 +80,16 @@ public class MeetRequestsService {
         UserJpa joiner = request.getUser();
         meetOperationsService.joinViaRequest(meet, joiner);
         notify(meet, joiner, MEET_JOIN_REQUEST_CONFIRMATION, null);
+        meetRequestsRepository.forceDelete(request);
+    }
+
+    @Transactional
+    public void declineJoinRequest(Long meetId, Long requestId) {
+        MeetJpa meet = meetRepository.fetch(meetId);
+        meetOperationsValidator.validateJoinRequestDeclination(meet);
+        MeetRequestJpa request = meetRequestsRepository.fetch(requestId);
+        UserJpa joiner = request.getUser();
+        notify(meet, joiner, MEET_JOIN_REQUEST_DECLINATION, null);
         meetRequestsRepository.forceDelete(request);
     }
 }

@@ -179,4 +179,10 @@ public class MeetOperationsValidator {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
     }
+
+    public void validateJoinRequestDeclination(MeetJpa meet) {
+        if (!Objects.equals(getUserId(), meet.getCreator().getId())) {
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
+        }
+    }
 }

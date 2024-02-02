@@ -7,6 +7,7 @@ import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.ME
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CONFIRMATION;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_DECLINATION;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_JOIN_REQUEST_CONFIRMATION;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_JOIN_REQUEST_DECLINATION;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_NEW_JOIN_REQUEST;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_UPDATE_FAILED;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_UPDATE_SUCCESSFUL;
@@ -72,6 +73,7 @@ public class PushNotificationService {
             case MEET_CANCELLATION -> createMeetCancellationBodyArgs(meet);
             case MEET_NEW_JOIN_REQUEST -> createNewJoinRequestBodyArgs(meet, bodyDetails);
             case MEET_JOIN_REQUEST_CONFIRMATION -> createJoinRequestConfirmationBodyArgs(meet);
+            case MEET_JOIN_REQUEST_DECLINATION -> createJoinRequestDeclinationBodyArgs(meet);
             default -> new Object[0];
         };
     }
@@ -102,6 +104,10 @@ public class PushNotificationService {
     }
 
     private Object[] createJoinRequestConfirmationBodyArgs(MeetJpa meet) {
+        return new Object[]{meet.getHeader()};
+    }
+
+    private Object[] createJoinRequestDeclinationBodyArgs(MeetJpa meet) {
         return new Object[]{meet.getHeader()};
     }
 }
