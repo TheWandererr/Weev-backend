@@ -2,9 +2,16 @@ package com.pivo.weev.backend.domain.model.auth;
 
 import static java.util.Objects.nonNull;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-public record AuthTokens(Jwt accessToken, Jwt refreshToken) {
+@AllArgsConstructor
+@NoArgsConstructor
+public class AuthTokens {
+
+    private Jwt accessToken;
+    private Jwt refreshToken;
 
     public boolean hasAccessToken() {
         return nonNull(accessToken);

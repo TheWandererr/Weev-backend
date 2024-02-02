@@ -2,7 +2,6 @@ package com.pivo.weev.backend.domain.service.jwt;
 
 import static com.pivo.weev.backend.utils.CollectionUtils.collect;
 import static java.time.temporal.ChronoUnit.HOURS;
-import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 
 import com.pivo.weev.backend.domain.model.auth.LoginDetails;
@@ -12,10 +11,9 @@ import com.pivo.weev.backend.rest.utils.Constants.Claims;
 import com.pivo.weev.backend.rest.utils.Constants.JWTModes;
 import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -25,23 +23,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JWTProvider {
 
     private final JwtEncoder jwtEncoder;
     private final ConfigService configService;
 
     public Jwt provideAccessToken(LoginDetails loginDetails) {
-        return generateToken(loginDetails, configService.getAccessTokenExpiresAmount(), JWTModes.ACCESS)
-                .join();
+        return generateToken(loginDetails, configService.getAccessTokenExpiresAmount(), JWTModes.REFRESH);
     }
 
     public Jwt provideRefreshToken(LoginDetails loginDetails) {
-        return generateToken(loginDetails, configService.getRefreshTokenExpiresAmount(), JWTModes.REFRESH)
-                .join();
+        return generateToken(loginDetails, configService.getRefreshTokenExpiresAmount(), JWTModes.REFRESH);
     }
 
-    @Async(value = "commonExecutor")
-    protected CompletableFuture<Jwt> generateToken(LoginDetails loginDetails, int expiresAtAmount, String mode) {
+    protected Jwt generateToken(LoginDetails loginDetails, int expiresAtAmount, String mode) {
         Instant now = Instant.now();
         String scope = JWTModes.ACCESS.equals(mode)
                 ? collect(loginDetails.authenticationAuthorities(), SimpleGrantedAuthority::getAuthority, Collectors.joining(SPACE))
@@ -57,6 +53,6 @@ public class JWTProvider {
                                              .claim(Claims.SCOPE, scope)
                                              .claim(Claims.SERIAL, loginDetails.serial())
                                              .build();
-        return completedFuture(jwtEncoder.encode(JwtEncoderParameters.from(claimsSet)));
+        return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet));
     }
 }
