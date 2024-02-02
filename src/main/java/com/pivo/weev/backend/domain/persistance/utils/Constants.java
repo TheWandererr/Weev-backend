@@ -88,4 +88,11 @@ public class Constants {
 
         public static final String USER = "USER";
     }
+
+    @UtilityClass
+    public static final class Discriminators {
+
+        public static final String MEET_JOIN = "join";
+        public static final String MEET_NOTIFICATION = "meet";
+    }
 }

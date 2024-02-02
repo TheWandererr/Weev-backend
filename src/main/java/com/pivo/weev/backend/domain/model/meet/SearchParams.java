@@ -7,6 +7,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import ch.hsr.geohash.BoundingBox;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -61,11 +62,17 @@ public class SearchParams {
 
     @Getter
     @Setter
+    @NoArgsConstructor
     public static class PageCriteria {
 
         private int page;
         private int pageSize;
         private String[] sortFields;
+
+        public PageCriteria(int page, int pageSize) {
+            this.page = page;
+            this.pageSize = pageSize;
+        }
 
         public String[] getSortFields() {
             if (isNull(sortFields)) {

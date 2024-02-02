@@ -31,7 +31,7 @@ import org.hibernate.proxy.HibernateProxy;
 @Setter
 @NoArgsConstructor
 @Inheritance(strategy = SINGLE_TABLE)
-@DiscriminatorColumn(name = "notification_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.STRING)
 public class NotificationJpa extends SequencedPersistable<Long> {
 
     @ManyToOne(fetch = LAZY, cascade = {PERSIST, MERGE})

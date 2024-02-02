@@ -12,7 +12,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper(uses = {ImageRestMapper.class, EntryFeeRestMapper.class, RestrictionsRestMapper.class})
+@Mapper(uses = {ImageRestMapper.class, EntryFeeRestMapper.class, RestrictionsRestMapper.class, UserSnapshotRestMapper.class})
 public interface MeetCompactedRestMapper {
 
     LocationRestMapper LOCATION_REST_MAPPER = getMapper(LocationRestMapper.class);

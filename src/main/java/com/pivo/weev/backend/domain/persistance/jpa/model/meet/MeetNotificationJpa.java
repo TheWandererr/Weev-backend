@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.meet;
 
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Discriminators.MEET_NOTIFICATION;
 import static jakarta.persistence.FetchType.LAZY;
 import static java.util.Objects.nonNull;
 
@@ -21,7 +22,7 @@ import org.hibernate.type.SqlTypes;
 @Entity
 @Getter
 @Setter
-@DiscriminatorValue("meet")
+@DiscriminatorValue(MEET_NOTIFICATION)
 public class MeetNotificationJpa extends NotificationJpa {
 
     @ManyToOne(fetch = LAZY)

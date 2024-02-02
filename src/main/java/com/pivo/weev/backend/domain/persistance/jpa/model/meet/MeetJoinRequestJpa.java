@@ -1,18 +1,13 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.meet;
 
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Discriminators.MEET_JOIN;
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.LAZY;
 
-import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.DiscriminatorType;
+import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import jakarta.persistence.OneToOne;
 import java.time.Instant;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
@@ -22,24 +17,20 @@ import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
 @Entity
-@Table(name = "meet_requests",
-       indexes = {@Index(columnList = "user_id, meet_id"), @Index(columnList = "meet_id")})
-@SequenceGenerator(sequenceName = "meet_requests_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.STRING)
-public class MeetRequestJpa extends SequencedPersistable<Long> {
+@DiscriminatorValue(MEET_JOIN)
+public class MeetJoinRequestJpa extends MeetRequestJpa {
 
-    @ManyToOne(fetch = LAZY, cascade = ALL, optional = false)
-    @JoinColumn(name = "meet_id")
-    private MeetJpa meet;
-    @Column
-    private Instant expiresAt;
+    @OneToOne(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private UserJpa user;
 
-    public boolean isExpired() {
-        return Instant.now().isAfter(expiresAt);
+    public MeetJoinRequestJpa(MeetJpa meet, UserJpa user, Instant expiresAt) {
+        super(meet, expiresAt);
+        this.user = user;
     }
 
     @Override
@@ -55,7 +46,7 @@ public class MeetRequestJpa extends SequencedPersistable<Long> {
         if (thisEffectiveClass != oEffectiveClass) {
             return false;
         }
-        MeetRequestJpa that = (MeetRequestJpa) other;
+        MeetJoinRequestJpa that = (MeetJoinRequestJpa) other;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 

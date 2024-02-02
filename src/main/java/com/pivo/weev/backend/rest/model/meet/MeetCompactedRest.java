@@ -3,24 +3,21 @@ package com.pivo.weev.backend.rest.model.meet;
 import static com.pivo.weev.backend.rest.utils.Constants.DateTimePatterns.YYYY_MM_DD_HH_MM_DATE_TIME_PATTERN;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.pivo.weev.backend.rest.model.user.UserCompactedRest;
+import com.pivo.weev.backend.rest.model.user.UserSnapshotRest;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class MeetCompactedRest {
+public class MeetCompactedRest extends MeetSnapshotRest {
 
-    private Long id;
-    private UserCompactedRest creator;
-    private String header;
+    private UserSnapshotRest creator;
     private String category;
     private String subcategory;
     private LocationRest location;
     private int membersLimit;
     private int membersCount;
-    private ImageRest photo;
     @JsonFormat(pattern = YYYY_MM_DD_HH_MM_DATE_TIME_PATTERN)
     private LocalDateTime localStartDateTime;
     private String startTimeZoneId;

@@ -95,7 +95,7 @@ public class MeetJpa extends ModifiableJpa<Long> {
     @ManyToMany(mappedBy = "participatedMeets", fetch = LAZY)
     private Set<UserJpa> members = new HashSet<>();
     @OneToMany(fetch = LAZY, mappedBy = "meet")
-    private Set<MeetRequestJpa> requests = new HashSet<>();
+    private Set<MeetJoinRequestJpa> requests = new HashSet<>();
 
     public MeetJpa(UserJpa creator) {
         this.creator = creator;

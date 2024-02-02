@@ -4,12 +4,15 @@ import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.canceled;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.declined;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.onModeration;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.published;
+import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MEET_REQUESTS_PER_PAGE;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK_ERROR;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.domain.DeviceMapper;
 import com.pivo.weev.backend.domain.model.meet.Meet;
+import com.pivo.weev.backend.domain.model.meet.MeetJoinRequest;
 import com.pivo.weev.backend.domain.model.meet.SearchParams;
+import com.pivo.weev.backend.domain.model.meet.SearchParams.PageCriteria;
 import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.model.user.Device.Settings;
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
@@ -18,12 +21,15 @@ import com.pivo.weev.backend.rest.annotation.ResourceOwner;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
 import com.pivo.weev.backend.rest.mapping.rest.DeviceSettingsRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.MeetCompactedRestMapper;
+import com.pivo.weev.backend.rest.mapping.rest.MeetJoinRequestRestMapper;
 import com.pivo.weev.backend.rest.model.common.PageRest;
 import com.pivo.weev.backend.rest.model.meet.MeetCompactedRest;
+import com.pivo.weev.backend.rest.model.meet.MeetJoinRequestRest;
 import com.pivo.weev.backend.rest.model.request.DeviceSettingUpdateRequest;
 import com.pivo.weev.backend.rest.model.request.MeetsSearchRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
-import com.pivo.weev.backend.rest.model.response.DeviceSettingUpdateResponse;
+import com.pivo.weev.backend.rest.model.response.DeviceSettingResponse;
+import com.pivo.weev.backend.rest.model.response.MeetJoinRequestsResponse;
 import com.pivo.weev.backend.rest.model.response.MeetsSearchResponse;
 import com.pivo.weev.backend.rest.model.response.NicknameAvailabilityResponse;
 import com.pivo.weev.backend.rest.model.user.DeviceSettingsRest;
@@ -91,10 +97,19 @@ public class UsersController {
 
     @ResourceOwner
     @PutMapping("/{userId}/devices/{deviceId}/settings")
-    public DeviceSettingUpdateResponse updateDeviceSettings(@PathVariable Long userId, @PathVariable String deviceId, @RequestBody @Valid DeviceSettingUpdateRequest request) {
+    public DeviceSettingResponse updateDeviceSettings(@PathVariable Long userId, @PathVariable String deviceId, @RequestBody @Valid DeviceSettingUpdateRequest request) {
         Device device = getMapper(DeviceMapper.class).map(request, deviceId, userId);
         Settings settings = usersService.updateDeviceSettings(device);
         DeviceSettingsRest settingsRest = getMapper(DeviceSettingsRestMapper.class).map(settings);
-        return new DeviceSettingUpdateResponse(settingsRest);
+        return new DeviceSettingResponse(settingsRest);
+    }
+
+    @ResourceOwner
+    @GetMapping("/{userId}/meets/{meetId}/joining/requests/{page}")
+    public MeetJoinRequestsResponse getMeetJoinRequests(@PathVariable Long userId, @PathVariable Long meetId, @PathVariable @Min(0) Integer page) {
+        Page<MeetJoinRequest> joinRequests = usersService.getMeetJoinRequests(meetId, new PageCriteria(page, MEET_REQUESTS_PER_PAGE));
+        List<MeetJoinRequestRest> restJoinRequests = getMapper(MeetJoinRequestRestMapper.class).map(joinRequests.getContent());
+        PageRest<MeetJoinRequestRest> pageRest = new PageRest<>(restJoinRequests, joinRequests.getNumber());
+        return new MeetJoinRequestsResponse(pageRest, joinRequests.getTotalElements(), joinRequests.getTotalPages());
     }
 }

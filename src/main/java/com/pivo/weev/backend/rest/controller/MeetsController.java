@@ -128,7 +128,7 @@ public class MeetsController {
     @ResponseStatus(value = CREATED)
     public BaseResponse confirmJoinRequest(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long meetId,
                                            @Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long requestId) {
-        meetRequestsService.confirmJoinRequest(meetId, requestId);
+        meetRequestsService.confirmJoinRequest(requestId);
         return new BaseResponse();
     }
 
@@ -136,7 +136,7 @@ public class MeetsController {
     @ResponseStatus(value = CREATED)
     public BaseResponse declineJoinRequest(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long meetId,
                                            @Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long requestId) {
-        meetRequestsService.declineJoinRequest(meetId, requestId);
+        meetRequestsService.declineJoinRequest(requestId);
         return new BaseResponse();
     }
 
