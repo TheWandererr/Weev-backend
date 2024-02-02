@@ -29,11 +29,11 @@ public class MailMessageFactory {
         return message;
     }
 
-    public MailMessage buildChangePasswordMessage(String nickname, String email) {
+    public MailMessage buildChangePasswordMessage(String email, ChangePasswordSource source) {
         MailMessage message = new MailMessage();
         String subject = messageBundle.getEmailMessage(EMAIL_CHANGE_PASSWORD_SUBJECT);
         message.setSubject(subject);
-        String content = templatesBundle.getTemplateContent(EMAIL_CHANGE_PASSWORD_FTL, new ChangePasswordSource(nickname));
+        String content = templatesBundle.getTemplateContent(EMAIL_CHANGE_PASSWORD_FTL, source);
         message.setContent(content);
         message.setRecipient(email);
         return message;

@@ -4,6 +4,7 @@ import static com.pivo.weev.backend.domain.utils.Constants.Messaging.Templates.V
 
 import com.pivo.weev.backend.domain.model.auth.VerificationScope;
 import com.pivo.weev.backend.domain.model.messaging.MailMessage;
+import com.pivo.weev.backend.domain.model.messaging.source.ChangePasswordSource;
 import com.pivo.weev.backend.domain.model.messaging.source.EmailVerificationSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -24,8 +25,8 @@ public class MailMessagingService {
     }
 
     @Async(value = "mailExecutor")
-    public void sendChangePasswordMessage(String nickname, String email) {
-        MailMessage message = mailMessageFactory.buildChangePasswordMessage(nickname, email);
+    public void sendChangePasswordMessage(String email, ChangePasswordSource source) {
+        MailMessage message = mailMessageFactory.buildChangePasswordMessage(email, source);
         mailSender.sendHtmlMessage(message);
     }
 }

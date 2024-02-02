@@ -12,6 +12,7 @@ import com.pivo.weev.backend.domain.mapping.jpa.DeviceJpaMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.UserJpaMapper;
 import com.pivo.weev.backend.domain.model.meet.MeetJoinRequest;
 import com.pivo.weev.backend.domain.model.meet.SearchParams.PageCriteria;
+import com.pivo.weev.backend.domain.model.messaging.source.ChangePasswordSource;
 import com.pivo.weev.backend.domain.model.user.Contacts;
 import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.model.user.Device.Settings;
@@ -84,7 +85,7 @@ public class UsersService {
         String encodedPassword = passwordService.encodePassword(newPassword);
         user.setPassword(encodedPassword);
         if (user.hasEmail()) {
-            mailMessagingService.sendChangePasswordMessage(user.getNickname(), user.getEmail());
+            mailMessagingService.sendChangePasswordMessage(user.getEmail(), new ChangePasswordSource(user.getNickname()));
         }
     }
 
