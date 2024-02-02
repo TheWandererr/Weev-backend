@@ -1,5 +1,7 @@
 package com.pivo.weev.backend.domain.persistance.jpa.specification.builder;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static com.pivo.weev.backend.domain.model.meet.Restrictions.Availability.PRIVATE;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.CANCELED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.CONFIRMED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.DECLINED;
@@ -14,13 +16,14 @@ import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.notEqual;
 import static com.pivo.weev.backend.domain.persistance.utils.CustomGeometryFactory.createPoint;
 import static com.pivo.weev.backend.domain.persistance.utils.SpecificationUtils.fieldPathFrom;
+import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static java.util.Collections.emptyList;
 import static java.util.List.of;
 import static java.util.Objects.isNull;
 
 import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.meet.Radius;
-import com.pivo.weev.backend.domain.model.meet.Restrictions;
+import com.pivo.weev.backend.domain.model.meet.Restrictions.Availability;
 import com.pivo.weev.backend.domain.model.meet.SearchParams;
 import com.pivo.weev.backend.domain.model.meet.SearchParams.FieldsCriteria;
 import com.pivo.weev.backend.domain.model.meet.SearchParams.MapCriteria;
@@ -38,6 +41,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.specification.template.MeetB
 import com.pivo.weev.backend.domain.persistance.jpa.specification.template.MeetRadiusSpecification;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.template.MeetsSortSpecification;
 import java.util.List;
+import java.util.Objects;
 import lombok.experimental.UtilityClass;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.jpa.domain.Specification;
@@ -46,6 +50,11 @@ import org.springframework.data.jpa.domain.Specification;
 public class MeetSpecificationBuilder {
 
     private static final Specification<MeetJpa> SORT_SPECIFICATION = new MeetsSortSpecification();
+    private static final Specification<MeetJpa> PUBLIC_AVAILABILITY_SPECIFICATION = notEqual(
+            fieldPathFrom(MeetJpa_.restrictions, RestrictionsJpa_.availability),
+            PRIVATE.name(),
+            String.class
+    );
 
     public static Specification<MeetJpa> buildMeetsSearchSpecification(SearchParams searchParams) {
         SpecificationBuilder<MeetJpa> specificationBuilder = new SpecificationBuilder<>();
@@ -74,11 +83,15 @@ public class MeetSpecificationBuilder {
     }
 
     private List<Specification<MeetJpa>> collectAuthorsSpecification(SearchParams searchParams) {
-        return of(
+        List<Specification<MeetJpa>> specifications = newArrayList(
                 buildStatusSpecification(searchParams),
                 equal(fieldPathFrom(MeetJpa_.creator, SequencedPersistable_.id), searchParams.getAuthorId(), Long.class),
                 SimpleSpecifications.isNull(fieldPathFrom(MeetJpa_.updatableTarget, SequencedPersistable_.id), Long.class)
         );
+        if (!Objects.equals(searchParams.getAuthorId(), getUserId())) {
+            specifications.add(PUBLIC_AVAILABILITY_SPECIFICATION);
+        }
+        return specifications;
     }
 
     private List<Specification<MeetJpa>> collectFieldsSpecifications(SearchParams searchParams) {
@@ -142,10 +155,13 @@ public class MeetSpecificationBuilder {
 
     private Specification<MeetJpa> buildRestrictionsSpecification(SearchParams searchParams) {
         if (!searchParams.hasRestrictions()) {
-            return empty();
+            return PUBLIC_AVAILABILITY_SPECIFICATION;
         }
-        Restrictions restrictions = searchParams.getFieldsCriteria().getRestrictions();
-        return equal(fieldPathFrom(MeetJpa_.restrictions, RestrictionsJpa_.availability), restrictions.getAvailability().name(), String.class);
+        Availability availability = searchParams.getFieldsCriteria()
+                                                .getRestrictions()
+                                                .getAvailability();
+        return isNull(availability) || availability == PRIVATE
+                ? PUBLIC_AVAILABILITY_SPECIFICATION
+                : equal(fieldPathFrom(MeetJpa_.restrictions, RestrictionsJpa_.availability), availability.name(), String.class);
     }
-
 }

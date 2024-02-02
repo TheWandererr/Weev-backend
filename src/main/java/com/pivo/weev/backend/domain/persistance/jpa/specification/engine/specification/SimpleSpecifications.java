@@ -126,7 +126,7 @@ public class SimpleSpecifications {
     }
 
     public static <T, E> Specification<T> notEqual(String fieldPath, E value, Class<E> clazz) {
-        return equal(fieldPath, value, 0, clazz);
+        return notEqual(fieldPath, value, 0, clazz);
     }
 
     public static <T, E> Specification<T> notEqual(String fieldPath, E value, int joins, Class<E> clazz) {

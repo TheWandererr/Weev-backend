@@ -77,6 +77,7 @@ public class Constants {
     public static final class MeetAvailabilities {
 
         public static final String PUBLIC = "PUBLIC";
+        public static final String PRIVATE = "PRIVATE";
     }
 
     @UtilityClass

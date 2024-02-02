@@ -4,6 +4,7 @@ import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.M
 import static com.pivo.weev.backend.utils.ArrayUtils.isEmpty;
 import static com.pivo.weev.backend.utils.ArrayUtils.toArray;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +16,10 @@ public class SearchContextRest {
     private VisibilityCriteriaRest visibilityCriteria;
     private PageCriteriaRest pageCriteria;
     private Long authorId;
+
+    public boolean hasAuthorId() {
+        return nonNull(authorId);
+    }
 
     public static SearchContextRest published() {
         SearchContextRest context = new SearchContextRest();

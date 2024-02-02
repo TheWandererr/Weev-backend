@@ -4,6 +4,7 @@ import static com.pivo.weev.backend.rest.utils.Constants.MapParams.MAXIMUM_ZOOM;
 import static com.pivo.weev.backend.rest.utils.Constants.MapParams.MINIMAL_ZOOM;
 import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MEETS_PER_PAGE;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.INVALID_AMOUNT_ERROR;
+import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.rest.model.common.BoundingBoxRest;
 import com.pivo.weev.backend.rest.model.meet.RadiusRest;
@@ -36,5 +37,9 @@ public class MeetsSearchRequest extends PageableRequest {
 
     public MeetsSearchRequest(Integer page) {
         super(page, MEETS_PER_PAGE);
+    }
+
+    public boolean hasRestrictions() {
+        return nonNull(restrictions);
     }
 }
