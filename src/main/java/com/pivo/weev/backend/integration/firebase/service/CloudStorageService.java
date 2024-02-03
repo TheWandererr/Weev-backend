@@ -3,6 +3,7 @@ package com.pivo.weev.backend.integration.firebase.service;
 import static com.pivo.weev.backend.utils.IOUtils.getBytes;
 
 import com.google.cloud.storage.Blob;
+import com.pivo.weev.backend.domain.model.file.UploadableImage;
 import com.pivo.weev.backend.integration.firebase.client.CloudStorageClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,10 +14,10 @@ public class CloudStorageService {
 
     private final CloudStorageClient client;
 
-    public Blob upload(com.pivo.weev.backend.domain.model.file.Image image) {
-        String format = image.getFormat();
-        byte[] content = getBytes(image.getSource(), format);
-        return client.upload(content, image.getName(), format);
+    public Blob upload(UploadableImage uploadableImage) {
+        String format = uploadableImage.getFormat();
+        byte[] content = getBytes(uploadableImage.getSource(), format);
+        return client.upload(content, uploadableImage.getName(), format);
     }
 
     public void delete(String blobId) {

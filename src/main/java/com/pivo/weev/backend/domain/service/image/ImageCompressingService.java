@@ -7,7 +7,7 @@ import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.NOT_ACCEPTABLE;
 
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
-import com.pivo.weev.backend.domain.model.file.Image;
+import com.pivo.weev.backend.domain.model.file.UploadableImage;
 import com.pivo.weev.backend.domain.service.config.ConfigService;
 import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import java.awt.image.BufferedImage;
@@ -31,10 +31,10 @@ public class ImageCompressingService {
     private final ApplicationLoggingHelper loggingHelper;
     private final ConfigService configsWrapper;
 
-    public Image compress(MultipartFile file) {
+    public UploadableImage compress(MultipartFile photo) {
         try {
-            BufferedImage compressed = compress(file.getInputStream(), getScale(file));
-            return new Image(file.getOriginalFilename(), getFormat(file), compressed);
+            BufferedImage compressed = compress(photo.getInputStream(), getScale(photo));
+            return new UploadableImage(photo.getOriginalFilename(), getFormat(photo), compressed);
         } catch (IOException exception) {
             String reason = ofNullable(exception.getCause())
                     .map(Throwable::getMessage)

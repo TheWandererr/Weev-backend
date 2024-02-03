@@ -7,7 +7,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import com.pivo.weev.backend.domain.mapping.jpa.CloudResourceJpaMapper;
 import com.pivo.weev.backend.domain.model.common.CloudResource;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
-import com.pivo.weev.backend.domain.model.file.Image;
+import com.pivo.weev.backend.domain.model.file.UploadableImage;
 import com.pivo.weev.backend.domain.model.meet.CreatableMeet;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
@@ -61,7 +61,7 @@ public class MeetPhotoService {
     }
 
     private CloudResourceJpa createPhoto(MultipartFile photo) {
-        Image compressedPhoto = imageCompressingService.compress(photo);
+        UploadableImage compressedPhoto = imageCompressingService.compress(photo);
         CloudResource cloudResource = imageCloudService.upload(compressedPhoto);
         return getMapper(CloudResourceJpaMapper.class).map(cloudResource);
     }

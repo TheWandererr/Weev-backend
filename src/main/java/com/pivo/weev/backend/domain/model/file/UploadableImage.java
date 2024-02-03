@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class Image {
+public class UploadableImage {
 
     private final String name;
     private final String format;

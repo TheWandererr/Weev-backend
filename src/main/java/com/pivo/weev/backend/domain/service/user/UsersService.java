@@ -6,14 +6,20 @@ import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.UserRoles.USER;
 import static com.pivo.weev.backend.domain.persistance.utils.PageableUtils.build;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.USED_NICKNAME_ERROR;
+import static java.util.Optional.ofNullable;
 import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
+import com.pivo.weev.backend.domain.mapping.domain.ImageMapper;
 import com.pivo.weev.backend.domain.mapping.domain.MeetRequestMapper;
 import com.pivo.weev.backend.domain.mapping.domain.UserMapper;
+import com.pivo.weev.backend.domain.mapping.jpa.CloudResourceJpaMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.DeviceJpaMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.UserJpaMapper;
+import com.pivo.weev.backend.domain.model.common.CloudResource;
+import com.pivo.weev.backend.domain.model.common.Image;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
+import com.pivo.weev.backend.domain.model.file.UploadableImage;
 import com.pivo.weev.backend.domain.model.meet.MeetJoinRequest;
 import com.pivo.weev.backend.domain.model.meet.SearchParams.PageCriteria;
 import com.pivo.weev.backend.domain.model.user.Contacts;
@@ -21,15 +27,19 @@ import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.model.user.Device.Settings;
 import com.pivo.weev.backend.domain.model.user.RegisteredUserSnapshot;
 import com.pivo.weev.backend.domain.model.user.User;
+import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJoinRequestJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.DeviceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserRoleJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.CloudResourceRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeviceRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetJoinRequestsRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRolesRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType;
+import com.pivo.weev.backend.domain.service.image.ImageCloudService;
+import com.pivo.weev.backend.domain.service.image.ImageCompressingService;
 import com.pivo.weev.backend.domain.service.message.DocumentService;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +50,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -49,9 +60,12 @@ public class UsersService {
     private final UserRolesRepositoryWrapper userRolesRepository;
     private final MeetJoinRequestsRepositoryWrapper meetJoinRequestsRepository;
     private final DeviceRepositoryWrapper deviceRepository;
+    private final CloudResourceRepositoryWrapper cloudResourceRepository;
 
     private final PasswordService passwordService;
     private final DocumentService documentService;
+    private final ImageCompressingService imageCompressingService;
+    private final ImageCloudService imageCloudService;
 
     public Optional<UserJpa> findUserJpa(Contacts contacts) {
         Specification<UserJpa> specification = buildUserSearchSpecification(null, contacts.getEmail(), contacts.getPhoneNumber());
@@ -132,5 +146,25 @@ public class UsersService {
         UserJpa user = usersRepository.fetch(sample.getId());
         getMapper(UserJpaMapper.class).update(sample, user);
         return getMapper(UserMapper.class).map(user);
+    }
+
+    @Transactional
+    public Image updatePhoto(Long id, MultipartFile photo) {
+        UserJpa user = usersRepository.fetch(id);
+        ofNullable(photo).ifPresentOrElse(file -> updatePhoto(user, file), () -> deletePhoto(user));
+        return getMapper(ImageMapper.class).map(user.getAvatar());
+    }
+
+    private void updatePhoto(UserJpa user, MultipartFile photo) {
+        UploadableImage compressedPhoto = imageCompressingService.compress(photo);
+        CloudResource cloudResource = imageCloudService.upload(compressedPhoto);
+        CloudResourceJpa avatar = getMapper(CloudResourceJpaMapper.class).map(cloudResource);
+        user.setAvatar(avatar);
+    }
+
+    private void deletePhoto(UserJpa user) {
+        CloudResourceJpa photo = user.getAvatar();
+        cloudResourceRepository.forceDelete(photo);
+        imageCloudService.delete(photo.getBlobId());
     }
 }
