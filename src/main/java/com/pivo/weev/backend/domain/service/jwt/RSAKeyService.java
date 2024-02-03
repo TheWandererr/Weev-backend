@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.service.jwt;
 
-import com.pivo.weev.backend.config.security.PKCS8KeyProperties;
+import com.pivo.weev.backend.config.security.properties.PKCS8KeyProperties;
 import com.pivo.weev.backend.utils.IOUtils;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;

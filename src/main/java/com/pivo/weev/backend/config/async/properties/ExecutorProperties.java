@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.config.async;
+package com.pivo.weev.backend.config.async.properties;
 
 import lombok.Getter;
 import lombok.Setter;

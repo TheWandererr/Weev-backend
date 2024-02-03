@@ -3,7 +3,6 @@ package com.pivo.weev.backend.config.async;
 import static com.pivo.weev.backend.utils.LocaleUtils.getAcceptedLocale;
 import static com.pivo.weev.backend.utils.LocaleUtils.setRequestLocale;
 import static org.slf4j.MDC.clear;
-import static org.springframework.beans.BeanUtils.copyProperties;
 import static org.springframework.web.context.request.RequestContextHolder.currentRequestAttributes;
 import static org.springframework.web.context.request.RequestContextHolder.resetRequestAttributes;
 import static org.springframework.web.context.request.RequestContextHolder.setRequestAttributes;
@@ -29,9 +28,9 @@ public class ContextDataDecorator implements TaskDecorator {
         RequestAttributes mainThreadRequestContext = currentRequestAttributes();
         return () -> {
             try {
-                JwtHolder threadJwtHolder = getJwtHolder();
-                copyProperties(mainTreadJwtHolder, threadJwtHolder);
                 setRequestAttributes(mainThreadRequestContext);
+                JwtHolder threadJwtHolder = getJwtHolder();
+                threadJwtHolder.setToken(mainTreadJwtHolder.getToken());
                 setRequestLocale(mainThreadLocale, true);
                 runnable.run();
             } finally {

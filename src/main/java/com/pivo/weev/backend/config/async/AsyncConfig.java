@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.config.async;
 
+import com.pivo.weev.backend.config.async.properties.ExecutorProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

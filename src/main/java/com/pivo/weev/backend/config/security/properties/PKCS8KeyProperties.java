@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.config.security;
+package com.pivo.weev.backend.config.security.properties;
 
 import static com.pivo.weev.backend.domain.utils.Constants.EncryptionPatterns.PRIVATE_KEY_MASK_SYMBOLS;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.PKCS8_KEY_MASKED_VALUE_NOT_FOUND_ERROR;
