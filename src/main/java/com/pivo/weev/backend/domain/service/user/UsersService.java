@@ -5,17 +5,22 @@ import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.buildUserSearchSpecification;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.UserRoles.USER;
 import static com.pivo.weev.backend.domain.persistance.utils.PageableUtils.build;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.USED_NICKNAME_ERROR;
 import static org.mapstruct.factory.Mappers.getMapper;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import com.pivo.weev.backend.domain.mapping.domain.MeetRequestMapper;
+import com.pivo.weev.backend.domain.mapping.domain.UserMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.DeviceJpaMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.UserJpaMapper;
+import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.meet.MeetJoinRequest;
 import com.pivo.weev.backend.domain.model.meet.SearchParams.PageCriteria;
 import com.pivo.weev.backend.domain.model.user.Contacts;
 import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.model.user.Device.Settings;
-import com.pivo.weev.backend.domain.model.user.UserSnapshot;
+import com.pivo.weev.backend.domain.model.user.RegisteredUserSnapshot;
+import com.pivo.weev.backend.domain.model.user.User;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJoinRequestJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.DeviceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
@@ -24,6 +29,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeviceRep
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetJoinRequestsRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRolesRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType;
 import com.pivo.weev.backend.domain.service.message.DocumentService;
 import java.util.List;
 import java.util.Optional;
@@ -47,26 +53,30 @@ public class UsersService {
     private final PasswordService passwordService;
     private final DocumentService documentService;
 
-    public Optional<UserJpa> findUser(Contacts contacts) {
+    public Optional<UserJpa> findUserJpa(Contacts contacts) {
         Specification<UserJpa> specification = buildUserSearchSpecification(null, contacts.getEmail(), contacts.getPhoneNumber());
         return usersRepository.find(specification);
     }
 
-    public Optional<UserJpa> findUser(UserSnapshot userSnapshot) {
-        Contacts contacts = userSnapshot.getContacts();
-        Specification<UserJpa> specification = buildUserSearchSpecification(userSnapshot.getNickname(), contacts.getEmail(), contacts.getPhoneNumber());
+    public Optional<UserJpa> findUserJpa(RegisteredUserSnapshot registeredUserSnapshot) {
+        Contacts contacts = registeredUserSnapshot.getContacts();
+        Specification<UserJpa> specification = buildUserSearchSpecification(registeredUserSnapshot.getNickname(), contacts.getEmail(), contacts.getPhoneNumber());
         return usersRepository.find(specification);
     }
 
-    public Optional<UserJpa> findUser(String username) {
-        Specification<UserJpa> specification = buildUserSearchSpecification(username, ANY);
+    public Optional<UserJpa> findUserJpa(String username) {
+        return findUserJpa(username, ANY);
+    }
+
+    public Optional<UserJpa> findUserJpa(String username, UsernameType usernameType) {
+        Specification<UserJpa> specification = buildUserSearchSpecification(username, usernameType);
         return usersRepository.find(specification);
     }
 
-    public void createUser(UserSnapshot userSnapshot) {
-        UserJpa user = getMapper(UserJpaMapper.class).map(userSnapshot);
+    public void createUser(RegisteredUserSnapshot registeredUserSnapshot) {
+        UserJpa user = getMapper(UserJpaMapper.class).map(registeredUserSnapshot);
         fillPersistenceData(user);
-        updatePassword(user, userSnapshot.getPassword());
+        updatePassword(user, registeredUserSnapshot.getPassword());
         usersRepository.save(user);
     }
 
@@ -77,7 +87,7 @@ public class UsersService {
 
     public boolean isNicknameAvailable(String nickname) {
         Specification<UserJpa> specification = buildUserSearchSpecification(nickname, NICKNAME);
-        return usersRepository.find(specification).isEmpty();
+        return !usersRepository.isExists(specification);
     }
 
     public void updatePassword(UserJpa user, String newPassword) {
@@ -89,7 +99,7 @@ public class UsersService {
     }
 
     public void updatePassword(UserJpa user, String oldPassword, String newPassword) {
-        passwordService.validatePasswords(user, oldPassword, newPassword);
+        passwordService.checkPasswordsMatching(user, oldPassword, newPassword);
         updatePassword(user, newPassword);
     }
 
@@ -106,5 +116,21 @@ public class UsersService {
         Page<MeetJoinRequestJpa> jpaPage = meetJoinRequestsRepository.findAllByMeetId(meetId, pageable);
         List<MeetJoinRequest> content = getMapper(MeetRequestMapper.class).map(jpaPage.getContent());
         return new PageImpl<>(content, jpaPage.getPageable(), jpaPage.getTotalElements());
+    }
+
+    @Transactional
+    public User findUser(Long id) {
+        UserJpa user = usersRepository.fetch(id);
+        return getMapper(UserMapper.class).map(user);
+    }
+
+    @Transactional
+    public User updateUser(User sample) {
+        if (isNicknameAvailable(sample.getNickname())) {
+            throw new FlowInterruptedException(USED_NICKNAME_ERROR, null, BAD_REQUEST);
+        }
+        UserJpa user = usersRepository.fetch(sample.getId());
+        getMapper(UserJpaMapper.class).update(sample, user);
+        return getMapper(UserMapper.class).map(user);
     }
 }

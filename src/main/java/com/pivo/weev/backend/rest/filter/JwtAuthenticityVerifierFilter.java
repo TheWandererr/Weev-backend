@@ -39,10 +39,7 @@ public class JwtAuthenticityVerifierFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         Jwt token = jwtHolder.getToken();
-        if (isSkipRequest(token)) {
-            filterChain.doFilter(request, response);
-            return;
-        } else {
+        if (!isSkipVerifying(token)) {
             JwtVerificationResult verificationResult = jwtAuthenticityVerifier.verify(token, getDeviceId(request).orElse(null));
             if (!verificationResult.isSuccessful()) {
                 handleUnauthorized(response, verificationResult.getFailure());
@@ -52,7 +49,7 @@ public class JwtAuthenticityVerifierFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean isSkipRequest(Jwt jwt) {
+    private boolean isSkipVerifying(Jwt jwt) {
         return isNull(jwt); // TODO check this!!!
         /*if (HttpMethod.GET.matches(request.getMethod())) {
             if (matches(request, REFRESH_URI)) {

@@ -14,25 +14,31 @@ import com.pivo.weev.backend.domain.model.meet.SearchParams;
 import com.pivo.weev.backend.domain.model.meet.SearchParams.PageCriteria;
 import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.model.user.Device.Settings;
+import com.pivo.weev.backend.domain.model.user.User;
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
 import com.pivo.weev.backend.domain.service.user.UsersService;
 import com.pivo.weev.backend.rest.annotation.ResourceOwner;
 import com.pivo.weev.backend.rest.mapping.domain.DeviceMapper;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
+import com.pivo.weev.backend.rest.mapping.domain.UserMapper;
 import com.pivo.weev.backend.rest.mapping.rest.DeviceSettingsRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.MeetCompactedRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.MeetJoinRequestRestMapper;
+import com.pivo.weev.backend.rest.mapping.rest.ProfileRestMapper;
 import com.pivo.weev.backend.rest.model.common.PageRest;
 import com.pivo.weev.backend.rest.model.meet.MeetCompactedRest;
 import com.pivo.weev.backend.rest.model.meet.MeetJoinRequestRest;
 import com.pivo.weev.backend.rest.model.request.DeviceSettingUpdateRequest;
 import com.pivo.weev.backend.rest.model.request.MeetsSearchRequest;
+import com.pivo.weev.backend.rest.model.request.ProfileUpdateRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.DeviceSettingResponse;
 import com.pivo.weev.backend.rest.model.response.MeetJoinRequestsResponse;
 import com.pivo.weev.backend.rest.model.response.MeetsSearchResponse;
 import com.pivo.weev.backend.rest.model.response.NicknameAvailabilityResponse;
+import com.pivo.weev.backend.rest.model.response.ProfileResponse;
 import com.pivo.weev.backend.rest.model.user.DeviceSettingsRest;
+import com.pivo.weev.backend.rest.model.user.ProfileRest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -111,5 +117,22 @@ public class UsersController {
         List<MeetJoinRequestRest> restJoinRequests = getMapper(MeetJoinRequestRestMapper.class).map(joinRequests.getContent());
         PageRest<MeetJoinRequestRest> pageRest = new PageRest<>(restJoinRequests, joinRequests.getNumber());
         return new MeetJoinRequestsResponse(pageRest, joinRequests.getTotalElements(), joinRequests.getTotalPages());
+    }
+
+    @GetMapping("/{id}")
+    public ProfileResponse getProfile(@PathVariable Long id) {
+        User user = usersService.findUser(id);
+        ProfileRest profile = getMapper(ProfileRestMapper.class).map(user);
+        return new ProfileResponse(profile);
+    }
+
+    @ResourceOwner
+    @PutMapping("/{id}")
+    public ProfileResponse updateProfile(@PathVariable Long id, @RequestBody @Valid ProfileUpdateRequest request) {
+        User sample = getMapper(UserMapper.class).map(request);
+        sample.setId(id);
+        User updatedUser = usersService.updateUser(sample);
+        ProfileRest profile = getMapper(ProfileRestMapper.class).map(updatedUser);
+        return new ProfileResponse(profile);
     }
 }

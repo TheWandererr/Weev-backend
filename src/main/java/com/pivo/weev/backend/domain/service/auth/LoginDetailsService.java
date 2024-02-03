@@ -27,7 +27,7 @@ public class LoginDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         HttpServletRequest httpServletRequest = getCurrentRequest();
         String deviceId = getDeviceId(httpServletRequest);
-        return usersService.findUser(username)
+        return usersService.findUserJpa(username)
                            .map(userJpa -> LoginDetails.from(userJpa, username.toLowerCase(), deviceId, httpServletRequest.getRequestURI()))
                            .orElseThrow(() -> new UsernameNotFoundException(CREDENTIALS_ERROR + TITLE));
     }

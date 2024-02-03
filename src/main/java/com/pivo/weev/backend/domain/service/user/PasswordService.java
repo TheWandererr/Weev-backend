@@ -21,7 +21,7 @@ public class PasswordService {
         return passwordEncoder.encode(plainPassword);
     }
 
-    public void validatePasswords(UserJpa user, String oldPassword, String newPassword) {
+    public void checkPasswordsMatching(UserJpa user, String oldPassword, String newPassword) {
         boolean matches = passwordEncoder.matches(oldPassword, user.getPassword());
         if (!matches) {
             throw new FlowInterruptedException(PASSWORD_MATCHING_ERROR, null, BAD_REQUEST);

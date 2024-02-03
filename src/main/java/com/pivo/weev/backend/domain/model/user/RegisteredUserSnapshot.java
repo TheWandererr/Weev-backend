@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserSnapshot {
+public class RegisteredUserSnapshot {
 
     private Contacts contacts;
     private String nickname;

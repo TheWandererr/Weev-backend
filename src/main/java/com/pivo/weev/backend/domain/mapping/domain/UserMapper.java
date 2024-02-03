@@ -9,5 +9,7 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
 
     @Mapping(target = "contacts", source = "source")
+    @Mapping(target = "participatedMeets", expression = "java(source.getParticipatedMeets().size())")
+    @Mapping(target = "createdMeets", expression = "java(source.getCreatedMeets().size())")
     User map(UserJpa source);
 }

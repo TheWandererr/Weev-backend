@@ -5,11 +5,11 @@ import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.model.auth.AuthTokens;
 import com.pivo.weev.backend.domain.model.user.Contacts;
-import com.pivo.weev.backend.domain.model.user.UserSnapshot;
+import com.pivo.weev.backend.domain.model.user.RegisteredUserSnapshot;
 import com.pivo.weev.backend.domain.service.auth.AuthOperationsService;
 import com.pivo.weev.backend.domain.service.auth.AuthTokensService;
 import com.pivo.weev.backend.rest.mapping.domain.ContactsMapper;
-import com.pivo.weev.backend.rest.mapping.domain.UserSnapshotMapper;
+import com.pivo.weev.backend.rest.mapping.domain.RegisteredUserSnapshotMapper;
 import com.pivo.weev.backend.rest.model.request.ChangePasswordRequest;
 import com.pivo.weev.backend.rest.model.request.NewPasswordRequest;
 import com.pivo.weev.backend.rest.model.request.RegistrationRequest;
@@ -53,8 +53,8 @@ public class AuthController {
 
     @PostMapping("/registration")
     public BaseResponse register(@RequestBody @Valid RegistrationRequest request) {
-        UserSnapshot userSnapshot = getMapper(UserSnapshotMapper.class).map(request);
-        authOperationsService.register(userSnapshot, request.getVerificationCode());
+        RegisteredUserSnapshot registeredUserSnapshot = getMapper(RegisteredUserSnapshotMapper.class).map(request);
+        authOperationsService.register(registeredUserSnapshot, request.getVerificationCode());
         return new BaseResponse();
     }
 

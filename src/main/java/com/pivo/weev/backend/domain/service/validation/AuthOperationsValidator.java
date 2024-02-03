@@ -7,7 +7,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.user.Contacts;
-import com.pivo.weev.backend.domain.model.user.UserSnapshot;
+import com.pivo.weev.backend.domain.model.user.RegisteredUserSnapshot;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.service.user.UsersService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class AuthOperationsValidator {
     private final UsersService usersService;
 
     public void validateContactsAvailability(Contacts contacts) {
-        usersService.findUser(contacts)
+        usersService.findUserJpa(contacts)
                     .ifPresent(existingUser -> {
                         String code = defineContactsInaccessibilityError(existingUser, contacts);
                         throw new FlowInterruptedException(code);
@@ -35,18 +35,18 @@ public class AuthOperationsValidator {
         return USED_PHONE_NUMBER_ERROR;
     }
 
-    public void validateRegistrationAvailability(UserSnapshot userSnapshot) {
-        usersService.findUser(userSnapshot)
+    public void validateRegistrationAvailability(RegisteredUserSnapshot registeredUserSnapshot) {
+        usersService.findUserJpa(registeredUserSnapshot)
                     .ifPresent(existingUser -> {
-                        String code = defineRegistrationInaccessibilityError(existingUser, userSnapshot);
+                        String code = defineRegistrationInaccessibilityError(existingUser, registeredUserSnapshot);
                         throw new FlowInterruptedException(code, null, BAD_REQUEST);
                     });
     }
 
-    private String defineRegistrationInaccessibilityError(UserJpa existingUser, UserSnapshot userSnapshot) {
-        if (existingUser.getNickname().equals(userSnapshot.getNickname())) {
+    private String defineRegistrationInaccessibilityError(UserJpa existingUser, RegisteredUserSnapshot registeredUserSnapshot) {
+        if (existingUser.getNickname().equals(registeredUserSnapshot.getNickname())) {
             return USED_NICKNAME_ERROR;
         }
-        return defineContactsInaccessibilityError(existingUser, userSnapshot.getContacts());
+        return defineContactsInaccessibilityError(existingUser, registeredUserSnapshot.getContacts());
     }
 }

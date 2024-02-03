@@ -26,8 +26,8 @@ import com.pivo.weev.backend.domain.mapping.domain.UserMapper;
 import com.pivo.weev.backend.domain.model.auth.VerificationScope;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.user.Contacts;
+import com.pivo.weev.backend.domain.model.user.RegisteredUserSnapshot;
 import com.pivo.weev.backend.domain.model.user.User;
-import com.pivo.weev.backend.domain.model.user.UserSnapshot;
 import com.pivo.weev.backend.domain.persistance.jpa.model.auth.VerificationRequestJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
@@ -159,15 +159,15 @@ public class AuthOperationsService {
     }
 
     @Transactional
-    public void register(UserSnapshot userSnapshot, String verificationCode) {
-        authOperationsValidator.validateRegistrationAvailability(userSnapshot);
-        completeVerification(userSnapshot.getContacts(), verificationCode);
-        usersService.createUser(userSnapshot);
+    public void register(RegisteredUserSnapshot registeredUserSnapshot, String verificationCode) {
+        authOperationsValidator.validateRegistrationAvailability(registeredUserSnapshot);
+        completeVerification(registeredUserSnapshot.getContacts(), verificationCode);
+        usersService.createUser(registeredUserSnapshot);
     }
 
     @Transactional
     public String requestPasswordResetVerification(String username) {
-        UserJpa user = usersService.findUser(username)
+        UserJpa user = usersService.findUserJpa(username)
                                    .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_ERROR + TITLE));
         Contacts contacts = getMapper(ContactsMapper.class).map(user);
         VerificationRequestJpa verificationRequest = requestVerification(contacts, Optional.of(user), FORGOT_PASSWORD);
@@ -176,7 +176,7 @@ public class AuthOperationsService {
 
     @Transactional
     public void setNewPassword(String newPassword, String username, String verificationCode) {
-        UserJpa user = usersService.findUser(username)
+        UserJpa user = usersService.findUserJpa(username)
                                    .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_ERROR + TITLE));
         completeVerification(user, verificationCode);
         usersService.updatePassword(user, newPassword);

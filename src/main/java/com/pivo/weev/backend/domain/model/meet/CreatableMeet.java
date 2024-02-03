@@ -2,6 +2,7 @@ package com.pivo.weev.backend.domain.model.meet;
 
 import static java.util.Objects.nonNull;
 
+import com.pivo.weev.backend.domain.model.common.Identifiable;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-public class CreatableMeet {
+public class CreatableMeet extends Identifiable {
 
-    private long id;
     private String header;
     private String category;
     private String subcategory;

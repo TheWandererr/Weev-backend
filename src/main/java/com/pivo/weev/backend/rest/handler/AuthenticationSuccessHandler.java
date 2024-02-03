@@ -2,6 +2,7 @@ package com.pivo.weev.backend.rest.handler;
 
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getLoginDetails;
 import static com.pivo.weev.backend.rest.utils.HttpServletUtils.writeResponse;
+import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,9 +11,11 @@ import com.pivo.weev.backend.domain.model.auth.LoginDetails;
 import com.pivo.weev.backend.domain.service.auth.AuthTokensDetailsService;
 import com.pivo.weev.backend.domain.service.auth.AuthTokensService;
 import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
+import com.pivo.weev.backend.rest.mapping.rest.UserSnapshotRestMapper;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
 import com.pivo.weev.backend.rest.model.response.LoginResponse;
+import com.pivo.weev.backend.rest.model.user.UserSnapshotRest;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,7 +47,8 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
             LoginDetails loginDetails = getLoginDetails(authentication);
             AuthTokens authTokens = authTokensService.generateTokens(loginDetails);
             updateTokenDetails(loginDetails, authTokens);
-            LoginResponse loginResponse = new LoginResponse(authTokens.getAccessTokenValue(), authTokens.getRefreshTokenValue());
+            UserSnapshotRest user = getMapper(UserSnapshotRestMapper.class).map(authTokens.getAccessToken());
+            LoginResponse loginResponse = new LoginResponse(authTokens.getAccessTokenValue(), authTokens.getRefreshTokenValue(), user);
             writeResponse(loginResponse, response, OK, mapper);
         } catch (Exception exception) {
             LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
