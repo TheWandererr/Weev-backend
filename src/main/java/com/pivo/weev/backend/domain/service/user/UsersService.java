@@ -12,7 +12,6 @@ import com.pivo.weev.backend.domain.mapping.jpa.DeviceJpaMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.UserJpaMapper;
 import com.pivo.weev.backend.domain.model.meet.MeetJoinRequest;
 import com.pivo.weev.backend.domain.model.meet.SearchParams.PageCriteria;
-import com.pivo.weev.backend.domain.model.messaging.source.ChangePasswordSource;
 import com.pivo.weev.backend.domain.model.user.Contacts;
 import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.model.user.Device.Settings;
@@ -25,7 +24,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeviceRep
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetJoinRequestsRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRolesRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
-import com.pivo.weev.backend.domain.service.message.MailMessagingService;
+import com.pivo.weev.backend.domain.service.message.DocumentService;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +45,7 @@ public class UsersService {
     private final DeviceRepositoryWrapper deviceRepository;
 
     private final PasswordService passwordService;
-    private final MailMessagingService mailMessagingService;
+    private final DocumentService documentService;
 
     public Optional<UserJpa> findUser(Contacts contacts) {
         Specification<UserJpa> specification = buildUserSearchSpecification(null, contacts.getEmail(), contacts.getPhoneNumber());
@@ -85,7 +84,7 @@ public class UsersService {
         String encodedPassword = passwordService.encodePassword(newPassword);
         user.setPassword(encodedPassword);
         if (user.hasEmail()) {
-            mailMessagingService.sendChangePasswordMessage(user.getEmail(), new ChangePasswordSource(user.getNickname()));
+            documentService.sendChangePasswordMail(user.getEmail(), user.getNickname());
         }
     }
 

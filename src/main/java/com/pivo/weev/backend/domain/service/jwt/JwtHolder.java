@@ -13,4 +13,8 @@ import org.springframework.web.context.annotation.RequestScope;
 public class JwtHolder {
 
     private Jwt token;
+
+    public void clear() {
+        setToken(null);
+    }
 }

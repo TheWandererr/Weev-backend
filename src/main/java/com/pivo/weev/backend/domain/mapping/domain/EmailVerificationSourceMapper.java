@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.domain.mapping.domain;
 
 import com.pivo.weev.backend.domain.model.messaging.source.EmailVerificationSource;
-import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
+import com.pivo.weev.backend.domain.model.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -10,5 +10,5 @@ public interface EmailVerificationSourceMapper {
 
     @Mapping(target = "verificationCode", source = "verificationCode")
     @Mapping(target = "nickname", source = "user.nickname")
-    EmailVerificationSource map(UserJpa user, String verificationCode);
+    EmailVerificationSource map(User user, String verificationCode);
 }

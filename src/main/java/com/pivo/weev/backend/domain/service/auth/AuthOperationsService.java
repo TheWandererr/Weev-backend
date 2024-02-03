@@ -22,11 +22,11 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 import com.pivo.weev.backend.config.model.ValidityPeriod;
 import com.pivo.weev.backend.domain.mapping.domain.ContactsMapper;
-import com.pivo.weev.backend.domain.mapping.domain.EmailVerificationSourceMapper;
+import com.pivo.weev.backend.domain.mapping.domain.UserMapper;
 import com.pivo.weev.backend.domain.model.auth.VerificationScope;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
-import com.pivo.weev.backend.domain.model.messaging.source.EmailVerificationSource;
 import com.pivo.weev.backend.domain.model.user.Contacts;
+import com.pivo.weev.backend.domain.model.user.User;
 import com.pivo.weev.backend.domain.model.user.UserSnapshot;
 import com.pivo.weev.backend.domain.persistance.jpa.model.auth.VerificationRequestJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
@@ -34,7 +34,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepo
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.VerificationRequestRepositoryWrapper;
 import com.pivo.weev.backend.domain.service.config.ConfigService;
 import com.pivo.weev.backend.domain.service.jwt.JwtHolder;
-import com.pivo.weev.backend.domain.service.message.MailMessagingService;
+import com.pivo.weev.backend.domain.service.message.DocumentService;
 import com.pivo.weev.backend.domain.service.user.UsersService;
 import com.pivo.weev.backend.domain.service.validation.AuthOperationsValidator;
 import java.time.Instant;
@@ -51,7 +51,7 @@ public class AuthOperationsService {
 
     private final JwtHolder jwtHolder;
     private final AuthTokensDetailsService authTokensDetailsService;
-    private final MailMessagingService mailMessagingService;
+    private final DocumentService documentService;
     private final ConfigService configService;
     private final UsersService usersService;
     private final AuthOperationsValidator authOperationsValidator;
@@ -103,6 +103,10 @@ public class AuthOperationsService {
         throw new FlowInterruptedException(ACTIVE_VERIFICATION_REQUEST_ERROR, null, FORBIDDEN);
     }
 
+    private Optional<VerificationRequestJpa> findVerificationRequest(Contacts contacts) {
+        return verificationRequestRepository.findByContacts(contacts);
+    }
+
     private VerificationRequestJpa createVerificationRequest(Contacts contacts, String verificationCode) {
         ValidityPeriod validityPeriod = configService.getVerificationRequestValidityPeriod();
         Instant now = Instant.now();
@@ -122,13 +126,12 @@ public class AuthOperationsService {
     }
 
     private void sendVerificationCode(VerificationRequestJpa verificationRequest,
-                                      Optional<UserJpa> optionalUser,
+                                      Optional<UserJpa> optionalRecipient,
                                       VerificationScope verificationScope,
                                       String verificationCode) {
         if (verificationRequest.hasEmail()) {
-            UserJpa user = optionalUser.orElse(new UserJpa());
-            EmailVerificationSource source = getMapper(EmailVerificationSourceMapper.class).map(user, verificationCode);
-            mailMessagingService.sendVerificationMessage(verificationRequest.getEmail(), verificationScope, source);
+            User recipient = getMapper(UserMapper.class).map(optionalRecipient.orElse(null));
+            documentService.sendVerificationMail(verificationRequest.getEmail(), verificationScope, recipient, verificationCode);
         } else if (verificationRequest.hasPhoneNumber()) {
             // TODO
         }
@@ -160,10 +163,6 @@ public class AuthOperationsService {
         authOperationsValidator.validateRegistrationAvailability(userSnapshot);
         completeVerification(userSnapshot.getContacts(), verificationCode);
         usersService.createUser(userSnapshot);
-    }
-
-    private Optional<VerificationRequestJpa> findVerificationRequest(Contacts contacts) {
-        return verificationRequestRepository.findByContacts(contacts);
     }
 
     @Transactional

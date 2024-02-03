@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.service.message;
+package com.pivo.weev.backend.domain.service.message.factory;
 
 import static com.pivo.weev.backend.domain.utils.Constants.Messaging.EmailMessages.EMAIL_CHANGE_PASSWORD_SUBJECT;
 import static com.pivo.weev.backend.domain.utils.Constants.Messaging.EmailMessages.EMAIL_VERIFICATION_REQUEST_SUBJECT;
