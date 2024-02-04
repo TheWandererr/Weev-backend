@@ -50,10 +50,9 @@ public class MeetRequestsService {
         MeetJpa meet = meetRepository.fetch(id);
         meetOperationsValidator.validateJoinRequestCreation(meet, getUserId());
         UserJpa user = usersRepository.fetch(getUserId());
-        meetJoinRequestsRepository.findByMeetIdAndUserId(meet.getId(), user.getId())
-                                  .ifPresent(request -> {
-                                      throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, MEET_JOIN_REQUEST_ALREADY_CREATED, FORBIDDEN);
-                                  });
+        if (meetJoinRequestsRepository.existsByMeetIdAndUserId(meet.getId(), user.getId())) {
+            throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, MEET_JOIN_REQUEST_ALREADY_CREATED, FORBIDDEN);
+        }
         notify(meet, meet.getCreator(), MEET_NEW_JOIN_REQUEST, Map.of(REQUESTER_ID, user.getId(), REQUESTER_NICKNAME, user.getNickname()));
         meetJoinRequestsRepository.save(new MeetJoinRequestJpa(meet, user, getMeetRequestExpirationTime(meet)));
     }
@@ -87,9 +86,7 @@ public class MeetRequestsService {
     public void declineJoinRequest(Long requestId) {
         MeetJoinRequestJpa request = meetJoinRequestsRepository.fetch(requestId);
         meetOperationsValidator.validateJoinRequestDeclination(request);
-        MeetJpa meet = request.getMeet();
-        UserJpa joiner = request.getUser();
-        notify(meet, joiner, MEET_JOIN_REQUEST_DECLINATION, null);
+        notify(request.getMeet(), request.getUser(), MEET_JOIN_REQUEST_DECLINATION, null);
         meetJoinRequestsRepository.forceDelete(request);
     }
 }

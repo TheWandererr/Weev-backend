@@ -15,7 +15,6 @@ import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.meet.CreatableMeet;
 import com.pivo.weev.backend.domain.model.meet.Restrictions.Availability;
-import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.CategoryJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.RestrictionsJpa;
@@ -73,8 +72,7 @@ public class MeetOperationsService {
         UserJpa creator = usersRepository.fetch(getUserId());
         MeetJpa meetJpa = new MeetJpa(creator);
         getMapper(MeetJpaMapper.class).map(sample, meetJpa);
-        LocationJpa location = locationService.resolveLocation(sample);
-        meetJpa.setLocation(location);
+        meetJpa.setLocation(locationService.resolveLocation(sample));
         meetJpa.setCategory(resolveCategory(sample));
         meetJpa.setSubcategory(resolveSubcategory(meetJpa.getCategory(), sample));
         meetPhotoService.updatePhoto(sample, meetJpa);
@@ -112,7 +110,7 @@ public class MeetOperationsService {
 
     private void replaceExistingMeet(MeetJpa meet, MeetJpa existingMeet) {
         meetPhotoService.deletePhoto(existingMeet);
-        getMapper(MeetJpaMapper.class).remap(meet, existingMeet);
+        getMapper(MeetJpaMapper.class).update(meet, existingMeet);
     }
 
     @Transactional

@@ -6,6 +6,8 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import ch.hsr.geohash.BoundingBox;
+import java.util.Objects;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -63,6 +65,7 @@ public class SearchParams {
     @Getter
     @Setter
     @NoArgsConstructor
+    @EqualsAndHashCode
     public static class PageCriteria {
 
         private int page;
@@ -88,6 +91,7 @@ public class SearchParams {
 
     @Getter
     @Setter
+    @EqualsAndHashCode
     public static class MapCriteria {
 
         private Radius radius;
@@ -110,6 +114,7 @@ public class SearchParams {
 
     @Getter
     @Setter
+    @EqualsAndHashCode
     public static class VisibilityCriteria {
 
         private boolean onModeration;
@@ -124,6 +129,7 @@ public class SearchParams {
 
     @Getter
     @Setter
+    @EqualsAndHashCode
     public static class FieldsCriteria {
 
         private String header;
@@ -134,5 +140,9 @@ public class SearchParams {
         public boolean hasRestrictions() {
             return nonNull(restrictions);
         }
+    }
+
+    public int getHash() {
+        return Objects.hash(pageCriteria, mapCriteria, visibilityCriteria, fieldsCriteria, authorId);
     }
 }

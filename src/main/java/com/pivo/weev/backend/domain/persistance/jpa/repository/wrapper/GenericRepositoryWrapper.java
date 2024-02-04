@@ -85,11 +85,11 @@ public abstract class GenericRepositoryWrapper<PK extends Serializable, E extend
         }
     }
 
-    public boolean isExistsById(PK id) {
+    public boolean existsById(PK id) {
         return repository.existsById(id);
     }
 
-    public boolean isExists(Specification<E> specification) {
+    public boolean exists(Specification<E> specification) {
         return count(specification) > 0;
     }
 

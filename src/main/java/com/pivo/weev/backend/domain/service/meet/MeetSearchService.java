@@ -59,7 +59,7 @@ public class MeetSearchService {
             List<LocationJpa> locations = mapToList(list, MeetJpa::getLocation);
             return getMapper(MapPointMapper.class).map(locations);
         });
-        List<MapPointCluster> clusters = mapClusterizationService.process(mapPoints.getContent(), searchParams.getZoom());
+        List<MapPointCluster> clusters = mapClusterizationService.createClusters(mapPoints.getContent(), searchParams.getZoom());
         return new PageImpl<>(clusters, mapPoints.getPageable(), mapPoints.getTotalElements());
     }
 }

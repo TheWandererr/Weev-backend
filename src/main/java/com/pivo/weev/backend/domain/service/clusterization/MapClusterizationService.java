@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MapClusterizationService {
 
-    public List<MapPointCluster> process(List<MapPoint> data, int zoom) {
+    public List<MapPointCluster> createClusters(List<MapPoint> data, int zoom) {
         int precision = resolvePrecision(zoom);
         Map<String, List<MapPoint>> groupedPoints = data.stream().collect(groupingBy(point -> point.getGeoHashString().substring(0, precision), toList()));
         return mapToList(groupedPoints.entrySet(), entry -> new MapPointCluster(createCentroid(entry.getKey()), entry.getValue()));

@@ -2,6 +2,7 @@ package com.pivo.weev.backend.domain.service.jwt;
 
 import static com.pivo.weev.backend.utils.CollectionUtils.collect;
 import static java.time.temporal.ChronoUnit.HOURS;
+import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 
 import com.pivo.weev.backend.domain.model.auth.LoginDetails;
@@ -11,7 +12,6 @@ import com.pivo.weev.backend.rest.utils.Constants.Claims;
 import com.pivo.weev.backend.rest.utils.Constants.JWTModes;
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,7 +40,7 @@ public class JWTProvider {
     protected Jwt generateToken(LoginDetails loginDetails, int expiresAtAmount, String mode) {
         Instant now = Instant.now();
         String scope = JWTModes.ACCESS.equals(mode)
-                ? collect(loginDetails.authenticationAuthorities(), SimpleGrantedAuthority::getAuthority, Collectors.joining(SPACE))
+                ? collect(loginDetails.authenticationAuthorities(), SimpleGrantedAuthority::getAuthority, joining(SPACE))
                 : mode;
         JwtClaimsSet claimsSet = JwtClaimsSet.builder()
                                              .subject(loginDetails.getUsername())

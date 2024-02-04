@@ -29,7 +29,7 @@ public interface MeetJpaMapper {
     @Mapping(target = "status", constant = "ON_MODERATION")
     void map(CreatableMeet source, @MappingTarget MeetJpa target);
 
-    default void remap(MeetJpa source, @MappingTarget MeetJpa destination) {
+    default void update(MeetJpa source, @MappingTarget MeetJpa destination) {
         destination.setLocation(source.getLocation());
         destination.setCategory(source.getCategory());
         destination.setSubcategory(source.getSubcategory());

@@ -23,4 +23,8 @@ public class MeetJoinRequestsRepositoryWrapper extends GenericRepositoryWrapper<
     public Page<MeetJoinRequestJpa> findAllByMeetId(Long meetId, Pageable pageable) {
         return repository.findAllByMeet_Id(meetId, pageable);
     }
+
+    public boolean existsByMeetIdAndUserId(Long meetId, Long userId) {
+        return repository.existsByMeetIdAndUserId(meetId, userId);
+    }
 }

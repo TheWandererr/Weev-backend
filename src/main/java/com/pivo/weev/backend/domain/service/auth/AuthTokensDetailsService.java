@@ -34,10 +34,11 @@ public class AuthTokensDetailsService {
     @Transactional
     public AuthTokensDetailsJpa createTokensDetails(LoginDetails loginDetails, AuthTokens authTokens) {
         DeviceJpa device = deviceService.resolveDevice(loginDetails.user(), loginDetails.deviceId());
-        AuthTokensDetailsJpa tokenDetails = new AuthTokensDetailsJpa();
-        tokenDetails.setDevice(device);
-        tokenDetails.setSerial(loginDetails.serial());
-        tokenDetails.setExpiresAt(authTokens.getRefreshToken().getExpiresAt());
+        AuthTokensDetailsJpa tokenDetails = AuthTokensDetailsJpa.builder()
+                                                                .device(device)
+                                                                .serial(loginDetails.serial())
+                                                                .expiresAt(authTokens.getRefreshToken().getExpiresAt())
+                                                                .build();
         return authTokenDetailsRepository.save(tokenDetails);
     }
 

@@ -10,4 +10,6 @@ public interface IMeetJoinRequestsRepository extends IGenericRepository<Long, Me
     Optional<MeetJoinRequestJpa> findByMeetIdAndUserId(Long meetId, Long userId);
 
     Page<MeetJoinRequestJpa> findAllByMeet_Id(Long meetId, Pageable pageable);
+
+    boolean existsByMeetIdAndUserId(Long meetId, Long userId);
 }

@@ -83,7 +83,7 @@ public class ModerationService {
         meetPhotoService.deletePhoto(updatable);
         meetRepository.forceDelete(confirmable);
 
-        getMapper(MeetJpaMapper.class).remap(confirmable, updatable);
+        getMapper(MeetJpaMapper.class).update(confirmable, updatable);
         updatable.setModeratedBy(getUserId());
         updatable.setStatus(CONFIRMED);
 

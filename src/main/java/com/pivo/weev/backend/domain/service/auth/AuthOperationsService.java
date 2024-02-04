@@ -62,17 +62,16 @@ public class AuthOperationsService {
     @Transactional
     public void logout(boolean allDevices) {
         Jwt jwt = jwtHolder.getToken();
-        Long userId = getUserId(jwt);
-        logout(userId, allDevices);
+        logout(getUserId(jwt), allDevices);
     }
 
     private void logout(Long userId, boolean allDevices) {
         if (allDevices) {
             authTokensDetailsService.revokeTokensDetails(userId);
-        } else {
-            Jwt jwt = jwtHolder.getToken();
-            authTokensDetailsService.revokeTokensDetails(userId, getDeviceId(jwt));
+            return;
         }
+        Jwt jwt = jwtHolder.getToken();
+        authTokensDetailsService.revokeTokensDetails(userId, getDeviceId(jwt));
     }
 
     @Transactional

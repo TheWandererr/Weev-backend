@@ -101,7 +101,7 @@ public class UsersService {
 
     public boolean isNicknameAvailable(String nickname) {
         Specification<UserJpa> specification = buildUserSearchSpecification(nickname, NICKNAME);
-        return !usersRepository.isExists(specification);
+        return !usersRepository.exists(specification);
     }
 
     public void updatePassword(UserJpa user, String newPassword) {

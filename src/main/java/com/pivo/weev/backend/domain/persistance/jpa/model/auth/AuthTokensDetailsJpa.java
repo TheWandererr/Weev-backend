@@ -14,7 +14,9 @@ import jakarta.persistence.UniqueConstraint;
 import java.time.Instant;
 import java.util.Objects;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.proxy.HibernateProxy;
 
 @Entity
@@ -25,6 +27,8 @@ import org.hibernate.proxy.HibernateProxy;
 @SequenceGenerator(sequenceName = "auth_tokens_details_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
+@SuperBuilder
+@NoArgsConstructor
 public class AuthTokensDetailsJpa extends SequencedPersistable<Long> {
 
     @OneToOne(optional = false)

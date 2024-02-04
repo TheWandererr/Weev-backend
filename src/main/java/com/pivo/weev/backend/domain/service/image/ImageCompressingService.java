@@ -54,12 +54,11 @@ public class ImageCompressingService {
     private Double getScale(MultipartFile file) {
         Map<Long, Double> config = configsWrapper.getImageCompressingScale();
         long size = file.getSize();
-        for (Entry<Long, Double> scaling : config.entrySet()) {
-            if (size <= scaling.getKey()) {
-                return scaling.getValue();
-            }
-        }
-        return MAX_SCALING;
+        return config.entrySet().stream()
+                     .filter(entry -> size <= entry.getKey())
+                     .map(Entry::getValue)
+                     .findFirst()
+                     .orElse(MAX_SCALING);
     }
 
 }
