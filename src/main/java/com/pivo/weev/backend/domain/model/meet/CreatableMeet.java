@@ -26,6 +26,7 @@ public class CreatableMeet extends Identifiable {
     private String startTimeZoneId;
     private LocalDateTime localEndDateTime;
     private String endTimeZoneId;
+    private boolean saveAsTemplate;
 
     public boolean hasPhoto() {
         return nonNull(photo);

@@ -35,6 +35,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserRoleJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.CloudResourceRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeviceRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetJoinRequestsRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetTemplateRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRolesRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType;
@@ -61,6 +62,7 @@ public class UsersService {
     private final MeetJoinRequestsRepositoryWrapper meetJoinRequestsRepository;
     private final DeviceRepositoryWrapper deviceRepository;
     private final CloudResourceRepositoryWrapper cloudResourceRepository;
+    private final MeetTemplateRepositoryWrapper meetTemplateRepository;
 
     private final PasswordService passwordService;
     private final DocumentService documentService;

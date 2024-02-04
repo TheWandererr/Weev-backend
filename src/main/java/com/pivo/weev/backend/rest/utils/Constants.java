@@ -97,6 +97,7 @@ public class Constants {
 
         public static final Integer MEETS_PER_PAGE = 5;
         public static final Integer MEET_REQUESTS_PER_PAGE = 10;
+        public static final Integer MEET_TEMPLATES_PER_PAGE = 10;
     }
 
     @UtilityClass

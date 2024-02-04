@@ -9,6 +9,7 @@ public enum ResourceName implements Enumerated {
     USER_ROLE,
     AUTH_TOKEN_DETAILS,
     MEET,
+    MEET_TEMPLATE,
     MEET_CATEGORY,
     MEET_REQUEST,
     LOCATION,

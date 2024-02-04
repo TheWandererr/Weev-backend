@@ -35,7 +35,7 @@ public class MeetSearchService {
 
     @Transactional
     public Page<Meet> search(SearchParams searchParams) {
-        return search(searchParams, list -> getMapper(MeetMapper.class).map(list));
+        return search(searchParams, list -> getMapper(MeetMapper.class).mapMeets(list));
     }
 
     private <T> Page<T> search(SearchParams searchParams, Function<List<MeetJpa>, List<T>> mapper) {

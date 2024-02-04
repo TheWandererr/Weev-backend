@@ -5,6 +5,7 @@ import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.declined;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.onModeration;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.published;
 import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MEET_REQUESTS_PER_PAGE;
+import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MEET_TEMPLATES_PER_PAGE;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK_ERROR;
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -17,6 +18,7 @@ import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.model.user.Device.Settings;
 import com.pivo.weev.backend.domain.model.user.User;
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
+import com.pivo.weev.backend.domain.service.meet.MeetTemplatesService;
 import com.pivo.weev.backend.domain.service.user.UsersService;
 import com.pivo.weev.backend.rest.annotation.ResourceOwner;
 import com.pivo.weev.backend.rest.mapping.domain.DeviceMapper;
@@ -26,11 +28,13 @@ import com.pivo.weev.backend.rest.mapping.rest.DeviceSettingsRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.ImageRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.MeetCompactedRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.MeetJoinRequestRestMapper;
+import com.pivo.weev.backend.rest.mapping.rest.MeetTemplateRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.ProfileRestMapper;
 import com.pivo.weev.backend.rest.model.common.PageRest;
 import com.pivo.weev.backend.rest.model.meet.ImageRest;
 import com.pivo.weev.backend.rest.model.meet.MeetCompactedRest;
 import com.pivo.weev.backend.rest.model.meet.MeetJoinRequestRest;
+import com.pivo.weev.backend.rest.model.meet.MeetTemplateRest;
 import com.pivo.weev.backend.rest.model.request.DeviceSettingUpdateRequest;
 import com.pivo.weev.backend.rest.model.request.MeetsSearchRequest;
 import com.pivo.weev.backend.rest.model.request.ProfileUpdateRequest;
@@ -38,6 +42,7 @@ import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.DeviceSettingResponse;
 import com.pivo.weev.backend.rest.model.response.ImageResponse;
 import com.pivo.weev.backend.rest.model.response.MeetJoinRequestsResponse;
+import com.pivo.weev.backend.rest.model.response.MeetTemplatesResponse;
 import com.pivo.weev.backend.rest.model.response.MeetsSearchResponse;
 import com.pivo.weev.backend.rest.model.response.NicknameAvailabilityResponse;
 import com.pivo.weev.backend.rest.model.response.ProfileResponse;
@@ -69,6 +74,7 @@ public class UsersController {
 
     private final UsersService usersService;
     private final MeetSearchService meetSearchService;
+    private final MeetTemplatesService meetTemplatesService;
 
     @GetMapping("/nickname/availability")
     public BaseResponse isNicknameAvailable(@RequestParam @NotBlank(message = MUST_BE_NOT_BLANK_ERROR) String nickname) {
@@ -151,5 +157,14 @@ public class UsersController {
         Image image = usersService.updatePhoto(id, photo);
         ImageRest restImage = getMapper(ImageRestMapper.class).map(image);
         return new ImageResponse(restImage);
+    }
+
+    @ResourceOwner
+    @GetMapping("/{id}/meets/templates/{page}")
+    public MeetTemplatesResponse getTemplates(@PathVariable Long id, @PathVariable @Min(0) Integer page) {
+        Page<Meet> templatesPage = meetTemplatesService.getMeetsTemplates(id, page, MEET_TEMPLATES_PER_PAGE);
+        List<MeetTemplateRest> restTemplates = getMapper(MeetTemplateRestMapper.class).map(templatesPage.getContent());
+        PageRest<MeetTemplateRest> pageRest = new PageRest<>(restTemplates, templatesPage.getNumber());
+        return new MeetTemplatesResponse(pageRest, templatesPage.getTotalElements(), templatesPage.getTotalPages());
     }
 }

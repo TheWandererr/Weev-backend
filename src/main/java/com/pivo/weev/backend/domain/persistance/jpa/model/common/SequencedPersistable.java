@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.proxy.HibernateProxy;
 
 
@@ -21,6 +22,7 @@ import org.hibernate.proxy.HibernateProxy;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 public abstract class SequencedPersistable<PK extends Serializable> implements Entity, Serializable {
 
     @Id

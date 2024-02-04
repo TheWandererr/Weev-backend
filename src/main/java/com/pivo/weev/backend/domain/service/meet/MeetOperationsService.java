@@ -49,6 +49,9 @@ public class MeetOperationsService {
     private final TimeZoneService timeZoneService;
     private final MeetPhotoService meetPhotoService;
     private final NotificationService notificationService;
+    private final MeetTemplatesService meetTemplatesService;
+
+
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ApplicationEventFactory applicationEventFactory;
 
@@ -58,6 +61,9 @@ public class MeetOperationsService {
         meetOperationsValidator.validateCreation(sample);
         MeetJpa meet = preparePersistableMeet(sample);
         meetRepository.save(meet);
+        if (sample.isSaveAsTemplate()) {
+            meetTemplatesService.saveAsTemplate(meet);
+        }
     }
 
     private void setTimeZones(CreatableMeet sample) {

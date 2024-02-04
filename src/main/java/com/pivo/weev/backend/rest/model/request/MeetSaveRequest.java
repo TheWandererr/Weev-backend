@@ -51,6 +51,7 @@ public class MeetSaveRequest {
     private LocalDateTime localStartDateTime;
     @NotNull(message = MUST_BE_NOT_NULL_ERROR)
     private LocalDateTime localEndDateTime;
+    private boolean saveAsTemplate;
 
     public RestrictionsRest getRestrictions() {
         if (isNull(restrictions)) {
