@@ -14,6 +14,7 @@ import com.pivo.weev.backend.domain.model.meet.SearchParams;
 import com.pivo.weev.backend.domain.service.meet.MeetOperationsService;
 import com.pivo.weev.backend.domain.service.meet.MeetRequestsService;
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
+import com.pivo.weev.backend.domain.service.meet.MeetTemplatesService;
 import com.pivo.weev.backend.rest.mapping.domain.CreatableMeetMapper;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
 import com.pivo.weev.backend.rest.mapping.rest.MapPointClusterRestMapper;
@@ -56,6 +57,7 @@ public class MeetsController {
 
     private final MeetOperationsService meetOperationsService;
     private final MeetSearchService meetSearchService;
+    private final MeetTemplatesService meetTemplatesService;
     private final MeetRequestsService meetRequestsService;
 
     @PostMapping("/search")
@@ -137,6 +139,12 @@ public class MeetsController {
     public BaseResponse declineJoinRequest(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long meetId,
                                            @Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long requestId) {
         meetRequestsService.declineJoinRequest(requestId);
+        return new BaseResponse();
+    }
+
+    @PostMapping("/{meetId}/template")
+    public BaseResponse createTemplate(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long meetId) {
+        meetTemplatesService.createTemplate(meetId);
         return new BaseResponse();
     }
 

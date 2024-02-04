@@ -18,4 +18,8 @@ public class MeetTemplateRepositoryWrapper extends GenericRepositoryWrapper<Long
     public Page<MeetTemplateJpa> findAllByUserId(Long userId, Pageable pageable) {
         return repository.findAllByCreator_Id(userId, pageable);
     }
+
+    public void forceDeleteAllByCreatorId(Long userId) {
+        repository.deleteAllByCreatorId(userId);
+    }
 }

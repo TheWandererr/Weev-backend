@@ -56,6 +56,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -166,5 +167,19 @@ public class UsersController {
         List<MeetTemplateRest> restTemplates = getMapper(MeetTemplateRestMapper.class).map(templatesPage.getContent());
         PageRest<MeetTemplateRest> pageRest = new PageRest<>(restTemplates, templatesPage.getNumber());
         return new MeetTemplatesResponse(pageRest, templatesPage.getTotalElements(), templatesPage.getTotalPages());
+    }
+
+    @ResourceOwner
+    @DeleteMapping("{id}/meets/templates/{templateId}")
+    public BaseResponse deleteTemplate(@PathVariable Long id, @PathVariable Long templateId) {
+        meetTemplatesService.deleteTemplate(id, templateId);
+        return new BaseResponse();
+    }
+
+    @ResourceOwner
+    @DeleteMapping("{id}/meets/templates")
+    public BaseResponse deleteTemplate(@PathVariable Long id) {
+        meetTemplatesService.deleteTemplates(id);
+        return new BaseResponse();
     }
 }

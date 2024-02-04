@@ -6,6 +6,7 @@ import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.M
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.MEET_UTC_START_DATE_TIME;
 import static com.pivo.weev.backend.utils.Constants.Amount.INFINITY;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
+import static com.pivo.weev.backend.utils.Constants.MeetAvailabilities.PRIVATE;
 import static com.pivo.weev.backend.utils.Constants.Reasons.MEET_CAPACITY_EXCEEDED;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.MERGE;
@@ -218,5 +219,9 @@ public class MeetJpa extends ModifiableJpa<Long> {
         setPhoto(null);
         getMembers().clear();
         setStatus(MeetStatus.DELETED);
+    }
+
+    public boolean hasPrivateAvailability() {
+        return hasRestrictions() && PRIVATE.equals(getRestrictions().getAvailability());
     }
 }

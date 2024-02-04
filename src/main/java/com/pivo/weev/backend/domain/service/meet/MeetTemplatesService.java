@@ -2,16 +2,25 @@ package com.pivo.weev.backend.domain.service.meet;
 
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.CREATED_DATE;
 import static com.pivo.weev.backend.domain.persistance.utils.PageableUtils.build;
+import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
 import static org.mapstruct.factory.Mappers.getMapper;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 import com.pivo.weev.backend.domain.mapping.domain.MeetMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.MeetTemplateJpaMapper;
+import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetTemplateJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepositoryWrapper;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetTemplateRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class MeetTemplatesService {
 
     private final MeetTemplateRepositoryWrapper meetTemplateRepository;
+    private final MeetRepositoryWrapper meetRepository;
+    private final UsersRepositoryWrapper usersRepository;
 
     @Transactional
     public Page<Meet> getMeetsTemplates(Long userId, Integer page, Integer pageSize) {
@@ -35,5 +46,36 @@ public class MeetTemplatesService {
     public void saveAsTemplate(MeetJpa meet) {
         MeetTemplateJpa meetTemplate = getMapper(MeetTemplateJpaMapper.class).map(meet);
         meetTemplateRepository.save(meetTemplate);
+    }
+
+    @Transactional
+    public void createTemplate(Long meetId) {
+        MeetJpa meet = meetRepository.fetch(meetId);
+        if (meet.hasPrivateAvailability()) {
+            throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, null, FORBIDDEN);
+        }
+        MeetJpa copy = createAuthorsCopy(meet);
+        saveAsTemplate(copy);
+    }
+
+    private MeetJpa createAuthorsCopy(MeetJpa meet) {
+        UserJpa user = usersRepository.fetch(getUserId());
+        MeetJpa meetCopy = SerializationUtils.clone(meet);
+        meetCopy.setCreator(user);
+        return meetCopy;
+    }
+
+    @Transactional
+    public void deleteTemplate(Long userId, Long templateId) {
+        MeetTemplateJpa template = meetTemplateRepository.fetch(templateId);
+        if (!Objects.equals(template.getCreator().getId(), userId)) {
+            throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, null, FORBIDDEN);
+        }
+        meetTemplateRepository.forceDeleteById(templateId);
+    }
+
+    @Transactional
+    public void deleteTemplates(Long userId) {
+        meetTemplateRepository.forceDeleteAllByCreatorId(userId);
     }
 }
