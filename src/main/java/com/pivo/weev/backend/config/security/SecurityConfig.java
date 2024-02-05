@@ -110,7 +110,7 @@ public class SecurityConfig {
         http.oauth2ResourceServer(customizer -> customizer.jwt(withDefaults()));
 
         http.addFilterBefore(
-                new JwtAuthenticityVerifierFilter(popupRestFactory, mapper, applicationLoggingHelper, jwtAuthenticityVerifier, jwtHolder),
+                new JwtAuthenticityVerifierFilter(notificationRestFactory, mapper, applicationLoggingHelper, jwtAuthenticityVerifier, jwtHolder),
                 UsernamePasswordAuthenticationFilter.class
         );
         http.addFilterBefore(new JwtDecoderFilter(mapper, jwtHolder, jwtDecoder, popupRestFactory, applicationLoggingHelper),

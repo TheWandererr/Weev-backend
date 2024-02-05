@@ -10,8 +10,8 @@ import static org.apache.commons.lang3.StringUtils.join;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pivo.weev.backend.domain.service.jwt.JwtHolder;
 import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
-import com.pivo.weev.backend.rest.error.PopupRestFactory;
-import com.pivo.weev.backend.rest.model.error.PopupRest;
+import com.pivo.weev.backend.rest.error.NotificationRestFactory;
+import com.pivo.weev.backend.rest.model.error.NotificationRest;
 import com.pivo.weev.backend.rest.model.jwt.JwtVerificationResult;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
@@ -29,7 +29,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @AllArgsConstructor
 public class JwtAuthenticityVerifierFilter extends OncePerRequestFilter {
 
-    private final PopupRestFactory popupRestFactory;
+    private final NotificationRestFactory notificationRestFactory;
     private final ObjectMapper mapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
     private final JwtAuthenticityVerifier jwtAuthenticityVerifier;
@@ -61,9 +61,9 @@ public class JwtAuthenticityVerifierFilter extends OncePerRequestFilter {
     }
 
     private void handleUnauthorized(HttpServletResponse response, String failure) throws IOException {
-        PopupRest error = popupRestFactory.unauthorized();
-        BaseResponse errorResponse = new BaseResponse(error, ResponseMessage.UNAUTHORIZED);
+        NotificationRest forbidden = notificationRestFactory.forbidden(failure);
+        BaseResponse errorResponse = new BaseResponse(forbidden, ResponseMessage.FORBIDDEN);
         logger.error(applicationLoggingHelper.buildLoggingError(errorResponse, join(TOKEN_ERROR, COLON, failure), false));
-        writeResponse(errorResponse, response, HttpStatus.UNAUTHORIZED, mapper);
+        writeResponse(errorResponse, response, HttpStatus.FORBIDDEN, mapper);
     }
 }
