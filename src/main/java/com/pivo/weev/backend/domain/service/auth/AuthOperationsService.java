@@ -132,7 +132,7 @@ public class AuthOperationsService {
                                       VerificationScope verificationScope,
                                       String verificationCode) {
         if (verificationRequest.hasEmail()) {
-            User recipient = getMapper(UserMapper.class).map(optionalRecipient.orElse(null));
+            User recipient = optionalRecipient.map(getMapper(UserMapper.class)::map).orElse(null);
             documentService.sendVerificationMail(verificationRequest.getEmail(), verificationScope, recipient, verificationCode);
         } else if (verificationRequest.hasPhoneNumber()) {
             // TODO

@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.mapping.domain.decorator;
 
 import static com.pivo.weev.backend.domain.model.user.User.deleted;
+import static java.util.Objects.isNull;
 
 import com.pivo.weev.backend.domain.mapping.domain.UserMapper;
 import com.pivo.weev.backend.domain.model.user.User;
@@ -14,6 +15,9 @@ public abstract class UserMapperDecorator implements UserMapper {
 
     @Override
     public User map(UserJpa source) {
+        if (isNull(source)) {
+            return null;
+        }
         if (source.isDeleted()) {
             return deleted();
         }
