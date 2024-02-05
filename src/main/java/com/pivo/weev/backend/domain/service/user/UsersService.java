@@ -92,7 +92,7 @@ public class UsersService {
     public void createUser(RegisteredUserSnapshot registeredUserSnapshot) {
         UserJpa user = getMapper(UserJpaMapper.class).map(registeredUserSnapshot);
         fillPersistenceData(user);
-        updatePassword(user, registeredUserSnapshot.getPassword());
+        updatePassword(user, registeredUserSnapshot.getPassword(), false);
         usersRepository.save(user);
     }
 
@@ -106,17 +106,17 @@ public class UsersService {
         return !usersRepository.exists(specification);
     }
 
-    public void updatePassword(UserJpa user, String newPassword) {
+    public void updatePassword(UserJpa user, String newPassword, boolean sendEmail) {
         String encodedPassword = passwordService.encodePassword(newPassword);
         user.setPassword(encodedPassword);
-        if (user.hasEmail()) {
+        if (sendEmail) {
             documentService.sendChangePasswordMail(user.getEmail(), user.getNickname());
         }
     }
 
     public void updatePassword(UserJpa user, String oldPassword, String newPassword) {
         passwordService.checkPasswordsMatching(user, oldPassword, newPassword);
-        updatePassword(user, newPassword);
+        updatePassword(user, newPassword, user.hasEmail());
     }
 
     @Transactional

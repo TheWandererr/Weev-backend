@@ -178,7 +178,7 @@ public class AuthOperationsService {
         UserJpa user = usersService.findUserJpa(username)
                                    .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_ERROR + TITLE));
         completeVerification(user, verificationCode);
-        usersService.updatePassword(user, newPassword);
+        usersService.updatePassword(user, newPassword, user.hasEmail());
         logout(user.getId(), true);
     }
 
