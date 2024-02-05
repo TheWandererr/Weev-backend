@@ -5,12 +5,12 @@ import static com.pivo.weev.backend.utils.Constants.Symbols.DOT;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.persistance.jpa.exception.ResourceNotFoundException;
 import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.model.error.AlertRest;
+import com.pivo.weev.backend.rest.model.error.NotificationRest;
 import com.pivo.weev.backend.rest.model.error.PopupRest;
 import com.pivo.weev.backend.rest.model.exception.MissingCookieException;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.stereotype.Component;
@@ -42,6 +43,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final PopupRestFactory popupRestFactory;
     private final AlertRestFactory alertRestFactory;
+    private final NotificationRestFactory notificationRestFactory;
     private final ApplicationLoggingHelper applicationLoggingHelper;
 
     @ExceptionHandler(value = Exception.class)
@@ -53,7 +55,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                              .body(body);
     }
 
-    @ExceptionHandler(value = AccessDeniedException.class)
+    @ExceptionHandler(value = {AccessDeniedException.class, AuthorizationServiceException.class})
     public ResponseEntity<BaseResponse> handleAccessDeniedException(AccessDeniedException accessDeniedException) {
         PopupRest error = popupRestFactory.forbidden();
         BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
@@ -65,7 +67,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {MissingCookieException.class, InvalidCookieException.class})
     public ResponseEntity<BaseResponse> handleMissingCookieException(RuntimeException runtimeException) {
         PopupRest error = popupRestFactory.forbidden();
-        BaseResponse body = new BaseResponse(error, ResponseMessage.ERROR);
+        BaseResponse body = new BaseResponse(error, ResponseMessage.FORBIDDEN);
         logger.error(applicationLoggingHelper.buildLoggingError(body, runtimeException.getMessage()));
         return ResponseEntity.status(FORBIDDEN)
                              .body(body);
@@ -73,10 +75,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = InternalAuthenticationServiceException.class)
     public ResponseEntity<BaseResponse> handleInternalAuthenticationServiceException(InternalAuthenticationServiceException exception) {
-        PopupRest popup = popupRestFactory.unauthorized();
-        BaseResponse body = new BaseResponse(popup, ResponseMessage.ERROR);
+        NotificationRest notification = notificationRestFactory.forbidden(exception.getMessage());
+        BaseResponse body = new BaseResponse(notification, ResponseMessage.FORBIDDEN);
         logger.error(applicationLoggingHelper.buildLoggingError(exception, null));
-        return ResponseEntity.status(UNAUTHORIZED)
+        return ResponseEntity.status(FORBIDDEN)
                              .body(body);
     }
 

@@ -34,6 +34,11 @@ public class PopupRestFactory {
         return new PopupRest(UNAUTHORIZED_ERROR + TITLE, UNAUTHORIZED_ERROR, List.of(button), null);
     }
 
+    public PopupRest unauthorized(String reason) {
+        ButtonRest button = buttonRestFactory.login();
+        return new PopupRest(UNAUTHORIZED_ERROR + TITLE, UNAUTHORIZED_ERROR, List.of(button), List.of(reason));
+    }
+
     public PopupRest somethingWentWrong() {
         return create(FLOW_INTERRUPTED_ERROR + TITLE, FLOW_INTERRUPTED_ERROR, List.of(OK));
     }

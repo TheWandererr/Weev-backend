@@ -26,6 +26,7 @@ public class Constants {
         public static final String CREDENTIALS_ERROR = "bad.credentials";
         public static final String USER_NOT_FOUND_ERROR = "user.not.found";
         public static final String PERMISSIONS_ERROR = "not.enough.permissions";
+        public static final String AUTHENTICATION_DENIED = "authentication.denied";
         public static final String UNAUTHORIZED_ERROR = "unauthorized";
         public static final String FIELD_VALIDATION_FAILED_ERROR = "field.validation.failed";
         public static final String FIELD_VALIDATION_FAILED_ERROR_PATTERN = "%s.validation.failed";

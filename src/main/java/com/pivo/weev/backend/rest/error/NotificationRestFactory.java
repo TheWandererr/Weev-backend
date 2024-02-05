@@ -19,4 +19,8 @@ public class NotificationRestFactory {
     public NotificationRest unauthorized() {
         return new NotificationRest(UNAUTHORIZED_ERROR + TITLE);
     }
+
+    public NotificationRest forbidden(String cause) {
+        return new NotificationRest(cause + TITLE);
+    }
 }

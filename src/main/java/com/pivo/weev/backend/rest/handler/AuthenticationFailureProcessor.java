@@ -16,12 +16,14 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @RequiredArgsConstructor
-public class AuthenticationFailureHandler implements org.springframework.security.web.authentication.AuthenticationFailureHandler {
+public class AuthenticationFailureProcessor implements AuthenticationFailureHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationFailureHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationFailureProcessor.class);
 
     private final ObjectMapper mapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
@@ -30,13 +32,12 @@ public class AuthenticationFailureHandler implements org.springframework.securit
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
             throws IOException, ServletException {
-        handleFailedLogin(response, exception);
-    }
-
-    private void handleFailedLogin(HttpServletResponse response, AuthenticationException exception) throws IOException {
-        NotificationRest notification = notificationRestFactory.badCredentials();
-        BaseResponse loginResponse = new BaseResponse(notification, ResponseMessage.UNAUTHORIZED);
+        boolean forbidden = exception instanceof InternalAuthenticationServiceException;
+        NotificationRest notification = forbidden
+                ? notificationRestFactory.forbidden(exception.getMessage())
+                : notificationRestFactory.badCredentials();
+        BaseResponse loginResponse = new BaseResponse(notification, forbidden ? ResponseMessage.FORBIDDEN : ResponseMessage.UNAUTHORIZED);
         LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
-        writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, mapper);
+        writeResponse(loginResponse, response, forbidden ? HttpStatus.FORBIDDEN : HttpStatus.UNAUTHORIZED, mapper);
     }
 }

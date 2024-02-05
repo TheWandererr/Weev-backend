@@ -29,7 +29,7 @@ import com.pivo.weev.backend.rest.error.PopupRestFactory;
 import com.pivo.weev.backend.rest.filter.JwtAuthenticityVerifierFilter;
 import com.pivo.weev.backend.rest.filter.JwtDecoderFilter;
 import com.pivo.weev.backend.rest.handler.AccessDeniedHandler;
-import com.pivo.weev.backend.rest.handler.AuthenticationFailureHandler;
+import com.pivo.weev.backend.rest.handler.AuthenticationFailureProcessor;
 import com.pivo.weev.backend.rest.handler.AuthenticationSuccessHandler;
 import com.pivo.weev.backend.rest.handler.UnauthorizedHandler;
 import com.pivo.weev.backend.rest.service.jwt.JwtAuthenticityVerifier;
@@ -96,7 +96,7 @@ public class SecurityConfig {
                                                          authTokensDetailsService)
                                          )
                                          .failureHandler(
-                                                 new AuthenticationFailureHandler(mapper, applicationLoggingHelper, notificationRestFactory))
+                                                 new AuthenticationFailureProcessor(mapper, applicationLoggingHelper, notificationRestFactory))
                                          .permitAll()
         );
 
