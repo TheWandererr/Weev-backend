@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.utils;
 
 import static com.pivo.weev.backend.domain.model.auth.VerificationScope.CHANGE_PASSWORD;
+import static com.pivo.weev.backend.domain.model.auth.VerificationScope.DELETE_ACCOUNT;
 import static com.pivo.weev.backend.domain.model.auth.VerificationScope.FORGOT_PASSWORD;
 import static com.pivo.weev.backend.domain.model.auth.VerificationScope.REGISTRATION;
 
@@ -82,11 +83,13 @@ public final class Constants {
             public static final String EMAIL_VERIFICATION_REGISTRATION_FTL = "email-verification-registration.ftl";
             public static final String EMAIL_VERIFICATION_FORGOT_PASSWORD_FTL = "email-verification-forgot-password.ftl";
             public static final String EMAIL_VERIFICATION_CHANGE_PASSWORD_FTL = "email-verification-change-password.ftl";
+            public static final String EMAIL_VERIFICATION_DELETE_ACCOUNT_FTL = "email-verification-delete-account.ftl";
             public static final String EMAIL_CHANGE_PASSWORD_FTL = "email-changed-password.ftl";
 
             public static final Map<VerificationScope, String> VERIFICATION_TEMPLATES_MAPPING = Map.of(REGISTRATION, EMAIL_VERIFICATION_REGISTRATION_FTL,
                                                                                                        FORGOT_PASSWORD, EMAIL_VERIFICATION_FORGOT_PASSWORD_FTL,
-                                                                                                       CHANGE_PASSWORD, EMAIL_VERIFICATION_CHANGE_PASSWORD_FTL);
+                                                                                                       CHANGE_PASSWORD, EMAIL_VERIFICATION_CHANGE_PASSWORD_FTL,
+                                                                                                       DELETE_ACCOUNT, EMAIL_VERIFICATION_DELETE_ACCOUNT_FTL);
         }
     }
 }

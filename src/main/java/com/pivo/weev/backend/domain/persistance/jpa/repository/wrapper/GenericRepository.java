@@ -16,12 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-public abstract class GenericRepositoryWrapper<PK extends Serializable, E extends Entity, R extends IGenericRepository<PK, E>> {
+public abstract class GenericRepository<PK extends Serializable, E extends Entity, R extends IGenericRepository<PK, E>> {
 
     protected final R repository;
     protected final ResourceName resourceName;
 
-    protected GenericRepositoryWrapper(R repository, ResourceName resource) {
+    protected GenericRepository(R repository, ResourceName resource) {
         this.repository = repository;
         this.resourceName = resource;
     }

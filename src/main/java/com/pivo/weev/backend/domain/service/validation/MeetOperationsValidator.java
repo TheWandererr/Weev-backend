@@ -33,6 +33,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetRequestJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.RestrictionsJpa;
+import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Set;
@@ -42,6 +43,7 @@ import org.springframework.stereotype.Service;
 public class MeetOperationsValidator {
 
     private static final Set<MeetStatus> CANCELLABLE_MEET_STATUSES = Set.of(ON_MODERATION, HAS_MODERATION_INSTANCE, CONFIRMED);
+    private static final Set<MeetStatus> LEAVABLE_MEET_STATUSES = Set.of(ON_MODERATION, HAS_MODERATION_INSTANCE, CONFIRMED);
     private static final Set<MeetStatus> UPDATABLE_MEET_STATUSES = Set.of(ON_MODERATION, HAS_MODERATION_INSTANCE, CONFIRMED, DECLINED, CANCELED);
     private static final Set<MeetStatus> DELETABLE_MEET_STATUSES = Set.of(CANCELED, DECLINED);
 
@@ -93,9 +95,9 @@ public class MeetOperationsValidator {
      * это не скрытый ивент (созданный для обновления другого ивента)
      * проверяем статусы
      * */
-    public void validateCancellation(MeetJpa cancellable) {
+    public void validateCancellation(MeetJpa cancellable, boolean forced) {
         Instant startInstant = toInstant(cancellable.getLocalStartDateTime(), cancellable.getStartTimeZoneId());
-        if (!now().plus(3, HOURS).isBefore(startInstant)) {
+        if (!forced && !now().plus(3, HOURS).isBefore(startInstant)) {
             throw new FlowInterruptedException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
         }
         if (!Objects.equals(getUserId(), cancellable.getCreator().getId())) {
@@ -187,6 +189,25 @@ public class MeetOperationsValidator {
     public void validateJoinRequestDeclination(MeetRequestJpa request) {
         MeetJpa meet = request.getMeet();
         if (!Objects.equals(getUserId(), meet.getCreator().getId())) {
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
+        }
+    }
+
+    public void validateLeave(MeetJpa meet, UserJpa leaver, boolean forced) {
+        Instant startInstant = toInstant(meet.getLocalStartDateTime(), meet.getStartTimeZoneId());
+        if (!forced && !now().plus(1, HOURS).isBefore(startInstant)) {
+            throw new FlowInterruptedException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
+        }
+        if (Objects.equals(leaver.getId(), meet.getCreator().getId())) {
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
+        }
+        if (meet.isEnded()) {
+            throw new FlowInterruptedException(MEET_IS_FINISHED_ERROR, null, FORBIDDEN);
+        }
+        if (nonNull(meet.getUpdatableTarget())) {
+            throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
+        }
+        if (!LEAVABLE_MEET_STATUSES.contains(meet.getStatus())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
     }

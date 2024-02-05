@@ -11,4 +11,5 @@ public class UserSnapshotRest {
     private Long id;
     private String nickname;
     private ImageRest avatar;
+    private boolean deleted;
 }

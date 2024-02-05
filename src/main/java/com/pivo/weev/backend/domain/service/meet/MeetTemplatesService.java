@@ -14,9 +14,9 @@ import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetTemplateJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepositoryWrapper;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetTemplateRepositoryWrapper;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepository;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetTemplateRepository;
+import com.pivo.weev.backend.domain.service.user.UserResourceService;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +31,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MeetTemplatesService {
 
-    private final MeetTemplateRepositoryWrapper meetTemplateRepository;
-    private final MeetRepositoryWrapper meetRepository;
-    private final UsersRepositoryWrapper usersRepository;
+    private final UserResourceService userResourceService;
+
+    private final MeetTemplateRepository meetTemplateRepository;
+    private final MeetRepository meetRepository;
 
     @Transactional
     public Page<Meet> getMeetsTemplates(Long userId, Integer page, Integer pageSize) {
@@ -59,23 +60,23 @@ public class MeetTemplatesService {
     }
 
     private MeetJpa createAuthorsCopy(MeetJpa meet) {
-        UserJpa user = usersRepository.fetch(getUserId());
+        UserJpa user = userResourceService.fetchUserJpa(getUserId());
         MeetJpa meetCopy = SerializationUtils.clone(meet);
         meetCopy.setCreator(user);
         return meetCopy;
     }
 
     @Transactional
-    public void deleteTemplate(Long userId, Long templateId) {
+    public void deleteTemplate(Long creatorId, Long templateId) {
         MeetTemplateJpa template = meetTemplateRepository.fetch(templateId);
-        if (!Objects.equals(template.getCreator().getId(), userId)) {
+        if (!Objects.equals(template.getCreator().getId(), creatorId)) {
             throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, null, FORBIDDEN);
         }
         meetTemplateRepository.forceDeleteById(templateId);
     }
 
     @Transactional
-    public void deleteTemplates(Long userId) {
-        meetTemplateRepository.forceDeleteAllByCreatorId(userId);
+    public void deleteAllTemplates(Long creatorId) {
+        meetTemplateRepository.forceDeleteAllByCreatorId(creatorId);
     }
 }

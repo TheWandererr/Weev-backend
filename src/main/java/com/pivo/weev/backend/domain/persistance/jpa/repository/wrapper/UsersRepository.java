@@ -6,9 +6,9 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.IUsersRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UsersRepositoryWrapper extends GenericRepositoryWrapper<Long, UserJpa, IUsersRepository> {
+public class UsersRepository extends GenericRepository<Long, UserJpa, IUsersRepository> {
 
-    public UsersRepositoryWrapper(IUsersRepository repository) {
+    public UsersRepository(IUsersRepository repository) {
         super(repository, ResourceName.USER);
     }
 }

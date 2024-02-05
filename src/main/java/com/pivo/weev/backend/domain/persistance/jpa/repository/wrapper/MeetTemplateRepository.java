@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MeetTemplateRepositoryWrapper extends GenericRepositoryWrapper<Long, MeetTemplateJpa, IMeetTemplateRepository> {
+public class MeetTemplateRepository extends GenericRepository<Long, MeetTemplateJpa, IMeetTemplateRepository> {
 
-    protected MeetTemplateRepositoryWrapper(IMeetTemplateRepository repository) {
+    protected MeetTemplateRepository(IMeetTemplateRepository repository) {
         super(repository, MEET_TEMPLATE);
     }
 

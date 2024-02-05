@@ -17,9 +17,12 @@ import com.pivo.weev.backend.domain.model.meet.SearchParams.PageCriteria;
 import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.model.user.Device.Settings;
 import com.pivo.weev.backend.domain.model.user.User;
+import com.pivo.weev.backend.domain.service.meet.MeetRequestsService;
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
 import com.pivo.weev.backend.domain.service.meet.MeetTemplatesService;
-import com.pivo.weev.backend.domain.service.user.UsersService;
+import com.pivo.weev.backend.domain.service.user.DeviceService;
+import com.pivo.weev.backend.domain.service.user.ProfileService;
+import com.pivo.weev.backend.domain.service.user.UserResourceService;
 import com.pivo.weev.backend.rest.annotation.ResourceOwner;
 import com.pivo.weev.backend.rest.mapping.domain.DeviceMapper;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
@@ -73,13 +76,16 @@ import org.springframework.web.multipart.MultipartFile;
 @Validated
 public class UsersController {
 
-    private final UsersService usersService;
+    private final UserResourceService userResourceService;
+    private final ProfileService profileService;
     private final MeetSearchService meetSearchService;
+    private final MeetRequestsService meetRequestsService;
     private final MeetTemplatesService meetTemplatesService;
+    private final DeviceService deviceService;
 
     @GetMapping("/nickname/availability")
     public BaseResponse isNicknameAvailable(@RequestParam @NotBlank(message = MUST_BE_NOT_BLANK_ERROR) String nickname) {
-        boolean nicknameAvailable = usersService.isNicknameAvailable(nickname.toLowerCase());
+        boolean nicknameAvailable = userResourceService.isNicknameAvailable(nickname.toLowerCase());
         return new NicknameAvailabilityResponse(nicknameAvailable);
     }
 
@@ -121,7 +127,7 @@ public class UsersController {
     @PutMapping("/{userId}/devices/{deviceId}/settings")
     public DeviceSettingResponse updateDeviceSettings(@PathVariable Long userId, @PathVariable String deviceId, @RequestBody @Valid DeviceSettingUpdateRequest request) {
         Device device = getMapper(DeviceMapper.class).map(request, deviceId, userId);
-        Settings settings = usersService.updateDeviceSettings(device);
+        Settings settings = deviceService.updateDeviceSettings(device);
         DeviceSettingsRest settingsRest = getMapper(DeviceSettingsRestMapper.class).map(settings);
         return new DeviceSettingResponse(settingsRest);
     }
@@ -129,7 +135,7 @@ public class UsersController {
     @ResourceOwner
     @GetMapping("/{userId}/meets/{meetId}/joining/requests/{page}")
     public MeetJoinRequestsResponse getMeetJoinRequests(@PathVariable Long userId, @PathVariable Long meetId, @PathVariable @Min(0) Integer page) {
-        Page<MeetJoinRequest> joinRequests = usersService.getMeetJoinRequests(meetId, new PageCriteria(page, MEET_REQUESTS_PER_PAGE));
+        Page<MeetJoinRequest> joinRequests = meetRequestsService.getMeetJoinRequests(meetId, new PageCriteria(page, MEET_REQUESTS_PER_PAGE));
         List<MeetJoinRequestRest> restJoinRequests = getMapper(MeetJoinRequestRestMapper.class).map(joinRequests.getContent());
         PageRest<MeetJoinRequestRest> pageRest = new PageRest<>(restJoinRequests, joinRequests.getNumber());
         return new MeetJoinRequestsResponse(pageRest, joinRequests.getTotalElements(), joinRequests.getTotalPages());
@@ -137,7 +143,7 @@ public class UsersController {
 
     @GetMapping("/{id}")
     public ProfileResponse getProfile(@PathVariable Long id) {
-        User user = usersService.findUser(id);
+        User user = userResourceService.fetchUser(id);
         ProfileRest profile = getMapper(ProfileRestMapper.class).map(user);
         return new ProfileResponse(profile);
     }
@@ -147,7 +153,7 @@ public class UsersController {
     public ProfileResponse updateProfile(@PathVariable Long id, @RequestBody @Valid ProfileUpdateRequest request) {
         User sample = getMapper(UserMapper.class).map(request);
         sample.setId(id);
-        User updatedUser = usersService.updateUser(sample);
+        User updatedUser = profileService.updateProfile(sample);
         ProfileRest profile = getMapper(ProfileRestMapper.class).map(updatedUser);
         return new ProfileResponse(profile);
     }
@@ -155,7 +161,7 @@ public class UsersController {
     @ResourceOwner
     @PutMapping("/{id}/photo")
     public ImageResponse updatePhoto(@PathVariable Long id, @ModelAttribute @ValidImage MultipartFile photo) {
-        Image image = usersService.updatePhoto(id, photo);
+        Image image = profileService.updatePhoto(id, photo);
         ImageRest restImage = getMapper(ImageRestMapper.class).map(image);
         return new ImageResponse(restImage);
     }
@@ -179,7 +185,7 @@ public class UsersController {
     @ResourceOwner
     @DeleteMapping("{id}/meets/templates")
     public BaseResponse deleteTemplate(@PathVariable Long id) {
-        meetTemplatesService.deleteTemplates(id);
+        meetTemplatesService.deleteAllTemplates(id);
         return new BaseResponse();
     }
 }

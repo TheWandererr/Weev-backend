@@ -8,12 +8,14 @@ import com.pivo.weev.backend.domain.model.user.Contacts;
 import com.pivo.weev.backend.domain.model.user.RegisteredUserSnapshot;
 import com.pivo.weev.backend.domain.service.auth.AuthOperationsService;
 import com.pivo.weev.backend.domain.service.auth.AuthTokensService;
+import com.pivo.weev.backend.rest.annotation.ResourceOwner;
 import com.pivo.weev.backend.rest.mapping.domain.ContactsMapper;
 import com.pivo.weev.backend.rest.mapping.domain.RegisteredUserSnapshotMapper;
 import com.pivo.weev.backend.rest.model.request.ChangePasswordRequest;
 import com.pivo.weev.backend.rest.model.request.NewPasswordRequest;
 import com.pivo.weev.backend.rest.model.request.RegistrationRequest;
 import com.pivo.weev.backend.rest.model.request.UsernameRequest;
+import com.pivo.weev.backend.rest.model.request.VerificationCompletionRequest;
 import com.pivo.weev.backend.rest.model.request.VerificationRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.LoginResponse;
@@ -22,7 +24,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -80,15 +84,28 @@ public class AuthController {
     }
 
     @PostMapping("/password/change/verification/request")
-    public BaseResponse requestChangePasswordVerification(@RequestBody @Valid VerificationRequest request) {
-        Contacts contacts = getMapper(ContactsMapper.class).map(request);
-        String method = authOperationsService.requestChangePasswordVerification(contacts);
+    public BaseResponse requestChangePasswordVerification() {
+        String method = authOperationsService.requestChangePasswordVerification();
         return new VerificationRequestResponse(method);
     }
 
     @PutMapping("/password/change")
     public BaseResponse changePassword(@RequestBody @Valid ChangePasswordRequest request) {
         authOperationsService.changePassword(request.getOldPassword(), request.getNewPassword(), request.getVerificationCode());
+        return new BaseResponse();
+    }
+
+    @ResourceOwner
+    @PostMapping("/users/{id}/deletion/verification/request")
+    public BaseResponse requestAccountDeletion(@PathVariable Long id) {
+        String method = authOperationsService.requestAccountDeletionVerification();
+        return new VerificationRequestResponse(method);
+    }
+
+    @ResourceOwner
+    @DeleteMapping("/users/{id}")
+    public BaseResponse deleteAccount(@PathVariable Long id, @RequestBody @Valid VerificationCompletionRequest request) {
+        authOperationsService.deleteUser(id, request.getVerificationCode());
         return new BaseResponse();
     }
 }

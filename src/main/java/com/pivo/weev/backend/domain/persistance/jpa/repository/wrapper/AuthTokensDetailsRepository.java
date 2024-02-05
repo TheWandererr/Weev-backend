@@ -9,9 +9,9 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthTokensDetailsRepositoryWrapper extends GenericRepositoryWrapper<Long, AuthTokensDetailsJpa, IAuthTokenDetailsRepository> {
+public class AuthTokensDetailsRepository extends GenericRepository<Long, AuthTokensDetailsJpa, IAuthTokenDetailsRepository> {
 
-    protected AuthTokensDetailsRepositoryWrapper(IAuthTokenDetailsRepository repository) {
+    protected AuthTokensDetailsRepository(IAuthTokenDetailsRepository repository) {
         super(repository, ResourceName.AUTH_TOKEN_DETAILS);
     }
 

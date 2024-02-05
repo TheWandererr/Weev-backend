@@ -11,7 +11,7 @@ import com.pivo.weev.backend.domain.model.file.UploadableImage;
 import com.pivo.weev.backend.domain.model.meet.CreatableMeet;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.CloudResourceRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.CloudResourceRepository;
 import com.pivo.weev.backend.domain.service.image.ImageCloudService;
 import com.pivo.weev.backend.domain.service.image.ImageCompressingService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class MeetPhotoService {
 
-    private final CloudResourceRepositoryWrapper cloudResourceRepository;
+    private final CloudResourceRepository cloudResourceRepository;
 
     private final ImageCloudService imageCloudService;
     private final ImageCompressingService imageCompressingService;

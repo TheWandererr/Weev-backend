@@ -7,9 +7,9 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.ICloudResourceRep
 import org.springframework.stereotype.Component;
 
 @Component
-public class CloudResourceRepositoryWrapper extends GenericRepositoryWrapper<Long, CloudResourceJpa, ICloudResourceRepository> {
+public class CloudResourceRepository extends GenericRepository<Long, CloudResourceJpa, ICloudResourceRepository> {
 
-    public CloudResourceRepositoryWrapper(ICloudResourceRepository repository) {
+    public CloudResourceRepository(ICloudResourceRepository repository) {
         super(repository, CLOUD_RESOURCE);
     }
 }

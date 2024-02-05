@@ -9,9 +9,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VerificationRequestRepositoryWrapper extends GenericRepositoryWrapper<Long, VerificationRequestJpa, IVerificationRequestRepository> {
+public class VerificationRequestRepository extends GenericRepository<Long, VerificationRequestJpa, IVerificationRequestRepository> {
 
-    protected VerificationRequestRepositoryWrapper(IVerificationRequestRepository repository) {
+    protected VerificationRequestRepository(IVerificationRequestRepository repository) {
         super(repository, VERIFICATION_REQUEST);
     }
 

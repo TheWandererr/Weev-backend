@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.domain.service.meet;
 
+import static com.pivo.weev.backend.domain.persistance.utils.PageableUtils.build;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.REQUESTER_ID;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.REQUESTER_NICKNAME;
@@ -9,24 +10,32 @@ import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.ME
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
 import static com.pivo.weev.backend.utils.Constants.Reasons.MEET_JOIN_REQUEST_ALREADY_CREATED;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.mapstruct.factory.Mappers.getMapper;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
+import com.pivo.weev.backend.domain.mapping.domain.MeetRequestMapper;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
+import com.pivo.weev.backend.domain.model.meet.MeetJoinRequest;
+import com.pivo.weev.backend.domain.model.meet.SearchParams.PageCriteria;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJoinRequestJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.RestrictionsJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetJoinRequestsRepositoryWrapper;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepositoryWrapper;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetJoinRequestsRepository;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepository;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepository;
 import com.pivo.weev.backend.domain.service.event.ApplicationEventFactory;
 import com.pivo.weev.backend.domain.service.event.model.PushNotificationEvent;
 import com.pivo.weev.backend.domain.service.message.NotificationService;
 import com.pivo.weev.backend.domain.service.validation.MeetOperationsValidator;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,9 +43,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MeetRequestsService {
 
-    private final MeetRepositoryWrapper meetRepository;
-    private final MeetJoinRequestsRepositoryWrapper meetJoinRequestsRepository;
-    private final UsersRepositoryWrapper usersRepository;
+    private final MeetRepository meetRepository;
+    private final MeetJoinRequestsRepository meetJoinRequestsRepository;
+    private final UsersRepository usersRepository;
 
     private final MeetOperationsValidator meetOperationsValidator;
     private final NotificationService notificationService;
@@ -88,5 +97,17 @@ public class MeetRequestsService {
         meetOperationsValidator.validateJoinRequestDeclination(request);
         notify(request.getMeet(), request.getUser(), MEET_JOIN_REQUEST_DECLINATION, null);
         meetJoinRequestsRepository.forceDelete(request);
+    }
+
+    @Transactional
+    public Page<MeetJoinRequest> getMeetJoinRequests(Long meetId, PageCriteria pageCriteria) {
+        Pageable pageable = build(pageCriteria.getPage(), pageCriteria.getPageSize(), new String[0]);
+        Page<MeetJoinRequestJpa> jpaPage = meetJoinRequestsRepository.findAllByMeetId(meetId, pageable);
+        List<MeetJoinRequest> content = getMapper(MeetRequestMapper.class).map(jpaPage.getContent());
+        return new PageImpl<>(content, jpaPage.getPageable(), jpaPage.getTotalElements());
+    }
+
+    public void deleteAllRequests(Long userId) {
+        meetJoinRequestsRepository.deleteAllByUserId(userId);
     }
 }

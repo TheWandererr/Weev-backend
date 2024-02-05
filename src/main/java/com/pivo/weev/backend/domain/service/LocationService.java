@@ -9,7 +9,7 @@ import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.meet.CreatableMeet;
 import com.pivo.weev.backend.domain.model.meet.Location;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.LocationRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.LocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LocationService {
 
-    private final LocationRepositoryWrapper locationRepository;
+    private final LocationRepository locationRepository;
 
     public LocationJpa resolveLocation(CreatableMeet sample) {
         Location location = sample.getLocation();

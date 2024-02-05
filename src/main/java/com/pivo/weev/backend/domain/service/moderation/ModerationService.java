@@ -15,8 +15,8 @@ import com.pivo.weev.backend.domain.mapping.jpa.MeetJpaMapper;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.DeclinationReasonJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeclinationReasonsRepositoryWrapper;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeclinationReasonsRepository;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepository;
 import com.pivo.weev.backend.domain.service.event.ApplicationEventFactory;
 import com.pivo.weev.backend.domain.service.event.model.PushNotificationEvent;
 import com.pivo.weev.backend.domain.service.meet.MeetPhotoService;
@@ -34,8 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ModerationService {
 
-    private final MeetRepositoryWrapper meetRepository;
-    private final DeclinationReasonsRepositoryWrapper declinationReasonsRepository;
+    private final MeetRepository meetRepository;
+    private final DeclinationReasonsRepository declinationReasonsRepository;
 
     private final ModerationValidator moderationValidator;
     private final MeetPhotoService meetPhotoService;

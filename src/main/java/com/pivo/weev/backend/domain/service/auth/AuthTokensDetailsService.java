@@ -8,7 +8,7 @@ import com.pivo.weev.backend.domain.model.auth.LoginDetails;
 import com.pivo.weev.backend.domain.persistance.jpa.model.auth.AuthTokensDetailsJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.DeviceJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.AuthTokensDetailsRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.AuthTokensDetailsRepository;
 import com.pivo.weev.backend.domain.service.user.DeviceService;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +27,7 @@ public class AuthTokensDetailsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthTokensDetailsService.class);
 
-    private final AuthTokensDetailsRepositoryWrapper authTokenDetailsRepository;
+    private final AuthTokensDetailsRepository authTokenDetailsRepository;
 
     private final DeviceService deviceService;
 

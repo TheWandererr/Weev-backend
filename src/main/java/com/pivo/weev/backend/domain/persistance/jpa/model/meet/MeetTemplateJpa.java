@@ -35,7 +35,7 @@ import org.hibernate.proxy.HibernateProxy;
 @NoArgsConstructor
 public class MeetTemplateJpa extends ModifiableJpa<Long> {
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = {PERSIST, MERGE})
     @JoinColumn(name = "creator_id")
     private UserJpa creator;
     @Column(nullable = false, name = MEET_HEADER)

@@ -93,7 +93,7 @@ public class MeetJpa extends ModifiableJpa<Long> {
     @Column(name = MEET_STATUS)
     @Enumerated(STRING)
     private MeetStatus status;
-    @ManyToMany(mappedBy = "participatedMeets", fetch = LAZY)
+    @ManyToMany(mappedBy = "participatedMeets", fetch = LAZY, cascade = {PERSIST, MERGE})
     private Set<UserJpa> members = new HashSet<>();
     @OneToMany(fetch = LAZY, mappedBy = "meet")
     private Set<MeetJoinRequestJpa> requests = new HashSet<>();
@@ -186,6 +186,14 @@ public class MeetJpa extends ModifiableJpa<Long> {
         }
         getMembers().add(user);
         user.getParticipatedMeets().add(this);
+    }
+
+    public void removeMember(UserJpa user) {
+        if (isNull(user)) {
+            return;
+        }
+        getMembers().remove(user);
+        user.getParticipatedMeets().remove(this);
     }
 
     @Override

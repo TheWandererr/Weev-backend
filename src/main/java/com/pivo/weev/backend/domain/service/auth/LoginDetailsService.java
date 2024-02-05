@@ -5,7 +5,7 @@ import static com.pivo.weev.backend.utils.Constants.ErrorCodes.AUTHENTICATION_DE
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.CREDENTIALS_ERROR;
 
 import com.pivo.weev.backend.domain.model.auth.LoginDetails;
-import com.pivo.weev.backend.domain.service.user.UsersService;
+import com.pivo.weev.backend.domain.service.user.UserResourceService;
 import com.pivo.weev.backend.rest.utils.HttpServletUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,16 +20,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LoginDetailsService implements UserDetailsService {
 
-    private final UsersService usersService;
+    private final UserResourceService userResourceService;
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         HttpServletRequest httpServletRequest = getCurrentRequest();
         String deviceId = getDeviceId(httpServletRequest);
-        return usersService.findUserJpa(username)
-                           .map(userJpa -> LoginDetails.from(userJpa, username.toLowerCase(), deviceId, httpServletRequest.getRequestURI()))
-                           .orElseThrow(() -> new UsernameNotFoundException(CREDENTIALS_ERROR));
+        return userResourceService.findUserJpa(username)
+                                  .map(userJpa -> LoginDetails.from(userJpa, username.toLowerCase(), deviceId, httpServletRequest.getRequestURI()))
+                                  .orElseThrow(() -> new UsernameNotFoundException(CREDENTIALS_ERROR));
     }
 
     private String getDeviceId(HttpServletRequest httpServletRequest) {

@@ -8,7 +8,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.meet.DeclinationReason
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetNotificationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.NotificationRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.NotificationRepository;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class NotificationService {
 
-    private final NotificationRepositoryWrapper notificationRepository;
+    private final NotificationRepository notificationRepository;
 
     private final NotificationFactory notificationFactory;
 

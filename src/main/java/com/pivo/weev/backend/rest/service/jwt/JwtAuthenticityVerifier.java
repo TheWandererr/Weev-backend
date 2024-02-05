@@ -8,7 +8,7 @@ import static com.pivo.weev.backend.utils.Constants.ErrorCodes.TOKEN_COMPROMISED
 import static java.util.Objects.isNull;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.auth.AuthTokensDetailsJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.AuthTokensDetailsRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.AuthTokensDetailsRepository;
 import com.pivo.weev.backend.rest.model.jwt.JwtVerificationResult;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +17,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 @AllArgsConstructor
 public class JwtAuthenticityVerifier {
 
-    private final AuthTokensDetailsRepositoryWrapper authTokenDetailsRepository;
+    private final AuthTokensDetailsRepository authTokenDetailsRepository;
 
     public JwtVerificationResult verify(Jwt jwt, String deviceId) {
         try {

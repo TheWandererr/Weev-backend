@@ -10,9 +10,9 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LocationRepositoryWrapper extends GenericRepositoryWrapper<Long, LocationJpa, ILocationRepository> {
+public class LocationRepository extends GenericRepository<Long, LocationJpa, ILocationRepository> {
 
-    protected LocationRepositoryWrapper(ILocationRepository repository) {
+    protected LocationRepository(ILocationRepository repository) {
         super(repository, ResourceName.LOCATION);
     }
 

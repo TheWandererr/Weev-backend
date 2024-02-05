@@ -9,7 +9,7 @@ import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.user.Contacts;
 import com.pivo.weev.backend.domain.model.user.RegisteredUserSnapshot;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
-import com.pivo.weev.backend.domain.service.user.UsersService;
+import com.pivo.weev.backend.domain.service.user.UserResourceService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -18,14 +18,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AuthOperationsValidator {
 
-    private final UsersService usersService;
+    private final UserResourceService userResourceService;
 
     public void validateContactsAvailability(Contacts contacts) {
-        usersService.findUserJpa(contacts)
-                    .ifPresent(existingUser -> {
-                        String code = defineContactsInaccessibilityError(existingUser, contacts);
-                        throw new FlowInterruptedException(code);
-                    });
+        userResourceService.findUserJpa(contacts)
+                           .ifPresent(existingUser -> {
+                               String code = defineContactsInaccessibilityError(existingUser, contacts);
+                               throw new FlowInterruptedException(code);
+                           });
     }
 
     private String defineContactsInaccessibilityError(UserJpa user, Contacts providedContacts) {
@@ -36,11 +36,11 @@ public class AuthOperationsValidator {
     }
 
     public void validateRegistrationAvailability(RegisteredUserSnapshot registeredUserSnapshot) {
-        usersService.findUserJpa(registeredUserSnapshot)
-                    .ifPresent(existingUser -> {
-                        String code = defineRegistrationInaccessibilityError(existingUser, registeredUserSnapshot);
-                        throw new FlowInterruptedException(code, null, BAD_REQUEST);
-                    });
+        userResourceService.findUserJpa(registeredUserSnapshot)
+                           .ifPresent(existingUser -> {
+                               String code = defineRegistrationInaccessibilityError(existingUser, registeredUserSnapshot);
+                               throw new FlowInterruptedException(code, null, BAD_REQUEST);
+                           });
     }
 
     private String defineRegistrationInaccessibilityError(UserJpa existingUser, RegisteredUserSnapshot registeredUserSnapshot) {

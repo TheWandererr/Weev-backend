@@ -9,9 +9,9 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DeclinationReasonsRepositoryWrapper extends GenericRepositoryWrapper<Long, DeclinationReasonJpa, IDeclinationReasonsRepository> {
+public class DeclinationReasonsRepository extends GenericRepository<Long, DeclinationReasonJpa, IDeclinationReasonsRepository> {
 
-    protected DeclinationReasonsRepositoryWrapper(IDeclinationReasonsRepository repository) {
+    protected DeclinationReasonsRepository(IDeclinationReasonsRepository repository) {
         super(repository, DECLINATION_REASON);
     }
 

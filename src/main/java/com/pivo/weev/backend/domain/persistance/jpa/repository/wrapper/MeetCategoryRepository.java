@@ -7,9 +7,9 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.IMeetCategoryRepo
 import org.springframework.stereotype.Component;
 
 @Component
-public class MeetCategoryRepositoryWrapper extends GenericRepositoryWrapper<Long, CategoryJpa, IMeetCategoryRepository> {
+public class MeetCategoryRepository extends GenericRepository<Long, CategoryJpa, IMeetCategoryRepository> {
 
-    protected MeetCategoryRepositoryWrapper(IMeetCategoryRepository repository) {
+    protected MeetCategoryRepository(IMeetCategoryRepository repository) {
         super(repository, ResourceName.MEET_CATEGORY);
     }
 

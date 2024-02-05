@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.meet;
 
-import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.FetchType.LAZY;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
@@ -32,7 +33,7 @@ import org.hibernate.proxy.HibernateProxy;
 @DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.STRING)
 public class MeetRequestJpa extends SequencedPersistable<Long> {
 
-    @ManyToOne(fetch = LAZY, cascade = ALL, optional = false)
+    @ManyToOne(fetch = LAZY, cascade = {MERGE, PERSIST}, optional = false)
     @JoinColumn(name = "meet_id")
     private MeetJpa meet;
     @Column

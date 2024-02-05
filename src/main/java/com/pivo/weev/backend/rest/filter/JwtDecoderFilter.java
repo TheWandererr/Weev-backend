@@ -45,7 +45,10 @@ public class JwtDecoderFilter extends OncePerRequestFilter {
                 handleUnauthorized(response, exception.getMessage());
                 return;
             }
+        } else {
+            jwtHolder.clear();
         }
+
         filterChain.doFilter(request, response);
     }
 

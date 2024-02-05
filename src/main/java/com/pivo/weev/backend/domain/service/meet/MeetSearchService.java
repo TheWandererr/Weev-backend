@@ -13,7 +13,7 @@ import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.model.meet.SearchParams;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepository;
 import com.pivo.weev.backend.domain.service.clusterization.MapClusterizationService;
 import java.util.List;
 import java.util.function.Function;
@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MeetSearchService {
 
-    private final MeetRepositoryWrapper meetRepository;
+    private final MeetRepository meetRepository;
 
     private final MapClusterizationService mapClusterizationService;
 

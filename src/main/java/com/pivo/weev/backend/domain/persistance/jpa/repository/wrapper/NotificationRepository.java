@@ -7,9 +7,9 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.INotificationRepo
 import org.springframework.stereotype.Component;
 
 @Component
-public class NotificationRepositoryWrapper extends GenericRepositoryWrapper<Long, NotificationJpa, INotificationRepository> {
+public class NotificationRepository extends GenericRepository<Long, NotificationJpa, INotificationRepository> {
 
-    protected NotificationRepositoryWrapper(INotificationRepository repository) {
+    protected NotificationRepository(INotificationRepository repository) {
         super(repository, NOTIFICATION);
     }
 }

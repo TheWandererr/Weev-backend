@@ -8,9 +8,9 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.IUserRolesReposit
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserRolesRepositoryWrapper extends GenericRepositoryWrapper<Long, UserRoleJpa, IUserRolesRepository> {
+public class UserRolesRepository extends GenericRepository<Long, UserRoleJpa, IUserRolesRepository> {
 
-    protected UserRolesRepositoryWrapper(IUserRolesRepository repository) {
+    protected UserRolesRepository(IUserRolesRepository repository) {
         super(repository, USER_ROLE);
     }
 

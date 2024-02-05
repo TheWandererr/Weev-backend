@@ -1,7 +1,12 @@
 package com.pivo.weev.backend.domain.service.event;
 
 import static java.util.Collections.singleton;
+import static org.mapstruct.factory.Mappers.getMapper;
 
+import com.pivo.weev.backend.domain.mapping.domain.MeetMapper;
+import com.pivo.weev.backend.domain.mapping.domain.UserMapper;
+import com.pivo.weev.backend.domain.model.meet.Meet;
+import com.pivo.weev.backend.domain.model.user.User;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.service.event.model.PushNotificationEvent;
@@ -13,20 +18,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationEventFactory {
 
-    public PushNotificationEvent buildNotificationEvent(MeetJpa meet, Set<UserJpa> recipients, String topic, Map<String, Object> details) {
+    public PushNotificationEvent buildNotificationEvent(MeetJpa meetJpa, Set<UserJpa> recipientsJpa, String topic, Map<String, Object> details) {
+        Meet meet = getMapper(MeetMapper.class).map(meetJpa);
+        Set<User> recipients = getMapper(UserMapper.class).map(recipientsJpa);
         PushNotificationModel pushNotificationModel = new PushNotificationModel(meet, recipients, topic, details);
         return new PushNotificationEvent(pushNotificationModel);
     }
 
-    public PushNotificationEvent buildNotificationEvent(MeetJpa meet, Set<UserJpa> recipients, String topic) {
-        return buildNotificationEvent(meet, recipients, topic, null);
+    public PushNotificationEvent buildNotificationEvent(MeetJpa meetJpa, Set<UserJpa> recipientsJpa, String topic) {
+        return buildNotificationEvent(meetJpa, recipientsJpa, topic, null);
     }
 
-    public PushNotificationEvent buildNotificationEvent(MeetJpa meet, UserJpa recipient, String topic, Map<String, Object> details) {
-        return buildNotificationEvent(meet, singleton(recipient), topic, details);
+    public PushNotificationEvent buildNotificationEvent(MeetJpa meetJpa, UserJpa recipientJpa, String topic, Map<String, Object> details) {
+        return buildNotificationEvent(meetJpa, singleton(recipientJpa), topic, details);
     }
 
-    public PushNotificationEvent buildNotificationEvent(MeetJpa meet, UserJpa recipient, String topic) {
-        return buildNotificationEvent(meet, singleton(recipient), topic, null);
+    public PushNotificationEvent buildNotificationEvent(MeetJpa meetJpa, UserJpa recipientJpa, String topic) {
+        return buildNotificationEvent(meetJpa, singleton(recipientJpa), topic, null);
     }
 }

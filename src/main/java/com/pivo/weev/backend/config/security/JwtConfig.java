@@ -6,7 +6,7 @@ import com.nimbusds.jose.jwk.RSAKey.Builder;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.AuthTokensDetailsRepositoryWrapper;
+import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.AuthTokensDetailsRepository;
 import com.pivo.weev.backend.domain.service.jwt.JWTClaimsVerifier;
 import com.pivo.weev.backend.domain.service.jwt.RSAKeyService;
 import com.pivo.weev.backend.rest.service.jwt.JwtAuthenticityVerifier;
@@ -41,7 +41,7 @@ public class JwtConfig {
     }
 
     @Bean
-    public JwtAuthenticityVerifier jwtAuthenticityVerifier(AuthTokensDetailsRepositoryWrapper authTokenDetailsRepository) {
+    public JwtAuthenticityVerifier jwtAuthenticityVerifier(AuthTokensDetailsRepository authTokenDetailsRepository) {
         return new JwtAuthenticityVerifier(authTokenDetailsRepository);
     }
 }

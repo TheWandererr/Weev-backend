@@ -9,9 +9,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DeviceRepositoryWrapper extends GenericRepositoryWrapper<Long, DeviceJpa, IDeviceRepository> {
+public class DeviceRepository extends GenericRepository<Long, DeviceJpa, IDeviceRepository> {
 
-    protected DeviceRepositoryWrapper(IDeviceRepository repository) {
+    protected DeviceRepository(IDeviceRepository repository) {
         super(repository, DEVICE);
     }
 

@@ -3,6 +3,7 @@ package com.pivo.weev.backend.domain.persistance.jpa.specification.builder;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType.ANY;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.equal;
+import static com.pivo.weev.backend.domain.persistance.jpa.specification.engine.specification.SimpleSpecifications.notEqual;
 import static com.pivo.weev.backend.domain.persistance.utils.SpecificationUtils.fieldPathFrom;
 import static java.util.List.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -41,7 +42,9 @@ public class UserSpecificationBuilder {
             default -> throw new IllegalArgumentException();
         };
         SpecificationBuilder<UserJpa> specificationBuilder = new SpecificationBuilder<>();
-        return specificationBuilder.andEqual(fieldPathFrom(attribute), formattedUserName, String.class).build();
+        return specificationBuilder.andEqual(fieldPathFrom(attribute), formattedUserName, String.class)
+                                   .and(notEqual(UserJpa_.deleted, true, Boolean.class))
+                                   .build();
     }
 
     private static Specification<UserJpa> buildUserSearchSpecification(String username) {
@@ -53,6 +56,8 @@ public class UserSpecificationBuilder {
         List<Specification<UserJpa>> specifications = of(equal(UserJpa_.nickname, nickname, String.class),
                                                          equal(UserJpa_.email, email, String.class),
                                                          equal(UserJpa_.phoneNumber, phoneNumber, String.class));
-        return specificationBuilder.orAny(specifications).build();
+        return specificationBuilder.orAny(specifications)
+                                   .and(notEqual(UserJpa_.deleted, true, Boolean.class))
+                                   .build();
     }
 }

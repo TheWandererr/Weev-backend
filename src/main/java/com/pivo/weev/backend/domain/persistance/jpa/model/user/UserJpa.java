@@ -84,12 +84,14 @@ public class UserJpa extends ModifiableJpa<Long> {
     @OneToOne(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "avatar_id")
     private CloudResourceJpa avatar;
-    @OneToMany(fetch = LAZY, mappedBy = "creator")
+    @OneToMany(fetch = LAZY, mappedBy = "creator", cascade = {PERSIST, MERGE})
     private Set<MeetJpa> createdMeets = new HashSet<>();
     @OneToMany(fetch = LAZY, mappedBy = "recipient", cascade = {PERSIST, MERGE})
     private Set<NotificationJpa> notifications = new HashSet<>();
     @OneToMany(fetch = LAZY, mappedBy = "user", cascade = {PERSIST, MERGE})
     private Set<DeviceJpa> devices = new HashSet<>();
+    @Column
+    private boolean deleted = false;
 
     @Override
     public boolean equals(Object o) {
@@ -125,5 +127,13 @@ public class UserJpa extends ModifiableJpa<Long> {
 
     public boolean hasPhoneNumber() {
         return isNotBlank(phoneNumber);
+    }
+
+    @Override
+    public void logicalDeleted() {
+        getDevices().clear();
+        getNotifications().clear();
+        setActive(false);
+        setDeleted(true);
     }
 }

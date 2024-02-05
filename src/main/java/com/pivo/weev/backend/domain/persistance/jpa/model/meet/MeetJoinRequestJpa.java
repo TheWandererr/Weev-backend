@@ -1,7 +1,8 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.meet;
 
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Discriminators.MEET_JOIN;
-import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import jakarta.persistence.DiscriminatorValue;
@@ -24,7 +25,7 @@ import org.hibernate.proxy.HibernateProxy;
 @DiscriminatorValue(MEET_JOIN)
 public class MeetJoinRequestJpa extends MeetRequestJpa {
 
-    @OneToOne(cascade = ALL, orphanRemoval = true)
+    @OneToOne(cascade = {MERGE, PERSIST})
     @JoinColumn(name = "user_id")
     private UserJpa user;
 

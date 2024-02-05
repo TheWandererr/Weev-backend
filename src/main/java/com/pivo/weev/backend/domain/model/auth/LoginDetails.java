@@ -52,7 +52,7 @@ public record LoginDetails(UserJpa user,
 
     @Override
     public boolean isEnabled() {
-        return active();
+        return active() && !user.isDeleted();
     }
 
     public Long getUserId() {

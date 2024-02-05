@@ -17,9 +17,8 @@ import static com.pivo.weev.backend.utils.LocaleUtils.getAcceptedLocale;
 import static java.util.stream.Collectors.groupingBy;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.model.user.DeviceJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
+import com.pivo.weev.backend.domain.model.meet.Meet;
+import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.integration.firebase.factory.PushNotificationsFactory;
 import com.pivo.weev.backend.integration.firebase.model.PushNotificationMessage;
 import com.pivo.weev.backend.integration.firebase.service.FirebaseMessagingService;
@@ -36,12 +35,12 @@ public class PushNotificationService {
     private final FirebaseMessagingService firebaseMessagingService;
     private final PushNotificationsFactory pushNotificationsFactory;
 
-    public void notifyAll(MeetJpa meet, List<DeviceJpa> devices, String topic, Map<String, Object> bodyDetails) {
-        Map<UserJpa, List<DeviceJpa>> notifiableDevicesByUser = collect(devices, groupingBy(DeviceJpa::getUser));
-        for (List<DeviceJpa> notifiableDevices : notifiableDevicesByUser.values()) {
-            collect(notifiableDevices, groupingBy(DeviceJpa::getLang))
+    public void notifyAll(Meet meet, List<Device> devices, String topic, Map<String, Object> bodyDetails) {
+        Map<Long, List<Device>> notifiableDevicesByUser = collect(devices, groupingBy(Device::getUserId));
+        for (List<Device> notifiableDevices : notifiableDevicesByUser.values()) {
+            collect(notifiableDevices, groupingBy(Device::getLang))
                     .forEach((lang, notifiableDevicesByLang) -> {
-                        Set<String> notificationTokens = mapToSet(notifiableDevicesByLang, DeviceJpa::getPushNotificationToken);
+                        Set<String> notificationTokens = mapToSet(notifiableDevicesByLang, Device::getPushNotificationToken);
                         Object[] titleArgs = resolveTitleArgs(meet, topic, bodyDetails);
                         Object[] bodyArgs = resolveBodyArgs(meet, topic, bodyDetails);
                         PushNotificationMessage message = pushNotificationsFactory.build(
@@ -58,13 +57,13 @@ public class PushNotificationService {
         }
     }
 
-    private Object[] resolveTitleArgs(MeetJpa meet, String topic, Map<String, Object> bodyDetails) {
+    private Object[] resolveTitleArgs(Meet meet, String topic, Map<String, Object> bodyDetails) {
         return switch (topic) {
             default -> new Object[0];
         };
     }
 
-    private Object[] resolveBodyArgs(MeetJpa meet, String topic, Map<String, Object> bodyDetails) {
+    private Object[] resolveBodyArgs(Meet meet, String topic, Map<String, Object> bodyDetails) {
         return switch (topic) {
             case MEET_CONFIRMATION -> createMeetConfirmationBodyArgs(meet);
             case MEET_UPDATE_SUCCESSFUL -> createMeetUpdateSuccessfulBodyArgs(meet);
@@ -78,36 +77,36 @@ public class PushNotificationService {
         };
     }
 
-    private Object[] createMeetConfirmationBodyArgs(MeetJpa meet) {
+    private Object[] createMeetConfirmationBodyArgs(Meet meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] createMeetUpdateSuccessfulBodyArgs(MeetJpa meet) {
+    private Object[] createMeetUpdateSuccessfulBodyArgs(Meet meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] createMeetUpdateFailedBodyArgs(MeetJpa meet) {
+    private Object[] createMeetUpdateFailedBodyArgs(Meet meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] createMeetDeclinationBodyArgs(MeetJpa meet) {
+    private Object[] createMeetDeclinationBodyArgs(Meet meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] createMeetCancellationBodyArgs(MeetJpa meet) {
+    private Object[] createMeetCancellationBodyArgs(Meet meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] createNewJoinRequestBodyArgs(MeetJpa meet, Map<String, Object> bodyDetails) {
+    private Object[] createNewJoinRequestBodyArgs(Meet meet, Map<String, Object> bodyDetails) {
         String nickname = bodyDetails.getOrDefault(REQUESTER_NICKNAME, EMPTY).toString();
         return new Object[]{nickname, meet.getHeader()};
     }
 
-    private Object[] createJoinRequestConfirmationBodyArgs(MeetJpa meet) {
+    private Object[] createJoinRequestConfirmationBodyArgs(Meet meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] createJoinRequestDeclinationBodyArgs(MeetJpa meet) {
+    private Object[] createJoinRequestDeclinationBodyArgs(Meet meet) {
         return new Object[]{meet.getHeader()};
     }
 }

@@ -10,9 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MeetJoinRequestsRepositoryWrapper extends GenericRepositoryWrapper<Long, MeetJoinRequestJpa, IMeetJoinRequestsRepository> {
+public class MeetJoinRequestsRepository extends GenericRepository<Long, MeetJoinRequestJpa, IMeetJoinRequestsRepository> {
 
-    protected MeetJoinRequestsRepositoryWrapper(IMeetJoinRequestsRepository repository) {
+    protected MeetJoinRequestsRepository(IMeetJoinRequestsRepository repository) {
         super(repository, MEET_REQUEST);
     }
 
@@ -26,5 +26,9 @@ public class MeetJoinRequestsRepositoryWrapper extends GenericRepositoryWrapper<
 
     public boolean existsByMeetIdAndUserId(Long meetId, Long userId) {
         return repository.existsByMeetIdAndUserId(meetId, userId);
+    }
+
+    public void deleteAllByUserId(Long userId) {
+        repository.deleteAllByUserId(userId);
     }
 }
