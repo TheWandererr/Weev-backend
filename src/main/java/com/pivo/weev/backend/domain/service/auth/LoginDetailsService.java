@@ -5,11 +5,11 @@ import static com.pivo.weev.backend.utils.Constants.ErrorCodes.AUTHENTICATION_DE
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.CREDENTIALS_ERROR;
 
 import com.pivo.weev.backend.domain.model.auth.LoginDetails;
+import com.pivo.weev.backend.domain.model.exception.AuthenticationDeniedException;
 import com.pivo.weev.backend.domain.service.user.UserResourceService;
 import com.pivo.weev.backend.rest.utils.HttpServletUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,6 +34,6 @@ public class LoginDetailsService implements UserDetailsService {
 
     private String getDeviceId(HttpServletRequest httpServletRequest) {
         return HttpServletUtils.getDeviceId(httpServletRequest)
-                               .orElseThrow(() -> new InternalAuthenticationServiceException(AUTHENTICATION_DENIED));
+                               .orElseThrow(() -> new AuthenticationDeniedException(AUTHENTICATION_DENIED));
     }
 }

@@ -6,6 +6,7 @@ import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
+import com.pivo.weev.backend.domain.model.exception.AuthenticationDeniedException;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.persistance.jpa.exception.ResourceNotFoundException;
 import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
@@ -26,7 +27,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.AuthorizationServiceException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -73,8 +73,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                              .body(body);
     }
 
-    @ExceptionHandler(value = InternalAuthenticationServiceException.class)
-    public ResponseEntity<BaseResponse> handleInternalAuthenticationServiceException(InternalAuthenticationServiceException exception) {
+    @ExceptionHandler(value = AuthenticationDeniedException.class)
+    public ResponseEntity<BaseResponse> handleInternalAuthenticationServiceException(AuthenticationDeniedException exception) {
         NotificationRest notification = notificationRestFactory.forbidden(exception.getMessage());
         BaseResponse body = new BaseResponse(notification, ResponseMessage.FORBIDDEN);
         logger.error(applicationLoggingHelper.buildLoggingError(exception, null));
