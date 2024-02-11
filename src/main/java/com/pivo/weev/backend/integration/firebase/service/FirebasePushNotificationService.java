@@ -1,13 +1,13 @@
 package com.pivo.weev.backend.integration.firebase.service;
 
 import com.pivo.weev.backend.integration.firebase.client.MessagingClient;
-import com.pivo.weev.backend.integration.firebase.model.PushNotificationMessage;
+import com.pivo.weev.backend.integration.firebase.model.notification.PushNotificationMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service()
 @RequiredArgsConstructor
-public class FirebaseMessagingService {
+public class FirebasePushNotificationService {
 
     private final MessagingClient client;
 

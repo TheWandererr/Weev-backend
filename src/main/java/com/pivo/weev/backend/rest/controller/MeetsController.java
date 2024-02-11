@@ -82,7 +82,6 @@ public class MeetsController {
     @ResponseStatus(value = CREATED)
     public BaseResponse create(@Valid @ModelAttribute MeetSaveRequest request) {
         CreatableMeet sample = getMapper(CreatableMeetMapper.class).map(request);
-        sample.setUpdatePhoto(true);
         meetOperationsService.create(sample);
         return new BaseResponse(ResponseMessage.CREATED);
     }

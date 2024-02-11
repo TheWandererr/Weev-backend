@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CloudStorageService {
+public class FirebaseCloudStorageService {
 
     private final CloudStorageClient client;
 

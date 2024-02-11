@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.integration.mapping.firebase;
 
 import com.google.firebase.messaging.Notification;
-import com.pivo.weev.backend.integration.firebase.model.PushNotificationMessage;
+import com.pivo.weev.backend.integration.firebase.model.notification.PushNotificationMessage;
 import org.mapstruct.Mapper;
 
 @Mapper

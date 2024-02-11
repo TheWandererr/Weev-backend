@@ -27,6 +27,7 @@ public class FirebaseApplication {
                                      .setCredentials(googleCredentials)
                                      .setStorageBucket(properties.getStorageBucket())
                                      .setServiceAccountId(properties.getEmail())
+                                     .setDatabaseUrl(properties.getDataBaseUrl())
                                      .build();
         this.instance = FirebaseApp.initializeApp(options);
     }

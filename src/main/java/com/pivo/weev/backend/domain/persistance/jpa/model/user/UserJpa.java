@@ -6,10 +6,8 @@ import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.U
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.USER_PASSWORD;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.USER_PHONE_NUMBER;
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.CascadeType.DETACH;
 import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
-import static jakarta.persistence.CascadeType.REFRESH;
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static java.util.Objects.nonNull;
@@ -79,7 +77,7 @@ public class UserJpa extends ModifiableJpa<Long> {
                     @Index(name = "meet_members_user_id_index", columnList = "user_id"),
             }
     )
-    @ManyToMany(cascade = {DETACH, MERGE, PERSIST, REFRESH})
+    @ManyToMany(cascade = {MERGE, PERSIST}, fetch = LAZY)
     private Set<MeetJpa> participatedMeets = new HashSet<>();
     @OneToOne(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "avatar_id")

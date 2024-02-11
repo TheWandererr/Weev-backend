@@ -16,6 +16,7 @@ import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.meet.CreatableMeet;
 import com.pivo.weev.backend.domain.model.meet.Restrictions.Availability;
+import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.CategoryJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
@@ -62,6 +63,7 @@ public class MeetOperationsService {
     public void create(CreatableMeet sample) {
         setTimeZones(sample);
         meetOperationsValidator.validateCreation(sample);
+        sample.setUpdatePhoto(true);
         MeetJpa meet = preparePersistableMeet(sample);
         meetRepository.save(meet);
         if (sample.isSaveAsTemplate()) {
@@ -79,11 +81,12 @@ public class MeetOperationsService {
 
     private MeetJpa preparePersistableMeet(CreatableMeet sample) {
         UserJpa creator = userResourceService.fetchUserJpa(getUserId());
-        MeetJpa meetJpa = new MeetJpa(creator);
+        CategoryJpa category = resolveCategory(sample);
+        SubcategoryJpa subcategory = resolveSubcategory(category, sample);
+        LocationJpa location = locationService.resolveLocation(sample);
+        MeetJpa meetJpa = new MeetJpa(creator, category, subcategory);
+        meetJpa.setLocation(location);
         getMapper(MeetJpaMapper.class).map(sample, meetJpa);
-        meetJpa.setLocation(locationService.resolveLocation(sample));
-        meetJpa.setCategory(resolveCategory(sample));
-        meetJpa.setSubcategory(resolveSubcategory(meetJpa.getCategory(), sample));
         meetPhotoService.updatePhoto(sample, meetJpa);
         return meetJpa;
     }

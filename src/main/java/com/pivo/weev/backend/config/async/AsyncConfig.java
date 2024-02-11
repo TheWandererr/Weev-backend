@@ -23,6 +23,11 @@ public class AsyncConfig {
     }
 
     @Bean
+    public ThreadPoolTaskExecutor pushNotificationsExecutor(ExecutorProperties pushNotificationsExecutorProperties, TaskDecorator taskDecorator) {
+        return initExecutor(pushNotificationsExecutorProperties, taskDecorator);
+    }
+
+    @Bean
     @ConfigurationProperties(prefix = "application.mail.async.executor")
     public ExecutorProperties mailExecutorProperties() {
         return new ExecutorProperties();
@@ -31,6 +36,12 @@ public class AsyncConfig {
     @Bean
     @ConfigurationProperties(prefix = "application.common.async.executor")
     public ExecutorProperties commonExecutorProperties() {
+        return new ExecutorProperties();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "application.push.notification.async.executor")
+    public ExecutorProperties pushNotificationsExecutorProperties() {
         return new ExecutorProperties();
     }
 

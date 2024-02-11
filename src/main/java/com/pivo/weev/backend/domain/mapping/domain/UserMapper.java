@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @DecoratedWith(UserMapperDecorator.class)
-@Mapper(uses = {ImageMapper.class, ContactsMapper.class})
+@Mapper(uses = {ImageMapper.class, ContactsMapper.class, DeviceMapper.class})
 public interface UserMapper {
 
     @Mapping(target = "contacts", source = "source")

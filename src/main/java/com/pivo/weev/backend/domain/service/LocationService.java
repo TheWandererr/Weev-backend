@@ -27,10 +27,10 @@ public class LocationService {
     }
 
     private LocationJpa createLocation(Location sample) {
-        LocationJpa locationJpa = getMapper(LocationJpaMapper.class).map(sample);
+        LocationJpa location = getMapper(LocationJpaMapper.class).map(sample);
         MapPoint point = sample.getPoint();
         GeoHash geoHash = withCharacterPrecision(point.getLtd(), point.getLng(), 12);
-        locationJpa.setGeoHash(geoHash.toBase32());
-        return locationJpa;
+        location.setGeoHash(geoHash.toBase32());
+        return location;
     }
 }

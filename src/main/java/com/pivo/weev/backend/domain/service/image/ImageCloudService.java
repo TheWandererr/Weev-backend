@@ -5,7 +5,7 @@ import static org.mapstruct.factory.Mappers.getMapper;
 import com.google.cloud.storage.Blob;
 import com.pivo.weev.backend.domain.model.common.CloudResource;
 import com.pivo.weev.backend.domain.model.file.UploadableImage;
-import com.pivo.weev.backend.integration.firebase.service.CloudStorageService;
+import com.pivo.weev.backend.integration.firebase.service.FirebaseCloudStorageService;
 import com.pivo.weev.backend.integration.mapping.domain.CloudResourceMapper;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ImageCloudService {
 
-    private final CloudStorageService cloudService;
+    private final FirebaseCloudStorageService cloudService;
 
     public CloudResource upload(UploadableImage source) {
         Blob blob = cloudService.upload(source);

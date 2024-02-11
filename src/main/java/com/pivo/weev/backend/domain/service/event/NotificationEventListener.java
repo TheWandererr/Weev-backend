@@ -23,12 +23,12 @@ public class NotificationEventListener {
     @EventListener
     public void onPushNotificationEventPublishing(PushNotificationEvent event) {
         PushNotificationModel model = event.getSource();
-        List<Device> devices = flatMapToList(model.recipients(), recipient -> select(recipient.getDevices(), Device::hasPushNotificationToken));
+        List<Device> devices = flatMapToList(model.getRecipients(), recipient -> select(recipient.getDevices(), Device::hasPushNotificationToken));
         pushNotificationService.notifyAll(
-                model.meet(),
+                model.getMeet(),
                 devices,
-                model.topic(),
-                model.details()
+                model.getTopic(),
+                model.getDetails()
         );
     }
 }

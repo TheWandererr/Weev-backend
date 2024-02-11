@@ -98,9 +98,11 @@ public class MeetJpa extends ModifiableJpa<Long> {
     @OneToMany(fetch = LAZY, mappedBy = "meet")
     private Set<MeetJoinRequestJpa> requests = new HashSet<>();
 
-    public MeetJpa(UserJpa creator) {
+    public MeetJpa(UserJpa creator, CategoryJpa category, SubcategoryJpa subcategory) {
         this.creator = creator;
         creator.getCreatedMeets().add(this);
+        this.category = category;
+        this.subcategory = subcategory;
     }
 
     public Set<UserJpa> getMembers() {

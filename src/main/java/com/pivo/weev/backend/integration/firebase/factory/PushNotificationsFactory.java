@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toMap;
 
 import com.google.gson.Gson;
 import com.pivo.weev.backend.config.messaging.MessageBundle;
-import com.pivo.weev.backend.integration.firebase.model.PushNotificationMessage;
+import com.pivo.weev.backend.integration.firebase.model.notification.PushNotificationMessage;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;

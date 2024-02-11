@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.integration.firebase.model;
+package com.pivo.weev.backend.integration.firebase.model.notification;
 
 import static com.pivo.weev.backend.utils.CollectionUtils.isSingle;
 import static java.util.Objects.isNull;

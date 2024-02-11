@@ -20,8 +20,8 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.integration.firebase.factory.PushNotificationsFactory;
-import com.pivo.weev.backend.integration.firebase.model.PushNotificationMessage;
-import com.pivo.weev.backend.integration.firebase.service.FirebaseMessagingService;
+import com.pivo.weev.backend.integration.firebase.model.notification.PushNotificationMessage;
+import com.pivo.weev.backend.integration.firebase.service.FirebasePushNotificationService;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PushNotificationService {
 
-    private final FirebaseMessagingService firebaseMessagingService;
+    private final FirebasePushNotificationService firebasePushNotificationService;
     private final PushNotificationsFactory pushNotificationsFactory;
 
     public void notifyAll(Meet meet, List<Device> devices, String topic, Map<String, Object> bodyDetails) {
@@ -52,7 +52,7 @@ public class PushNotificationService {
                                 notificationTokens,
                                 getAcceptedLocale(lang)
                         );
-                        firebaseMessagingService.send(message);
+                        firebasePushNotificationService.send(message);
                     });
         }
     }

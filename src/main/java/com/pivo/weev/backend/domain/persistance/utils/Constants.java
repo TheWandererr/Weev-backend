@@ -73,17 +73,6 @@ public class Constants {
     }
 
     @UtilityClass
-    public static final class Firestore {
-
-        @UtilityClass
-        public static final class Collections {
-
-            public static final String CONFIGS = "configs";
-        }
-
-    }
-
-    @UtilityClass
     public static final class UserRoles {
 
         public static final String USER = "USER";
@@ -94,5 +83,21 @@ public class Constants {
 
         public static final String MEET_JOIN = "join";
         public static final String MEET_NOTIFICATION = "meet";
+    }
+
+    @UtilityClass
+    public static final class FirebaseDatabase {
+
+        public static final class Children {
+
+            public static final String CHATS = "chats";
+        }
+
+        public static final class References {
+
+            public static final String COMMON = "common/storage";
+        }
+
+
     }
 }

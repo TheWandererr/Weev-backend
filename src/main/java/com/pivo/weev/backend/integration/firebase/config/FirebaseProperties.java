@@ -26,6 +26,7 @@ public class FirebaseProperties {
     private String storageBucket;
     private Integer connectTimeout;
     private Integer readTimeout;
+    private String dataBaseUrl;
 
     private Map<String, String> credentials;
 
@@ -60,6 +61,10 @@ public class FirebaseProperties {
 
     public String getStorageBucket() {
         return storageBucket;
+    }
+
+    public String getDataBaseUrl() {
+        return dataBaseUrl;
     }
 
     public String getEmail() {

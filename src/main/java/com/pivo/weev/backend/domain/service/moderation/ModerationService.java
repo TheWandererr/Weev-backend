@@ -11,6 +11,8 @@ import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.ME
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static org.mapstruct.factory.Mappers.getMapper;
 
+import com.pivo.weev.backend.domain.mapping.domain.MeetMapper;
+import com.pivo.weev.backend.domain.mapping.domain.UserMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.MeetJpaMapper;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.DeclinationReasonJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
@@ -22,6 +24,7 @@ import com.pivo.weev.backend.domain.service.event.model.PushNotificationEvent;
 import com.pivo.weev.backend.domain.service.meet.MeetPhotoService;
 import com.pivo.weev.backend.domain.service.message.NotificationService;
 import com.pivo.weev.backend.domain.service.validation.ModerationValidator;
+import com.pivo.weev.backend.integration.firebase.service.FirebaseChatService;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +45,7 @@ public class ModerationService {
     private final NotificationService notificationService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ApplicationEventFactory applicationEventFactory;
+    private final FirebaseChatService chatService;
 
     @Transactional
     public void confirmMeet(Long id) {
@@ -58,7 +62,9 @@ public class ModerationService {
     private void confirmNewMeet(MeetJpa confirmable) {
         confirmable.setModeratedBy(getUserId());
         confirmable.setStatus(CONFIRMED);
-        notify(confirmable, confirmable.getCreator(), MEET_CONFIRMATION);
+        UserJpa creator = confirmable.getCreator();
+        notify(confirmable, creator, MEET_CONFIRMATION);
+        chatService.createChat(getMapper(UserMapper.class).map(creator), getMapper(MeetMapper.class).map(confirmable));
     }
 
     private void notify(MeetJpa meet, UserJpa recipient, String topic) {
