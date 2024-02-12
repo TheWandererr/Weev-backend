@@ -21,7 +21,6 @@ import com.pivo.weev.backend.domain.utils.Constants.NotificationDetails;
 import com.pivo.weev.backend.domain.utils.Constants.NotificationTopics;
 import com.pivo.weev.backend.integration.firebase.model.chat.Chat;
 import com.pivo.weev.backend.integration.firebase.service.FirebaseChatService;
-import com.pivo.weev.backend.integration.mapping.domain.chat.ChatMapper;
 import com.pivo.weev.backend.integration.mapping.firebase.chat.ChatMessageMapper;
 import java.util.Map;
 import java.util.Set;
@@ -64,15 +63,13 @@ public class ChatService {
         return message;
     }
 
-    public com.pivo.weev.backend.domain.model.messaging.Chat createChat(UserJpa creatorJpa, MeetJpa meetJpa) {
+    public void createChat(UserJpa creatorJpa, MeetJpa meetJpa) {
         User creator = getMapper(UserMapper.class).map(creatorJpa);
         Meet meet = getMapper(MeetMapper.class).map(meetJpa);
         Chat firebaseChat = build(creator, meet);
         firebaseChatService.createChat(firebaseChat);
 
         notify(meetJpa, creatorJpa, NotificationTopics.MEET_CHAT_CREATED, firebaseChat.getId());
-
-        return getMapper(ChatMapper.class).map(firebaseChat);
     }
 
     private Chat build(User creator, Meet meet) {

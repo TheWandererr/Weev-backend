@@ -12,7 +12,6 @@ import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.jpa.MeetJpaMapper;
-import com.pivo.weev.backend.domain.model.messaging.Chat;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.DeclinationReasonJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
@@ -26,7 +25,6 @@ import com.pivo.weev.backend.domain.service.validation.ModerationValidator;
 import com.pivo.weev.backend.domain.service.websocket.ChatService;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -48,24 +46,23 @@ public class ModerationService {
     private final ChatService chatService;
 
     @Transactional
-    public Optional<Chat> confirmMeet(Long id) {
+    public void confirmMeet(Long id) {
         MeetJpa confirmable = meetRepository.fetch(id);
         moderationValidator.validateConfirmation(confirmable);
         if (confirmable.hasUpdatableTarget()) {
             MeetJpa updatable = confirmable.getUpdatableTarget();
             confirmMeetUpdate(confirmable, updatable);
-            return Optional.empty();
         } else {
-            return Optional.of(confirmNewMeet(confirmable));
+            confirmNewMeet(confirmable);
         }
     }
 
-    private Chat confirmNewMeet(MeetJpa confirmable) {
+    private void confirmNewMeet(MeetJpa confirmable) {
         confirmable.setModeratedBy(getUserId());
         confirmable.setStatus(CONFIRMED);
         UserJpa creator = confirmable.getCreator();
         notify(confirmable, creator, MEET_CONFIRMATION);
-        return chatService.createChat(creator, confirmable);
+        chatService.createChat(creator, confirmable);
     }
 
     private void notify(MeetJpa meet, UserJpa recipient, String topic) {
