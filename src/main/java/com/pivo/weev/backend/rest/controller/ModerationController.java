@@ -5,6 +5,7 @@ import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.model.meet.SearchParams;
+import com.pivo.weev.backend.domain.model.messaging.Chat;
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
 import com.pivo.weev.backend.domain.service.moderation.ModerationService;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
@@ -15,10 +16,14 @@ import com.pivo.weev.backend.rest.model.request.MeetDeclineRequest;
 import com.pivo.weev.backend.rest.model.request.MeetsSearchRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.DeclinationReasonsResponse;
+import com.pivo.weev.backend.rest.model.response.MeetConfirmationResponse;
 import com.pivo.weev.backend.rest.model.response.MeetsSearchResponse;
+import com.pivo.weev.backend.websocket.mapping.ws.ChatWsMapper;
+import com.pivo.weev.backend.websocket.model.ChatWs;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,9 +52,10 @@ public class ModerationController {
     }
 
     @PutMapping("/meets/{id}/confirmation")
-    public BaseResponse confirmMeet(@PathVariable Long id) {
-        moderationService.confirmMeet(id);
-        return new BaseResponse();
+    public MeetConfirmationResponse confirmMeet(@PathVariable Long id) {
+        Optional<Chat> chat = moderationService.confirmMeet(id);
+        ChatWs chatWs = chat.map(getMapper(ChatWsMapper.class)::map).orElse(null);
+        return new MeetConfirmationResponse(chatWs);
     }
 
     @PutMapping("/meets/{id}/declination")

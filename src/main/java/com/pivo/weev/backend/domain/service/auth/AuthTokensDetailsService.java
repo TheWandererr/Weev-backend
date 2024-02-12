@@ -7,9 +7,7 @@ import com.pivo.weev.backend.domain.model.auth.AuthTokens;
 import com.pivo.weev.backend.domain.model.auth.LoginDetails;
 import com.pivo.weev.backend.domain.persistance.jpa.model.auth.AuthTokensDetailsJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
-import com.pivo.weev.backend.domain.persistance.jpa.model.user.DeviceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.AuthTokensDetailsRepository;
-import com.pivo.weev.backend.domain.service.user.DeviceService;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -29,13 +27,9 @@ public class AuthTokensDetailsService {
 
     private final AuthTokensDetailsRepository authTokenDetailsRepository;
 
-    private final DeviceService deviceService;
-
-    @Transactional
     public AuthTokensDetailsJpa createTokensDetails(LoginDetails loginDetails, AuthTokens authTokens) {
-        DeviceJpa device = deviceService.resolveDevice(loginDetails.user(), loginDetails.deviceId());
         AuthTokensDetailsJpa tokenDetails = AuthTokensDetailsJpa.builder()
-                                                                .device(device)
+                                                                .device(loginDetails.getDevice())
                                                                 .serial(loginDetails.serial())
                                                                 .expiresAt(authTokens.getRefreshToken().getExpiresAt())
                                                                 .build();
@@ -44,7 +38,7 @@ public class AuthTokensDetailsService {
 
     @Transactional
     public boolean updateTokensDetails(LoginDetails loginDetails, AuthTokens authTokens) {
-        AuthTokensDetailsJpa tokenDetails = authTokenDetailsRepository.findByUserIdAndDeviceId(loginDetails.getUserId(), loginDetails.deviceId());
+        AuthTokensDetailsJpa tokenDetails = authTokenDetailsRepository.findByUserIdAndDeviceId(loginDetails.getUserId(), loginDetails.getDeviceId());
         if (isNull(tokenDetails)) {
             return false;
         }

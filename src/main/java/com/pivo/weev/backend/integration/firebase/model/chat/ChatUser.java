@@ -1,12 +1,16 @@
 package com.pivo.weev.backend.integration.firebase.model.chat;
 
 import java.io.Serializable;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class User implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+public class ChatUser implements Serializable {
 
     private long id;
     private String nickname;

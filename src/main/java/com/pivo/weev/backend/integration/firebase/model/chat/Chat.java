@@ -5,22 +5,30 @@ import static java.util.Objects.nonNull;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Chat {
 
-    private String id;
+    private Long id;
     private String creatorId;
-    private String topic;
+    private String name;
     private String avatarUrl;
-    private List<Message> messages = new ArrayList<>();
-    private List<User> users = new ArrayList<>();
+    private List<ChatMessage> messages = new ArrayList<>();
+    private List<ChatUser> users = new ArrayList<>();
 
-    public void addUser(User user) {
+    public void addUser(ChatUser user) {
         if (nonNull(user)) {
             getUsers().add(user);
+        }
+    }
+
+    public void addMessage(ChatMessage message) {
+        if (nonNull(message)) {
+            getMessages().add(message);
         }
     }
 }

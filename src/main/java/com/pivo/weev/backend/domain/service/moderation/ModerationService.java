@@ -11,9 +11,8 @@ import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.ME
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static org.mapstruct.factory.Mappers.getMapper;
 
-import com.pivo.weev.backend.domain.mapping.domain.MeetMapper;
-import com.pivo.weev.backend.domain.mapping.domain.UserMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.MeetJpaMapper;
+import com.pivo.weev.backend.domain.model.messaging.Chat;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.DeclinationReasonJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
@@ -24,9 +23,10 @@ import com.pivo.weev.backend.domain.service.event.model.PushNotificationEvent;
 import com.pivo.weev.backend.domain.service.meet.MeetPhotoService;
 import com.pivo.weev.backend.domain.service.message.NotificationService;
 import com.pivo.weev.backend.domain.service.validation.ModerationValidator;
-import com.pivo.weev.backend.integration.firebase.service.FirebaseChatService;
+import com.pivo.weev.backend.domain.service.websocket.ChatService;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -45,26 +45,27 @@ public class ModerationService {
     private final NotificationService notificationService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ApplicationEventFactory applicationEventFactory;
-    private final FirebaseChatService chatService;
+    private final ChatService chatService;
 
     @Transactional
-    public void confirmMeet(Long id) {
+    public Optional<Chat> confirmMeet(Long id) {
         MeetJpa confirmable = meetRepository.fetch(id);
         moderationValidator.validateConfirmation(confirmable);
         if (confirmable.hasUpdatableTarget()) {
             MeetJpa updatable = confirmable.getUpdatableTarget();
             confirmMeetUpdate(confirmable, updatable);
+            return Optional.empty();
         } else {
-            confirmNewMeet(confirmable);
+            return Optional.of(confirmNewMeet(confirmable));
         }
     }
 
-    private void confirmNewMeet(MeetJpa confirmable) {
+    private Chat confirmNewMeet(MeetJpa confirmable) {
         confirmable.setModeratedBy(getUserId());
         confirmable.setStatus(CONFIRMED);
         UserJpa creator = confirmable.getCreator();
         notify(confirmable, creator, MEET_CONFIRMATION);
-        chatService.createChat(getMapper(UserMapper.class).map(creator), getMapper(MeetMapper.class).map(confirmable));
+        return chatService.createChat(creator, confirmable);
     }
 
     private void notify(MeetJpa meet, UserJpa recipient, String topic) {

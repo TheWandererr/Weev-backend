@@ -84,8 +84,7 @@ public class MeetOperationsService {
         CategoryJpa category = resolveCategory(sample);
         SubcategoryJpa subcategory = resolveSubcategory(category, sample);
         LocationJpa location = locationService.resolveLocation(sample);
-        MeetJpa meetJpa = new MeetJpa(creator, category, subcategory);
-        meetJpa.setLocation(location);
+        MeetJpa meetJpa = new MeetJpa(creator, category, subcategory, location);
         getMapper(MeetJpaMapper.class).map(sample, meetJpa);
         meetPhotoService.updatePhoto(sample, meetJpa);
         return meetJpa;

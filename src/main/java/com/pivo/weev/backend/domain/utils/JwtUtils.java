@@ -15,6 +15,10 @@ public final class JwtUtils {
         return jwt.getClaim(Claims.USER_ID);
     }
 
+    public static String getNickname(Jwt jwt) {
+        return jwt.getClaim(Claims.NICKNAME);
+    }
+
     public static String getSerial(Jwt jwt) {
         return jwt.getClaim(Claims.SERIAL);
     }

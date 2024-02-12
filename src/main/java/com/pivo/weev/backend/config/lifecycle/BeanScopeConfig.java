@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.SimpleThreadScope;
 
 @Configuration
-public class BeanScopeConfigurer {
+public class BeanScopeConfig {
 
     @Bean
     public static CustomScopeConfigurer customScopeConfigurer() {

@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.integration.mapping.firebase;
+package com.pivo.weev.backend.integration.mapping.firebase.notification;
 
 import static com.pivo.weev.backend.utils.CollectionUtils.first;
 

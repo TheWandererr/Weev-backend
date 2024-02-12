@@ -4,6 +4,8 @@ import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.R
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationHeaders.BODY;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationHeaders.TITLE;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CANCELLATION;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CHAT_CREATED;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CHAT_NEW_MESSAGE;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CONFIRMATION;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_DECLINATION;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_JOIN_REQUEST_CONFIRMATION;
@@ -19,6 +21,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.model.user.Device;
+import com.pivo.weev.backend.domain.utils.Constants.NotificationDetails;
 import com.pivo.weev.backend.integration.firebase.factory.PushNotificationsFactory;
 import com.pivo.weev.backend.integration.firebase.model.notification.PushNotificationMessage;
 import com.pivo.weev.backend.integration.firebase.service.FirebasePushNotificationService;
@@ -59,8 +62,18 @@ public class PushNotificationService {
 
     private Object[] resolveTitleArgs(Meet meet, String topic, Map<String, Object> bodyDetails) {
         return switch (topic) {
+            case MEET_CHAT_CREATED -> createMeetChatCreatedTitleArgs(meet);
+            case MEET_CHAT_NEW_MESSAGE -> createMeetChatNewMessageTitleArgs(meet);
             default -> new Object[0];
         };
+    }
+
+    private Object[] createMeetChatCreatedTitleArgs(Meet meet) {
+        return new Object[]{meet.getHeader()};
+    }
+
+    private Object[] createMeetChatNewMessageTitleArgs(Meet meet) {
+        return new Object[]{meet.getHeader()};
     }
 
     private Object[] resolveBodyArgs(Meet meet, String topic, Map<String, Object> bodyDetails) {
@@ -73,6 +86,8 @@ public class PushNotificationService {
             case MEET_NEW_JOIN_REQUEST -> createNewJoinRequestBodyArgs(meet, bodyDetails);
             case MEET_JOIN_REQUEST_CONFIRMATION -> createJoinRequestConfirmationBodyArgs(meet);
             case MEET_JOIN_REQUEST_DECLINATION -> createJoinRequestDeclinationBodyArgs(meet);
+            case MEET_CHAT_CREATED -> createMeetChatCreatedBodyArgs();
+            case MEET_CHAT_NEW_MESSAGE -> createMeetChatNewMessageBodyArgs(bodyDetails);
             default -> new Object[0];
         };
     }
@@ -108,5 +123,13 @@ public class PushNotificationService {
 
     private Object[] createJoinRequestDeclinationBodyArgs(Meet meet) {
         return new Object[]{meet.getHeader()};
+    }
+
+    private Object[] createMeetChatCreatedBodyArgs() {
+        return new Object[0];
+    }
+
+    private Object[] createMeetChatNewMessageBodyArgs(Map<String, Object> bodyDetails) {
+        return new Object[]{bodyDetails.get(NotificationDetails.TEXT)};
     }
 }

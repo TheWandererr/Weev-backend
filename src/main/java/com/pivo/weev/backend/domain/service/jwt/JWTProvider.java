@@ -48,7 +48,7 @@ public class JWTProvider {
                                              .issuer(loginDetails.issuer())
                                              .issuedAt(now)
                                              .expiresAt(now.plus(expiresAtAmount, HOURS))
-                                             .claim(Claims.DEVICE_ID, loginDetails.deviceId())
+                                             .claim(Claims.DEVICE_ID, loginDetails.getDeviceId())
                                              .claim(Claims.USER_ID, loginDetails.getUserId())
                                              .claim(Claims.SCOPE, scope)
                                              .claim(Claims.SERIAL, loginDetails.serial())

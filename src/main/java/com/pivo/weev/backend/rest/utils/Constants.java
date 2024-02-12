@@ -69,7 +69,7 @@ public class Constants {
         public static final String DEVICE_ID = "deviceId";
         public static final String USER_ID = "userId";
         public static final String SCOPE = "scope";
-        public static final String MODE = "mode";
+        public static final String NICKNAME = "nickname";
         public static final String SERIAL = "serial";
     }
 

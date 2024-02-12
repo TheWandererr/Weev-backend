@@ -46,7 +46,11 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
         try {
             LoginDetails loginDetails = getLoginDetails(authentication);
             AuthTokens authTokens = authTokensService.generateTokens(loginDetails);
-            updateTokenDetails(loginDetails, authTokens);
+            if (loginDetails.isNewDevice()) {
+                authTokensDetailsService.createTokensDetails(loginDetails, authTokens);
+            } else {
+                authTokensDetailsService.updateTokensDetails(loginDetails, authTokens);
+            }
             UserSnapshotRest user = getMapper(UserSnapshotRestMapper.class).map(authTokens.getAccessToken());
             LoginResponse loginResponse = new LoginResponse(authTokens.getAccessTokenValue(), authTokens.getRefreshTokenValue(), user);
             writeResponse(loginResponse, response, OK, mapper);
@@ -54,13 +58,6 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
             LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
             BaseResponse loginResponse = new BaseResponse(ResponseMessage.UNAUTHORIZED);
             writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, mapper);
-        }
-    }
-
-    private void updateTokenDetails(LoginDetails loginDetails, AuthTokens authTokens) {
-        boolean updated = authTokensDetailsService.updateTokensDetails(loginDetails, authTokens);
-        if (!updated) {
-            authTokensDetailsService.createTokensDetails(loginDetails, authTokens);
         }
     }
 }

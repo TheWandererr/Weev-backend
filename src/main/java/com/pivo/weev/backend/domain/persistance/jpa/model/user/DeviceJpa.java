@@ -38,16 +38,13 @@ public class DeviceJpa extends SequencedPersistable<Long> {
     @OneToOne(cascade = ALL, orphanRemoval = true, optional = false)
     @JoinColumn(name = "settings_id")
     private DeviceSettingsJpa settings = new DeviceSettingsJpa();
-
-    public DeviceJpa(UserJpa user, String internalId) {
-        this.internalId = internalId;
-        this.user = user;
-    }
+    private transient boolean created;
 
     public DeviceJpa(UserJpa user, String internalId, String lang) {
         this.user = user;
         this.internalId = internalId;
         this.settings = new DeviceSettingsJpa(lang);
+        this.created = true;
     }
 
     public boolean hasPushNotificationToken() {

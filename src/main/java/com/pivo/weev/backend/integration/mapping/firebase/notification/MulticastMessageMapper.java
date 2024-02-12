@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.integration.mapping.firebase;
+package com.pivo.weev.backend.integration.mapping.firebase.notification;
 
 import com.google.firebase.messaging.MulticastMessage;
 import com.pivo.weev.backend.integration.firebase.model.notification.PushNotificationMessage;

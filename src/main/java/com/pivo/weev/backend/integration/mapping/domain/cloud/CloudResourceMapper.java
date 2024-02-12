@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.integration.mapping.domain;
+package com.pivo.weev.backend.integration.mapping.domain.cloud;
 
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 
