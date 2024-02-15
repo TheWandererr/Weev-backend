@@ -2,6 +2,7 @@ package com.pivo.weev.backend.utils;
 
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static java.util.concurrent.CompletableFuture.allOf;
+import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
 
@@ -20,6 +21,10 @@ public final class AsyncUtils {
         return supplyAsync(supplier, executor).exceptionally(errorHandler);
     }
 
+    public static CompletableFuture<Void> async(Executor executor, Runnable task, Function<Throwable, Void> errorHandler) {
+        return runAsync(task, executor).exceptionally(errorHandler);
+    }
+
     public static <R> List<R> collectAll(Executor executor, List<Supplier<R>> suppliers, Function<Throwable, R> errorHandler) {
         List<CompletableFuture<R>> futures = mapToList(suppliers, supplier -> async(executor, supplier, errorHandler));
         return allOf(futures.toArray(CompletableFuture[]::new))
@@ -27,10 +32,15 @@ public final class AsyncUtils {
                 .join();
     }
 
-    private <R> List<R> joinAll(List<CompletableFuture<R>> futures) {
+    private static <R> List<R> joinAll(List<CompletableFuture<R>> futures) {
         return futures.stream()
                       .map(CompletableFuture::join)
                       .filter(Objects::nonNull)
                       .collect(toList());
+    }
+
+    public static void runAll(Executor executor, List<Runnable> runnables, Function<Throwable, Void> errorHandler) {
+        List<CompletableFuture<Void>> futures = mapToList(runnables, supplier -> async(executor, supplier, errorHandler));
+        allOf(futures.toArray(CompletableFuture[]::new)).join();
     }
 }
