@@ -57,6 +57,12 @@ public class Constants {
     }
 
     @UtilityClass
+    public static final class Headers {
+
+        public static final String DEVICE_ID = "deviceId";
+    }
+
+    @UtilityClass
     public static final class ResponseDetails {
 
         public static final String REASON = "reason";
