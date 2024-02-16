@@ -21,7 +21,7 @@ public class JwtAuthenticityVerifier {
 
     public JwtVerificationResult verify(Jwt jwt, String deviceId) {
         try {
-            AuthTokensDetailsJpa tokenDetails = authTokenDetailsRepository.findByUserIdAndDeviceId(getUserId(jwt), getDeviceId(jwt));
+            AuthTokensDetailsJpa tokenDetails = authTokenDetailsRepository.findByUserIdAndDeviceInternalId(getUserId(jwt), getDeviceId(jwt));
             if (isNull(tokenDetails)) {
                 return new JwtVerificationResult(false, AUTHORIZATION_TOKEN_NOT_FOUND_ERROR);
             }

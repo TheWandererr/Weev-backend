@@ -36,7 +36,6 @@ import com.pivo.weev.backend.rest.service.jwt.JwtAuthenticityVerifier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -50,7 +49,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @RequiredArgsConstructor
-@Order(1)
 public class WebSecurityConfig {
 
     private final LoginDetailsService loginDetailsService;

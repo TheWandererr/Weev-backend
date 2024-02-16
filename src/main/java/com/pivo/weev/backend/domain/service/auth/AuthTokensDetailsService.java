@@ -38,7 +38,7 @@ public class AuthTokensDetailsService {
 
     @Transactional
     public boolean updateTokensDetails(LoginDetails loginDetails, AuthTokens authTokens) {
-        AuthTokensDetailsJpa tokenDetails = authTokenDetailsRepository.findByUserIdAndDeviceId(loginDetails.getUserId(), loginDetails.getDeviceId());
+        AuthTokensDetailsJpa tokenDetails = authTokenDetailsRepository.findByUserIdAndDeviceInternalId(loginDetails.getUserId(), loginDetails.getDeviceId());
         if (isNull(tokenDetails)) {
             return false;
         }
