@@ -102,6 +102,7 @@ public class Constants {
 
             public static final String TOPIC_DESTINATION = "/topic";
             public static final String APPLICATION_DESTINATION = "/app";
+            public static final String USER_DESTINATION = "/user";
 
         }
 

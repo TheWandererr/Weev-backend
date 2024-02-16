@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.3</version>
+        <version>3.2.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.pivo</groupId>
@@ -15,25 +15,23 @@
     <description>WeevBackend</description>
     <properties>
         <java.version>17</java.version>
-        <spring.boot.starter.version>3.1.3</spring.boot.starter.version>
-        <spring-security-oauth2.version>6.1.3</spring-security-oauth2.version>
+        <spring.boot.starter.version>3.2.2</spring.boot.starter.version>
+        <spring-security-oauth2.version>6.2.1</spring-security-oauth2.version>
         <apache.common.lang.version>3.12.0</apache.common.lang.version>
         <jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>
         <jakarta.validation-api.version>3.0.2</jakarta.validation-api.version>
         <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
+        <hibernate.version>6.4.4.Final</hibernate.version>
         <tika-core.version>2.8.0</tika-core.version>
         <bouncycastle.version>1.77</bouncycastle.version>
         <nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <hibernate.version>6.4.2.Final</hibernate.version>
-        <cloudinary.version>1.34.0</cloudinary.version>
         <jackson-jsr310.version>2.15.2</jackson-jsr310.version>
         <timeshape.version>2022g.17</timeshape.version>
         <thumbnailator.version>0.4.20</thumbnailator.version>
         <geohash.version>1.4.0</geohash.version>
         <firebase.version>9.2.0</firebase.version>
         <springdoc.version>2.3.0</springdoc.version>
-        <caffeine.version>3.1.8</caffeine.version>
     </properties>
 
     <dependencies>

@@ -49,7 +49,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class WebSecurityConfig {
 
     private final LoginDetailsService loginDetailsService;
     private final AuthTokensService authTokensService;
