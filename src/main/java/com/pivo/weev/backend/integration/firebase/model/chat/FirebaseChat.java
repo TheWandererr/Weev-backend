@@ -11,22 +11,22 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Chat {
+public class FirebaseChat {
 
     private Long id;
     private String creatorId;
     private String name;
     private String avatarUrl;
-    private List<ChatMessage> messages = new ArrayList<>();
-    private List<ChatUser> users = new ArrayList<>();
+    private List<FirebaseChatMessage> messages = new ArrayList<>();
+    private List<FirebaseChatUser> users = new ArrayList<>();
 
-    public void addUser(ChatUser user) {
+    public void addUser(FirebaseChatUser user) {
         if (nonNull(user)) {
             getUsers().add(user);
         }
     }
 
-    public void addMessage(ChatMessage message) {
+    public void addMessage(FirebaseChatMessage message) {
         if (nonNull(message)) {
             getMessages().add(message);
         }

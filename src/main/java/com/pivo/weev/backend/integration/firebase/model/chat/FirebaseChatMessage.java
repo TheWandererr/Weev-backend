@@ -11,11 +11,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatMessage implements Serializable {
+public class FirebaseChatMessage implements Serializable {
 
     private String text;
     private String code;
     private String type;
-    private ChatUser sender;
+    private FirebaseChatUser sender;
     private Date createdAt;
 }

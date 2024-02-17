@@ -60,7 +60,7 @@ public class MeetTemplatesService {
     }
 
     private MeetJpa createAuthorsCopy(MeetJpa meet) {
-        UserJpa user = userResourceService.fetchUserJpa(getUserId());
+        UserJpa user = userResourceService.fetchJpa(getUserId());
         MeetJpa meetCopy = SerializationUtils.clone(meet);
         meetCopy.setCreator(user);
         return meetCopy;

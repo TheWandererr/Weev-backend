@@ -80,7 +80,7 @@ public class MeetOperationsService {
     }
 
     private MeetJpa preparePersistableMeet(CreatableMeet sample) {
-        UserJpa creator = userResourceService.fetchUserJpa(getUserId());
+        UserJpa creator = userResourceService.fetchJpa(getUserId());
         CategoryJpa category = resolveCategory(sample);
         SubcategoryJpa subcategory = resolveSubcategory(category, sample);
         LocationJpa location = locationService.resolveLocation(sample);
@@ -173,7 +173,7 @@ public class MeetOperationsService {
     public void join(Long meetId, Long joinerId) {
         MeetJpa meet = meetRepository.fetch(meetId);
         meetOperationsValidator.validateJoin(meet, joinerId, PUBLIC);
-        UserJpa joiner = userResourceService.fetchUserJpa(joinerId);
+        UserJpa joiner = userResourceService.fetchJpa(joinerId);
         meet.addMember(joiner);
     }
 

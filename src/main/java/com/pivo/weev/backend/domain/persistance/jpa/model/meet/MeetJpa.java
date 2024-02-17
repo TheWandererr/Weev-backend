@@ -23,7 +23,6 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ModifiableJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
@@ -60,26 +59,24 @@ public class MeetJpa extends ModifiableJpa<Long> {
     private UserJpa creator;
     @Column(nullable = false, name = MEET_HEADER)
     private String header;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = LAZY)
     @JoinColumn(name = "category_id")
     private CategoryJpa category;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = LAZY)
     @JoinColumn(name = "subcategory_id")
     private SubcategoryJpa subcategory;
     @ManyToOne(fetch = LAZY, cascade = {PERSIST, MERGE}, optional = false)
     @JoinColumn(name = "location_id")
     private LocationJpa location;
-    @Embedded
-    private EntryFeeJpa entryFee;
     private Integer membersLimit;
     @Lob
     private String description;
-    @OneToOne(cascade = ALL, orphanRemoval = true)
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinColumn(name = "photo_id")
     private CloudResourceJpa photo;
     private Boolean reminded = false;
     private Long moderatedBy;
-    @OneToOne(cascade = ALL, orphanRemoval = true)
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinColumn(name = "restrictions_id")
     private RestrictionsJpa restrictions = new RestrictionsJpa();
     private LocalDateTime localStartDateTime;

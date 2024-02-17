@@ -1,7 +1,7 @@
 const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8080/ws',
     connectHeaders: {
-        authorization: 'eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJrYXJ0ZW0yMDEzQHlhbmRleC5ieSIsImF1ZCI6Ii9hcGkiLCJzZXJpYWwiOiI5OTEyMmU3Mi00YTY3LTRlMmItOTRhYy1hMWRiODk5ZTk1ZGUiLCJzY29wZSI6InJlYWQgd3JpdGUgbW9kZXJhdGlvbiIsImlzcyI6Ii9hdXRoL2xvZ2luIiwibmlja25hbWUiOiJib2IyMjgiLCJleHAiOjE3MDgyMDQ2NTAsImlhdCI6MTcwODIwMTA1MCwiZGV2aWNlSWQiOiIwMDAwIiwidXNlcklkIjo5OTl9.XcgSokrjpnu-ft3HPBafNOSavZQByJUI36ocbSX5-jog5VZayDyke93Qto3xt5y2FoolsO3RkJ4Dk451xod5uEpcWpadxbY9kX4NjTOnpQlFHvTFvIGM2oNOItXuFmGA7dnPsidamsckrF8Ij53KtFNWQqo4Rsg4PY0YQY5460qyIhaqPEpOTOS2bkjGDm09J35jTqujqkD4O_AUw20N8BBLDmc9m5z0VEBr-YyhIZL_OpZybFADCCV4DgcHZRpEwRH2QHhhNKKkDr1IC7LWc7Ei_KFa_SbvrkoRJEfz1hUt1seBo5Ie_u6D9k2B6jtlJoKrCJ3CWGYlthFSYNryiA',
+        authorization: 'eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJrYXJ0ZW0yMDEzQHlhbmRleC5ieSIsImF1ZCI6Ii9hcGkiLCJzZXJpYWwiOiIxYmY2OWQ2ZC1lMGYyLTQ1OGUtYTZmOS0zZTNmZDEzNGNmMTgiLCJzY29wZSI6InJlYWQgd3JpdGUgbW9kZXJhdGlvbiIsImlzcyI6Ii9hdXRoL2xvZ2luIiwibmlja25hbWUiOiJib2IyMjgiLCJleHAiOjE3MDgyMTU1MDIsImlhdCI6MTcwODIxMTkwMiwiZGV2aWNlSWQiOiIwMDAwIiwidXNlcklkIjo5OTl9.FrNr_E3QP_Mbip7cxrutMGMOEh7W3uA4v4G1M1co6IAKH51OVgqL_5QBw2m8Xay7bizH2_eLpg-IwoThopNIqYRoFKER4CNv9PrPj-hm1kfKpMbZsTsjiphjEpklzI-Dl5Jz8p9bV0y6rGOyMktEKzAf84Ceh73rhoIz1QSIudrRG7kASWkMr5lTyBWDG0cPGRpR-EDuSZ1dYAz-lf2s2p8LXBX-HlSO4Rq_kgaSpRZhMGfGNJwISEO1Wdg6RGvkizZJPJhAI2XEsXs7U9ovhIVjRiwaUr90LebZ-961yDHhCuzeDfNhZ16Ap74t_09QTDeG2x_1XcWQYZE96NQxWQ',
         deviceId : '0000'
     }
 });
@@ -52,8 +52,8 @@ function disconnect() {
 
 function sendName() {
     stompClient.publish({
-        destination: "/app/chats",
-        body: JSON.stringify({'id': $("#name").val()})
+        destination: "/app/chats.26",
+        body: JSON.stringify({'text': $("#name").val()})
     });
 }
 

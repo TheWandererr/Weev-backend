@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PushNotificationMessage {
+public class FirebasePushNotificationMessage {
 
     private String title;
     private String body;

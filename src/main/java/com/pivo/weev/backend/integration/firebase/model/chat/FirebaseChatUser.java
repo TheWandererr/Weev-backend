@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatUser implements Serializable {
+public class FirebaseChatUser implements Serializable {
 
     private long id;
     private String nickname;

@@ -41,7 +41,6 @@ public interface MeetJpaMapper {
         destination.setUtcStartDateTime(source.getUtcStartDateTime());
         destination.setLocalEndDateTime(source.getLocalEndDateTime());
         destination.setUtcEndDateTime(source.getUtcEndDateTime());
-        destination.setEntryFee(source.getEntryFee());
         destination.setMembersLimit(source.getMembersLimit());
         destination.setRestrictions(source.getRestrictions());
         destination.setPhoto(source.getPhoto());

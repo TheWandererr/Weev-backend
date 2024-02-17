@@ -6,7 +6,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MulticastMessage;
 import com.pivo.weev.backend.integration.firebase.application.FirebaseApplication;
-import com.pivo.weev.backend.integration.firebase.model.notification.PushNotificationMessage;
+import com.pivo.weev.backend.integration.firebase.model.notification.FirebasePushNotificationMessage;
 import com.pivo.weev.backend.integration.mapping.firebase.notification.MessageMapper;
 import com.pivo.weev.backend.integration.mapping.firebase.notification.MulticastMessageMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +23,13 @@ public class MessagingClient {
         this.api = FirebaseMessaging.getInstance(application.getInstance());
     }
 
-    @Async(value = "pushNotificationsExecutor")
-    public void send(PushNotificationMessage pushNotificationMessage) {
-        if (pushNotificationMessage.isMulticast()) {
-            MulticastMessage multicastMessage = getMapper(MulticastMessageMapper.class).map(pushNotificationMessage);
+    @Async(value = "firebasePushNotificationsExecutor")
+    public void send(FirebasePushNotificationMessage firebasePushNotificationMessage) {
+        if (firebasePushNotificationMessage.isMulticast()) {
+            MulticastMessage multicastMessage = getMapper(MulticastMessageMapper.class).map(firebasePushNotificationMessage);
             api.sendEachForMulticastAsync(multicastMessage);
         } else {
-            Message message = getMapper(MessageMapper.class).map(pushNotificationMessage);
+            Message message = getMapper(MessageMapper.class).map(firebasePushNotificationMessage);
             api.sendAsync(message);
         }
     }

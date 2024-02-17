@@ -23,8 +23,13 @@ public class AsyncConfig {
     }
 
     @Bean
-    public ThreadPoolTaskExecutor pushNotificationsExecutor(ExecutorProperties pushNotificationsExecutorProperties, TaskDecorator taskDecorator) {
-        return initExecutor(pushNotificationsExecutorProperties, taskDecorator);
+    public ThreadPoolTaskExecutor firebasePushNotificationsExecutor(ExecutorProperties firebasePushNotificationsExecutorProperties, TaskDecorator taskDecorator) {
+        return initExecutor(firebasePushNotificationsExecutorProperties, taskDecorator);
+    }
+
+    @Bean
+    public ThreadPoolTaskExecutor firebaseDatabaseExecutor(ExecutorProperties firebaseDatabaseExecutorProperties, TaskDecorator taskDecorator) {
+        return initExecutor(firebaseDatabaseExecutorProperties, taskDecorator);
     }
 
     @Bean
@@ -50,8 +55,14 @@ public class AsyncConfig {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "application.push.notification.async.executor")
-    public ExecutorProperties pushNotificationsExecutorProperties() {
+    @ConfigurationProperties(prefix = "application.firebase.push.notification.async.executor")
+    public ExecutorProperties firebasePushNotificationsExecutorProperties() {
+        return new ExecutorProperties();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "application.firebase.database.async.executor")
+    public ExecutorProperties firebaseDatabaseExecutorProperties() {
         return new ExecutorProperties();
     }
 

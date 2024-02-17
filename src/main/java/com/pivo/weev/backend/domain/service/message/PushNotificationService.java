@@ -22,8 +22,8 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.utils.Constants.NotificationDetails;
-import com.pivo.weev.backend.integration.firebase.factory.PushNotificationsFactory;
-import com.pivo.weev.backend.integration.firebase.model.notification.PushNotificationMessage;
+import com.pivo.weev.backend.integration.firebase.factory.FirebasePushNotificationsFactory;
+import com.pivo.weev.backend.integration.firebase.model.notification.FirebasePushNotificationMessage;
 import com.pivo.weev.backend.integration.firebase.service.FirebasePushNotificationService;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,7 @@ import org.springframework.stereotype.Service;
 public class PushNotificationService {
 
     private final FirebasePushNotificationService firebasePushNotificationService;
-    private final PushNotificationsFactory pushNotificationsFactory;
+    private final FirebasePushNotificationsFactory firebasePushNotificationsFactory;
 
     public void notifyAll(Meet meet, List<Device> devices, String topic, Map<String, Object> bodyDetails) {
         Map<Long, List<Device>> notifiableDevicesByUser = collect(devices, groupingBy(Device::getUserId));
@@ -46,7 +46,7 @@ public class PushNotificationService {
                         Set<String> notificationTokens = mapToSet(notifiableDevicesByLang, Device::getPushNotificationToken);
                         Object[] titleArgs = resolveTitleArgs(meet, topic, bodyDetails);
                         Object[] bodyArgs = resolveBodyArgs(meet, topic, bodyDetails);
-                        PushNotificationMessage message = pushNotificationsFactory.build(
+                        FirebasePushNotificationMessage message = firebasePushNotificationsFactory.build(
                                 topic + TITLE,
                                 titleArgs,
                                 topic + BODY,

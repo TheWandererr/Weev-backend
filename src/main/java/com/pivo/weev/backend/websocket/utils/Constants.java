@@ -54,8 +54,7 @@ public class Constants {
     @UtilityClass
     public static final class MessageCodes {
 
-        public static final String CHAT_CREATED = "chat.created";
-        public static final String SUBSCRIBED = "subscribed";
+        public static final String SUBSCRIBED = "SUBSCRIBED";
     }
 
     @UtilityClass
