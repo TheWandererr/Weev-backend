@@ -43,8 +43,8 @@ public final class Constants {
         public static final String MEET_NEW_JOIN_REQUEST = "meet.new.join.request";
         public static final String MEET_JOIN_REQUEST_CONFIRMATION = "meet.join.request.confirmation";
         public static final String MEET_JOIN_REQUEST_DECLINATION = "meet.join.request.declination";
-        public static final String MEET_CHAT_CREATED = "meet.chat.created";
-        public static final String MEET_CHAT_NEW_MESSAGE = "meet.chat.new.message";
+        public static final String CHAT_CREATED = "chat.created";
+        public static final String CHAT_NEW_MESSAGE = "chat.new.message";
     }
 
     @UtilityClass

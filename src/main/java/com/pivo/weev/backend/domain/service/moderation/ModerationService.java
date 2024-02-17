@@ -12,13 +12,13 @@ import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.jpa.MeetJpaMapper;
+import com.pivo.weev.backend.domain.model.event.PushNotificationEvent;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.DeclinationReasonJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.DeclinationReasonsRepository;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepository;
-import com.pivo.weev.backend.domain.service.event.ApplicationEventFactory;
-import com.pivo.weev.backend.domain.service.event.model.PushNotificationEvent;
+import com.pivo.weev.backend.domain.service.event.factory.ApplicationEventFactory;
 import com.pivo.weev.backend.domain.service.meet.MeetPhotoService;
 import com.pivo.weev.backend.domain.service.message.NotificationService;
 import com.pivo.weev.backend.domain.service.validation.ModerationValidator;
@@ -67,19 +67,19 @@ public class ModerationService {
 
     private void notify(MeetJpa meet, UserJpa recipient, String topic) {
         notificationService.notify(meet, recipient, topic);
-        PushNotificationEvent event = applicationEventFactory.buildNotificationEvent(meet, recipient, topic);
+        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(meet, recipient, topic);
         applicationEventPublisher.publishEvent(event);
     }
 
     private void notify(MeetJpa meet, UserJpa recipient, String topic, DeclinationReasonJpa declinationReasonJpa) {
         notificationService.notify(meet, recipient, topic, declinationReasonJpa);
-        PushNotificationEvent event = applicationEventFactory.buildNotificationEvent(meet, recipient, topic, Map.of(DECLINATION_REASON, declinationReasonJpa.getTitle()));
+        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(meet, recipient, topic, Map.of(DECLINATION_REASON, declinationReasonJpa.getTitle()));
         applicationEventPublisher.publishEvent(event);
     }
 
     private void notifyAll(MeetJpa meet, Set<UserJpa> recipients, String topic) {
         notificationService.notifyAll(meet, recipients, topic);
-        PushNotificationEvent event = applicationEventFactory.buildNotificationEvent(meet, recipients, topic);
+        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(meet, recipients, topic);
         applicationEventPublisher.publishEvent(event);
     }
 

@@ -1,9 +1,8 @@
 package com.pivo.weev.backend.config.websocket;
 
 import static com.pivo.weev.backend.rest.utils.Constants.Authorities.WRITE;
-import static com.pivo.weev.backend.utils.Constants.WebSocketParams.Mappings.APPLICATION_DESTINATION;
-import static com.pivo.weev.backend.utils.Constants.WebSocketParams.Mappings.TOPIC_DESTINATION;
-import static com.pivo.weev.backend.utils.Constants.WebSocketParams.Mappings.USER_DESTINATION;
+import static com.pivo.weev.backend.websocket.utils.Constants.ApplicationDestinations.APPLICATION_DESTINATION;
+import static com.pivo.weev.backend.websocket.utils.Constants.BrokerDestinations.TOPIC_BROKER_DESTINATION;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static org.springframework.messaging.simp.SimpMessageType.DISCONNECT;
 import static org.springframework.messaging.simp.SimpMessageType.MESSAGE;
@@ -25,9 +24,8 @@ public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBro
         messages.nullDestMatcher().authenticated()
                 .simpTypeMatchers(DISCONNECT).permitAll()
                 .simpTypeMatchers(MESSAGE, SUBSCRIBE).authenticated()
-                .simpSubscribeDestMatchers(USER_DESTINATION + ".errors").permitAll()
-                .simpSubscribeDestMatchers(USER_DESTINATION + ".**", TOPIC_DESTINATION + ".**").hasAnyAuthority(WRITE)
-                .simpDestMatchers(APPLICATION_DESTINATION + ".**").hasAnyAuthority(WRITE)
+                .simpSubscribeDestMatchers(TOPIC_BROKER_DESTINATION + ".**", TOPIC_BROKER_DESTINATION + "/**").hasAnyAuthority(WRITE)
+                .simpDestMatchers(APPLICATION_DESTINATION + ".**", APPLICATION_DESTINATION + "/**").hasAnyAuthority(WRITE)
                 .anyMessage().authenticated();
     }
 

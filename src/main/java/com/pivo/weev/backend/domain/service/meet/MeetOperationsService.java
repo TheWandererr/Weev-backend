@@ -13,6 +13,7 @@ import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.jpa.MeetJpaMapper;
 import com.pivo.weev.backend.domain.model.common.MapPoint;
+import com.pivo.weev.backend.domain.model.event.PushNotificationEvent;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.meet.CreatableMeet;
 import com.pivo.weev.backend.domain.model.meet.Restrictions.Availability;
@@ -27,8 +28,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetCateg
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepository;
 import com.pivo.weev.backend.domain.service.LocationService;
 import com.pivo.weev.backend.domain.service.TimeZoneService;
-import com.pivo.weev.backend.domain.service.event.ApplicationEventFactory;
-import com.pivo.weev.backend.domain.service.event.model.PushNotificationEvent;
+import com.pivo.weev.backend.domain.service.event.factory.ApplicationEventFactory;
 import com.pivo.weev.backend.domain.service.message.NotificationService;
 import com.pivo.weev.backend.domain.service.user.UserResourceService;
 import com.pivo.weev.backend.domain.service.validation.MeetOperationsValidator;
@@ -157,7 +157,7 @@ public class MeetOperationsService {
 
     private void notifyAll(MeetJpa meet, Set<UserJpa> recipients, String topic) {
         notificationService.notifyAll(meet, recipients, topic);
-        PushNotificationEvent event = applicationEventFactory.buildNotificationEvent(meet, recipients, topic);
+        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(meet, recipients, topic);
         applicationEventPublisher.publishEvent(event);
     }
 

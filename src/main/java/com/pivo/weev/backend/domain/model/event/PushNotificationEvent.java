@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.service.event.model;
+package com.pivo.weev.backend.domain.model.event;
 
 import static java.util.Objects.isNull;
 
@@ -18,7 +18,7 @@ public class PushNotificationEvent extends ApplicationEvent {
     public PushNotificationEvent(Object source) {
         super(source);
         if (!(source instanceof PushNotificationModel)) {
-            throw new IllegalArgumentException("push.notification.message.expected");
+            throw new IllegalArgumentException();
         }
     }
 

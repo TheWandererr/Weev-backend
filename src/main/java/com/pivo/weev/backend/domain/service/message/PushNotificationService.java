@@ -3,9 +3,9 @@ package com.pivo.weev.backend.domain.service.message;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.REQUESTER_NICKNAME;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationHeaders.BODY;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationHeaders.TITLE;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.CHAT_CREATED;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.CHAT_NEW_MESSAGE;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CANCELLATION;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CHAT_CREATED;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CHAT_NEW_MESSAGE;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CONFIRMATION;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_DECLINATION;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_JOIN_REQUEST_CONFIRMATION;
@@ -62,8 +62,8 @@ public class PushNotificationService {
 
     private Object[] resolveTitleArgs(Meet meet, String topic, Map<String, Object> bodyDetails) {
         return switch (topic) {
-            case MEET_CHAT_CREATED -> createMeetChatCreatedTitleArgs(meet);
-            case MEET_CHAT_NEW_MESSAGE -> createMeetChatNewMessageTitleArgs(meet);
+            case CHAT_CREATED -> createMeetChatCreatedTitleArgs(meet);
+            case CHAT_NEW_MESSAGE -> createMeetChatNewMessageTitleArgs(meet);
             default -> new Object[0];
         };
     }
@@ -86,8 +86,8 @@ public class PushNotificationService {
             case MEET_NEW_JOIN_REQUEST -> createNewJoinRequestBodyArgs(meet, bodyDetails);
             case MEET_JOIN_REQUEST_CONFIRMATION -> createJoinRequestConfirmationBodyArgs(meet);
             case MEET_JOIN_REQUEST_DECLINATION -> createJoinRequestDeclinationBodyArgs(meet);
-            case MEET_CHAT_CREATED -> createMeetChatCreatedBodyArgs();
-            case MEET_CHAT_NEW_MESSAGE -> createMeetChatNewMessageBodyArgs(bodyDetails);
+            case CHAT_CREATED -> createMeetChatCreatedBodyArgs();
+            case CHAT_NEW_MESSAGE -> createMeetChatNewMessageBodyArgs(bodyDetails);
             default -> new Object[0];
         };
     }

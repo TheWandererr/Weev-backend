@@ -35,7 +35,7 @@ public class DeviceJpa extends SequencedPersistable<Long> {
     private UserJpa user;
     @Column(name = DEVICE_INTERNAL_ID, nullable = false)
     private String internalId;
-    @OneToOne(cascade = ALL, orphanRemoval = true, optional = false)
+    @OneToOne(cascade = ALL, orphanRemoval = true, optional = false, fetch = LAZY)
     @JoinColumn(name = "settings_id")
     private DeviceSettingsJpa settings = new DeviceSettingsJpa();
     private transient boolean created;

@@ -91,32 +91,4 @@ public class Constants {
         public static final String EMAIL = "email";
         public static final String PHONE_NUMBER = "phone_number";
     }
-
-    @UtilityClass
-    public static final class WebSocketParams {
-
-        public static final String STOMP_ENDPOINT = "/ws";
-
-        @UtilityClass
-        public static class Mappings {
-
-            public static final String TOPIC_DESTINATION = "/topic";
-            public static final String APPLICATION_DESTINATION = "/app";
-            public static final String USER_DESTINATION = "/user";
-
-        }
-
-        @UtilityClass
-        public static final class MessageTypes {
-
-            public static final String TEXT = "text";
-            public static final String EVENT = "event";
-        }
-
-        @UtilityClass
-        public static final class MessageCodes {
-
-            public static final String MEET_CHAT_CREATED = "meet.chat.created";
-        }
-    }
 }

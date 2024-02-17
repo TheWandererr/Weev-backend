@@ -1,34 +1,30 @@
 package com.pivo.weev.backend.domain.service.websocket;
 
-import static com.pivo.weev.backend.domain.model.messaging.ChatUser.system;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CHAT_NEW_MESSAGE;
-import static com.pivo.weev.backend.utils.Constants.WebSocketParams.MessageTypes.EVENT;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.domain.MeetMapper;
 import com.pivo.weev.backend.domain.mapping.domain.UserMapper;
+import com.pivo.weev.backend.domain.model.event.WebSocketEvent;
+import com.pivo.weev.backend.domain.model.event.WebSocketEvent.EventType;
 import com.pivo.weev.backend.domain.model.meet.Meet;
-import com.pivo.weev.backend.domain.model.messaging.ChatMessage;
-import com.pivo.weev.backend.domain.model.messaging.ChatUser;
 import com.pivo.weev.backend.domain.model.user.User;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepository;
-import com.pivo.weev.backend.domain.service.event.ApplicationEventFactory;
-import com.pivo.weev.backend.domain.service.event.model.PushNotificationEvent;
+import com.pivo.weev.backend.domain.service.event.factory.ApplicationEventFactory;
+import com.pivo.weev.backend.domain.service.jwt.JwtHolder;
 import com.pivo.weev.backend.domain.service.message.NotificationService;
 import com.pivo.weev.backend.domain.utils.Constants.NotificationDetails;
 import com.pivo.weev.backend.domain.utils.Constants.NotificationTopics;
 import com.pivo.weev.backend.integration.firebase.model.chat.Chat;
 import com.pivo.weev.backend.integration.firebase.service.FirebaseChatService;
-import com.pivo.weev.backend.integration.mapping.firebase.chat.ChatMessageMapper;
+import com.pivo.weev.backend.integration.mapping.domain.chat.ChatMapper;
 import java.util.Map;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,33 +39,22 @@ public class ChatService {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ApplicationEventFactory applicationEventFactory;
 
-    @Transactional
-    public ChatMessage newSystemMessage(Long chatId, String code) {
-        ChatMessage message = createSystemMessage(code);
-        pushMessage(chatId, message);
-        return message;
-    }
-
-    private ChatMessage createSystemMessage(String code) {
-        return createMessage(code, null, EVENT, system());
-    }
-
-    private ChatMessage createMessage(String code, String text, String type, ChatUser from) {
-        ChatMessage message = new ChatMessage();
-        message.setCode(code);
-        message.setText(text);
-        message.setType(type);
-        message.setFrom(from);
-        return message;
-    }
+    private final JwtHolder jwtHolder;
 
     public void createChat(UserJpa creatorJpa, MeetJpa meetJpa) {
         User creator = getMapper(UserMapper.class).map(creatorJpa);
         Meet meet = getMapper(MeetMapper.class).map(meetJpa);
         Chat firebaseChat = build(creator, meet);
         firebaseChatService.createChat(firebaseChat);
+        notify(meetJpa, creatorJpa, NotificationTopics.CHAT_CREATED, firebaseChat.getId());
 
-        notify(meetJpa, creatorJpa, NotificationTopics.MEET_CHAT_CREATED, firebaseChat.getId());
+        Jwt token = jwtHolder.getToken();
+        WebSocketEvent webSocketEvent = applicationEventFactory.buildWebSocketEvent(
+                getMapper(ChatMapper.class).map(firebaseChat),
+                token.getSubject(),
+                EventType.CHAT_CREATED
+        );
+        applicationEventPublisher.publishEvent(webSocketEvent);
     }
 
     private Chat build(User creator, Meet meet) {
@@ -89,21 +74,31 @@ public class ChatService {
         notificationService.notify(meet, recipient, topic, details);
     }
 
-    private void pushMessage(Long chatId, ChatMessage message) {
+   /* private void pushMessage(Long chatId, ChatMessage message) {
         firebaseChatService.pushMessage(chatId, getMapper(ChatMessageMapper.class).map(message));
         pushNotify(chatId, message);
     }
 
     public void pushNotify(Long chatId, ChatMessage message) {
-        if (!message.isSystem()) {
+        if (!message.isEvent()) {
             MeetJpa meet = meetRepository.fetch(chatId);
-            pushNotify(meet, meet.getMembersWithCreator(), MEET_CHAT_NEW_MESSAGE, chatId, message.getText());
+            pushNotify(meet, meet.getMembersWithCreator(), CHAT_NEW_MESSAGE, chatId, message.getText());
         }
     }
 
     private void pushNotify(MeetJpa meet, Set<UserJpa> recipients, String topic, Long chatId, String text) {
         Map<String, Object> details = Map.of(NotificationDetails.CHAT_ID, chatId, NotificationDetails.TEXT, text);
-        PushNotificationEvent event = applicationEventFactory.buildNotificationEvent(meet, recipients, topic, details);
+        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(meet, recipients, topic, details);
         applicationEventPublisher.publishEvent(event);
     }
+
+    private ChatMessage createMessage(String code, String text, String type, ChatUser from) {
+        ChatMessage message = new ChatMessage();
+        message.setCode(code);
+        message.setText(text);
+        message.setType(type);
+        message.setFrom(from);
+        return message;
+    }*/
+
 }

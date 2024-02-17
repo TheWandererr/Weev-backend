@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.model.messaging;
 
-import static com.pivo.weev.backend.utils.Constants.WebSocketParams.MessageTypes.EVENT;
+import static com.pivo.weev.backend.websocket.utils.Constants.MessageTypes.EVENT;
 
 import java.time.Instant;
 import lombok.Getter;
@@ -16,7 +16,7 @@ public class ChatMessage {
     private ChatUser from;
     private Instant createdAt = Instant.now();
 
-    public boolean isSystem() {
+    public boolean isEvent() {
         return EVENT.equals(type);
     }
 }
