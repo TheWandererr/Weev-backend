@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.model.messaging;
+package com.pivo.weev.backend.domain.model.messaging.chat;
 
 import static com.pivo.weev.backend.utils.Constants.APPLICATION_NAME;
 

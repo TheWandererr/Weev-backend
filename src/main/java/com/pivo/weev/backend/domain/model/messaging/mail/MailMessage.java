@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.model.messaging;
+package com.pivo.weev.backend.domain.model.messaging.mail;
 
 import lombok.Getter;
 import lombok.Setter;

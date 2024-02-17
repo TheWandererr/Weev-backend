@@ -9,7 +9,7 @@ import com.pivo.weev.backend.domain.model.event.PushNotificationEvent;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent.EventType;
 import com.pivo.weev.backend.domain.model.meet.Meet;
-import com.pivo.weev.backend.domain.model.messaging.Chat;
+import com.pivo.weev.backend.domain.model.messaging.chat.Chat;
 import com.pivo.weev.backend.domain.model.user.User;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;

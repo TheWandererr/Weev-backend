@@ -28,6 +28,16 @@ public class AsyncConfig {
     }
 
     @Bean
+    public ThreadPoolTaskExecutor jwtExecutor(ExecutorProperties jwtExecutorProperties, TaskDecorator taskDecorator) {
+        return initExecutor(jwtExecutorProperties, taskDecorator);
+    }
+
+    @Bean
+    public ThreadPoolTaskExecutor webSocketExecutor(ExecutorProperties webSocketExecutorProperties, TaskDecorator taskDecorator) {
+        return initExecutor(webSocketExecutorProperties, taskDecorator);
+    }
+
+    @Bean
     @ConfigurationProperties(prefix = "application.mail.async.executor")
     public ExecutorProperties mailExecutorProperties() {
         return new ExecutorProperties();
@@ -42,6 +52,18 @@ public class AsyncConfig {
     @Bean
     @ConfigurationProperties(prefix = "application.push.notification.async.executor")
     public ExecutorProperties pushNotificationsExecutorProperties() {
+        return new ExecutorProperties();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "application.jwt.async.executor")
+    public ExecutorProperties jwtExecutorProperties() {
+        return new ExecutorProperties();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "application.web.socket.async.executor")
+    public ExecutorProperties webSocketExecutorProperties() {
         return new ExecutorProperties();
     }
 

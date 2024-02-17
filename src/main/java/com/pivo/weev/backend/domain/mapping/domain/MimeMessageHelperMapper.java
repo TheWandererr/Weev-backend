@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.mapping.domain;
 
-import com.pivo.weev.backend.domain.model.messaging.MailMessage;
+import com.pivo.weev.backend.domain.model.messaging.mail.MailMessage;
 import jakarta.mail.MessagingException;
 import org.mapstruct.Mapper;
 import org.springframework.mail.javamail.MimeMessageHelper;

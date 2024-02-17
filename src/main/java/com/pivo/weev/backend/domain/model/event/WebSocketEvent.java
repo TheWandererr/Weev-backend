@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.model.event;
 
-import com.pivo.weev.backend.domain.model.messaging.Chat;
+import com.pivo.weev.backend.domain.model.messaging.chat.Chat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

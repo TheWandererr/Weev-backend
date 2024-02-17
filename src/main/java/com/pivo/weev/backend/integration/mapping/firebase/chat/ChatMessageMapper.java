@@ -7,5 +7,5 @@ import org.mapstruct.Mapper;
 @Mapper(uses = {ChatUserMapper.class, DateTimeMapper.class})
 public interface ChatMessageMapper {
 
-    ChatMessage map(com.pivo.weev.backend.domain.model.messaging.ChatMessage source);
+    ChatMessage map(com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage source);
 }

@@ -8,7 +8,7 @@ import static com.pivo.weev.backend.domain.utils.Constants.Messaging.Templates.V
 import com.pivo.weev.backend.config.messaging.MessageBundle;
 import com.pivo.weev.backend.config.messaging.TemplatesBundle;
 import com.pivo.weev.backend.domain.model.auth.VerificationScope;
-import com.pivo.weev.backend.domain.model.messaging.MailMessage;
+import com.pivo.weev.backend.domain.model.messaging.mail.MailMessage;
 import com.pivo.weev.backend.domain.model.messaging.source.ChangePasswordSource;
 import com.pivo.weev.backend.domain.model.messaging.source.EmailVerificationSource;
 import lombok.RequiredArgsConstructor;

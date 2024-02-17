@@ -12,7 +12,6 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepository;
 import com.pivo.weev.backend.domain.service.event.factory.ApplicationEventFactory;
-import com.pivo.weev.backend.domain.service.jwt.JwtHolder;
 import com.pivo.weev.backend.domain.service.message.NotificationService;
 import com.pivo.weev.backend.domain.utils.Constants.NotificationDetails;
 import com.pivo.weev.backend.domain.utils.Constants.NotificationTopics;
@@ -23,7 +22,6 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -39,8 +37,6 @@ public class ChatService {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ApplicationEventFactory applicationEventFactory;
 
-    private final JwtHolder jwtHolder;
-
     public void createChat(UserJpa creatorJpa, MeetJpa meetJpa) {
         User creator = getMapper(UserMapper.class).map(creatorJpa);
         Meet meet = getMapper(MeetMapper.class).map(meetJpa);
@@ -48,10 +44,9 @@ public class ChatService {
         firebaseChatService.createChat(firebaseChat);
         notify(meetJpa, creatorJpa, NotificationTopics.CHAT_CREATED, firebaseChat.getId());
 
-        Jwt token = jwtHolder.getToken();
         WebSocketEvent webSocketEvent = applicationEventFactory.buildWebSocketEvent(
                 getMapper(ChatMapper.class).map(firebaseChat),
-                token.getSubject(),
+                creator.getNickname(),
                 EventType.CHAT_CREATED
         );
         applicationEventPublisher.publishEvent(webSocketEvent);

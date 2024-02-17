@@ -16,6 +16,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepository;
 import com.pivo.weev.backend.domain.service.clusterization.MapClusterizationService;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -51,6 +52,11 @@ public class MeetSearchService {
         return meetRepository.findById(id)
                              .map(meet -> getMapper(MeetMapper.class).map(meet))
                              .orElse(null);
+    }
+
+    @Transactional
+    public Optional<MeetJpa> searchJpa(Long id) {
+        return meetRepository.findById(id);
     }
 
     @Transactional

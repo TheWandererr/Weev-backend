@@ -1,13 +1,16 @@
 package com.pivo.weev.backend.domain.service.event;
 
-import static com.pivo.weev.backend.websocket.utils.Constants.MessageTypes.EVENT;
+import static com.pivo.weev.backend.websocket.utils.Constants.PayloadKeys.CHAT;
 
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent.EventType;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent.WebSocketMessageModel;
-import com.pivo.weev.backend.websocket.model.MessageWs;
-import com.pivo.weev.backend.websocket.utils.Constants.MessageCodes;
+import com.pivo.weev.backend.domain.model.messaging.chat.CommonMessage;
+import com.pivo.weev.backend.domain.model.messaging.chat.CommonMessage.Type;
+import com.pivo.weev.backend.domain.model.messaging.chat.SubscriptionMessage;
+import com.pivo.weev.backend.domain.model.messaging.chat.SubscriptionMessage.Code;
 import com.pivo.weev.backend.websocket.utils.Constants.UserDestinations;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,33 +23,27 @@ public class WebSocketEventListener {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    @Async(value = "commonExecutor")
+    @Async(value = "webSocketExecutor")
     @EventListener
     public void onWebSocketEventPublishing(WebSocketEvent event) {
         WebSocketMessageModel messageModel = event.getSource();
-        MessageWs message = createMessage(messageModel);
+        CommonMessage message = createMessage(messageModel);
         messagingTemplate.convertAndSendToUser(messageModel.getRecipient(), UserDestinations.UPDATES, message);
     }
 
-    private MessageWs createMessage(WebSocketMessageModel messageModel) {
-        MessageWs message = new MessageWs();
+    private CommonMessage createMessage(WebSocketMessageModel messageModel) {
         EventType eventType = messageModel.getEventType();
-        message.setType(resolveType(eventType));
-        message.setCode(resolveCode(eventType));
-        return message;
-    }
-
-    private String resolveType(EventType eventType) {
         return switch (eventType) {
-            case CHAT_CREATED -> EVENT;
+            case CHAT_CREATED -> createSubscriptionMessage(messageModel);
             default -> null;
         };
     }
 
-    private String resolveCode(EventType eventType) {
-        return switch (eventType) {
-            case CHAT_CREATED -> MessageCodes.CHAT_CREATED;
-            default -> null;
-        } ;
+    private SubscriptionMessage createSubscriptionMessage(WebSocketMessageModel messageModel) {
+        SubscriptionMessage message = new SubscriptionMessage();
+        message.setType(Type.EVENT);
+        message.setCode(Code.CHAT_CREATED);
+        message.setPayload(Map.of(CHAT, messageModel.getChat()));
+        return message;
     }
 }

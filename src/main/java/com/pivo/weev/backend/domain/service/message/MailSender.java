@@ -3,7 +3,7 @@ package com.pivo.weev.backend.domain.service.message;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.domain.MimeMessageHelperMapper;
-import com.pivo.weev.backend.domain.model.messaging.MailMessage;
+import com.pivo.weev.backend.domain.model.messaging.mail.MailMessage;
 import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;

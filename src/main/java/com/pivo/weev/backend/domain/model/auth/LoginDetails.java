@@ -72,6 +72,10 @@ public record LoginDetails(UserJpa user,
         return device;
     }
 
+    public String getNickname() {
+        return user.getNickname();
+    }
+
     public static LoginDetails from(UserJpa user, DeviceJpa device, String username, String issuer) {
         List<SimpleGrantedAuthority> simpleGrantedAuthorities = mapToList(
                 user.getRole().getAuthorities(),
@@ -89,4 +93,6 @@ public record LoginDetails(UserJpa user,
                 simpleGrantedAuthorities
         );
     }
+
+
 }

@@ -4,7 +4,7 @@ import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.domain.EmailVerificationSourceMapper;
 import com.pivo.weev.backend.domain.model.auth.VerificationScope;
-import com.pivo.weev.backend.domain.model.messaging.MailMessage;
+import com.pivo.weev.backend.domain.model.messaging.mail.MailMessage;
 import com.pivo.weev.backend.domain.model.messaging.source.ChangePasswordSource;
 import com.pivo.weev.backend.domain.model.messaging.source.EmailVerificationSource;
 import com.pivo.weev.backend.domain.model.user.User;

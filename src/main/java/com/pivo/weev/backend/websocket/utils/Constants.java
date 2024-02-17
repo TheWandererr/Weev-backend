@@ -19,12 +19,15 @@ public class Constants {
     public static final class SubscriptionDestinations {
 
         public static final String UPDATES = "/user" + TOPIC_BROKER_DESTINATION + "/updates";
+        public static final String CHAT = TOPIC_BROKER_DESTINATION + "/chats";
     }
 
     @UtilityClass
     public static final class UserDestinations {
 
         public static final String UPDATES = TOPIC_BROKER_DESTINATION + "/updates";
+
+        public static final String CHAT_PATTERN = TOPIC_BROKER_DESTINATION + "/chats.%d";
 
     }
 
@@ -44,13 +47,20 @@ public class Constants {
     @UtilityClass
     public static final class MessageTypes {
 
-        public static final String TEXT = "text";
-        public static final String EVENT = "event";
+        public static final String MESSAGE = "MESSAGE";
+        public static final String EVENT = "EVENT";
     }
 
     @UtilityClass
     public static final class MessageCodes {
 
         public static final String CHAT_CREATED = "chat.created";
+        public static final String SUBSCRIBED = "subscribed";
+    }
+
+    @UtilityClass
+    public static final class PayloadKeys {
+
+        public static final String CHAT = "chat";
     }
 }

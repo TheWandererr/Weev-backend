@@ -23,7 +23,7 @@ public class StompUtils {
         return getNativeHeader(accessor, AUTHORIZATION.toLowerCase());
     }
 
-    public static String getToken(StompHeaderAccessor accessor) {
+    public static String getAuthorizationToken(StompHeaderAccessor accessor) {
         String authorization = getAuthorization(accessor);
         return isNotBlank(authorization) && authorization.startsWith(BEARER.getValue())
                 ? authorization.substring(BEARER.getValue().length())
@@ -38,6 +38,4 @@ public class StompUtils {
                 .map(String.class::cast)
                 .orElse(null);
     }
-
-
 }

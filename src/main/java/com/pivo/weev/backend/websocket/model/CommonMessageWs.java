@@ -2,6 +2,8 @@ package com.pivo.weev.backend.websocket.model;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,15 +11,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MessageWs implements Serializable {
+public class CommonMessageWs implements Serializable {
 
-    private String text;
-    private String code;
     private String type;
-    private UserWs from;
+    private String text;
     private Instant createdAt = Instant.now();
-
-    public MessageWs(String text) {
-        this.text = text;
-    }
+    private Map<String, ? extends Serializable> payload = new HashMap<>();
 }

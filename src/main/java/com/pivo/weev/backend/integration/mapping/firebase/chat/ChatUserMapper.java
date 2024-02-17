@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface ChatUserMapper {
 
-    ChatUser map(com.pivo.weev.backend.domain.model.messaging.ChatUser source);
+    ChatUser map(com.pivo.weev.backend.domain.model.messaging.chat.ChatUser source);
 
     ChatUser map(com.pivo.weev.backend.domain.model.user.User source);
 }

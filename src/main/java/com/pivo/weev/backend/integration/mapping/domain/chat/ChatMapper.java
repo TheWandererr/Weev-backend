@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.integration.mapping.domain.chat;
 
-import com.pivo.weev.backend.domain.model.messaging.Chat;
+import com.pivo.weev.backend.domain.model.messaging.chat.Chat;
 import org.mapstruct.Mapper;
 
 @Mapper
