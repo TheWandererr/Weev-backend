@@ -5,6 +5,7 @@ import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.CHAT_NEW_MESSAGE;
 import static com.pivo.weev.backend.utils.CollectionUtils.collect;
 import static java.lang.Math.min;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toMap;
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -61,8 +62,8 @@ public class ChatService {
 
     public void createChat(UserJpa creator, MeetJpa meet) {
         FirebaseChat firebaseChat = buildFirebaseChat(creator, meet);
-        FirebaseUserChatsReference firebaseUserChatsReference = new FirebaseUserChatsReference(creator.getId(), List.of(firebaseChat.getId()));
-        createFirebaseChatInfo(firebaseChat, firebaseUserChatsReference);
+
+        processFirebaseChatInfo(firebaseChat, creator.getId());
 
         notify(meet, creator, NotificationTopics.CHAT_CREATED, firebaseChat.getId());
 
@@ -87,10 +88,27 @@ public class ChatService {
         return firebaseChat;
     }
 
+    private void processFirebaseChatInfo(FirebaseChat firebaseChat, Long userId) {
+        FirebaseUserChatsReference userChatsReference = firebaseChatService.findUserChatsReference(userId);
+        if (nonNull(userChatsReference)) {
+            userChatsReference.getChatIds().add(firebaseChat.getId());
+            updateFirebaseChatInfo(firebaseChat, userId, Map.of("chatIds", userChatsReference.getChatIds()));
+        } else {
+            FirebaseUserChatsReference firebaseUserChatsReference = new FirebaseUserChatsReference(userId, List.of(firebaseChat.getId()));
+            createFirebaseChatInfo(firebaseChat, firebaseUserChatsReference);
+        }
+    }
+
     @Async("firebaseFirestoreExecutor")
     protected void createFirebaseChatInfo(FirebaseChat firebaseChat, FirebaseUserChatsReference firebaseUserChatsReference) {
         firebaseChatService.createChat(firebaseChat);
         firebaseChatService.createUserChatsReference(firebaseUserChatsReference);
+    }
+
+    @Async("firebaseFirestoreExecutor")
+    protected void updateFirebaseChatInfo(FirebaseChat firebaseChat, Long userId, Map<String, Object> firebaseUserChatsReferenceUpdates) {
+        firebaseChatService.createChat(firebaseChat);
+        firebaseChatService.updateUserChatsReference(userId, firebaseUserChatsReferenceUpdates);
     }
 
     private void notify(MeetJpa meet, UserJpa recipient, String topic, Long chatId) {
@@ -139,6 +157,7 @@ public class ChatService {
     public List<Chat> getChats(Long userId, Integer historySize) {
         List<Long> firebaseChatIds = firebaseChatService.getChatIds(userId);
         List<FirebaseChat> firebaseChats = firebaseChatService.getChats(firebaseChatIds);
+
         Map<Long, List<FirebaseChatMessage>> chatsHistory = getChatsHistory(firebaseChats, historySize);
         Map<Long, UserJpa> senders = collectSenders(chatsHistory);
 

@@ -32,10 +32,6 @@ public class FirebaseChatService {
         }
     }
 
-    public void createUserChatsReference(FirebaseUserChatsReference firebaseUserChatsReference) {
-        firestoreClient.save(USER_CHATS, firebaseUserChatsReference.getUserId().toString(), firebaseUserChatsReference);
-    }
-
     public List<Long> getChatIds(Long userId) {
         FirebaseUserChatsReference reference = firestoreClient.find(USER_CHATS, userId.toString(), FirebaseUserChatsReference.class);
         return reference.getChatIds();
@@ -44,5 +40,17 @@ public class FirebaseChatService {
     public List<FirebaseChat> getChats(List<Long> ids) {
         List<String> references = mapToList(ids, Object::toString);
         return firestoreClient.findAll(CHATS, references, FirebaseChat.class);
+    }
+
+    public FirebaseUserChatsReference findUserChatsReference(Long userId) {
+        return firestoreClient.find(USER_CHATS, userId.toString(), FirebaseUserChatsReference.class);
+    }
+
+    public void createUserChatsReference(FirebaseUserChatsReference firebaseUserChatsReference) {
+        firestoreClient.save(USER_CHATS, firebaseUserChatsReference.getUserId().toString(), firebaseUserChatsReference);
+    }
+
+    public void updateUserChatsReference(Long userId, Map<String, Object> firebaseUserChatsReferenceUpdates) {
+        firestoreClient.update(USER_CHATS, userId.toString(), firebaseUserChatsReferenceUpdates);
     }
 }
