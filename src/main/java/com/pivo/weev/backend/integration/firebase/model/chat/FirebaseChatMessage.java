@@ -13,7 +13,7 @@ import lombok.Setter;
 public class FirebaseChatMessage implements Serializable {
 
     private String text;
-    private String code;
+    private String event;
     private String type;
     private Long from;
     private Long createdAt;

@@ -11,7 +11,7 @@ import static org.apache.commons.lang3.StringUtils.substringAfterLast;
 import static org.apache.commons.lang3.math.NumberUtils.toLong;
 import static org.mapstruct.factory.Mappers.getMapper;
 
-import com.pivo.weev.backend.domain.model.messaging.chat.SubscriptionMessage;
+import com.pivo.weev.backend.domain.model.messaging.chat.EventMessage;
 import com.pivo.weev.backend.domain.service.websocket.SubscriptionService;
 import com.pivo.weev.backend.websocket.mapping.ws.CommonMessageWsMapper;
 import com.pivo.weev.backend.websocket.model.CommonMessageWs;
@@ -52,7 +52,7 @@ public class UpdatesSubscriptionListener {
     }
 
     private void handleChatSubscription(String nickname, Long chatId) {
-        SubscriptionMessage message = subscriptionService.handleSubscription(chatId, nickname);
+        EventMessage message = subscriptionService.handleSubscription(chatId, nickname);
         CommonMessageWs messageWs = getMapper(CommonMessageWsMapper.class).map(message);
         template.convertAndSendToUser(nickname, UserDestinations.UPDATES, messageWs);
     }

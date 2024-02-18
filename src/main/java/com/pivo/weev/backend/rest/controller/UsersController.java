@@ -6,6 +6,8 @@ import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.onModerati
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.published;
 import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MEET_REQUESTS_PER_PAGE;
 import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MEET_TEMPLATES_PER_PAGE;
+import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MESSAGES_PER_PAGE;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.ID_FORMAT_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK_ERROR;
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -14,12 +16,14 @@ import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.model.meet.MeetJoinRequest;
 import com.pivo.weev.backend.domain.model.meet.SearchParams;
 import com.pivo.weev.backend.domain.model.meet.SearchParams.PageCriteria;
+import com.pivo.weev.backend.domain.model.messaging.chat.Chat;
 import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.model.user.Device.Settings;
 import com.pivo.weev.backend.domain.model.user.User;
 import com.pivo.weev.backend.domain.service.meet.MeetRequestsService;
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
 import com.pivo.weev.backend.domain.service.meet.MeetTemplatesService;
+import com.pivo.weev.backend.domain.service.messaging.ChatService;
 import com.pivo.weev.backend.domain.service.user.DeviceService;
 import com.pivo.weev.backend.domain.service.user.ProfileService;
 import com.pivo.weev.backend.domain.service.user.UserResourceService;
@@ -27,6 +31,7 @@ import com.pivo.weev.backend.rest.annotation.ResourceOwner;
 import com.pivo.weev.backend.rest.mapping.domain.DeviceMapper;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
 import com.pivo.weev.backend.rest.mapping.domain.UserMapper;
+import com.pivo.weev.backend.rest.mapping.rest.ChatRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.DeviceSettingsRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.ImageRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.MeetCompactedRestMapper;
@@ -38,10 +43,12 @@ import com.pivo.weev.backend.rest.model.meet.ImageRest;
 import com.pivo.weev.backend.rest.model.meet.MeetCompactedRest;
 import com.pivo.weev.backend.rest.model.meet.MeetJoinRequestRest;
 import com.pivo.weev.backend.rest.model.meet.MeetTemplateRest;
+import com.pivo.weev.backend.rest.model.messaging.ChatRest;
 import com.pivo.weev.backend.rest.model.request.DeviceSettingUpdateRequest;
 import com.pivo.weev.backend.rest.model.request.MeetsSearchRequest;
 import com.pivo.weev.backend.rest.model.request.ProfileUpdateRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
+import com.pivo.weev.backend.rest.model.response.ChatsResponse;
 import com.pivo.weev.backend.rest.model.response.DeviceSettingResponse;
 import com.pivo.weev.backend.rest.model.response.ImageResponse;
 import com.pivo.weev.backend.rest.model.response.MeetJoinRequestsResponse;
@@ -82,6 +89,7 @@ public class UsersController {
     private final MeetRequestsService meetRequestsService;
     private final MeetTemplatesService meetTemplatesService;
     private final DeviceService deviceService;
+    private final ChatService chatService;
 
     @GetMapping("/nickname/availability")
     public BaseResponse isNicknameAvailable(@RequestParam @NotBlank(message = MUST_BE_NOT_BLANK_ERROR) String nickname) {
@@ -176,16 +184,25 @@ public class UsersController {
     }
 
     @ResourceOwner
-    @DeleteMapping("{id}/meets/templates/{templateId}")
+    @DeleteMapping("/{id}/meets/templates/{templateId}")
     public BaseResponse deleteTemplate(@PathVariable Long id, @PathVariable Long templateId) {
         meetTemplatesService.deleteTemplate(id, templateId);
         return new BaseResponse();
     }
 
     @ResourceOwner
-    @DeleteMapping("{id}/meets/templates")
+    @DeleteMapping("/{id}/meets/templates")
     public BaseResponse deleteTemplate(@PathVariable Long id) {
         meetTemplatesService.deleteAllTemplates(id);
         return new BaseResponse();
+    }
+
+    @ResourceOwner
+    @GetMapping("/{id}/chats")
+    public ChatsResponse getChats(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id,
+                                  @RequestParam(required = false, defaultValue = MESSAGES_PER_PAGE) @Min(1) Integer historySize) {
+        List<Chat> chats = chatService.getChats(id, historySize);
+        List<ChatRest> restChats = getMapper(ChatRestMapper.class).map(chats);
+        return new ChatsResponse(restChats);
     }
 }

@@ -14,10 +14,10 @@ public class ChatRest {
     private Long id;
     private String name;
     private String avatarUrl;
-    private List<ChatMessageRest> messages;
+    private List<UserMessageRest> messages;
     private Integer users;
 
-    public List<ChatMessageRest> getMessages() {
+    public List<UserMessageRest> getMessages() {
         if (isNull(messages)) {
             messages = new ArrayList<>();
         }

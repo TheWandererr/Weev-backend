@@ -93,6 +93,14 @@ public class Constants {
 
             public static final String CHATS = "chats";
             public static final String USER_CHATS = "user_chats";
+            public static final String MESSAGES = "messages";
+        }
+
+        @UtilityClass
+        public static final class Fields {
+
+            public static final String CHAT_IDS = "chatIds";
+            public static final String CREATED_AT = "createdAt";
         }
 
     }

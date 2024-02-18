@@ -2,7 +2,7 @@ package com.pivo.weev.backend.domain.service.websocket;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType.NICKNAME;
 
-import com.pivo.weev.backend.domain.model.messaging.chat.SubscriptionMessage;
+import com.pivo.weev.backend.domain.model.messaging.chat.EventMessage;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
@@ -25,7 +25,7 @@ public class SubscriptionService {
     private final ChatOperationValidator operationValidator;
 
     @Transactional
-    public SubscriptionMessage handleSubscription(Long chatId, String nickname) {
+    public EventMessage handleSubscription(Long chatId, String nickname) {
         MeetJpa meet = meetSearchService.fetchJpa(chatId);
         UserJpa subscriber = userResourceService.fetchJpa(nickname, NICKNAME);
         operationValidator.validateSubscription(meet, subscriber);

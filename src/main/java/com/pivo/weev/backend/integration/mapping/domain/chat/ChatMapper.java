@@ -5,7 +5,7 @@ import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChat;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(uses = {ChatMessageMapper.class})
+@Mapper(uses = {CommonChatMessageMapper.class})
 public interface ChatMapper {
 
     @Mapping(target = "messages", ignore = true)
