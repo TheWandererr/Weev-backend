@@ -125,6 +125,7 @@ public class FirestoreClient {
                     List<?> result = children.subList(from, to);
                     List<T> castedResult = mapToList(result, element -> objectMapper.convertValue(element, type));
                     future.complete(castedResult);
+                    return;
                 }
                 future.complete(new ArrayList<>());
             } catch (Exception mappingException) {
