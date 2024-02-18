@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.rest.aspect;
 
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
+import static com.pivo.weev.backend.utils.ArrayUtils.first;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.ACCESS_DENIED_ERROR;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
@@ -18,8 +19,8 @@ import org.springframework.stereotype.Component;
 public class ResourceOwnerVerifier {
 
     @Before("@annotation(com.pivo.weev.backend.rest.annotation.ResourceOwner)")
-    public void verify(JoinPoint jp) {
-        Long userId = (Long) jp.getArgs()[0];
+    public void verify(JoinPoint joinPoint) {
+        Long userId = (Long) first(joinPoint.getArgs()).orElse(null);
         if (!Objects.equals(userId, getUserId())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }

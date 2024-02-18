@@ -7,7 +7,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
 import com.pivo.weev.backend.domain.service.user.UserResourceService;
-import com.pivo.weev.backend.domain.service.validation.WebSocketOperationValidator;
+import com.pivo.weev.backend.domain.service.validation.ChatOperationValidator;
 import com.pivo.weev.backend.domain.service.websocket.factory.MessageFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class SubscriptionService {
 
     private final MessageFactory messageFactory;
 
-    private final WebSocketOperationValidator operationValidator;
+    private final ChatOperationValidator operationValidator;
 
     @Transactional
     public SubscriptionMessage handleSubscription(Long chatId, String nickname) {

@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.rest.model.jwt;
+package com.pivo.weev.backend.domain.model.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

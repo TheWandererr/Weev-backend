@@ -17,17 +17,16 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 @UtilityClass
+@Slf4j
 public class IOUtils {
 
     private static final Tika TIKA = new Tika();
-    private static final Logger LOGGER = LoggerFactory.getLogger(IOUtils.class);
 
     public static Path getPath(URL url) throws URISyntaxException {
         return Paths.get(url.toURI());
@@ -54,7 +53,7 @@ public class IOUtils {
             write(bufferedImage, format, outputStream);
             return outputStream.toByteArray();
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
             return new byte[0];
         }
     }

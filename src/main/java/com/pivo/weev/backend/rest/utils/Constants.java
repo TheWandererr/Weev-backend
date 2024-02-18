@@ -80,7 +80,7 @@ public class Constants {
     }
 
     @UtilityClass
-    public static final class JWTModes {
+    public static final class JwtModes {
 
         public static final String ACCESS = "access";
         public static final String REFRESH = "refresh";
@@ -104,6 +104,7 @@ public class Constants {
         public static final Integer MEETS_PER_PAGE = 5;
         public static final Integer MEET_REQUESTS_PER_PAGE = 10;
         public static final Integer MEET_TEMPLATES_PER_PAGE = 10;
+        public static final String MESSAGES_PER_PAGE = "20";
     }
 
     @UtilityClass

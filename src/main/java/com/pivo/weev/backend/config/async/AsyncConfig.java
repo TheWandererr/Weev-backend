@@ -28,8 +28,8 @@ public class AsyncConfig {
     }
 
     @Bean
-    public ThreadPoolTaskExecutor firebaseDatabaseExecutor(ExecutorProperties firebaseDatabaseExecutorProperties, TaskDecorator taskDecorator) {
-        return initExecutor(firebaseDatabaseExecutorProperties, taskDecorator);
+    public ThreadPoolTaskExecutor firebaseFirestoreExecutor(ExecutorProperties firebaseFirestoreExecutorProperties, TaskDecorator taskDecorator) {
+        return initExecutor(firebaseFirestoreExecutorProperties, taskDecorator);
     }
 
     @Bean
@@ -61,8 +61,8 @@ public class AsyncConfig {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "application.firebase.database.async.executor")
-    public ExecutorProperties firebaseDatabaseExecutorProperties() {
+    @ConfigurationProperties(prefix = "application.firebase.firestore.async.executor")
+    public ExecutorProperties firebaseFirestoreExecutorProperties() {
         return new ExecutorProperties();
     }
 

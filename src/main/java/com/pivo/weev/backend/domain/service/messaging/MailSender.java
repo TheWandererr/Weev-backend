@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.service.message;
+package com.pivo.weev.backend.domain.service.messaging;
 
 import static org.mapstruct.factory.Mappers.getMapper;
 

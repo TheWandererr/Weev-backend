@@ -1,22 +1,17 @@
 package com.pivo.weev.backend.integration.mapping;
 
-import static java.util.Objects.isNull;
-
+import com.pivo.weev.backend.utils.DateTimeUtils;
 import java.time.Instant;
-import java.util.Date;
 import org.mapstruct.Mapper;
 
 @Mapper
 public interface DateTimeMapper {
 
-    default Instant map(Date source) {
-        if (isNull(source)) {
-            return null;
-        }
-        return source.toInstant();
+    default Long toEpochMilli(Instant instant) {
+        return DateTimeUtils.toEpochMilli(instant);
     }
 
-    default Date map(Instant source) {
-        return Date.from(source);
+    default Instant toInstant(Long epochMilli) {
+        return DateTimeUtils.toInstant(epochMilli);
     }
 }

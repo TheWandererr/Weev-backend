@@ -26,7 +26,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetJoinR
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepository;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepository;
 import com.pivo.weev.backend.domain.service.event.factory.ApplicationEventFactory;
-import com.pivo.weev.backend.domain.service.message.NotificationService;
+import com.pivo.weev.backend.domain.service.messaging.NotificationService;
 import com.pivo.weev.backend.domain.service.validation.MeetOperationsValidator;
 import java.time.Instant;
 import java.util.List;

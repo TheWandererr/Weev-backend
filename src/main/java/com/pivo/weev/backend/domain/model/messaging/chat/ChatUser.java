@@ -1,7 +1,6 @@
 package com.pivo.weev.backend.domain.model.messaging.chat;
 
-import static com.pivo.weev.backend.utils.Constants.APPLICATION_NAME;
-
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,12 +10,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatUser {
+public class ChatUser implements Serializable {
 
     private long id;
     private String nickname;
-
-    public static ChatUser system() {
-        return new ChatUser(0, APPLICATION_NAME);
-    }
+    private boolean deleted;
 }

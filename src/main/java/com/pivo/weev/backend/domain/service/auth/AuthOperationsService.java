@@ -34,7 +34,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.VerificationRequestRepository;
 import com.pivo.weev.backend.domain.service.config.ConfigService;
 import com.pivo.weev.backend.domain.service.jwt.JwtHolder;
-import com.pivo.weev.backend.domain.service.message.DocumentService;
+import com.pivo.weev.backend.domain.service.messaging.DocumentService;
 import com.pivo.weev.backend.domain.service.user.UserDeactivationService;
 import com.pivo.weev.backend.domain.service.user.UserPasswordService;
 import com.pivo.weev.backend.domain.service.user.UserResourceService;

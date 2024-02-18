@@ -1,12 +1,15 @@
 package com.pivo.weev.backend.integration.firebase.service;
 
-import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseDatabase.Children.CHATS;
-import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseDatabase.References.COMMON;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Collections.CHATS;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Collections.USER_CHATS;
+import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static java.util.Objects.nonNull;
 
-import com.pivo.weev.backend.integration.firebase.client.DatabaseClient;
+import com.pivo.weev.backend.integration.firebase.client.FirestoreClient;
 import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChat;
 import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChatMessage;
+import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseUserChatsReference;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,17 +18,31 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FirebaseChatService {
 
-    private final DatabaseClient databaseClient;
+    private final FirestoreClient firestoreClient;
 
     public void createChat(FirebaseChat firebaseChat) {
-        databaseClient.save(COMMON, CHATS, firebaseChat.getId(), firebaseChat);
+        firestoreClient.save(CHATS, firebaseChat.getId().toString(), firebaseChat);
     }
 
     public void pushMessage(Long chatId, FirebaseChatMessage message) {
-        FirebaseChat firebaseChat = databaseClient.find(COMMON, CHATS, chatId, FirebaseChat.class);
+        FirebaseChat firebaseChat = firestoreClient.find(CHATS, chatId.toString(), FirebaseChat.class);
         if (nonNull(firebaseChat)) {
             firebaseChat.addMessage(message);
-            databaseClient.update(COMMON, CHATS, chatId, Map.of("messages", firebaseChat.getMessages()));
+            firestoreClient.update(CHATS, chatId.toString(), Map.of("messages", firebaseChat.getMessages()));
         }
+    }
+
+    public void createUserChatsReference(FirebaseUserChatsReference firebaseUserChatsReference) {
+        firestoreClient.save(USER_CHATS, firebaseUserChatsReference.getUserId().toString(), firebaseUserChatsReference);
+    }
+
+    public List<Long> getChatIds(Long userId) {
+        FirebaseUserChatsReference reference = firestoreClient.find(USER_CHATS, userId.toString(), FirebaseUserChatsReference.class);
+        return reference.getChatIds();
+    }
+
+    public List<FirebaseChat> getChats(List<Long> ids) {
+        List<String> references = mapToList(ids, Object::toString);
+        return firestoreClient.findAll(CHATS, references, FirebaseChat.class);
     }
 }

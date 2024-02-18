@@ -20,9 +20,9 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.Declinati
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepository;
 import com.pivo.weev.backend.domain.service.event.factory.ApplicationEventFactory;
 import com.pivo.weev.backend.domain.service.meet.MeetPhotoService;
-import com.pivo.weev.backend.domain.service.message.NotificationService;
+import com.pivo.weev.backend.domain.service.messaging.ChatService;
+import com.pivo.weev.backend.domain.service.messaging.NotificationService;
 import com.pivo.weev.backend.domain.service.validation.ModerationValidator;
-import com.pivo.weev.backend.domain.service.websocket.ChatService;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.service.message;
+package com.pivo.weev.backend.domain.service.messaging;
 
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -8,7 +8,7 @@ import com.pivo.weev.backend.domain.model.messaging.mail.MailMessage;
 import com.pivo.weev.backend.domain.model.messaging.source.ChangePasswordSource;
 import com.pivo.weev.backend.domain.model.messaging.source.EmailVerificationSource;
 import com.pivo.weev.backend.domain.model.user.User;
-import com.pivo.weev.backend.domain.service.message.factory.MailMessageFactory;
+import com.pivo.weev.backend.domain.service.messaging.factory.MailMessageFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

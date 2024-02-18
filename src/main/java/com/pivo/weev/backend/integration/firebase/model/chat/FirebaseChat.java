@@ -14,17 +14,11 @@ import lombok.Setter;
 public class FirebaseChat {
 
     private Long id;
-    private String creatorId;
+    private Long creatorId;
     private String name;
     private String avatarUrl;
     private List<FirebaseChatMessage> messages = new ArrayList<>();
-    private List<FirebaseChatUser> users = new ArrayList<>();
-
-    public void addUser(FirebaseChatUser user) {
-        if (nonNull(user)) {
-            getUsers().add(user);
-        }
-    }
+    private Integer users;
 
     public void addMessage(FirebaseChatMessage message) {
         if (nonNull(message)) {

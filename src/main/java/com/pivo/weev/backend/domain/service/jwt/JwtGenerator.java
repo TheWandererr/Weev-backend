@@ -11,7 +11,7 @@ import com.pivo.weev.backend.domain.model.auth.LoginDetails;
 import com.pivo.weev.backend.domain.service.config.ConfigService;
 import com.pivo.weev.backend.rest.utils.Constants.Api;
 import com.pivo.weev.backend.rest.utils.Constants.Claims;
-import com.pivo.weev.backend.rest.utils.Constants.JWTModes;
+import com.pivo.weev.backend.rest.utils.Constants.JwtModes;
 import java.time.Instant;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class JWTGenerator {
+public class JwtGenerator {
 
     private final JwtEncoder jwtEncoder;
     private final ConfigService configService;
@@ -46,17 +46,17 @@ public class JWTGenerator {
     }
 
     private void setAccessToken(AuthTokens authTokens, Instant now, LoginDetails loginDetails) {
-        Jwt token = generateToken(now, loginDetails, configService.getAccessTokenExpiresAmount(), JWTModes.ACCESS);
+        Jwt token = generateToken(now, loginDetails, configService.getAccessTokenExpiresAmount(), JwtModes.ACCESS);
         authTokens.setAccessToken(token);
     }
 
     private void setRefreshToken(AuthTokens authTokens, Instant now, LoginDetails loginDetails) {
-        Jwt token = generateToken(now, loginDetails, configService.getRefreshTokenExpiresAmount(), JWTModes.REFRESH);
+        Jwt token = generateToken(now, loginDetails, configService.getRefreshTokenExpiresAmount(), JwtModes.REFRESH);
         authTokens.setRefreshToken(token);
     }
 
     protected Jwt generateToken(Instant now, LoginDetails loginDetails, int expiresAtAmount, String mode) {
-        String scope = JWTModes.ACCESS.equals(mode)
+        String scope = JwtModes.ACCESS.equals(mode)
                 ? collect(loginDetails.authenticationAuthorities(), SimpleGrantedAuthority::getAuthority, joining(SPACE))
                 : mode;
         JwtClaimsSet claimsSet = JwtClaimsSet.builder()

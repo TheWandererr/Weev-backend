@@ -16,6 +16,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserRoleJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRolesRepository;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepository;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -64,6 +65,10 @@ public class UserResourceService {
     public User fetchUser(Long id) {
         UserJpa user = usersRepository.fetch(id);
         return getMapper(UserMapper.class).map(user);
+    }
+
+    public List<UserJpa> fetchAllJpa(Iterable<Long> ids) {
+        return usersRepository.findAll(ids);
     }
 
     public void createUser(RegisteredUserSnapshot registeredUserSnapshot) {

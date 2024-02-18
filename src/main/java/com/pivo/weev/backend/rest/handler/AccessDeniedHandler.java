@@ -15,15 +15,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 
 @RequiredArgsConstructor
+@Slf4j
 public class AccessDeniedHandler implements org.springframework.security.web.access.AccessDeniedHandler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccessDeniedHandler.class);
 
     private final ObjectMapper mapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
@@ -34,7 +32,7 @@ public class AccessDeniedHandler implements org.springframework.security.web.acc
             throws IOException, ServletException {
         AlertRest alert = alertRestFactory.create(PERMISSIONS_ERROR + TITLE, PERMISSIONS_ERROR);
         BaseResponse loginResponse = new BaseResponse(alert, FORBIDDEN);
-        LOGGER.error(applicationLoggingHelper.buildLoggingError(accessDeniedException, null, false));
+        log.error(applicationLoggingHelper.buildLoggingError(accessDeniedException, null, false));
         writeResponse(loginResponse, response, HttpStatus.FORBIDDEN, mapper);
     }
 }

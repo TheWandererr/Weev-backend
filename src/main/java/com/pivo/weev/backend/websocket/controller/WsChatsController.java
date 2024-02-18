@@ -7,7 +7,7 @@ import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.domain.CommonMessageMapper;
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage;
-import com.pivo.weev.backend.domain.service.websocket.ChatService;
+import com.pivo.weev.backend.domain.service.messaging.ChatService;
 import com.pivo.weev.backend.websocket.mapping.ws.CommonMessageWsMapper;
 import com.pivo.weev.backend.websocket.model.ChatMessageWs;
 import com.pivo.weev.backend.websocket.utils.Constants.UserDestinations;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 @RequiredArgsConstructor
-public class ChatsController {
+public class WsChatsController {
 
     private final ChatService chatService;
     private final SimpMessagingTemplate template;

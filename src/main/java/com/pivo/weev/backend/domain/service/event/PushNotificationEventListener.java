@@ -2,7 +2,7 @@ package com.pivo.weev.backend.domain.service.event;
 
 import com.pivo.weev.backend.domain.model.event.PushNotificationEvent;
 import com.pivo.weev.backend.domain.model.event.PushNotificationEvent.PushNotificationModel;
-import com.pivo.weev.backend.domain.service.message.PushNotificationService;
+import com.pivo.weev.backend.domain.service.messaging.PushNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;

@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.service.message;
+package com.pivo.weev.backend.domain.service.messaging;
 
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.REQUESTER_NICKNAME;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationHeaders.BODY;

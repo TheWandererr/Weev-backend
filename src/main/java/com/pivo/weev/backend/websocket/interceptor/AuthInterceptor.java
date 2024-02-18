@@ -7,9 +7,9 @@ import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
+import com.pivo.weev.backend.domain.model.jwt.JwtVerificationResult;
+import com.pivo.weev.backend.domain.service.jwt.JwtAuthenticityVerifier;
 import com.pivo.weev.backend.domain.utils.JwtUtils;
-import com.pivo.weev.backend.rest.model.jwt.JwtVerificationResult;
-import com.pivo.weev.backend.rest.service.jwt.JwtAuthenticityVerifier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;

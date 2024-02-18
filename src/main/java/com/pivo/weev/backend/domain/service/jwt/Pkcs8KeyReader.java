@@ -13,7 +13,7 @@ import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PKCS8KeyReader {
+public class Pkcs8KeyReader {
 
     private static final JcaPEMKeyConverter PEM_KEY_CONVERTER = new JcaPEMKeyConverter();
 

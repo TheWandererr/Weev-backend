@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CommonMessage {
+public class CommonMessage implements Serializable {
 
     private String text;
     private Type type;

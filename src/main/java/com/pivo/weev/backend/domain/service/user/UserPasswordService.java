@@ -6,7 +6,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
-import com.pivo.weev.backend.domain.service.message.DocumentService;
+import com.pivo.weev.backend.domain.service.messaging.DocumentService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;

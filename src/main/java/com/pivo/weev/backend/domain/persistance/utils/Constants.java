@@ -86,18 +86,14 @@ public class Constants {
     }
 
     @UtilityClass
-    public static final class FirebaseDatabase {
+    public static final class FirebaseFirestore {
 
-        public static final class Children {
+        @UtilityClass
+        public static final class Collections {
 
             public static final String CHATS = "chats";
+            public static final String USER_CHATS = "user_chats";
         }
-
-        public static final class References {
-
-            public static final String COMMON = "common/storage";
-        }
-
 
     }
 }

@@ -1,38 +1,42 @@
-package com.pivo.weev.backend.domain.service.websocket;
+package com.pivo.weev.backend.domain.service.messaging;
 
 import static com.pivo.weev.backend.domain.model.messaging.chat.CommonMessage.Type.MESSAGE;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType.NICKNAME;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.CHAT_NEW_MESSAGE;
+import static com.pivo.weev.backend.utils.CollectionUtils.collect;
+import static java.lang.Math.min;
+import static java.util.stream.Collectors.toMap;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.domain.ChatUserMapper;
-import com.pivo.weev.backend.domain.mapping.domain.MeetMapper;
-import com.pivo.weev.backend.domain.mapping.domain.UserMapper;
 import com.pivo.weev.backend.domain.model.event.PushNotificationEvent;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent.EventType;
-import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.model.messaging.chat.Chat;
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage;
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatUser;
-import com.pivo.weev.backend.domain.model.user.User;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.service.event.factory.ApplicationEventFactory;
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
-import com.pivo.weev.backend.domain.service.message.NotificationService;
 import com.pivo.weev.backend.domain.service.user.UserResourceService;
-import com.pivo.weev.backend.domain.service.validation.WebSocketOperationValidator;
+import com.pivo.weev.backend.domain.service.validation.ChatOperationValidator;
 import com.pivo.weev.backend.domain.utils.Constants.NotificationDetails;
 import com.pivo.weev.backend.domain.utils.Constants.NotificationTopics;
 import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChat;
 import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChatMessage;
+import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseUserChatsReference;
 import com.pivo.weev.backend.integration.firebase.service.FirebaseChatService;
 import com.pivo.weev.backend.integration.mapping.domain.chat.ChatMapper;
+import com.pivo.weev.backend.integration.mapping.domain.chat.ChatMessageMapper;
 import com.pivo.weev.backend.integration.mapping.firebase.chat.FirebaseChatMessageMapper;
-import com.pivo.weev.backend.integration.mapping.firebase.chat.FirebaseChatUserMapper;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -53,16 +57,14 @@ public class ChatService {
 
     private final MeetSearchService meetSearchService;
     private final UserResourceService userResourceService;
-    private final WebSocketOperationValidator operationValidator;
+    private final ChatOperationValidator operationValidator;
 
-    public void createChat(UserJpa creatorJpa, MeetJpa meetJpa) {
-        User creator = getMapper(UserMapper.class).map(creatorJpa);
-        Meet meet = getMapper(MeetMapper.class).map(meetJpa);
-
+    public void createChat(UserJpa creator, MeetJpa meet) {
         FirebaseChat firebaseChat = buildFirebaseChat(creator, meet);
-        saveFirebaseChat(firebaseChat);
+        FirebaseUserChatsReference firebaseUserChatsReference = new FirebaseUserChatsReference(creator.getId(), List.of(firebaseChat.getId()));
+        createFirebaseChatInfo(firebaseChat, firebaseUserChatsReference);
 
-        notify(meetJpa, creatorJpa, NotificationTopics.CHAT_CREATED, firebaseChat.getId());
+        notify(meet, creator, NotificationTopics.CHAT_CREATED, firebaseChat.getId());
 
         Chat chat = getMapper(ChatMapper.class).map(firebaseChat);
         WebSocketEvent webSocketEvent = applicationEventFactory.buildWebSocketEvent(
@@ -73,21 +75,22 @@ public class ChatService {
         applicationEventPublisher.publishEvent(webSocketEvent);
     }
 
-    @Async("firebaseDatabaseExecutor")
-    protected void saveFirebaseChat(FirebaseChat firebaseChat) {
-        firebaseChatService.createChat(firebaseChat);
-    }
-
-    private FirebaseChat buildFirebaseChat(User creator, Meet meet) {
+    private FirebaseChat buildFirebaseChat(UserJpa creator, MeetJpa meet) {
         FirebaseChat firebaseChat = new FirebaseChat();
-        firebaseChat.setCreatorId(String.valueOf(creator.getId()));
-        firebaseChat.addUser(getMapper(FirebaseChatUserMapper.class).map(creator));
+        firebaseChat.setCreatorId(creator.getId());
         firebaseChat.setName(meet.getHeader());
         firebaseChat.setId(meet.getId());
         if (meet.hasPhoto()) {
             firebaseChat.setAvatarUrl(meet.getPhoto().getUrl());
         }
+        firebaseChat.setUsers(1);
         return firebaseChat;
+    }
+
+    @Async("firebaseFirestoreExecutor")
+    protected void createFirebaseChatInfo(FirebaseChat firebaseChat, FirebaseUserChatsReference firebaseUserChatsReference) {
+        firebaseChatService.createChat(firebaseChat);
+        firebaseChatService.createUserChatsReference(firebaseUserChatsReference);
     }
 
     private void notify(MeetJpa meet, UserJpa recipient, String topic, Long chatId) {
@@ -109,7 +112,7 @@ public class ChatService {
         return message;
     }
 
-    @Async("firebaseDatabaseExecutor")
+    @Async("firebaseFirestoreExecutor")
     protected void pushMessage(Long chatId, ChatMessage message) {
         FirebaseChatMessage firebaseChatMessage = getMapper(FirebaseChatMessageMapper.class).map(message);
         firebaseChatService.pushMessage(chatId, firebaseChatMessage);
@@ -132,4 +135,49 @@ public class ChatService {
         message.setFrom(chatUser);
         message.setType(MESSAGE);
     }
+
+    public List<Chat> getChats(Long userId, Integer historySize) {
+        List<Long> firebaseChatIds = firebaseChatService.getChatIds(userId);
+        List<FirebaseChat> firebaseChats = firebaseChatService.getChats(firebaseChatIds);
+        Map<Long, List<FirebaseChatMessage>> chatsHistory = getChatsHistory(firebaseChats, historySize);
+        Map<Long, UserJpa> senders = collectSenders(chatsHistory);
+
+        List<Chat> chats = new ArrayList<>();
+        for (FirebaseChat firebaseChat : firebaseChats) {
+            Chat chat = getMapper(ChatMapper.class).map(firebaseChat);
+
+            List<FirebaseChatMessage> history = chatsHistory.get(firebaseChat.getId());
+            for (FirebaseChatMessage firebaseChatMessage : history) {
+                ChatMessage chatMessage = getMapper(ChatMessageMapper.class).map(firebaseChatMessage);
+                UserJpa sender = senders.get(firebaseChatMessage.getFrom());
+                chatMessage.setFrom(getMapper(ChatUserMapper.class).map(sender));
+                chat.addMessage(chatMessage);
+            }
+
+            chats.add(chat);
+        }
+        return chats;
+    }
+
+    private Map<Long, List<FirebaseChatMessage>> getChatsHistory(List<FirebaseChat> firebaseChats, Integer historySize) {
+        return collect(firebaseChats, toMap(FirebaseChat::getId, chat -> extractHistory(chat, historySize)));
+    }
+
+    private List<FirebaseChatMessage> extractHistory(FirebaseChat chat, Integer historySize) {
+        List<FirebaseChatMessage> firebaseMessages = chat.getMessages();
+        return firebaseMessages.subList(firebaseMessages.size() - min(historySize, firebaseMessages.size()), firebaseMessages.size());
+    }
+
+    private Map<Long, UserJpa> collectSenders(Map<Long, List<FirebaseChatMessage>> chatsHistory) {
+        Set<Long> senderIds = collectSenderIds(chatsHistory);
+        return collect(userResourceService.fetchAllJpa(senderIds), toMap(UserJpa::getId, Function.identity()));
+    }
+
+    private Set<Long> collectSenderIds(Map<Long, List<FirebaseChatMessage>> chatsHistory) {
+        return chatsHistory.values().stream()
+                           .flatMap(Collection::stream)
+                           .map(FirebaseChatMessage::getFrom)
+                           .collect(Collectors.toSet());
+    }
+
 }

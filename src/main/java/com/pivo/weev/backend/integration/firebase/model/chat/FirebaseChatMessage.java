@@ -1,7 +1,6 @@
 package com.pivo.weev.backend.integration.firebase.model.chat;
 
 import java.io.Serializable;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +15,6 @@ public class FirebaseChatMessage implements Serializable {
     private String text;
     private String code;
     private String type;
-    private FirebaseChatUser sender;
-    private Date createdAt;
+    private Long from;
+    private Long createdAt;
 }

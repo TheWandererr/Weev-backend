@@ -14,16 +14,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationFailureProcessor implements AuthenticationFailureHandler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationFailureProcessor.class);
 
     private final ObjectMapper mapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
@@ -37,7 +35,7 @@ public class AuthenticationFailureProcessor implements AuthenticationFailureHand
                 ? notificationRestFactory.forbidden(exception.getMessage())
                 : notificationRestFactory.badCredentials();
         BaseResponse loginResponse = new BaseResponse(notification, forbidden ? ResponseMessage.FORBIDDEN : ResponseMessage.UNAUTHORIZED);
-        LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
+        log.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
         writeResponse(loginResponse, response, forbidden ? HttpStatus.FORBIDDEN : HttpStatus.UNAUTHORIZED, mapper);
     }
 }

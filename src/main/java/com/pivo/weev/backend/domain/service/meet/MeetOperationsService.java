@@ -29,7 +29,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepos
 import com.pivo.weev.backend.domain.service.LocationService;
 import com.pivo.weev.backend.domain.service.TimeZoneService;
 import com.pivo.weev.backend.domain.service.event.factory.ApplicationEventFactory;
-import com.pivo.weev.backend.domain.service.message.NotificationService;
+import com.pivo.weev.backend.domain.service.messaging.NotificationService;
 import com.pivo.weev.backend.domain.service.user.UserResourceService;
 import com.pivo.weev.backend.domain.service.validation.MeetOperationsValidator;
 import java.time.ZoneId;

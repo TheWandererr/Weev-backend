@@ -75,6 +75,10 @@ public class CollectionUtils {
         return flatMap(collection, mapper).collect(Collectors.toList());
     }
 
+    public static <S, T> Set<T> flatMapToSet(Collection<S> collection, Function<? super S, ? extends Stream<? extends T>> mapper) {
+        return flatMap(collection, mapper).collect(Collectors.toSet());
+    }
+
     public static <T> List<T> list(Collection<T> collection) {
         return nullableStream(collection).collect(Collectors.toList());
     }

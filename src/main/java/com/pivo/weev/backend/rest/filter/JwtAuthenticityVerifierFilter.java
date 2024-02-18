@@ -8,14 +8,14 @@ import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.join;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pivo.weev.backend.domain.model.jwt.JwtVerificationResult;
+import com.pivo.weev.backend.domain.service.jwt.JwtAuthenticityVerifier;
 import com.pivo.weev.backend.domain.service.jwt.JwtHolder;
 import com.pivo.weev.backend.logging.ApplicationLoggingHelper;
 import com.pivo.weev.backend.rest.error.NotificationRestFactory;
 import com.pivo.weev.backend.rest.model.error.NotificationRest;
-import com.pivo.weev.backend.rest.model.jwt.JwtVerificationResult;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.BaseResponse.ResponseMessage;
-import com.pivo.weev.backend.rest.service.jwt.JwtAuthenticityVerifier;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

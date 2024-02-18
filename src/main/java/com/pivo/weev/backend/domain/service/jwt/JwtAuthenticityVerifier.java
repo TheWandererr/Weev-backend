@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.rest.service.jwt;
+package com.pivo.weev.backend.domain.service.jwt;
 
 import static com.pivo.weev.backend.domain.utils.JwtUtils.getDeviceId;
 import static com.pivo.weev.backend.domain.utils.JwtUtils.getSerial;
@@ -7,9 +7,9 @@ import static com.pivo.weev.backend.utils.Constants.ErrorCodes.AUTHORIZATION_TOK
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.TOKEN_COMPROMISED_ERROR;
 import static java.util.Objects.isNull;
 
+import com.pivo.weev.backend.domain.model.jwt.JwtVerificationResult;
 import com.pivo.weev.backend.domain.persistance.jpa.model.auth.AuthTokensDetailsJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.AuthTokensDetailsRepository;
-import com.pivo.weev.backend.rest.model.jwt.JwtVerificationResult;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.oauth2.jwt.Jwt;

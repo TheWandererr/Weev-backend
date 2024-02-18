@@ -10,14 +10,12 @@ import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
 import javax.crypto.Cipher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RSAKeyService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RSAKeyService.class);
+@Slf4j
+public class RsaKeyService {
 
     public static final Encoder BASE64_ENCODER = Base64.getEncoder();
     public static final Decoder BASE64_DECODER = Base64.getDecoder();
@@ -26,16 +24,16 @@ public class RSAKeyService {
     private final RSAPublicKey rsaPublicKey;
     private final Cipher cipherInstance;
 
-    public RSAKeyService(PKCS8KeyReader pkcs8KeyReader, PKCS8KeyProperties properties) throws Exception {
-        LOGGER.info("Initialization of RSA key pair is started");
+    public RsaKeyService(Pkcs8KeyReader pkcs8KeyReader, PKCS8KeyProperties properties) throws Exception {
+        log.info("Initialization of RSA key pair is started");
         KeyPair keyPair = initKeys(pkcs8KeyReader, properties);
         this.rsaPrivateKey = (RSAPrivateKey) keyPair.getPrivate();
         this.rsaPublicKey = (RSAPublicKey) keyPair.getPublic();
         this.cipherInstance = Cipher.getInstance(rsaPrivateKey.getAlgorithm());
-        LOGGER.info("Initialization of RSA key pair is finished");
+        log.info("Initialization of RSA key pair is finished");
     }
 
-    private KeyPair initKeys(PKCS8KeyReader pkcs8KeyReader, PKCS8KeyProperties properties) throws Exception {
+    private KeyPair initKeys(Pkcs8KeyReader pkcs8KeyReader, PKCS8KeyProperties properties) throws Exception {
         return pkcs8KeyReader.readKeyPair(properties.getPrivateKey(), properties.getPassphrase());
     }
 

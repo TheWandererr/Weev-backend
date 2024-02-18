@@ -11,7 +11,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WebSocketOperationValidator {
+public class ChatOperationValidator {
 
     public void validateSubscription(MeetJpa meet, UserJpa subscriber) {
         if (!meet.getMembers().contains(subscriber) && !Objects.equals(meet.getCreator().getId(), subscriber.getId())) {
