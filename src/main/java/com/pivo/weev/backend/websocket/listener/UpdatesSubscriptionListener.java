@@ -55,6 +55,5 @@ public class UpdatesSubscriptionListener {
         SubscriptionMessage message = subscriptionService.handleSubscription(chatId, nickname);
         CommonMessageWs messageWs = getMapper(CommonMessageWsMapper.class).map(message);
         template.convertAndSendToUser(nickname, UserDestinations.UPDATES, messageWs);
-        /*template.convertAndSend(format(UserDestinations.CHAT_PATTERN, chatId), "Hello " + nickname);*/ // TODO for subscription test
     }
 }

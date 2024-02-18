@@ -1,5 +1,7 @@
 package com.pivo.weev.backend.domain.model.event;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import com.pivo.weev.backend.domain.model.messaging.chat.Chat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +32,10 @@ public class WebSocketEvent extends ApplicationEvent {
         private Chat chat;
         private String recipient;
         private EventType eventType;
+
+        public boolean hasRecipient() {
+            return isNotBlank(recipient);
+        }
     }
 
     public enum EventType {

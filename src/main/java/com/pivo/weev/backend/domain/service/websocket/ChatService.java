@@ -122,8 +122,8 @@ public class ChatService {
     }
 
     private void sendPushNotification(MeetJpa meet, Set<UserJpa> recipients, String topic, String text) {
-        Map<String, Object> details = Map.of(NotificationDetails.CHAT_ID, meet.getId(), NotificationDetails.TEXT, text);
-        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(meet, recipients, topic, details);
+        Map<String, Object> payload = Map.of(NotificationDetails.CHAT_ID, meet.getId(), NotificationDetails.TEXT, text);
+        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(meet, recipients, topic, payload);
         applicationEventPublisher.publishEvent(event);
     }
 

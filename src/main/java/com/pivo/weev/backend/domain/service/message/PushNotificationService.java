@@ -14,13 +14,16 @@ import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.ME
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_UPDATE_FAILED;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_UPDATE_SUCCESSFUL;
 import static com.pivo.weev.backend.utils.CollectionUtils.collect;
+import static com.pivo.weev.backend.utils.CollectionUtils.flatMapToList;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToSet;
 import static com.pivo.weev.backend.utils.LocaleUtils.getAcceptedLocale;
+import static com.pivo.weev.backend.utils.StreamUtils.select;
 import static java.util.stream.Collectors.groupingBy;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-import com.pivo.weev.backend.domain.model.meet.Meet;
-import com.pivo.weev.backend.domain.model.user.Device;
+import com.pivo.weev.backend.domain.model.event.payload.DevicePayload;
+import com.pivo.weev.backend.domain.model.event.payload.MeetPayload;
+import com.pivo.weev.backend.domain.model.event.payload.UserPayload;
 import com.pivo.weev.backend.domain.utils.Constants.NotificationDetails;
 import com.pivo.weev.backend.integration.firebase.factory.FirebasePushNotificationsFactory;
 import com.pivo.weev.backend.integration.firebase.model.notification.FirebasePushNotificationMessage;
@@ -38,20 +41,21 @@ public class PushNotificationService {
     private final FirebasePushNotificationService firebasePushNotificationService;
     private final FirebasePushNotificationsFactory firebasePushNotificationsFactory;
 
-    public void notifyAll(Meet meet, List<Device> devices, String topic, Map<String, Object> bodyDetails) {
-        Map<Long, List<Device>> notifiableDevicesByUser = collect(devices, groupingBy(Device::getUserId));
-        for (List<Device> notifiableDevices : notifiableDevicesByUser.values()) {
-            collect(notifiableDevices, groupingBy(Device::getLang))
+    public void sendPushNotifications(MeetPayload meet, Set<UserPayload> recipients, String topic, Map<String, Object> payload) {
+        List<DevicePayload> devices = flatMapToList(recipients, recipient -> select(recipient.getDevices(), DevicePayload::hasPushNotificationToken));
+        Map<Long, List<DevicePayload>> notifiableDevicesByUser = collect(devices, groupingBy(DevicePayload::getUserId));
+        for (List<DevicePayload> notifiableDevices : notifiableDevicesByUser.values()) {
+            collect(notifiableDevices, groupingBy(DevicePayload::getLang))
                     .forEach((lang, notifiableDevicesByLang) -> {
-                        Set<String> notificationTokens = mapToSet(notifiableDevicesByLang, Device::getPushNotificationToken);
-                        Object[] titleArgs = resolveTitleArgs(meet, topic, bodyDetails);
-                        Object[] bodyArgs = resolveBodyArgs(meet, topic, bodyDetails);
+                        Set<String> notificationTokens = mapToSet(notifiableDevicesByLang, DevicePayload::getPushNotificationToken);
+                        Object[] titleArgs = resolveTitleArgs(meet, topic, payload);
+                        Object[] bodyArgs = resolveBodyArgs(meet, topic, payload);
                         FirebasePushNotificationMessage message = firebasePushNotificationsFactory.build(
                                 topic + TITLE,
                                 titleArgs,
                                 topic + BODY,
                                 bodyArgs,
-                                bodyDetails,
+                                payload,
                                 notificationTokens,
                                 getAcceptedLocale(lang)
                         );
@@ -60,7 +64,7 @@ public class PushNotificationService {
         }
     }
 
-    private Object[] resolveTitleArgs(Meet meet, String topic, Map<String, Object> bodyDetails) {
+    private Object[] resolveTitleArgs(MeetPayload meet, String topic, Map<String, Object> payload) {
         return switch (topic) {
             case CHAT_CREATED -> createMeetChatCreatedTitleArgs(meet);
             case CHAT_NEW_MESSAGE -> createMeetChatNewMessageTitleArgs(meet);
@@ -68,60 +72,60 @@ public class PushNotificationService {
         };
     }
 
-    private Object[] createMeetChatCreatedTitleArgs(Meet meet) {
+    private Object[] createMeetChatCreatedTitleArgs(MeetPayload meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] createMeetChatNewMessageTitleArgs(Meet meet) {
+    private Object[] createMeetChatNewMessageTitleArgs(MeetPayload meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] resolveBodyArgs(Meet meet, String topic, Map<String, Object> bodyDetails) {
+    private Object[] resolveBodyArgs(MeetPayload meet, String topic, Map<String, Object> payload) {
         return switch (topic) {
             case MEET_CONFIRMATION -> createMeetConfirmationBodyArgs(meet);
             case MEET_UPDATE_SUCCESSFUL -> createMeetUpdateSuccessfulBodyArgs(meet);
             case MEET_UPDATE_FAILED -> createMeetUpdateFailedBodyArgs(meet);
             case MEET_DECLINATION -> createMeetDeclinationBodyArgs(meet);
             case MEET_CANCELLATION -> createMeetCancellationBodyArgs(meet);
-            case MEET_NEW_JOIN_REQUEST -> createNewJoinRequestBodyArgs(meet, bodyDetails);
+            case MEET_NEW_JOIN_REQUEST -> createNewJoinRequestBodyArgs(meet, payload);
             case MEET_JOIN_REQUEST_CONFIRMATION -> createJoinRequestConfirmationBodyArgs(meet);
             case MEET_JOIN_REQUEST_DECLINATION -> createJoinRequestDeclinationBodyArgs(meet);
             case CHAT_CREATED -> createMeetChatCreatedBodyArgs();
-            case CHAT_NEW_MESSAGE -> createMeetChatNewMessageBodyArgs(bodyDetails);
+            case CHAT_NEW_MESSAGE -> createMeetChatNewMessageBodyArgs(payload);
             default -> new Object[0];
         };
     }
 
-    private Object[] createMeetConfirmationBodyArgs(Meet meet) {
+    private Object[] createMeetConfirmationBodyArgs(MeetPayload meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] createMeetUpdateSuccessfulBodyArgs(Meet meet) {
+    private Object[] createMeetUpdateSuccessfulBodyArgs(MeetPayload meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] createMeetUpdateFailedBodyArgs(Meet meet) {
+    private Object[] createMeetUpdateFailedBodyArgs(MeetPayload meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] createMeetDeclinationBodyArgs(Meet meet) {
+    private Object[] createMeetDeclinationBodyArgs(MeetPayload meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] createMeetCancellationBodyArgs(Meet meet) {
+    private Object[] createMeetCancellationBodyArgs(MeetPayload meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] createNewJoinRequestBodyArgs(Meet meet, Map<String, Object> bodyDetails) {
-        String nickname = bodyDetails.getOrDefault(REQUESTER_NICKNAME, EMPTY).toString();
+    private Object[] createNewJoinRequestBodyArgs(MeetPayload meet, Map<String, Object> payload) {
+        String nickname = payload.getOrDefault(REQUESTER_NICKNAME, EMPTY).toString();
         return new Object[]{nickname, meet.getHeader()};
     }
 
-    private Object[] createJoinRequestConfirmationBodyArgs(Meet meet) {
+    private Object[] createJoinRequestConfirmationBodyArgs(MeetPayload meet) {
         return new Object[]{meet.getHeader()};
     }
 
-    private Object[] createJoinRequestDeclinationBodyArgs(Meet meet) {
+    private Object[] createJoinRequestDeclinationBodyArgs(MeetPayload meet) {
         return new Object[]{meet.getHeader()};
     }
 
@@ -129,7 +133,7 @@ public class PushNotificationService {
         return new Object[0];
     }
 
-    private Object[] createMeetChatNewMessageBodyArgs(Map<String, Object> bodyDetails) {
-        return new Object[]{bodyDetails.get(NotificationDetails.TEXT)};
+    private Object[] createMeetChatNewMessageBodyArgs(Map<String, Object> payload) {
+        return new Object[]{payload.get(NotificationDetails.TEXT)};
     }
 }

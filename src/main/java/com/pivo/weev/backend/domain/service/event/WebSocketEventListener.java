@@ -27,8 +27,10 @@ public class WebSocketEventListener {
     @EventListener
     public void onWebSocketEventPublishing(WebSocketEvent event) {
         WebSocketMessageModel messageModel = event.getSource();
-        CommonMessage message = createMessage(messageModel);
-        messagingTemplate.convertAndSendToUser(messageModel.getRecipient(), UserDestinations.UPDATES, message);
+        if (messageModel.hasRecipient()) {
+            CommonMessage message = createMessage(messageModel);
+            messagingTemplate.convertAndSendToUser(messageModel.getRecipient(), UserDestinations.UPDATES, message);
+        }
     }
 
     private CommonMessage createMessage(WebSocketMessageModel messageModel) {
