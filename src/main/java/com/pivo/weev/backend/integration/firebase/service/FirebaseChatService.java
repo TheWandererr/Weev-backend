@@ -46,11 +46,11 @@ public class FirebaseChatService {
         return firestoreClient.find(USER_CHATS, userId.toString(), FirebaseUserChatsReference.class);
     }
 
-    public void createUserChatsReference(FirebaseUserChatsReference firebaseUserChatsReference) {
-        firestoreClient.save(USER_CHATS, firebaseUserChatsReference.getUserId().toString(), firebaseUserChatsReference);
+    public void createUserChatsReference(FirebaseUserChatsReference userChatsReference) {
+        firestoreClient.save(USER_CHATS, userChatsReference.getUserId().toString(), userChatsReference);
     }
 
-    public void updateUserChatsReference(Long userId, Map<String, Object> firebaseUserChatsReferenceUpdates) {
-        firestoreClient.update(USER_CHATS, userId.toString(), firebaseUserChatsReferenceUpdates);
+    public void updateUserChatsReference(FirebaseUserChatsReference userChatsReference) {
+        firestoreClient.update(USER_CHATS, userChatsReference.getUserId().toString(), Map.of("chatIds", userChatsReference.getChatIds()));
     }
 }

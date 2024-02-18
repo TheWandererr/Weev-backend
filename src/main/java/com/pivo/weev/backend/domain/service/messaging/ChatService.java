@@ -92,7 +92,7 @@ public class ChatService {
         FirebaseUserChatsReference userChatsReference = firebaseChatService.findUserChatsReference(userId);
         if (nonNull(userChatsReference)) {
             userChatsReference.getChatIds().add(firebaseChat.getId());
-            updateFirebaseChatInfo(firebaseChat, userId, Map.of("chatIds", userChatsReference.getChatIds()));
+            updateFirebaseChatInfo(firebaseChat, userChatsReference);
         } else {
             FirebaseUserChatsReference firebaseUserChatsReference = new FirebaseUserChatsReference(userId, List.of(firebaseChat.getId()));
             createFirebaseChatInfo(firebaseChat, firebaseUserChatsReference);
@@ -106,9 +106,9 @@ public class ChatService {
     }
 
     @Async("firebaseFirestoreExecutor")
-    protected void updateFirebaseChatInfo(FirebaseChat firebaseChat, Long userId, Map<String, Object> firebaseUserChatsReferenceUpdates) {
+    protected void updateFirebaseChatInfo(FirebaseChat firebaseChat, FirebaseUserChatsReference firebaseUserChatsReference) {
         firebaseChatService.createChat(firebaseChat);
-        firebaseChatService.updateUserChatsReference(userId, firebaseUserChatsReferenceUpdates);
+        firebaseChatService.updateUserChatsReference(firebaseUserChatsReference);
     }
 
     private void notify(MeetJpa meet, UserJpa recipient, String topic, Long chatId) {
