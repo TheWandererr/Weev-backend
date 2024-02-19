@@ -92,8 +92,7 @@ public class Constants {
         public static final class Collections {
 
             public static final String CHATS = "chats";
-            public static final String USER_CHATS = "user_chats";
-            public static final String MESSAGES = "messages";
+            public static final String USER_CHATS_REFERENCES = "user_chats_references";
         }
 
         @UtilityClass
@@ -101,6 +100,16 @@ public class Constants {
 
             public static final String CHAT_IDS = "chatIds";
             public static final String CREATED_AT = "createdAt";
+            public static final String LAST_UPDATE = "lastUpdate";
+            public static final String ID = "id";
+            public static final String MESSAGES = "messages";
+
+        }
+
+        @UtilityClass
+        public static final class ChatPrefixes {
+
+            public static final String GROUP = "group$";
         }
 
     }

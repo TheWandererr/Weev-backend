@@ -16,12 +16,18 @@ import lombok.Setter;
 public class FirebaseUserChatsReference {
 
     private Long userId;
-    private List<Long> chatIds;
+    private List<String> chatIds;
 
-    public List<Long> getChatIds() {
+    public List<String> getChatIds() {
         if (isNull(chatIds)) {
             chatIds = new ArrayList<>();
         }
         return chatIds;
+    }
+
+    public void addReference(String chatId) {
+        if (!getChatIds().contains(chatId)) {
+            getChatIds().add(chatId);
+        }
     }
 }

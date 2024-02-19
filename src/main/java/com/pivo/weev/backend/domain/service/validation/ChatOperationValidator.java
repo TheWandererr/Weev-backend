@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class ChatOperationValidator {
 
     public void validateSubscription(MeetJpa meet, UserJpa subscriber) {
-        if (!meet.getMembersWithCreator().contains(subscriber)) {
+        if (!meet.hasCreator(subscriber.getId()) && !meet.getMembers().contains(subscriber)) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
         /*if (meet.isEnded()) {
@@ -21,7 +21,7 @@ public class ChatOperationValidator {
     }
 
     public void validateSendMessage(MeetJpa meet, UserJpa sender) {
-        if (!meet.getMembersWithCreator().contains(sender)) {
+        if (!meet.hasCreator(sender.getId()) && !meet.getMembers().contains(sender)) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
         /*if (meet.isEnded()) {
@@ -30,7 +30,7 @@ public class ChatOperationValidator {
     }
 
     public void validateGetChatMessages(MeetJpa meet, UserJpa requester) {
-        if (!meet.getMembersWithCreator().contains(requester)) {
+        if (!meet.hasCreator(requester.getId()) && !meet.getMembers().contains(requester)) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
     }

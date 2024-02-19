@@ -1,6 +1,9 @@
 package com.pivo.weev.backend.domain.service.websocket;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType.NICKNAME;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.ChatPrefixes.GROUP;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+import static org.apache.commons.lang3.math.NumberUtils.toLong;
 
 import com.pivo.weev.backend.domain.model.messaging.chat.EventMessage;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
@@ -25,8 +28,9 @@ public class SubscriptionService {
     private final ChatOperationValidator operationValidator;
 
     @Transactional
-    public EventMessage handleSubscription(Long chatId, String nickname) {
-        MeetJpa meet = meetSearchService.fetchJpa(chatId);
+    public EventMessage handleGroupChatSubscription(String chatId, String nickname) {
+        long meetId = toLong(substringAfter(chatId, GROUP));
+        MeetJpa meet = meetSearchService.fetchJpa(meetId);
         UserJpa subscriber = userResourceService.fetchJpa(nickname, NICKNAME);
         operationValidator.validateSubscription(meet, subscriber);
         return messageFactory.createSubscriptionMessage(chatId);

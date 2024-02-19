@@ -12,14 +12,14 @@ import lombok.Setter;
 @Setter
 public class Chat implements Serializable {
 
-    private Long id;
+    private String id;
     private Long creatorId;
     private String name;
     private String avatarUrl;
     private List<CommonChatMessage> messages;
     private Integer users;
 
-    public Chat(Long id) {
+    public Chat(String id) {
         this.id = id;
     }
 

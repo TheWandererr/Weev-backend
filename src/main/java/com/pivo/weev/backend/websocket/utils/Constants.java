@@ -27,7 +27,7 @@ public class Constants {
 
         public static final String UPDATES = TOPIC_BROKER_DESTINATION + "/updates";
 
-        public static final String CHAT_PATTERN = TOPIC_BROKER_DESTINATION + "/chats.%d";
+        public static final String CHAT_PATTERN = TOPIC_BROKER_DESTINATION + "/chats.%s";
 
     }
 

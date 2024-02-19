@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class ChatRest {
 
-    private Long id;
+    private String id;
     private String name;
     private String avatarUrl;
     private List<UserMessageRest> messages;

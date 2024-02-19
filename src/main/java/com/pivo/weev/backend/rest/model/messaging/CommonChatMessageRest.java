@@ -10,4 +10,5 @@ public class CommonChatMessageRest {
 
     private String text;
     private Instant createdAt;
+    private Long ordinal;
 }

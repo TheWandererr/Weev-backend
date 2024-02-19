@@ -1,7 +1,7 @@
 const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8080/ws',
     connectHeaders: {
-        authorization: 'eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJrYXJ0ZW0yMDEzQHlhbmRleC5ieSIsImF1ZCI6Ii9hcGkiLCJzZXJpYWwiOiI0NjY0YjI1MC1kMzQ3LTRmNDUtODk4Yi0xNTk4ZjgzYWZlNWUiLCJzY29wZSI6InJlYWQgd3JpdGUgbW9kZXJhdGlvbiIsImlzcyI6Ii9hdXRoL2xvZ2luIiwibmlja25hbWUiOiJib2IyMjgiLCJleHAiOjE3MDgyNjc0NzYsImlhdCI6MTcwODI2Mzg3NiwiZGV2aWNlSWQiOiIwMDAwIiwidXNlcklkIjo5OTl9.l2j0-MfwQQ6TI8TsCo5Cc9DOw6039orIC_fGKPhla0cBoknQfWOoLM5gw-3rIzp5-8Va1MpTdjhys3d5FBgbxhwNx7A-NEKFA9dS8930SDgpNzNbX5Z10b2f6kZi3ec4kM4kaLqT5bwEJLoxGvMrqsvh24dvJlVIfk3A-MZZ3q_48uUxNwavHr_UPOg4_uosrpJ4qTgELHY5cP1EH8PyhCEFF0DiOP-bB2IKbIgeWEWDY8WoRG6HdfSbXQHBth3k_g3kaa_XJ8P1xmruclxRsdJnT5KVqTGpZyZulehE8BW2nBcm41QI1K_ZEdBtJBy0rF62HKD8PNZyK-MvXwXUCQ',
+        authorization: 'eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJrYXJ0ZW0yMDEzQHlhbmRleC5ieSIsImF1ZCI6Ii9hcGkiLCJzZXJpYWwiOiI3Y2FmZGM5Ny04YTdkLTQ3MmYtOGRmOS0wMTBhOTAyNDBjMjciLCJzY29wZSI6InJlYWQgd3JpdGUgbW9kZXJhdGlvbiIsImlzcyI6Ii9hdXRoL2xvZ2luIiwibmlja25hbWUiOiJib2IyMjgiLCJleHAiOjE3MDgzNjk1MDQsImlhdCI6MTcwODM2NTkwNCwiZGV2aWNlSWQiOiIwMDAwIiwidXNlcklkIjo5OTl9.XQGOvPYuawnTR3--njVAZ3MbFe4Lxeo5JpDQGUHTgwlqVAwEo5UuMh_bOnxWL0HM1gNkw4mioltf9sLEKltgOYDHqh_JzHLkKukXk-k3vK9zX1LGrWVTwngE5_A5jJSPPqGNg8RRLp9TxY746UltWklUm4mA1hQhO4BBiSnG8iAu1v0FWQ5JWEWBCUHdIWQRcC5HvLl7_v6ALU0f3YAz1YRlOVl_xHkG2BF8a_TJZsGaiQ8KmzPl-yKWoT_rMTaYNj-eAil9CR1DDLLa96xuUPLSuq_h7QDiRe2f338BMQE4Yme-w2wVlxAt0rW40EdDaDUkzVyjg4VOvU2bAbk7Qw',
         deviceId : '0000'
     }
 });
@@ -13,7 +13,7 @@ stompClient.onConnect = (frame) => {
         console.log(greeting);
         showGreeting(JSON.stringify(greeting.body));
     });
-    stompClient.subscribe('/topic/chats.26', (hello) => {
+    stompClient.subscribe('/topic/chats.group$26', (hello) => {
         console.log(hello);
         showGreeting(JSON.stringify(hello.body));
     });
@@ -52,7 +52,7 @@ function disconnect() {
 
 function sendName() {
     stompClient.publish({
-        destination: "/app/chats.26",
+        destination: "/app/chats.group$26",
         body: JSON.stringify({'text': $("#name").val()})
     });
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageFactory {
 
-    public EventMessage createSubscriptionMessage(Long chatId) {
+    public EventMessage createSubscriptionMessage(String chatId) {
         EventMessage message = new EventMessage();
         message.setEvent(SUBSCRIBED);
         message.setPayload(Map.of(CHAT, new Chat(chatId)));

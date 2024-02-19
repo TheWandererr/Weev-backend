@@ -7,6 +7,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.user.DeviceJpa;
 import com.pivo.weev.backend.domain.persistance.utils.Constants.Columns;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
@@ -32,8 +33,8 @@ import org.hibernate.proxy.HibernateProxy;
 @NoArgsConstructor
 public class AuthTokensDetailsJpa extends SequencedPersistable<Long> {
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "device_id")
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "device_id", updatable = false)
     private DeviceJpa device;
     @Column(nullable = false)
     private String serial;

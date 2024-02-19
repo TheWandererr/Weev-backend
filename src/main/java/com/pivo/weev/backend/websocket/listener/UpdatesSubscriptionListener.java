@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.websocket.listener;
 
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.ChatPrefixes.GROUP;
 import static com.pivo.weev.backend.utils.Constants.Symbols.DOT;
 import static com.pivo.weev.backend.websocket.model.SubscriptionMessageWs.subscribed;
 import static com.pivo.weev.backend.websocket.utils.Constants.SubscriptionDestinations.CHAT;
@@ -8,7 +9,6 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.substringAfterLast;
-import static org.apache.commons.lang3.math.NumberUtils.toLong;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.model.messaging.chat.EventMessage;
@@ -42,8 +42,10 @@ public class UpdatesSubscriptionListener {
         if (SubscriptionDestinations.UPDATES.equals(destination)) {
             handleUpdatesSubscription(nickname);
         } else if (destination.startsWith(CHAT)) {
-            Long chatId = toLong(substringAfterLast(destination, DOT));
-            handleChatSubscription(nickname, chatId);
+            String chatId = substringAfterLast(destination, DOT);
+            if (chatId.startsWith(GROUP)) {
+                handleGroupChatSubscription(nickname, chatId);
+            }
         }
     }
 
@@ -51,8 +53,8 @@ public class UpdatesSubscriptionListener {
         template.convertAndSendToUser(nickname, UserDestinations.UPDATES, subscribed());
     }
 
-    private void handleChatSubscription(String nickname, Long chatId) {
-        EventMessage message = subscriptionService.handleSubscription(chatId, nickname);
+    private void handleGroupChatSubscription(String nickname, String chatId) {
+        EventMessage message = subscriptionService.handleGroupChatSubscription(chatId, nickname);
         CommonMessageWs messageWs = getMapper(CommonMessageWsMapper.class).map(message);
         template.convertAndSendToUser(nickname, UserDestinations.UPDATES, messageWs);
     }

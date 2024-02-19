@@ -10,6 +10,7 @@ import com.pivo.weev.backend.rest.mapping.rest.CommonChatMessageRestMapper;
 import com.pivo.weev.backend.rest.model.messaging.CommonChatMessageRest;
 import com.pivo.weev.backend.rest.model.response.ChatMessagesResponse;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -28,7 +29,7 @@ public class ChatsController {
     private final ChatService chatService;
 
     @GetMapping("/{id}/messages")
-    public ChatMessagesResponse getChatMessages(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id,
+    public ChatMessagesResponse getChatMessages(@NotBlank(message = ID_FORMAT_ERROR) @PathVariable String id,
                                                 @RequestParam(required = false, defaultValue = "0") @Min(0) Integer offset,
                                                 @RequestParam(required = false, defaultValue = MESSAGES_PER_PAGE) @Min(1) Integer historySize) {
         List<CommonChatMessage> messages = chatService.getChatMessages(id, offset, historySize);

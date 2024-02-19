@@ -105,6 +105,7 @@ public class Constants {
         public static final Integer MEET_REQUESTS_PER_PAGE = 10;
         public static final Integer MEET_TEMPLATES_PER_PAGE = 10;
         public static final String MESSAGES_PER_PAGE = "20";
+        public static final String CHATS_PER_PAGE = "20";
     }
 
     @UtilityClass

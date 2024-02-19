@@ -30,8 +30,8 @@ import org.hibernate.proxy.HibernateProxy;
 @NoArgsConstructor
 public class DeviceJpa extends SequencedPersistable<Long> {
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = LAZY, optional = false)
+    @JoinColumn(name = "user_id", updatable = false)
     private UserJpa user;
     @Column(name = DEVICE_INTERNAL_ID, nullable = false)
     private String internalId;

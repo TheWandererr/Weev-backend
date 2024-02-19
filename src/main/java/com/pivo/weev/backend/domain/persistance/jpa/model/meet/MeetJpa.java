@@ -12,6 +12,7 @@ import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static java.time.Instant.now;
 import static java.util.Objects.isNull;
@@ -41,6 +42,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.proxy.HibernateProxy;
 
 @Entity
@@ -54,15 +56,15 @@ public class MeetJpa extends ModifiableJpa<Long> {
     @OneToOne(cascade = ALL, fetch = LAZY)
     @JoinColumn(name = "updatable_meet_id")
     private MeetJpa updatableTarget;
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "creator_id")
     private UserJpa creator;
     @Column(nullable = false, name = MEET_HEADER)
     private String header;
-    @ManyToOne(optional = false, fetch = LAZY)
+    @ManyToOne(optional = false, fetch = EAGER)
     @JoinColumn(name = "category_id")
     private CategoryJpa category;
-    @ManyToOne(optional = false, fetch = LAZY)
+    @ManyToOne(optional = false, fetch = EAGER)
     @JoinColumn(name = "subcategory_id")
     private SubcategoryJpa subcategory;
     @ManyToOne(fetch = LAZY, cascade = {PERSIST, MERGE}, optional = false)
@@ -76,7 +78,7 @@ public class MeetJpa extends ModifiableJpa<Long> {
     private CloudResourceJpa photo;
     private Boolean reminded = false;
     private Long moderatedBy;
-    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = EAGER)
     @JoinColumn(name = "restrictions_id")
     private RestrictionsJpa restrictions = new RestrictionsJpa();
     private LocalDateTime localStartDateTime;
@@ -194,6 +196,14 @@ public class MeetJpa extends ModifiableJpa<Long> {
         }
         getMembers().remove(user);
         user.getParticipatedMeets().remove(this);
+    }
+
+    public boolean hasCreator(Long id) {
+        return Objects.equals(creator.getId(), id);
+    }
+
+    public boolean hasCreator(String nickname) {
+        return StringUtils.equals(creator.getNickname(), nickname);
     }
 
     @Override

@@ -18,6 +18,7 @@ public class CommonChatMessage implements Serializable {
     private String text;
     private Instant createdAt = Instant.now();
     private Map<String, ? extends Serializable> payload = new HashMap<>();
+    private Long ordinal;
 
     public boolean isEvent() {
         return EVENT == getType();

@@ -4,6 +4,7 @@ import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.canceled;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.declined;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.onModeration;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.published;
+import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.CHATS_PER_PAGE;
 import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MEET_REQUESTS_PER_PAGE;
 import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MEET_TEMPLATES_PER_PAGE;
 import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MESSAGES_PER_PAGE;
@@ -200,8 +201,10 @@ public class UsersController {
     @ResourceOwner
     @GetMapping("/{id}/chats")
     public ChatsResponse getChats(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id,
+                                  @RequestParam(required = false, defaultValue = CHATS_PER_PAGE) @Min(1) Integer limit,
+                                  @RequestParam(required = false, defaultValue = "0") @Min(0) Integer offset,
                                   @RequestParam(required = false, defaultValue = MESSAGES_PER_PAGE) @Min(1) Integer historySize) {
-        List<Chat> chats = chatService.getChats(id, historySize);
+        List<Chat> chats = chatService.getChats(id, offset, limit, historySize);
         List<ChatRest> restChats = getMapper(ChatRestMapper.class).map(chats);
         return new ChatsResponse(restChats);
     }
