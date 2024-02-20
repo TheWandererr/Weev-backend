@@ -10,7 +10,7 @@ import com.pivo.weev.backend.domain.model.event.WebSocketEvent;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent.EventType;
 import com.pivo.weev.backend.domain.model.event.payload.MeetPayload;
 import com.pivo.weev.backend.domain.model.event.payload.UserPayload;
-import com.pivo.weev.backend.domain.model.messaging.chat.Chat;
+import com.pivo.weev.backend.domain.model.messaging.chat.ChatSnapshot;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import java.util.Map;
@@ -39,8 +39,8 @@ public class ApplicationEventFactory {
         return buildPushNotificationEvent(meetJpa, singleton(recipientJpa), topic, null);
     }
 
-    public WebSocketEvent buildWebSocketEvent(Chat chat, String recipient, EventType eventType) {
-        WebSocketEvent.WebSocketMessageModel model = new WebSocketEvent.WebSocketMessageModel(chat, recipient, eventType);
+    public WebSocketEvent buildWebSocketEvent(ChatSnapshot chatSnapshot, String recipient, EventType eventType) {
+        WebSocketEvent.WebSocketMessageModel model = new WebSocketEvent.WebSocketMessageModel(chatSnapshot, recipient, eventType);
         return new WebSocketEvent(model);
     }
 }

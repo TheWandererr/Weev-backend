@@ -92,6 +92,7 @@ public class Constants {
         public static final class Collections {
 
             public static final String CHATS = "chats";
+            public static final String MESSAGES = "messages";
             public static final String USER_CHATS_REFERENCES = "user_chats_references";
         }
 
@@ -102,6 +103,7 @@ public class Constants {
             public static final String CREATED_AT = "createdAt";
             public static final String LAST_UPDATE = "lastUpdate";
             public static final String ID = "id";
+            public static final String CHAT_ID = "chatId";
             public static final String MESSAGES = "messages";
 
         }

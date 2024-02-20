@@ -2,7 +2,7 @@ package com.pivo.weev.backend.rest.model.response;
 
 import static java.util.Objects.isNull;
 
-import com.pivo.weev.backend.rest.model.messaging.ChatRest;
+import com.pivo.weev.backend.rest.model.messaging.ChatSnapshotRest;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -14,11 +14,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatsResponse {
+public class ChatSnapshotsResponse {
 
-    private List<ChatRest> chats;
+    private List<ChatSnapshotRest> chats;
 
-    public List<ChatRest> getChats() {
+    public List<ChatSnapshotRest> getChats() {
         if (isNull(chats)) {
             chats = new ArrayList<>();
         }

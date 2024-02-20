@@ -1,14 +1,14 @@
 package com.pivo.weev.backend.rest.mapping.rest;
 
-import com.pivo.weev.backend.domain.model.messaging.chat.Chat;
-import com.pivo.weev.backend.rest.model.messaging.ChatRest;
+import com.pivo.weev.backend.domain.model.messaging.chat.ChatSnapshot;
+import com.pivo.weev.backend.rest.model.messaging.ChatSnapshotRest;
 import java.util.List;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(uses = {ChatUserRestMapper.class})
 public interface ChatRestMapper {
 
-    ChatRest map(Chat source);
+    ChatSnapshotRest map(ChatSnapshot source);
 
-    List<ChatRest> map(List<Chat> source);
+    List<ChatSnapshotRest> map(List<ChatSnapshot> source);
 }

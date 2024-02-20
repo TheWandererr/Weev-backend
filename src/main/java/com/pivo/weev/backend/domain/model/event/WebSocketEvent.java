@@ -2,7 +2,7 @@ package com.pivo.weev.backend.domain.model.event;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-import com.pivo.weev.backend.domain.model.messaging.chat.Chat;
+import com.pivo.weev.backend.domain.model.messaging.chat.ChatSnapshot;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +29,7 @@ public class WebSocketEvent extends ApplicationEvent {
     @NoArgsConstructor
     public static class WebSocketMessageModel {
 
-        private Chat chat;
+        private ChatSnapshot chatSnapshot;
         private String recipient;
         private EventType eventType;
 

@@ -31,8 +31,8 @@ public class ChatsController {
     @GetMapping("/{id}/messages")
     public ChatMessagesResponse getChatMessages(@NotBlank(message = ID_FORMAT_ERROR) @PathVariable String id,
                                                 @RequestParam(required = false, defaultValue = "0") @Min(0) Integer offset,
-                                                @RequestParam(required = false, defaultValue = MESSAGES_PER_PAGE) @Min(1) Integer historySize) {
-        List<CommonChatMessage> messages = chatService.getChatMessages(id, offset, historySize);
+                                                @RequestParam(required = false, defaultValue = MESSAGES_PER_PAGE) @Min(1) Integer limit) {
+        List<CommonChatMessage> messages = chatService.getChatMessages(id, offset, limit);
         List<CommonChatMessageRest> restMessages = getMapper(CommonChatMessageRestMapper.class).map(messages);
         return new ChatMessagesResponse(restMessages);
     }

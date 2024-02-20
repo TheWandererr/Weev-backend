@@ -43,7 +43,7 @@ public class WebSocketEventListener {
     private EventMessage createEventMessage(WebSocketMessageModel messageModel) {
         EventMessage message = new EventMessage();
         message.setEvent(Event.CHAT_CREATED);
-        message.setPayload(Map.of(CHAT, messageModel.getChat()));
+        message.setPayload(Map.of(CHAT, messageModel.getChatSnapshot()));
         return message;
     }
 }

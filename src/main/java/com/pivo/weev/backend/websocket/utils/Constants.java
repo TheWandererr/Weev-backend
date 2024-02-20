@@ -52,7 +52,7 @@ public class Constants {
     }
 
     @UtilityClass
-    public static final class MessageCodes {
+    public static final class MessageEvents {
 
         public static final String SUBSCRIBED = "SUBSCRIBED";
     }

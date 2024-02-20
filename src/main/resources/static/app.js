@@ -1,7 +1,7 @@
 const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8080/ws',
     connectHeaders: {
-        authorization: 'eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJrYXJ0ZW0yMDEzQHlhbmRleC5ieSIsImF1ZCI6Ii9hcGkiLCJzZXJpYWwiOiI3Y2FmZGM5Ny04YTdkLTQ3MmYtOGRmOS0wMTBhOTAyNDBjMjciLCJzY29wZSI6InJlYWQgd3JpdGUgbW9kZXJhdGlvbiIsImlzcyI6Ii9hdXRoL2xvZ2luIiwibmlja25hbWUiOiJib2IyMjgiLCJleHAiOjE3MDgzNjk1MDQsImlhdCI6MTcwODM2NTkwNCwiZGV2aWNlSWQiOiIwMDAwIiwidXNlcklkIjo5OTl9.XQGOvPYuawnTR3--njVAZ3MbFe4Lxeo5JpDQGUHTgwlqVAwEo5UuMh_bOnxWL0HM1gNkw4mioltf9sLEKltgOYDHqh_JzHLkKukXk-k3vK9zX1LGrWVTwngE5_A5jJSPPqGNg8RRLp9TxY746UltWklUm4mA1hQhO4BBiSnG8iAu1v0FWQ5JWEWBCUHdIWQRcC5HvLl7_v6ALU0f3YAz1YRlOVl_xHkG2BF8a_TJZsGaiQ8KmzPl-yKWoT_rMTaYNj-eAil9CR1DDLLa96xuUPLSuq_h7QDiRe2f338BMQE4Yme-w2wVlxAt0rW40EdDaDUkzVyjg4VOvU2bAbk7Qw',
+        authorization: 'eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJrYXJ0ZW0yMDEzQHlhbmRleC5ieSIsImF1ZCI6Ii9hcGkiLCJzZXJpYWwiOiIzZGEzZDljZi0yNDQ3LTQ2MjctYTljNy1hYWFiZjllNDlmYWEiLCJzY29wZSI6InJlYWQgd3JpdGUgbW9kZXJhdGlvbiIsImlzcyI6Ii9hdXRoL2xvZ2luIiwibmlja25hbWUiOiJib2IyMjgiLCJleHAiOjE3MDg0NTUzMzIsImlhdCI6MTcwODQ1MTczMiwiZGV2aWNlSWQiOiIwMDAwIiwidXNlcklkIjo5OTl9.dNaz98jfNZ5_x2pm5rI3Ch3HenucrdY1RB-PXNWMezhMo2N6nufDApPwBEkbpN3X6K94nVv09sh5teKe96Ugk1sq4m9NKe__9sOIAM5OSU7v73fQBEVOue58G7e8xR9aUPnsZsGm-0tHamUDleOBH1sHDUdJFQI6SxSz9W6g_P1N8_ymb0EPCKzHF3PtOCz9xQZRC7GHxxjxYKsIAMDywk50uPl-b2HFYqscq6ulHNZLHXmuKr1D1MvaIGPDeO19LRuxv98lqM3cfH5ds4rtgtIM5W-GeexPcA5Krqyz-wcqizR6sFhpB6vGX2YqXtYg-g6DJ8z-dQgqWhHlEYQsag',
         deviceId : '0000'
     }
 });
@@ -52,7 +52,7 @@ function disconnect() {
 
 function sendName() {
     stompClient.publish({
-        destination: "/app/chats.group$26",
+        destination: "/app/chats.group$26.message",
         body: JSON.stringify({'text': $("#name").val()})
     });
 }

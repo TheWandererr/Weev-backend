@@ -1,11 +1,11 @@
-package com.pivo.weev.backend.integration.mapping.domain.chat;
+package com.pivo.weev.backend.integration.mapping.firebase.chat;
 
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatUser;
 import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChatUser;
 import org.mapstruct.Mapper;
 
 @Mapper
-public interface ChatUserMapper {
+public interface FirebaseChatUserMapper {
 
-    ChatUser map(FirebaseChatUser source);
+    FirebaseChatUser map(ChatUser source);
 }

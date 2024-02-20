@@ -1,6 +1,8 @@
 package com.pivo.weev.backend.integration.firebase.client;
 
+import static com.google.cloud.firestore.Filter.inArray;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Fields.ID;
+import static com.pivo.weev.backend.utils.CollectionUtils.first;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
@@ -11,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.EventListener;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.pivo.weev.backend.integration.firebase.application.FirebaseApplication;
 import java.util.List;
@@ -42,12 +45,6 @@ public class FirestoreClient {
            .set(fields);
     }
 
-    public void update(String collection, String reference, Map<String, Object> updates) {
-        api.collection(collection)
-           .document(reference)
-           .update(updates);
-    }
-
     public void save(String collection, String parentReference, String childCollection, Object childDocument) {
         Map<String, Object> fields = objectMapper.convertValue(childDocument, new TypeReference<>() {
         });
@@ -67,11 +64,44 @@ public class FirestoreClient {
            .addListener(runnable, firebaseFirestoreExecutor);
     }
 
+    public void update(String collection, String reference, Map<String, Object> updates) {
+        api.collection(collection)
+           .document(reference)
+           .update(updates);
+    }
+
     public <T> CompletableFuture<T> find(String collection, String reference, Class<T> type) {
         CompletableFuture<T> future = new CompletableFuture<>();
         EventListener<DocumentSnapshot> snapshotListener = createSnapshotListener(type, future);
         api.collection(collection)
            .document(reference)
+           .addSnapshotListener(snapshotListener);
+        return future;
+    }
+
+    public <T> CompletableFuture<T> find(String collection, String reference, String childCollection, String orderBy, Class<T> type) {
+        CompletableFuture<T> future = new CompletableFuture<>();
+        EventListener<QuerySnapshot> snapshotListener = (querySnapshot, exception) -> {
+            if (checkError(exception)) {
+                future.completeExceptionally(exception);
+                return;
+            }
+            if (isNull(querySnapshot)) {
+                future.complete(null);
+                return;
+            }
+            QueryDocumentSnapshot document = first(querySnapshot.getDocuments());
+            if (isNull(document)) {
+                future.complete(null);
+                return;
+            }
+            future.complete(objectMapper.convertValue(document.getData(), type));
+        };
+        api.collection(collection)
+           .document(reference)
+           .collection(childCollection)
+           .orderBy(orderBy)
+           .limit(1)
            .addSnapshotListener(snapshotListener);
         return future;
     }
@@ -101,15 +131,26 @@ public class FirestoreClient {
         };
     }
 
-    public <T> CompletableFuture<List<T>> findAll(String collection, List<String> references, String orderBy, Integer offset, Integer limit, Class<T> type) {
+    public <T> CompletableFuture<List<T>> findAll(String collection, List<String> references, String orderBy, Class<T> type) {
         CompletableFuture<List<T>> future = new CompletableFuture<>();
         EventListener<QuerySnapshot> snapshotsListener = createSnapshotsListener(type, future);
         api.collection(collection)
-           .whereIn(ID, references)
+           .where(inArray(ID, references))
+           .orderBy(orderBy)
+           .addSnapshotListener(snapshotsListener);
+        return future;
+    }
+
+    public <T> CompletableFuture<List<T>> findAll(String collection, String reference, String childCollection, String orderBy, Integer offset, Integer limit, Class<T> type) {
+        CompletableFuture<List<T>> future = new CompletableFuture<>();
+        EventListener<QuerySnapshot> snapshotListener = createSnapshotsListener(type, future);
+        api.collection(collection)
+           .document(reference)
+           .collection(childCollection)
            .orderBy(orderBy)
            .offset(offset)
            .limit(limit)
-           .addSnapshotListener(snapshotsListener);
+           .addSnapshotListener(snapshotListener);
         return future;
     }
 

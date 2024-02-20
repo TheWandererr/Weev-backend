@@ -4,10 +4,8 @@ import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.canceled;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.declined;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.onModeration;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.published;
-import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.CHATS_PER_PAGE;
 import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MEET_REQUESTS_PER_PAGE;
 import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MEET_TEMPLATES_PER_PAGE;
-import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MESSAGES_PER_PAGE;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.ID_FORMAT_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK_ERROR;
 import static org.mapstruct.factory.Mappers.getMapper;
@@ -17,7 +15,7 @@ import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.model.meet.MeetJoinRequest;
 import com.pivo.weev.backend.domain.model.meet.SearchParams;
 import com.pivo.weev.backend.domain.model.meet.SearchParams.PageCriteria;
-import com.pivo.weev.backend.domain.model.messaging.chat.Chat;
+import com.pivo.weev.backend.domain.model.messaging.chat.ChatSnapshot;
 import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.model.user.Device.Settings;
 import com.pivo.weev.backend.domain.model.user.User;
@@ -44,12 +42,13 @@ import com.pivo.weev.backend.rest.model.meet.ImageRest;
 import com.pivo.weev.backend.rest.model.meet.MeetCompactedRest;
 import com.pivo.weev.backend.rest.model.meet.MeetJoinRequestRest;
 import com.pivo.weev.backend.rest.model.meet.MeetTemplateRest;
-import com.pivo.weev.backend.rest.model.messaging.ChatRest;
+import com.pivo.weev.backend.rest.model.messaging.ChatSnapshotRest;
+import com.pivo.weev.backend.rest.model.request.ChatsSearchRequest;
 import com.pivo.weev.backend.rest.model.request.DeviceSettingUpdateRequest;
 import com.pivo.weev.backend.rest.model.request.MeetsSearchRequest;
 import com.pivo.weev.backend.rest.model.request.ProfileUpdateRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
-import com.pivo.weev.backend.rest.model.response.ChatsResponse;
+import com.pivo.weev.backend.rest.model.response.ChatSnapshotsResponse;
 import com.pivo.weev.backend.rest.model.response.DeviceSettingResponse;
 import com.pivo.weev.backend.rest.model.response.ImageResponse;
 import com.pivo.weev.backend.rest.model.response.MeetJoinRequestsResponse;
@@ -71,6 +70,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -199,13 +199,11 @@ public class UsersController {
     }
 
     @ResourceOwner
-    @GetMapping("/{id}/chats")
-    public ChatsResponse getChats(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id,
-                                  @RequestParam(required = false, defaultValue = CHATS_PER_PAGE) @Min(1) Integer limit,
-                                  @RequestParam(required = false, defaultValue = "0") @Min(0) Integer offset,
-                                  @RequestParam(required = false, defaultValue = MESSAGES_PER_PAGE) @Min(1) Integer historySize) {
-        List<Chat> chats = chatService.getChats(id, offset, limit, historySize);
-        List<ChatRest> restChats = getMapper(ChatRestMapper.class).map(chats);
-        return new ChatsResponse(restChats);
+    @PostMapping("/{id}/chats/search")
+    public ChatSnapshotsResponse getChats(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id,
+                                          @RequestBody ChatsSearchRequest request) {
+        List<ChatSnapshot> chatSnapshots = chatService.getChatSnapshots(id, request.getChatsOrdinals());
+        List<ChatSnapshotRest> restChats = getMapper(ChatRestMapper.class).map(chatSnapshots);
+        return new ChatSnapshotsResponse(restChats);
     }
 }

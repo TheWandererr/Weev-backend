@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.websocket.model;
 
-import static com.pivo.weev.backend.websocket.utils.Constants.MessageCodes.SUBSCRIBED;
+import static com.pivo.weev.backend.websocket.utils.Constants.MessageEvents.SUBSCRIBED;
 import static com.pivo.weev.backend.websocket.utils.Constants.MessageTypes.EVENT;
 
 import lombok.Getter;
@@ -10,13 +10,12 @@ import lombok.Setter;
 @Setter
 public class SubscriptionMessageWs extends CommonMessageWs {
 
-    private String code;
+    private String event;
 
     public static SubscriptionMessageWs subscribed() {
         SubscriptionMessageWs message = new SubscriptionMessageWs();
         message.setType(EVENT);
-        message.setCode(SUBSCRIBED);
+        message.setEvent(SUBSCRIBED);
         return message;
-
     }
 }

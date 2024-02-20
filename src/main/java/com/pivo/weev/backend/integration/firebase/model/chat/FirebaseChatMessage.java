@@ -11,10 +11,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class FirebaseChatMessage {
 
+    private String chatId;
     private String text;
     private String event;
     private String type;
-    private Long from;
+    private FirebaseChatUser from;
     private Long createdAt;
     private Long ordinal;
 }

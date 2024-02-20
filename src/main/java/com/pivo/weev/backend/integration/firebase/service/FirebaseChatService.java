@@ -3,15 +3,15 @@ package com.pivo.weev.backend.integration.firebase.service;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Collections.CHATS;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Collections.USER_CHATS_REFERENCES;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Fields.CHAT_IDS;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Fields.CREATED_AT;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Fields.LAST_UPDATE;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Fields.MESSAGES;
-import static com.pivo.weev.backend.utils.CollectionUtils.last;
-import static com.pivo.weev.backend.utils.CollectionUtils.subList;
+import static java.time.Instant.now;
 import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.integration.firebase.client.FirestoreClient;
-import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChat;
 import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChatMessage;
+import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChatSnapshot;
 import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseUserChatsReference;
 import java.util.List;
 import java.util.Map;
@@ -27,23 +27,23 @@ public class FirebaseChatService {
     private final FirestoreClient firestoreClient;
 
     @Async("firebaseFirestoreExecutor")
-    public void saveFirebaseChatInfo(FirebaseChat firebaseChat, Long userId) {
-        createChat(firebaseChat);
+    public void saveFirebaseChatInfo(FirebaseChatSnapshot firebaseChatSnapshot, Long userId) {
+        createChatSnapshot(firebaseChatSnapshot);
         findUserChatsReference(userId).thenAccept(existingUserChatsReference -> {
             if (nonNull(existingUserChatsReference)) {
-                existingUserChatsReference.addReference(firebaseChat.getId());
+                existingUserChatsReference.addReference(firebaseChatSnapshot.getId());
                 updateUserChatsReference(existingUserChatsReference);
             } else {
-                createUserChatsReference(new FirebaseUserChatsReference(userId, List.of(firebaseChat.getId())));
+                createUserChatsReference(new FirebaseUserChatsReference(userId, List.of(firebaseChatSnapshot.getId())));
             }
         });
     }
 
-    private void createChat(FirebaseChat firebaseChat) {
-        firestoreClient.save(CHATS, firebaseChat.getId(), firebaseChat);
+    private void createChatSnapshot(FirebaseChatSnapshot firebaseChatSnapshot) {
+        firestoreClient.save(CHATS, firebaseChatSnapshot.getId(), firebaseChatSnapshot);
     }
 
-    private CompletableFuture<FirebaseUserChatsReference> findUserChatsReference(Long userId) {
+    public CompletableFuture<FirebaseUserChatsReference> findUserChatsReference(Long userId) {
         return firestoreClient.find(USER_CHATS_REFERENCES, userId.toString(), FirebaseUserChatsReference.class);
     }
 
@@ -57,32 +57,35 @@ public class FirebaseChatService {
 
     @Async("firebaseFirestoreExecutor")
     public void pushMessage(String chatId, FirebaseChatMessage message) {
-        firestoreClient.find(CHATS, chatId, FirebaseChat.class)
-                       .thenAccept(firebaseChat -> pushMessage(firebaseChat, message));
+        findLastMessage(chatId)
+                .thenAccept(lastMessage -> pushMessage(chatId, lastMessage, message));
     }
 
-    private void pushMessage(FirebaseChat firebaseChat, FirebaseChatMessage message) {
-        setOrdinalForNextMessage(message, firebaseChat.getMessages());
-        firebaseChat.addMessage(message);
-        firestoreClient.update(CHATS, firebaseChat.getId(), Map.of(MESSAGES, firebaseChat.getMessages(), LAST_UPDATE, firebaseChat.getLastUpdate()));
+    private void pushMessage(String chatId, FirebaseChatMessage lastMessage, FirebaseChatMessage newMessage) {
+        setOrdinalForNextMessage(newMessage, lastMessage);
+        firestoreClient.save(CHATS, chatId, MESSAGES, newMessage, () -> firestoreClient.update(CHATS, chatId, Map.of(LAST_UPDATE, now().toEpochMilli())));
     }
 
-    private void setOrdinalForNextMessage(FirebaseChatMessage nextMessage, List<FirebaseChatMessage> chatMessages) {
-        FirebaseChatMessage lastMessage = last(chatMessages);
+    public CompletableFuture<FirebaseChatMessage> findLastMessage(String chatId) {
+        return firestoreClient.find(CHATS, chatId, MESSAGES, CREATED_AT, FirebaseChatMessage.class);
+    }
+
+    private void setOrdinalForNextMessage(FirebaseChatMessage nextMessage, FirebaseChatMessage lastMessage) {
         Long ordinal = nonNull(lastMessage) ? lastMessage.getOrdinal() + 1 : 1;
         nextMessage.setOrdinal(ordinal);
     }
 
-    public List<FirebaseChat> getChats(Long userId, Integer offset, Integer limit) {
+    public CompletableFuture<List<FirebaseChatSnapshot>> getChats(FirebaseUserChatsReference reference) {
+        return firestoreClient.findAll(CHATS, reference.getChatIds(), LAST_UPDATE, FirebaseChatSnapshot.class);
+    }
+
+    public CompletableFuture<List<FirebaseChatSnapshot>> getChats(Long userId) {
         return findUserChatsReference(userId)
-                .thenApply(firebaseUserChatsReference -> firestoreClient.findAll(CHATS, firebaseUserChatsReference.getChatIds(), LAST_UPDATE, offset, limit, FirebaseChat.class)
-                                                                        .join())
+                .thenApply(this::getChats)
                 .join();
     }
 
-    public List<FirebaseChatMessage> getChatMessages(String chatId, Integer offset, Integer historySize) {
-        return firestoreClient.find(CHATS, chatId, FirebaseChat.class)
-                              .thenApply(chat -> subList(chat.getMessages(), offset, historySize))
-                              .join();
+    public CompletableFuture<List<FirebaseChatMessage>> getChatMessages(String chatId, Integer offset, Integer limit) {
+        return firestoreClient.findAll(CHATS, chatId, MESSAGES, CREATED_AT, offset, limit, FirebaseChatMessage.class);
     }
 }

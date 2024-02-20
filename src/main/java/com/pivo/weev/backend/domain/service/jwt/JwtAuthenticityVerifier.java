@@ -13,12 +13,14 @@ import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.AuthToken
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 public class JwtAuthenticityVerifier {
 
     private final AuthTokensDetailsRepository authTokenDetailsRepository;
 
+    @Transactional
     public JwtVerificationResult verify(Jwt jwt, String deviceId) {
         try {
             AuthTokensDetailsJpa tokenDetails = authTokenDetailsRepository.findByUserIdAndDeviceInternalId(getUserId(jwt), getDeviceId(jwt));

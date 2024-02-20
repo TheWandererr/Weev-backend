@@ -14,5 +14,5 @@ public class ChatUser implements Serializable {
 
     private long id;
     private String nickname;
-    private boolean deleted;
+    private String avatarUrl;
 }

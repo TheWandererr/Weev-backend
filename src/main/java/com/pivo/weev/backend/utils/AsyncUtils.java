@@ -22,17 +22,21 @@ public final class AsyncUtils {
     }
 
     public static CompletableFuture<Void> async(Executor executor, Runnable runnable, Function<Throwable, Void> errorHandler) {
-       return runAsync(runnable, executor).exceptionally(errorHandler);
+        return runAsync(runnable, executor).exceptionally(errorHandler);
     }
 
     public static <R> List<R> collectAll(Executor executor, List<Supplier<R>> suppliers, Function<Throwable, R> errorHandler) {
         List<CompletableFuture<R>> futures = mapToList(suppliers, supplier -> async(executor, supplier, errorHandler));
+        return collectAll(futures);
+    }
+
+    public static <R> List<R> collectAll(List<CompletableFuture<R>> futures) {
         return allOf(futures.toArray(CompletableFuture[]::new))
                 .thenApply(execution -> joinAll(futures))
                 .join();
     }
 
-    private <R> List<R> joinAll(List<CompletableFuture<R>> futures) {
+    public static <R> List<R> joinAll(List<CompletableFuture<R>> futures) {
         return futures.stream()
                       .map(CompletableFuture::join)
                       .filter(Objects::nonNull)

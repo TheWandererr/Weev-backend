@@ -26,7 +26,7 @@ public class WsChatsController {
     private final ChatService chatService;
     private final SimpMessagingTemplate template;
 
-    @MessageMapping("/chats.{chatId}")
+    @MessageMapping("/chats.{chatId}.message")
     public void onSendMessage(@DestinationVariable String chatId, @Payload UserMessageWs message, StompHeaderAccessor accessor) {
         String nickname = getNickname(accessor);
         UserMessage domainMessage = (UserMessage) getMapper(CommonChatMessageMapper.class).map(message);

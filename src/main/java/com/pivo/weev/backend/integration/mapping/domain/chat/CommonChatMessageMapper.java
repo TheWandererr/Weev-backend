@@ -14,7 +14,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper(uses = {DateTimeMapper.class})
+@Mapper(uses = {DateTimeMapper.class, ChatUserMapper.class})
 public interface CommonChatMessageMapper {
 
     @IterableMapping(qualifiedByName = "map")
@@ -33,7 +33,6 @@ public interface CommonChatMessageMapper {
         };
     }
 
-    @Mapping(target = "from", ignore = true)
     @Mapping(target = "createdAt", source = "createdAt")
     UserMessage mapToUserMessage(FirebaseChatMessage source);
 
