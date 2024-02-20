@@ -10,6 +10,7 @@ import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static com.pivo.weev.backend.utils.StreamUtils.parallelStream;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.apache.commons.lang3.math.NumberUtils.toLong;
@@ -40,7 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -129,19 +129,19 @@ public class ChatService {
                                   .thenApply(chats -> {
                                       var futures = mapToList(chats, chat -> firebaseChatService.findLastMessage(chat.getId()));
                                       List<FirebaseChatMessage> chatMessages = collectAll(futures);
-                                      return mapFirebaseChats(chats, chatMessages, chatsOrdinals);
+                                      return mapFirebaseChatSnapshots(chats, chatMessages, chatsOrdinals);
                                   })
                                   .join();
     }
 
-    private List<ChatSnapshot> mapFirebaseChats(List<FirebaseChatSnapshot> firebaseChatSnapshots, List<FirebaseChatMessage> lastMessages, Map<String, Long> chatsOrdinals) {
+    private List<ChatSnapshot> mapFirebaseChatSnapshots(List<FirebaseChatSnapshot> firebaseChatSnapshots, List<FirebaseChatMessage> lastMessages, Map<String, Long> chatsOrdinals) {
         Map<String, FirebaseChatMessage> chatsLastMessages = collectChatsLastMessages(lastMessages);
         return parallelStream(firebaseChatSnapshots)
                 .map(snapshot -> {
                     FirebaseChatMessage lastFirebaseMessage = chatsLastMessages.get(snapshot.getId());
                     return mapFirebaseChatSnapshot(snapshot, lastFirebaseMessage, chatsOrdinals);
                 })
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private Map<String, FirebaseChatMessage> collectChatsLastMessages(List<FirebaseChatMessage> lastMessages) {
