@@ -66,6 +66,7 @@ public class FirebaseChatService {
         firestoreClient.save(CHATS, chatId, MESSAGES, newMessage, () -> firestoreClient.update(CHATS, chatId, Map.of(LAST_UPDATE, now().toEpochMilli())));
     }
 
+    @Async("firebaseFirestoreExecutor")
     public CompletableFuture<FirebaseChatMessage> findLastMessage(String chatId) {
         return firestoreClient.find(CHATS, chatId, MESSAGES, CREATED_AT, FirebaseChatMessage.class);
     }
@@ -75,16 +76,19 @@ public class FirebaseChatService {
         nextMessage.setOrdinal(ordinal);
     }
 
+    @Async("firebaseFirestoreExecutor")
     public CompletableFuture<List<FirebaseChatSnapshot>> getChats(FirebaseUserChatsReference reference) {
         return firestoreClient.findAll(CHATS, reference.getChatIds(), LAST_UPDATE, FirebaseChatSnapshot.class);
     }
 
+    @Async("firebaseFirestoreExecutor")
     public CompletableFuture<List<FirebaseChatSnapshot>> getChats(Long userId) {
         return findUserChatsReference(userId)
                 .thenApply(this::getChats)
                 .join();
     }
 
+    @Async("firebaseFirestoreExecutor")
     public CompletableFuture<List<FirebaseChatMessage>> getChatMessages(String chatId, Integer offset, Integer limit) {
         return firestoreClient.findAll(CHATS, chatId, MESSAGES, CREATED_AT, offset, limit, FirebaseChatMessage.class);
     }

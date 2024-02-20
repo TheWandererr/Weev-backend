@@ -1,6 +1,7 @@
 package com.pivo.weev.backend.integration.firebase.client;
 
 import static com.google.cloud.firestore.Filter.inArray;
+import static com.google.cloud.firestore.Query.Direction.DESCENDING;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Fields.ID;
 import static com.pivo.weev.backend.utils.CollectionUtils.first;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
@@ -100,7 +101,7 @@ public class FirestoreClient {
         api.collection(collection)
            .document(reference)
            .collection(childCollection)
-           .orderBy(orderBy)
+           .orderBy(orderBy, DESCENDING)
            .limit(1)
            .addSnapshotListener(snapshotListener);
         return future;
@@ -147,7 +148,7 @@ public class FirestoreClient {
         api.collection(collection)
            .document(reference)
            .collection(childCollection)
-           .orderBy(orderBy)
+           .orderBy(orderBy, DESCENDING)
            .offset(offset)
            .limit(limit)
            .addSnapshotListener(snapshotListener);
