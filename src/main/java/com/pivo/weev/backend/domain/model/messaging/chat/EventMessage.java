@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EventMessage extends CommonChatMessage {
+public class EventMessage extends ChatMessage {
 
     private Event event;
 

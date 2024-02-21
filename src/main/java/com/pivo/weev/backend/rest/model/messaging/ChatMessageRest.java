@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CommonChatMessageRest {
+public class ChatMessageRest {
 
     private String text;
     private Instant createdAt;

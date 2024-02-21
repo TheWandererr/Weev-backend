@@ -4,10 +4,10 @@ import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MESSAGES
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.ID_FORMAT_ERROR;
 import static org.mapstruct.factory.Mappers.getMapper;
 
-import com.pivo.weev.backend.domain.model.messaging.chat.CommonChatMessage;
+import com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage;
 import com.pivo.weev.backend.domain.service.messaging.ChatService;
-import com.pivo.weev.backend.rest.mapping.rest.CommonChatMessageRestMapper;
-import com.pivo.weev.backend.rest.model.messaging.CommonChatMessageRest;
+import com.pivo.weev.backend.rest.mapping.rest.ChatMessageRestMapper;
+import com.pivo.weev.backend.rest.model.messaging.ChatMessageRest;
 import com.pivo.weev.backend.rest.model.response.ChatMessagesResponse;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -32,8 +32,8 @@ public class ChatsController {
     public ChatMessagesResponse getChatMessages(@NotBlank(message = ID_FORMAT_ERROR) @PathVariable String id,
                                                 @RequestParam(required = false, defaultValue = "0") @Min(0) Integer offset,
                                                 @RequestParam(required = false, defaultValue = MESSAGES_PER_PAGE) @Min(1) Integer limit) {
-        List<CommonChatMessage> messages = chatService.getChatMessages(id, offset, limit);
-        List<CommonChatMessageRest> restMessages = getMapper(CommonChatMessageRestMapper.class).map(messages);
+        List<ChatMessage> messages = chatService.getChatMessages(id, offset, limit);
+        List<ChatMessageRest> restMessages = getMapper(ChatMessageRestMapper.class).map(messages);
         return new ChatMessagesResponse(restMessages);
     }
 }

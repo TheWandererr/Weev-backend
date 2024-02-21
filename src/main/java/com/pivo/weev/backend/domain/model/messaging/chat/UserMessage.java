@@ -1,13 +1,13 @@
 package com.pivo.weev.backend.domain.model.messaging.chat;
 
-import static com.pivo.weev.backend.domain.model.messaging.chat.CommonChatMessage.Type.MESSAGE;
+import static com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage.Type.MESSAGE;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserMessage extends CommonChatMessage {
+public class UserMessage extends ChatMessage {
 
     private ChatUser from;
 

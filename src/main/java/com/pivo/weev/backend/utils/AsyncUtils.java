@@ -21,6 +21,10 @@ public final class AsyncUtils {
         return supplyAsync(supplier, executor).exceptionally(errorHandler);
     }
 
+    public static <R> CompletableFuture<R> async(Executor executor, Supplier<R> supplier) {
+        return supplyAsync(supplier, executor);
+    }
+
     public static CompletableFuture<Void> async(Executor executor, Runnable runnable, Function<Throwable, Void> errorHandler) {
         return runAsync(runnable, executor).exceptionally(errorHandler);
     }

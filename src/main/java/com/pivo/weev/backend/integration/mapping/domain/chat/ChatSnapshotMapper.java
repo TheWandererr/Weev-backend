@@ -5,7 +5,7 @@ import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChatSnapsho
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(uses = {CommonChatMessageMapper.class})
+@Mapper(uses = {ChatMessageMapper.class})
 public interface ChatSnapshotMapper {
 
     @Mapping(target = "lastMessage", ignore = true)

@@ -12,7 +12,7 @@ public class ChatSnapshot implements Serializable {
     private Long creatorId;
     private String name;
     private String avatarUrl;
-    private CommonChatMessage lastMessage;
+    private ChatMessage lastMessage;
     private Integer users;
     private Long newMessages;
 

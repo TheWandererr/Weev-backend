@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SubscriptionMessageRest extends CommonChatMessageRest {
+public class SubscriptionMessageRest extends ChatMessageRest {
 
     private String event;
 }

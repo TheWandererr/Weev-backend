@@ -20,8 +20,8 @@ import com.pivo.weev.backend.domain.mapping.domain.ChatUserMapper;
 import com.pivo.weev.backend.domain.model.event.PushNotificationEvent;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent.EventType;
+import com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage;
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatSnapshot;
-import com.pivo.weev.backend.domain.model.messaging.chat.CommonChatMessage;
 import com.pivo.weev.backend.domain.model.messaging.chat.UserMessage;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
@@ -34,8 +34,8 @@ import com.pivo.weev.backend.domain.utils.Constants.NotificationTopics;
 import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChatMessage;
 import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChatSnapshot;
 import com.pivo.weev.backend.integration.firebase.service.FirebaseChatService;
+import com.pivo.weev.backend.integration.mapping.domain.chat.ChatMessageMapper;
 import com.pivo.weev.backend.integration.mapping.domain.chat.ChatSnapshotMapper;
-import com.pivo.weev.backend.integration.mapping.domain.chat.CommonChatMessageMapper;
 import com.pivo.weev.backend.integration.mapping.firebase.chat.FirebaseChatMessageMapper;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,7 +135,7 @@ public class ChatService {
     }
 
     private List<ChatSnapshot> mapFirebaseChatSnapshots(List<FirebaseChatSnapshot> firebaseChatSnapshots, List<FirebaseChatMessage> lastMessages, Map<String, Long> chatsOrdinals) {
-        Map<String, FirebaseChatMessage> chatsLastMessages = collectChatsLastMessages(lastMessages);
+        Map<String, FirebaseChatMessage> chatsLastMessages = collect(lastMessages, toMap(FirebaseChatMessage::getChatId, identity()));
         return parallelStream(firebaseChatSnapshots)
                 .map(snapshot -> {
                     FirebaseChatMessage lastFirebaseMessage = chatsLastMessages.get(snapshot.getId());
@@ -144,12 +144,8 @@ public class ChatService {
                 .collect(toList());
     }
 
-    private Map<String, FirebaseChatMessage> collectChatsLastMessages(List<FirebaseChatMessage> lastMessages) {
-        return collect(lastMessages, toMap(FirebaseChatMessage::getChatId, identity()));
-    }
-
     private ChatSnapshot mapFirebaseChatSnapshot(FirebaseChatSnapshot firebaseChatSnapshot, FirebaseChatMessage lastFirebaseMessage, Map<String, Long> chatsOrdinals) {
-        CommonChatMessage lastMessage = getMapper(CommonChatMessageMapper.class).map(lastFirebaseMessage);
+        ChatMessage lastMessage = getMapper(ChatMessageMapper.class).map(lastFirebaseMessage);
         ChatSnapshot chatSnapshot = getMapper(ChatSnapshotMapper.class).map(firebaseChatSnapshot);
         chatSnapshot.setLastMessage(lastMessage);
         Long initialOrdinal = ofNullable(lastFirebaseMessage).map(FirebaseChatMessage::getOrdinal).orElse(0L);
@@ -158,20 +154,20 @@ public class ChatService {
     }
 
     @Transactional
-    public List<CommonChatMessage> getChatMessages(String chatId, Integer offset, Integer limit) {
+    public List<ChatMessage> getChatMessages(String chatId, Integer offset, Integer limit) {
         if (chatId.startsWith(GROUP)) {
             return getGroupChatMessages(chatId, offset, limit);
         }
         return new ArrayList<>();
     }
 
-    private List<CommonChatMessage> getGroupChatMessages(String chatId, Integer offset, Integer limit) {
+    private List<ChatMessage> getGroupChatMessages(String chatId, Integer offset, Integer limit) {
         MeetJpa meet = meetSearchService.fetchJpa(toLong(substringAfter(chatId, GROUP)));
         Long userId = getUserId();
         UserJpa requester = meet.hasCreator(userId) ? meet.getCreator() : userResourceService.fetchJpa(userId);
         operationValidator.validateGetChatMessages(meet, requester);
         return firebaseChatService.getChatMessages(chatId, offset, limit)
-                                  .thenApply(messages -> getMapper(CommonChatMessageMapper.class).map(messages))
+                                  .thenApply(messages -> getMapper(ChatMessageMapper.class).map(messages))
                                   .join();
     }
 }

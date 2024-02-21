@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserMessageWs extends CommonMessageWs {
+public class UserMessageWs extends MessageWs {
 
     private UserWs from;
 }

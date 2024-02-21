@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SubscriptionMessageWs extends CommonMessageWs {
+public class SubscriptionMessageWs extends MessageWs {
 
     private String event;
 

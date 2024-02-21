@@ -6,6 +6,7 @@ import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseF
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Fields.CREATED_AT;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Fields.LAST_UPDATE;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Fields.MESSAGES;
+import static com.pivo.weev.backend.utils.AsyncUtils.async;
 import static java.time.Instant.now;
 import static java.util.Objects.nonNull;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Service;
 public class FirebaseChatService {
 
     private final FirestoreClient firestoreClient;
+    private final ThreadPoolTaskExecutor firebaseFirestoreExecutor;
 
     @Async("firebaseFirestoreExecutor")
     public void saveFirebaseChatInfo(FirebaseChatSnapshot firebaseChatSnapshot, Long userId) {
@@ -77,14 +80,9 @@ public class FirebaseChatService {
     }
 
     @Async("firebaseFirestoreExecutor")
-    public CompletableFuture<List<FirebaseChatSnapshot>> getChats(FirebaseUserChatsReference reference) {
-        return firestoreClient.findAll(CHATS, reference.getChatIds(), LAST_UPDATE, FirebaseChatSnapshot.class);
-    }
-
-    @Async("firebaseFirestoreExecutor")
     public CompletableFuture<List<FirebaseChatSnapshot>> getChats(Long userId) {
         return findUserChatsReference(userId)
-                .thenApply(this::getChats)
+                .thenCompose(reference -> async(firebaseFirestoreExecutor, () -> firestoreClient.findAll(CHATS, reference.getChatIds(), LAST_UPDATE, FirebaseChatSnapshot.class)))
                 .join();
     }
 

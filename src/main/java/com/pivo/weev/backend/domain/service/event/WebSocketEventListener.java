@@ -5,7 +5,7 @@ import static com.pivo.weev.backend.websocket.utils.Constants.PayloadKeys.CHAT;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent.EventType;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent.WebSocketMessageModel;
-import com.pivo.weev.backend.domain.model.messaging.chat.CommonChatMessage;
+import com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage;
 import com.pivo.weev.backend.domain.model.messaging.chat.EventMessage;
 import com.pivo.weev.backend.domain.model.messaging.chat.EventMessage.Event;
 import com.pivo.weev.backend.websocket.utils.Constants.UserDestinations;
@@ -27,16 +27,16 @@ public class WebSocketEventListener {
     public void onWebSocketEventPublishing(WebSocketEvent event) {
         WebSocketMessageModel messageModel = event.getSource();
         if (messageModel.hasRecipient()) {
-            CommonChatMessage message = createMessage(messageModel);
+            ChatMessage message = createMessage(messageModel);
             messagingTemplate.convertAndSendToUser(messageModel.getRecipient(), UserDestinations.UPDATES, message);
         }
     }
 
-    private CommonChatMessage createMessage(WebSocketMessageModel messageModel) {
+    private ChatMessage createMessage(WebSocketMessageModel messageModel) {
         EventType eventType = messageModel.getEventType();
         return switch (eventType) {
             case CHAT_CREATED -> createEventMessage(messageModel);
-            default -> new CommonChatMessage();
+            default -> new ChatMessage();
         };
     }
 

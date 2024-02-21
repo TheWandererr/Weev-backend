@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CommonMessageWs implements Serializable {
+public class MessageWs implements Serializable {
 
     private String type;
     private String text;

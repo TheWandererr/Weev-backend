@@ -1,8 +1,8 @@
 package com.pivo.weev.backend.domain.model.messaging.chat;
 
 
-import static com.pivo.weev.backend.domain.model.messaging.chat.CommonChatMessage.Type.EVENT;
-import static com.pivo.weev.backend.domain.model.messaging.chat.CommonChatMessage.Type.UNDEFINED;
+import static com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage.Type.EVENT;
+import static com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage.Type.UNDEFINED;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -13,7 +13,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CommonChatMessage implements Serializable {
+public class ChatMessage implements Serializable {
 
     private String text;
     private Instant createdAt = Instant.now();

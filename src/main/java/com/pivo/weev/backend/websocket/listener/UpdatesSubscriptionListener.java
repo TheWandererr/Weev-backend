@@ -13,8 +13,8 @@ import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.model.messaging.chat.EventMessage;
 import com.pivo.weev.backend.domain.service.websocket.SubscriptionService;
-import com.pivo.weev.backend.websocket.mapping.ws.CommonMessageWsMapper;
-import com.pivo.weev.backend.websocket.model.CommonMessageWs;
+import com.pivo.weev.backend.websocket.mapping.ws.MessageWsMapper;
+import com.pivo.weev.backend.websocket.model.MessageWs;
 import com.pivo.weev.backend.websocket.utils.Constants.SubscriptionDestinations;
 import com.pivo.weev.backend.websocket.utils.Constants.UserDestinations;
 import java.security.Principal;
@@ -55,7 +55,7 @@ public class UpdatesSubscriptionListener {
 
     private void handleGroupChatSubscription(String nickname, String chatId) {
         EventMessage message = subscriptionService.handleGroupChatSubscription(chatId, nickname);
-        CommonMessageWs messageWs = getMapper(CommonMessageWsMapper.class).map(message);
+        MessageWs messageWs = getMapper(MessageWsMapper.class).map(message);
         template.convertAndSendToUser(nickname, UserDestinations.UPDATES, messageWs);
     }
 }
