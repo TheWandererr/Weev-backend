@@ -1,11 +1,13 @@
 package com.pivo.weev.backend.domain.model.event;
 
+import static com.pivo.weev.backend.domain.utils.Constants.MessagingPayload.CHAT;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-import com.pivo.weev.backend.domain.model.messaging.chat.ChatSnapshot;
+import com.pivo.weev.backend.domain.model.event.payload.ChatSnapshotPayload;
+import java.io.Serializable;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
 
@@ -26,15 +28,27 @@ public class WebSocketEvent extends ApplicationEvent {
     @Getter
     @Setter
     @AllArgsConstructor
-    @NoArgsConstructor
     public static class WebSocketMessageModel {
 
-        private ChatSnapshot chatSnapshot;
+        private final EventType eventType;
         private String recipient;
-        private EventType eventType;
+        private String destination;
+        private Map<String, ? extends Serializable> payload;
 
         public boolean hasRecipient() {
             return isNotBlank(recipient);
+        }
+
+        public boolean hasDestination() {
+            return isNotBlank(destination);
+        }
+
+        public boolean hasChat() {
+            return getPayload().containsKey(CHAT);
+        }
+
+        public ChatSnapshotPayload getChat() {
+            return (ChatSnapshotPayload) getPayload().get(CHAT);
         }
     }
 

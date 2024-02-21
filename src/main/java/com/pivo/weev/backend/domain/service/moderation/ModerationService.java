@@ -3,16 +3,22 @@ package com.pivo.weev.backend.domain.service.moderation;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.CONFIRMED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.DECLINED;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.DECLINATION_REASON;
+import static com.pivo.weev.backend.domain.utils.Constants.MessagingPayload.DECLINATION_REASON;
+import static com.pivo.weev.backend.domain.utils.Constants.MessagingPayload.MEET;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CONFIRMATION;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_DECLINATION;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_UPDATE_FAILED;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_UPDATE_SUCCESSFUL;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
+import static java.util.Collections.singleton;
 import static org.mapstruct.factory.Mappers.getMapper;
 
+import com.pivo.weev.backend.domain.mapping.domain.MeetPayloadMapper;
+import com.pivo.weev.backend.domain.mapping.domain.UserPayloadMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.MeetJpaMapper;
 import com.pivo.weev.backend.domain.model.event.PushNotificationEvent;
+import com.pivo.weev.backend.domain.model.event.payload.MeetPayload;
+import com.pivo.weev.backend.domain.model.event.payload.UserPayload;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.DeclinationReasonJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
@@ -67,19 +73,24 @@ public class ModerationService {
 
     private void notify(MeetJpa meet, UserJpa recipient, String topic) {
         notificationService.notify(meet, recipient, topic);
-        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(meet, recipient, topic);
-        applicationEventPublisher.publishEvent(event);
+        MeetPayload meetPayload = getMapper(MeetPayloadMapper.class).map(meet);
+        publishPushNotificationEvent(singleton(recipient), topic, Map.of(MEET, meetPayload));
     }
 
     private void notify(MeetJpa meet, UserJpa recipient, String topic, DeclinationReasonJpa declinationReasonJpa) {
         notificationService.notify(meet, recipient, topic, declinationReasonJpa);
-        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(meet, recipient, topic, Map.of(DECLINATION_REASON, declinationReasonJpa.getTitle()));
-        applicationEventPublisher.publishEvent(event);
+        publishPushNotificationEvent(singleton(recipient), topic, Map.of(DECLINATION_REASON, declinationReasonJpa.getTitle()));
     }
 
     private void notifyAll(MeetJpa meet, Set<UserJpa> recipients, String topic) {
         notificationService.notifyAll(meet, recipients, topic);
-        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(meet, recipients, topic);
+        MeetPayload meetPayload = getMapper(MeetPayloadMapper.class).map(meet);
+        publishPushNotificationEvent(recipients, topic, Map.of(MEET, meetPayload));
+    }
+
+    private void publishPushNotificationEvent(Set<UserJpa> recipients, String topic, Map<String, Object> payload) {
+        Set<UserPayload> recipientsPayload = getMapper(UserPayloadMapper.class).map(recipients);
+        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(recipientsPayload, topic, payload);
         applicationEventPublisher.publishEvent(event);
     }
 

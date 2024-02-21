@@ -8,12 +8,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SubscriptionMessageWs extends MessageWs {
+public class EventMessageWs extends MessageWs {
 
     private String event;
 
-    public static SubscriptionMessageWs subscribed() {
-        SubscriptionMessageWs message = new SubscriptionMessageWs();
+    public static EventMessageWs subscribed() {
+        EventMessageWs message = new EventMessageWs();
         message.setType(EVENT);
         message.setEvent(SUBSCRIBED);
         return message;

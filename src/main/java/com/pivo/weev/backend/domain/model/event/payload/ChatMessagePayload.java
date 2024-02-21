@@ -1,19 +1,21 @@
-package com.pivo.weev.backend.websocket.model;
+package com.pivo.weev.backend.domain.model.event.payload;
 
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-public class MessageWs {
+public class ChatMessagePayload {
 
+    private UserPayload from;
     private String type;
+    private String event;
+    private String chatId;
     private String text;
-    private Instant createdAt = Instant.now();
+    private Instant createdAt;
     private Map<String, Object> payload = new HashMap<>();
+    private Long ordinal;
 }

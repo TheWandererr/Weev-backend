@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.domain.model.event;
 
+import static com.pivo.weev.backend.domain.utils.Constants.MessagingPayload.MEET;
 import static java.util.Objects.isNull;
 
 import com.pivo.weev.backend.domain.model.event.payload.MeetPayload;
@@ -33,7 +34,6 @@ public class PushNotificationEvent extends ApplicationEvent {
     @NoArgsConstructor
     public static class PushNotificationModel {
 
-        private MeetPayload meet;
         private Set<UserPayload> recipients;
         private String topic;
         private Map<String, Object> payload;
@@ -43,6 +43,14 @@ public class PushNotificationEvent extends ApplicationEvent {
                 payload = new HashMap<>();
             }
             return payload;
+        }
+
+        public boolean hasMeet() {
+            return getPayload().containsKey(MEET);
+        }
+
+        public MeetPayload getMeet() {
+            return (MeetPayload) getPayload().get(MEET);
         }
     }
 }

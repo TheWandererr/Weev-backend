@@ -30,7 +30,8 @@ public class WsChatsController {
     public void onSendMessage(@DestinationVariable String chatId, @Payload UserMessageWs message, StompHeaderAccessor accessor) {
         String nickname = getNickname(accessor);
         UserMessage domainMessage = (UserMessage) getMapper(ChatMessageMapper.class).map(message);
-        UserMessage outputMessage = chatService.pushMessage(chatId, nickname, domainMessage);
+        domainMessage.setChatId(chatId);
+        UserMessage outputMessage = chatService.pushMessage(nickname, domainMessage);
         template.convertAndSend(format(CHAT_PATTERN, chatId), getMapper(MessageWsMapper.class).map(outputMessage));
     }
 }

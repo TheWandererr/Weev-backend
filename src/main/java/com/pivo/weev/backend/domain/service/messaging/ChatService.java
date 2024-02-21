@@ -3,6 +3,7 @@ package com.pivo.weev.backend.domain.service.messaging;
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType.NICKNAME;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.ChatPrefixes.GROUP;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
+import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.CHAT_CREATED;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.CHAT_NEW_MESSAGE;
 import static com.pivo.weev.backend.utils.AsyncUtils.collectAll;
 import static com.pivo.weev.backend.utils.CollectionUtils.collect;
@@ -16,10 +17,17 @@ import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.apache.commons.lang3.math.NumberUtils.toLong;
 import static org.mapstruct.factory.Mappers.getMapper;
 
+import com.pivo.weev.backend.domain.mapping.domain.ChatMessagePayloadMapper;
 import com.pivo.weev.backend.domain.mapping.domain.ChatUserMapper;
+import com.pivo.weev.backend.domain.mapping.domain.MeetPayloadMapper;
+import com.pivo.weev.backend.domain.mapping.domain.UserPayloadMapper;
 import com.pivo.weev.backend.domain.model.event.PushNotificationEvent;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent.EventType;
+import com.pivo.weev.backend.domain.model.event.payload.ChatMessagePayload;
+import com.pivo.weev.backend.domain.model.event.payload.ChatSnapshotPayload;
+import com.pivo.weev.backend.domain.model.event.payload.MeetPayload;
+import com.pivo.weev.backend.domain.model.event.payload.UserPayload;
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage;
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatSnapshot;
 import com.pivo.weev.backend.domain.model.messaging.chat.UserMessage;
@@ -29,13 +37,13 @@ import com.pivo.weev.backend.domain.service.event.factory.ApplicationEventFactor
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
 import com.pivo.weev.backend.domain.service.user.UserResourceService;
 import com.pivo.weev.backend.domain.service.validation.ChatOperationValidator;
-import com.pivo.weev.backend.domain.utils.Constants.NotificationDetails;
-import com.pivo.weev.backend.domain.utils.Constants.NotificationTopics;
+import com.pivo.weev.backend.domain.utils.Constants.MessagingPayload;
 import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChatMessage;
 import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChatSnapshot;
 import com.pivo.weev.backend.integration.firebase.service.FirebaseChatService;
 import com.pivo.weev.backend.integration.mapping.domain.chat.ChatMessageMapper;
 import com.pivo.weev.backend.integration.mapping.domain.chat.ChatSnapshotMapper;
+import com.pivo.weev.backend.integration.mapping.domain.chat.ChatSnapshotPayloadMapper;
 import com.pivo.weev.backend.integration.mapping.firebase.chat.FirebaseChatMessageMapper;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +73,12 @@ public class ChatService {
     public void createChat(UserJpa creator, MeetJpa meet) {
         FirebaseChatSnapshot firebaseChatSnapshot = buildSnapshot(creator, meet);
         firebaseChatService.saveFirebaseChatInfo(firebaseChatSnapshot, creator.getId());
-        notify(meet, creator, NotificationTopics.CHAT_CREATED, EventType.CHAT_CREATED, firebaseChatSnapshot);
+
+        ChatSnapshotPayload chatPayload = getMapper(ChatSnapshotPayloadMapper.class).map(firebaseChatSnapshot);
+        notificationService.notify(meet, creator, CHAT_CREATED, Map.of(MessagingPayload.CHAT, chatPayload));
+
+        WebSocketEvent webSocketEvent = applicationEventFactory.buildWebSocketEvent(chatPayload, creator.getNickname(), EventType.CHAT_CREATED);
+        applicationEventPublisher.publishEvent(webSocketEvent);
     }
 
     private FirebaseChatSnapshot buildSnapshot(UserJpa creator, MeetJpa meet) {
@@ -79,17 +92,9 @@ public class ChatService {
         return firebaseChatSnapshot;
     }
 
-    private void notify(MeetJpa meet, UserJpa recipient, String topic, EventType eventType, FirebaseChatSnapshot firebaseChatSnapshot) {
-        Map<String, Object> details = Map.of(NotificationDetails.CHAT_ID, firebaseChatSnapshot.getId());
-        notificationService.notify(meet, recipient, topic, details);
-        ChatSnapshot chatSnapshot = getMapper(ChatSnapshotMapper.class).map(firebaseChatSnapshot);
-
-        WebSocketEvent webSocketEvent = applicationEventFactory.buildWebSocketEvent(chatSnapshot, recipient.getNickname(), eventType);
-        applicationEventPublisher.publishEvent(webSocketEvent);
-    }
-
     @Transactional
-    public UserMessage pushMessage(String chatId, String senderNickname, UserMessage message) {
+    public UserMessage pushMessage(String senderNickname, UserMessage message) {
+        String chatId = message.getChatId();
         if (chatId.startsWith(GROUP)) {
             return pushGroupMessage(chatId, senderNickname, message);
         }
@@ -104,7 +109,7 @@ public class ChatService {
         operationValidator.validateSendMessage(meet, sender);
 
         message.setFrom(getMapper(ChatUserMapper.class).map(sender));
-        FirebaseChatMessage firebaseChatMessage = getMapper(FirebaseChatMessageMapper.class).map(message, chatId);
+        FirebaseChatMessage firebaseChatMessage = getMapper(FirebaseChatMessageMapper.class).map(message);
         firebaseChatService.pushMessage(chatId, firebaseChatMessage);
 
         sendPushNotification(meet, message);
@@ -114,13 +119,16 @@ public class ChatService {
 
     private void sendPushNotification(MeetJpa meet, UserMessage message) {
         if (!message.isEvent()) {
-            sendPushNotification(meet, meet.getMembersWithCreator(), CHAT_NEW_MESSAGE, message.getText());
+            sendPushNotification(meet, meet.getMembersWithCreator(), CHAT_NEW_MESSAGE, message);
         }
     }
 
-    private void sendPushNotification(MeetJpa meet, Set<UserJpa> recipients, String topic, String text) {
-        Map<String, Object> payload = Map.of(NotificationDetails.CHAT_ID, meet.getId(), NotificationDetails.TEXT, text);
-        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(meet, recipients, topic, payload);
+    private void sendPushNotification(MeetJpa meet, Set<UserJpa> recipients, String topic, UserMessage chatMessage) {
+        ChatMessagePayload messagePayload = getMapper(ChatMessagePayloadMapper.class).map(chatMessage);
+        MeetPayload meetPayload = getMapper(MeetPayloadMapper.class).map(meet);
+        Map<String, Object> payload = Map.of(MessagingPayload.MESSAGE, messagePayload, MessagingPayload.MEET, meetPayload);
+        Set<UserPayload> recipientsPayload = getMapper(UserPayloadMapper.class).map(recipients);
+        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(recipientsPayload, topic, payload);
         applicationEventPublisher.publishEvent(event);
     }
 

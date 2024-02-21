@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class ChatMessageRest {
 
+    private String chatId;
     private String text;
     private Instant createdAt;
     private Long ordinal;

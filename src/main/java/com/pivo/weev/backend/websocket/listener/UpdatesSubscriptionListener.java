@@ -2,7 +2,7 @@ package com.pivo.weev.backend.websocket.listener;
 
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.ChatPrefixes.GROUP;
 import static com.pivo.weev.backend.utils.Constants.Symbols.DOT;
-import static com.pivo.weev.backend.websocket.model.SubscriptionMessageWs.subscribed;
+import static com.pivo.weev.backend.websocket.model.EventMessageWs.subscribed;
 import static com.pivo.weev.backend.websocket.utils.Constants.SubscriptionDestinations.CHAT;
 import static com.pivo.weev.backend.websocket.utils.StompUtils.getDestination;
 import static java.util.Optional.ofNullable;

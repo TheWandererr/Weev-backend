@@ -12,9 +12,9 @@ public interface FirebaseChatMessageMapper {
 
     @Mapping(target = "type", expression = "java(source.getType().name())")
     @Mapping(target = "chatId", source = "chatId")
-    FirebaseChatMessage map(UserMessage source, String chatId);
+    FirebaseChatMessage map(UserMessage source);
 
     @Mapping(target = "event", expression = "java(source.getEvent().name())")
     @Mapping(target = "chatId", source = "chatId")
-    FirebaseChatMessage map(EventMessage source, String chatId);
+    FirebaseChatMessage map(EventMessage source);
 }

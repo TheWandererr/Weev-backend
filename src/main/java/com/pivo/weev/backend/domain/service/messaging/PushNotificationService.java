@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.service.messaging;
 
-import static com.pivo.weev.backend.domain.utils.Constants.NotificationDetails.REQUESTER_NICKNAME;
+import static com.pivo.weev.backend.domain.utils.Constants.MessagingPayload.USER;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationHeaders.BODY;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationHeaders.TITLE;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.CHAT_CREATED;
@@ -18,13 +18,13 @@ import static com.pivo.weev.backend.utils.CollectionUtils.flatMapToList;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToSet;
 import static com.pivo.weev.backend.utils.LocaleUtils.getAcceptedLocale;
 import static com.pivo.weev.backend.utils.StreamUtils.select;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.groupingBy;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import com.pivo.weev.backend.domain.model.event.payload.DevicePayload;
 import com.pivo.weev.backend.domain.model.event.payload.MeetPayload;
 import com.pivo.weev.backend.domain.model.event.payload.UserPayload;
-import com.pivo.weev.backend.domain.utils.Constants.NotificationDetails;
+import com.pivo.weev.backend.domain.utils.Constants.MessagingPayload;
 import com.pivo.weev.backend.integration.firebase.factory.FirebasePushNotificationsFactory;
 import com.pivo.weev.backend.integration.firebase.model.notification.FirebasePushNotificationMessage;
 import com.pivo.weev.backend.integration.firebase.service.FirebasePushNotificationService;
@@ -48,7 +48,7 @@ public class PushNotificationService {
             collect(notifiableDevices, groupingBy(DevicePayload::getLang))
                     .forEach((lang, notifiableDevicesByLang) -> {
                         Set<String> notificationTokens = mapToSet(notifiableDevicesByLang, DevicePayload::getPushNotificationToken);
-                        Object[] titleArgs = resolveTitleArgs(meet, topic, payload);
+                        Object[] titleArgs = resolveTitleArgs(meet, topic);
                         Object[] bodyArgs = resolveBodyArgs(meet, topic, payload);
                         FirebasePushNotificationMessage message = firebasePushNotificationsFactory.build(
                                 topic + TITLE,
@@ -64,7 +64,7 @@ public class PushNotificationService {
         }
     }
 
-    private Object[] resolveTitleArgs(MeetPayload meet, String topic, Map<String, Object> payload) {
+    private Object[] resolveTitleArgs(MeetPayload meet, String topic) {
         return switch (topic) {
             case CHAT_CREATED -> createMeetChatCreatedTitleArgs(meet);
             case CHAT_NEW_MESSAGE -> createMeetChatNewMessageTitleArgs(meet);
@@ -117,8 +117,11 @@ public class PushNotificationService {
     }
 
     private Object[] createNewJoinRequestBodyArgs(MeetPayload meet, Map<String, Object> payload) {
-        String nickname = payload.getOrDefault(REQUESTER_NICKNAME, EMPTY).toString();
-        return new Object[]{nickname, meet.getHeader()};
+        UserPayload userPayload = (UserPayload) payload.get(USER);
+        if (nonNull(userPayload)) {
+            return new Object[]{userPayload.getNickname(), meet.getHeader()};
+        }
+        return new Object[0];
     }
 
     private Object[] createJoinRequestConfirmationBodyArgs(MeetPayload meet) {
@@ -134,6 +137,6 @@ public class PushNotificationService {
     }
 
     private Object[] createMeetChatNewMessageBodyArgs(Map<String, Object> payload) {
-        return new Object[]{payload.get(NotificationDetails.TEXT)};
+        return new Object[]{payload.get(MessagingPayload.TEXT)};
     }
 }

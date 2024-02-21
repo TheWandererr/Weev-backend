@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 public interface DevicePayloadMapper {
 
     @Mapping(target = "settings", source = "settings")
+    @Mapping(target = "userId", source = "user.id")
     DevicePayload map(DeviceJpa source);
     
     DevicePayload.Settings map(DeviceSettingsJpa source);

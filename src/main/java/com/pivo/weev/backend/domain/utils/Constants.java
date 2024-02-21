@@ -48,13 +48,14 @@ public final class Constants {
     }
 
     @UtilityClass
-    public static final class NotificationDetails {
+    public static final class MessagingPayload {
 
-        public static final String REQUESTER_ID = "requester_id";
-        public static final String REQUESTER_NICKNAME = "requester_nickname";
         public static final String DECLINATION_REASON = "declination_reason";
-        public static final String CHAT_ID = "chat_id";
+        public static final String CHAT = "chat";
         public static final String TEXT = "text";
+        public static final String MESSAGE = "message";
+        public static final String USER = "user";
+        public static final String MEET = "meet";
     }
 
     @UtilityClass

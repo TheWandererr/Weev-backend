@@ -3,6 +3,7 @@ package com.pivo.weev.backend.domain.service.meet;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.CANCELED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.HAS_MODERATION_INSTANCE;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
+import static com.pivo.weev.backend.domain.utils.Constants.MessagingPayload.MEET;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CANCELLATION;
 import static com.pivo.weev.backend.utils.CollectionUtils.findFirst;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToSet;
@@ -10,9 +11,12 @@ import static com.pivo.weev.backend.utils.Constants.ErrorCodes.SUBCATEGORY_NOT_F
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.mapstruct.factory.Mappers.getMapper;
 
+import com.pivo.weev.backend.domain.mapping.domain.MeetPayloadMapper;
+import com.pivo.weev.backend.domain.mapping.domain.UserPayloadMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.MeetJpaMapper;
 import com.pivo.weev.backend.domain.model.common.MapPoint;
 import com.pivo.weev.backend.domain.model.event.PushNotificationEvent;
+import com.pivo.weev.backend.domain.model.event.payload.UserPayload;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.meet.CreatableMeet;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
@@ -31,6 +35,7 @@ import com.pivo.weev.backend.domain.service.user.UserResourceService;
 import com.pivo.weev.backend.domain.service.validation.MeetOperationsValidator;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -156,7 +161,10 @@ public class MeetOperationsService {
 
     private void notifyAll(MeetJpa meet, Set<UserJpa> recipients, String topic) {
         notificationService.notifyAll(meet, recipients, topic);
-        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(meet, recipients, topic);
+
+        Map<String, Object> payload = Map.of(MEET, getMapper(MeetPayloadMapper.class).map(meet));
+        Set<UserPayload> recipientsPayload = getMapper(UserPayloadMapper.class).map(recipients);
+        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(recipientsPayload, topic, payload);
         applicationEventPublisher.publishEvent(event);
     }
 

@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.websocket.model;
+package com.pivo.weev.backend.domain.model.event.payload;
 
 import java.io.Serializable;
 import lombok.Getter;
@@ -6,10 +6,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ChatWs implements Serializable {
+public class ChatSnapshotPayload implements Serializable {
 
-    private Long id;
-    private String creatorId;
+    private String id;
+    private Long creatorId;
     private String name;
     private String avatarUrl;
     private Integer users;

@@ -11,6 +11,9 @@ import lombok.Setter;
 @Setter
 public class UserPayload {
 
+    private long id;
+    private String nickname;
+    private String avatarUrl;
     private List<DevicePayload> devices;
 
     public List<DevicePayload> getDevices() {

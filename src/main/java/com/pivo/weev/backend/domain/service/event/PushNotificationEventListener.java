@@ -18,11 +18,13 @@ public class PushNotificationEventListener {
     @EventListener
     public void onPushNotificationEventPublishing(PushNotificationEvent event) {
         PushNotificationModel model = event.getSource();
-        pushNotificationService.sendPushNotifications(
-                model.getMeet(),
-                model.getRecipients(),
-                model.getTopic(),
-                model.getPayload()
-        );
+        if (model.hasMeet()) {
+            pushNotificationService.sendPushNotifications(
+                    model.getMeet(),
+                    model.getRecipients(),
+                    model.getTopic(),
+                    model.getPayload()
+            );
+        }
     }
 }
