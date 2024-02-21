@@ -24,9 +24,9 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.meet.RestrictionsJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetJoinRequestsRepository;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepository;
-import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepository;
 import com.pivo.weev.backend.domain.service.event.factory.ApplicationEventFactory;
 import com.pivo.weev.backend.domain.service.messaging.NotificationService;
+import com.pivo.weev.backend.domain.service.user.UserResourceService;
 import com.pivo.weev.backend.domain.service.validation.MeetOperationsValidator;
 import java.time.Instant;
 import java.util.List;
@@ -45,11 +45,11 @@ public class MeetRequestsService {
 
     private final MeetRepository meetRepository;
     private final MeetJoinRequestsRepository meetJoinRequestsRepository;
-    private final UsersRepository usersRepository;
 
     private final MeetOperationsValidator meetOperationsValidator;
     private final NotificationService notificationService;
     private final MeetOperationsService meetOperationsService;
+    private final UserResourceService userResourceService;
 
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ApplicationEventFactory applicationEventFactory;
@@ -57,12 +57,13 @@ public class MeetRequestsService {
     @Transactional
     public void createJoinRequest(Long id) {
         MeetJpa meet = meetRepository.fetch(id);
-        meetOperationsValidator.validateJoinRequestCreation(meet, getUserId());
-        UserJpa user = usersRepository.fetch(getUserId());
-        if (meetJoinRequestsRepository.existsByMeetIdAndUserId(meet.getId(), user.getId())) {
+        Long userId = getUserId();
+        meetOperationsValidator.validateJoinRequestCreation(meet, userId);
+        UserJpa user = userResourceService.fetchJpa(userId);
+        if (meetJoinRequestsRepository.existsByMeetIdAndUserId(meet.getId(), userId)) {
             throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, MEET_JOIN_REQUEST_ALREADY_CREATED, FORBIDDEN);
         }
-        notify(meet, meet.getCreator(), MEET_NEW_JOIN_REQUEST, Map.of(REQUESTER_ID, user.getId(), REQUESTER_NICKNAME, user.getNickname()));
+        notify(meet, meet.getCreator(), MEET_NEW_JOIN_REQUEST, Map.of(REQUESTER_ID, userId, REQUESTER_NICKNAME, user.getNickname()));
         meetJoinRequestsRepository.save(new MeetJoinRequestJpa(meet, user, getMeetRequestExpirationTime(meet)));
     }
 
@@ -83,7 +84,7 @@ public class MeetRequestsService {
     @Transactional
     public void confirmJoinRequest(Long requestId) {
         MeetJoinRequestJpa request = meetJoinRequestsRepository.fetch(requestId);
-        meetOperationsValidator.validateJoinRequestConfirmation(request);
+        meetOperationsValidator.validateJoinRequestConfirmation(request, getUserId());
         MeetJpa meet = request.getMeet();
         UserJpa joiner = request.getUser();
         meetOperationsService.joinViaRequest(meet, joiner);
@@ -94,7 +95,8 @@ public class MeetRequestsService {
     @Transactional
     public void declineJoinRequest(Long requestId) {
         MeetJoinRequestJpa request = meetJoinRequestsRepository.fetch(requestId);
-        meetOperationsValidator.validateJoinRequestDeclination(request);
+        Long authorId = getUserId();
+        meetOperationsValidator.validateJoinRequestDeclination(request, authorId);
         notify(request.getMeet(), request.getUser(), MEET_JOIN_REQUEST_DECLINATION, null);
         meetJoinRequestsRepository.forceDelete(request);
     }
