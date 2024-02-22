@@ -8,4 +8,8 @@ import org.mapstruct.Mapper;
 public interface ImageRestMapper {
 
     ImageRest map(Image source);
+
+    default ImageRest map(String source) {
+        return new ImageRest(source);
+    }
 }

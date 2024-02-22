@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.rest.mapping.rest;
 
+import com.pivo.weev.backend.domain.model.event.payload.MeetPayload;
 import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.rest.model.meet.MeetSnapshotRest;
 import org.mapstruct.Mapper;
@@ -8,4 +9,6 @@ import org.mapstruct.Mapper;
 public interface MeetSnapshotRestMapper {
 
     MeetSnapshotRest map(Meet source);
+
+    MeetSnapshotRest map(MeetPayload source);
 }

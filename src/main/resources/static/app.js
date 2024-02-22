@@ -1,7 +1,7 @@
 const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8080/ws',
     connectHeaders: {
-        authorization: 'eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJrYXJ0ZW0yMDEzQHlhbmRleC5ieSIsImF1ZCI6Ii9hcGkiLCJzZXJpYWwiOiJjYjlhZjZhYy0xNDVmLTRiYzAtOWQyYi05NDE1M2VhY2VjMDEiLCJzY29wZSI6InJlYWQgd3JpdGUgbW9kZXJhdGlvbiIsImlzcyI6Ii9hdXRoL2xvZ2luIiwibmlja25hbWUiOiJib2IyMjgiLCJleHAiOjE3MDg1NDI4ODUsImlhdCI6MTcwODUzOTI4NSwiZGV2aWNlSWQiOiIwMDAwIiwidXNlcklkIjo5OTl9.eyt3xUmTA1bX_nXiznRQ_Ew-KWBTJoP2YZEFIm6T9gvTPWaNHrPJfBBV_AT1PIdvjziYICg6VTW5DzGmSxhtSTjTKDS-Jmf-iTPC4bROe4gi5QqDDnUNLcF9x4zWzr9z188QwejKIFmYpDcSq7muYc_WBHfauyZZCa1mbmdqA6dxnWsDCogSQP9muaXmxnOM1uWMghLFnqT-pTI-EAf9X7OUBRpYI3_Xyq8j7o6pzbGZ8_6B4xh-hzcKuliTxEsGkVF6YtL1-zZK_g5PyatZOGi152bWtsNI79nkoAs9BioJ9ME-11UxZ7th0DaCFwyU7v1Ii-Cku0LR3fudQIgQTQ',
+        authorization: '',
         deviceId : '0000'
     }
 });

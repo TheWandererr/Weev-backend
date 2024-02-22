@@ -18,11 +18,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "notifications")
@@ -32,9 +36,9 @@ import org.hibernate.proxy.HibernateProxy;
 @NoArgsConstructor
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.STRING)
-public class NotificationJpa extends SequencedPersistable<Long> {
+public class NotificationJpa extends ModifiableJpa<Long> {
 
-    @ManyToOne(fetch = LAZY, cascade = {PERSIST, MERGE})
+    @ManyToOne(fetch = LAZY, cascade = {PERSIST, MERGE}, optional = false)
     @JoinColumn(name = "recipient_id", updatable = false)
     private UserJpa recipient;
     @Column(nullable = false, updatable = false)
@@ -44,6 +48,9 @@ public class NotificationJpa extends SequencedPersistable<Long> {
     private Type type;
     @Column
     private Boolean viewed = false;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(updatable = false)
+    private Map<String, Object> details = new HashMap<>();
 
     public enum Type {
         COMMON,
