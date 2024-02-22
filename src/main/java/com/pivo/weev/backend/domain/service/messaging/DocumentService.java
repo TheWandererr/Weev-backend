@@ -2,11 +2,11 @@ package com.pivo.weev.backend.domain.service.messaging;
 
 import static org.mapstruct.factory.Mappers.getMapper;
 
-import com.pivo.weev.backend.domain.mapping.domain.EmailVerificationSourceMapper;
+import com.pivo.weev.backend.domain.mapping.domain.EmailVerificationTemplateModelMapper;
 import com.pivo.weev.backend.domain.model.auth.VerificationScope;
 import com.pivo.weev.backend.domain.model.messaging.mail.MailMessage;
-import com.pivo.weev.backend.domain.model.messaging.source.ChangePasswordSource;
-import com.pivo.weev.backend.domain.model.messaging.source.EmailVerificationSource;
+import com.pivo.weev.backend.domain.model.messaging.template.ChangePasswordTemplateModel;
+import com.pivo.weev.backend.domain.model.messaging.template.EmailVerificationTemplateModel;
 import com.pivo.weev.backend.domain.model.user.User;
 import com.pivo.weev.backend.domain.service.messaging.factory.MailMessageFactory;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +22,15 @@ public class DocumentService {
 
     @Async(value = "mailExecutor")
     public void sendVerificationMail(String email, VerificationScope verificationScope, User recipient, String verificationCode) {
-        EmailVerificationSource source = getMapper(EmailVerificationSourceMapper.class).map(recipient, verificationCode);
-        MailMessage message = mailMessageFactory.buildVerificationMessage(email, verificationScope, source);
+        EmailVerificationTemplateModel model = getMapper(EmailVerificationTemplateModelMapper.class).map(recipient, verificationCode);
+        MailMessage message = mailMessageFactory.buildVerificationMessage(email, verificationScope, model);
         mailSender.sendHtmlMessage(message);
     }
 
     @Async(value = "mailExecutor")
     public void sendChangePasswordMail(String email, String nickname) {
-        ChangePasswordSource source = new ChangePasswordSource(nickname);
-        MailMessage message = mailMessageFactory.buildChangePasswordMessage(email, source);
+        ChangePasswordTemplateModel model = new ChangePasswordTemplateModel(nickname);
+        MailMessage message = mailMessageFactory.buildChangePasswordMessage(email, model);
         mailSender.sendHtmlMessage(message);
     }
 }

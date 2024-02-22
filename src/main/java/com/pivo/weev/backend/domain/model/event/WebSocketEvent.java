@@ -3,7 +3,7 @@ package com.pivo.weev.backend.domain.model.event;
 import static com.pivo.weev.backend.domain.utils.Constants.MessagingPayload.CHAT;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-import com.pivo.weev.backend.domain.model.event.payload.ChatSnapshotPayload;
+import com.pivo.weev.backend.domain.model.messaging.payload.ChatSnapshotPayload;
 import java.io.Serializable;
 import java.util.Map;
 import lombok.AllArgsConstructor;

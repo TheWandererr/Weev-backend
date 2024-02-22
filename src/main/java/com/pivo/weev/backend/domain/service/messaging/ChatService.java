@@ -24,13 +24,13 @@ import com.pivo.weev.backend.domain.mapping.domain.UserPayloadMapper;
 import com.pivo.weev.backend.domain.model.event.PushNotificationEvent;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent;
 import com.pivo.weev.backend.domain.model.event.WebSocketEvent.EventType;
-import com.pivo.weev.backend.domain.model.event.payload.ChatMessagePayload;
-import com.pivo.weev.backend.domain.model.event.payload.ChatSnapshotPayload;
-import com.pivo.weev.backend.domain.model.event.payload.MeetPayload;
-import com.pivo.weev.backend.domain.model.event.payload.UserPayload;
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage;
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatSnapshot;
 import com.pivo.weev.backend.domain.model.messaging.chat.UserMessage;
+import com.pivo.weev.backend.domain.model.messaging.payload.ChatMessagePayload;
+import com.pivo.weev.backend.domain.model.messaging.payload.ChatSnapshotPayload;
+import com.pivo.weev.backend.domain.model.messaging.payload.MeetPayload;
+import com.pivo.weev.backend.domain.model.messaging.payload.UserPayload;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.service.event.factory.ApplicationEventFactory;
@@ -126,7 +126,7 @@ public class ChatService {
     private void sendPushNotification(MeetJpa meet, Set<UserJpa> recipients, String topic, UserMessage chatMessage) {
         ChatMessagePayload messagePayload = getMapper(ChatMessagePayloadMapper.class).map(chatMessage);
         MeetPayload meetPayload = getMapper(MeetPayloadMapper.class).map(meet);
-        Map<String, Object> payload = Map.of(MessagingPayload.MESSAGE, messagePayload, MessagingPayload.MEET, meetPayload);
+        Map<String, Object> payload = Map.of(MessagingPayload.CHAT_MESSAGE, messagePayload, MessagingPayload.MEET, meetPayload);
         Set<UserPayload> recipientsPayload = getMapper(UserPayloadMapper.class).map(recipients);
         PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(recipientsPayload, topic, payload);
         applicationEventPublisher.publishEvent(event);

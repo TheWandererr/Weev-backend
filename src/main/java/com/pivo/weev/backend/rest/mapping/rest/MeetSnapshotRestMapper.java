@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.rest.mapping.rest;
 
-import com.pivo.weev.backend.domain.model.event.payload.MeetPayload;
 import com.pivo.weev.backend.domain.model.meet.Meet;
+import com.pivo.weev.backend.domain.model.messaging.payload.MeetPayload;
 import com.pivo.weev.backend.rest.model.meet.MeetSnapshotRest;
 import org.mapstruct.Mapper;
 

@@ -3,8 +3,8 @@ package com.pivo.weev.backend.domain.model.event;
 import static com.pivo.weev.backend.domain.utils.Constants.MessagingPayload.MEET;
 import static java.util.Objects.isNull;
 
-import com.pivo.weev.backend.domain.model.event.payload.MeetPayload;
-import com.pivo.weev.backend.domain.model.event.payload.UserPayload;
+import com.pivo.weev.backend.domain.model.messaging.payload.MeetPayload;
+import com.pivo.weev.backend.domain.model.messaging.payload.UserPayload;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

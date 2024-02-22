@@ -9,8 +9,8 @@ import com.pivo.weev.backend.config.messaging.MessageBundle;
 import com.pivo.weev.backend.config.messaging.TemplatesBundle;
 import com.pivo.weev.backend.domain.model.auth.VerificationScope;
 import com.pivo.weev.backend.domain.model.messaging.mail.MailMessage;
-import com.pivo.weev.backend.domain.model.messaging.source.ChangePasswordSource;
-import com.pivo.weev.backend.domain.model.messaging.source.EmailVerificationSource;
+import com.pivo.weev.backend.domain.model.messaging.template.ChangePasswordTemplateModel;
+import com.pivo.weev.backend.domain.model.messaging.template.EmailVerificationTemplateModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -21,22 +21,22 @@ public class MailMessageFactory {
     private final MessageBundle messageBundle;
     private final TemplatesBundle templatesBundle;
 
-    public MailMessage buildVerificationMessage(String email, VerificationScope verificationScope, EmailVerificationSource source) {
+    public MailMessage buildVerificationMessage(String email, VerificationScope verificationScope, EmailVerificationTemplateModel model) {
         MailMessage message = new MailMessage();
         String subject = messageBundle.getEmailMessage(EMAIL_VERIFICATION_REQUEST_SUBJECT);
         message.setSubject(subject);
         String template = VERIFICATION_TEMPLATES_MAPPING.get(verificationScope);
-        String content = templatesBundle.getTemplateContent(template, source);
+        String content = templatesBundle.getTemplateContent(template, model);
         message.setContent(content);
         message.setRecipient(email);
         return message;
     }
 
-    public MailMessage buildChangePasswordMessage(String email, ChangePasswordSource source) {
+    public MailMessage buildChangePasswordMessage(String email, ChangePasswordTemplateModel model) {
         MailMessage message = new MailMessage();
         String subject = messageBundle.getEmailMessage(EMAIL_CHANGE_PASSWORD_SUBJECT);
         message.setSubject(subject);
-        String content = templatesBundle.getTemplateContent(EMAIL_CHANGE_PASSWORD_FTL, source);
+        String content = templatesBundle.getTemplateContent(EMAIL_CHANGE_PASSWORD_FTL, model);
         message.setContent(content);
         message.setRecipient(email);
         return message;

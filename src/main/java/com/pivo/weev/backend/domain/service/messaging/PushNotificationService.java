@@ -21,9 +21,10 @@ import static com.pivo.weev.backend.utils.StreamUtils.select;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.groupingBy;
 
-import com.pivo.weev.backend.domain.model.event.payload.DevicePayload;
-import com.pivo.weev.backend.domain.model.event.payload.MeetPayload;
-import com.pivo.weev.backend.domain.model.event.payload.UserPayload;
+import com.pivo.weev.backend.domain.model.messaging.payload.ChatMessagePayload;
+import com.pivo.weev.backend.domain.model.messaging.payload.DevicePayload;
+import com.pivo.weev.backend.domain.model.messaging.payload.MeetPayload;
+import com.pivo.weev.backend.domain.model.messaging.payload.UserPayload;
 import com.pivo.weev.backend.domain.utils.Constants.MessagingPayload;
 import com.pivo.weev.backend.integration.firebase.factory.FirebasePushNotificationsFactory;
 import com.pivo.weev.backend.integration.firebase.model.notification.FirebasePushNotificationMessage;
@@ -137,6 +138,10 @@ public class PushNotificationService {
     }
 
     private Object[] createMeetChatNewMessageBodyArgs(Map<String, Object> payload) {
-        return new Object[]{payload.get(MessagingPayload.TEXT)};
+        ChatMessagePayload chatMessagePayload = (ChatMessagePayload) payload.get(MessagingPayload.CHAT_MESSAGE);
+        if (nonNull(chatMessagePayload)) {
+            return new Object[]{chatMessagePayload.getText()};
+        }
+        return new Object[0];
     }
 }

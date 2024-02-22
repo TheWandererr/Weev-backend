@@ -52,8 +52,7 @@ public final class Constants {
 
         public static final String DECLINATION_REASON = "declination_reason";
         public static final String CHAT = "chat";
-        public static final String TEXT = "text";
-        public static final String MESSAGE = "message";
+        public static final String CHAT_MESSAGE = "chat_message";
         public static final String USER = "user";
         public static final String MEET = "meet";
     }

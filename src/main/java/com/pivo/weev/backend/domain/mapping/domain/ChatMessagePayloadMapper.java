@@ -1,9 +1,9 @@
 package com.pivo.weev.backend.domain.mapping.domain;
 
-import com.pivo.weev.backend.domain.model.event.payload.ChatMessagePayload;
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage;
 import com.pivo.weev.backend.domain.model.messaging.chat.EventMessage;
 import com.pivo.weev.backend.domain.model.messaging.chat.UserMessage;
+import com.pivo.weev.backend.domain.model.messaging.payload.ChatMessagePayload;
 import org.mapstruct.Mapper;
 
 @Mapper(uses = {UserPayloadMapper.class})

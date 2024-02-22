@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.model.event.payload;
+package com.pivo.weev.backend.domain.model.messaging.payload;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;

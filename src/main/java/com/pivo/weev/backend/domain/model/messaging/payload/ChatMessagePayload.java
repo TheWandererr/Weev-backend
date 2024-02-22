@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.domain.model.event.payload;
+package com.pivo.weev.backend.domain.model.messaging.payload;
 
 import java.time.Instant;
 import java.util.HashMap;

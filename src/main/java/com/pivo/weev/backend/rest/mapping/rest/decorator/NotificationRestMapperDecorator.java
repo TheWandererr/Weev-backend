@@ -2,8 +2,8 @@ package com.pivo.weev.backend.rest.mapping.rest.decorator;
 
 import static org.mapstruct.factory.Mappers.getMapper;
 
-import com.pivo.weev.backend.domain.model.event.payload.MeetPayload;
-import com.pivo.weev.backend.domain.model.event.payload.UserPayload;
+import com.pivo.weev.backend.domain.model.messaging.payload.MeetPayload;
+import com.pivo.weev.backend.domain.model.messaging.payload.UserPayload;
 import com.pivo.weev.backend.domain.model.user.Notification;
 import com.pivo.weev.backend.rest.mapping.rest.MeetSnapshotRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.NotificationRestMapper;
