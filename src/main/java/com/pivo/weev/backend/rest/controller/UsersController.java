@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.rest.controller;
 
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.CREATED_DATE;
 import static com.pivo.weev.backend.domain.persistance.utils.PageableUtils.build;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.canceled;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.declined;
@@ -16,7 +17,6 @@ import com.pivo.weev.backend.domain.model.common.Image;
 import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.model.meet.MeetJoinRequest;
 import com.pivo.weev.backend.domain.model.meet.SearchParams;
-import com.pivo.weev.backend.domain.model.meet.SearchParams.PageCriteria;
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatSnapshot;
 import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.model.user.Device.Settings;
@@ -154,7 +154,7 @@ public class UsersController {
     @ResourceOwner
     @GetMapping("/{userId}/meets/{meetId}/joining/requests/{page}")
     public MeetJoinRequestsResponse getMeetJoinRequests(@PathVariable Long userId, @PathVariable Long meetId, @PathVariable @Min(0) Integer page) {
-        Page<MeetJoinRequest> joinRequests = meetRequestsService.getMeetJoinRequests(meetId, new PageCriteria(page, MEET_REQUESTS_PER_PAGE));
+        Page<MeetJoinRequest> joinRequests = meetRequestsService.getMeetJoinRequests(meetId, build(page, MEET_REQUESTS_PER_PAGE, new String[]{}));
         List<MeetJoinRequestRest> restJoinRequests = getMapper(MeetJoinRequestRestMapper.class).map(joinRequests.getContent());
         PageRest<MeetJoinRequestRest> pageRest = new PageRest<>(restJoinRequests, joinRequests.getNumber());
         return new MeetJoinRequestsResponse(pageRest, joinRequests.getTotalElements(), joinRequests.getTotalPages());
@@ -188,7 +188,8 @@ public class UsersController {
     @ResourceOwner
     @GetMapping("/{id}/meets/templates/{page}")
     public MeetTemplatesResponse getTemplates(@PathVariable Long id, @PathVariable @Min(0) Integer page) {
-        Page<Meet> templatesPage = meetTemplatesService.getMeetsTemplates(id, page, MEET_TEMPLATES_PER_PAGE);
+        Pageable pageable = build(page, MEET_TEMPLATES_PER_PAGE, new String[]{CREATED_DATE});
+        Page<Meet> templatesPage = meetTemplatesService.getMeetsTemplates(id, pageable);
         List<MeetTemplateRest> restTemplates = getMapper(MeetTemplateRestMapper.class).map(templatesPage.getContent());
         PageRest<MeetTemplateRest> pageRest = new PageRest<>(restTemplates, templatesPage.getNumber());
         return new MeetTemplatesResponse(pageRest, templatesPage.getTotalElements(), templatesPage.getTotalPages());

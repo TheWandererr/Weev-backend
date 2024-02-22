@@ -1,6 +1,5 @@
 package com.pivo.weev.backend.domain.service.meet;
 
-import static com.pivo.weev.backend.domain.persistance.utils.PageableUtils.build;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.domain.utils.Constants.MessagingPayload.MEET;
 import static com.pivo.weev.backend.domain.utils.Constants.MessagingPayload.USER;
@@ -21,7 +20,6 @@ import com.pivo.weev.backend.domain.model.event.payload.MeetPayload;
 import com.pivo.weev.backend.domain.model.event.payload.UserPayload;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.meet.MeetJoinRequest;
-import com.pivo.weev.backend.domain.model.meet.SearchParams.PageCriteria;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJoinRequestJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.RestrictionsJpa;
@@ -121,8 +119,7 @@ public class MeetRequestsService {
     }
 
     @Transactional
-    public Page<MeetJoinRequest> getMeetJoinRequests(Long meetId, PageCriteria pageCriteria) {
-        Pageable pageable = build(pageCriteria.getPage(), pageCriteria.getPageSize(), new String[0]);
+    public Page<MeetJoinRequest> getMeetJoinRequests(Long meetId, Pageable pageable) {
         Page<MeetJoinRequestJpa> jpaPage = meetJoinRequestsRepository.findAllByMeetId(meetId, pageable);
         List<MeetJoinRequest> content = getMapper(MeetRequestMapper.class).map(jpaPage.getContent());
         return new PageImpl<>(content, jpaPage.getPageable(), jpaPage.getTotalElements());

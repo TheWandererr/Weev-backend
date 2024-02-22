@@ -36,7 +36,7 @@ public class MeetsSearchRequest extends PageableRequest {
     private BoundingBoxRest bbox;
 
     public MeetsSearchRequest(Integer page) {
-        super(page, MEETS_PER_PAGE);
+        super(page, MEETS_PER_PAGE, new String[]{});
     }
 
     public boolean hasRestrictions() {

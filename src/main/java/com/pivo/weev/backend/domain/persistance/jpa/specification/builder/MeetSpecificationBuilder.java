@@ -134,7 +134,7 @@ public class MeetSpecificationBuilder {
     }
 
     private Specification<MeetJpa> buildSortSpecification(SearchParams searchParams) {
-        return searchParams.hasSortFields() ? empty() : SORT_SPECIFICATION;
+        return searchParams.hasSort() ? empty() : SORT_SPECIFICATION;
     }
 
     private Specification<MeetJpa> buildGeoHashSpecification(SearchParams searchParams) {
