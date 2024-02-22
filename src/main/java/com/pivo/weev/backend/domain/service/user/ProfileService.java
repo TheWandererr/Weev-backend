@@ -41,14 +41,14 @@ public class ProfileService {
         if (!userResourceService.isNicknameAvailable(sample.getNickname())) {
             throw new FlowInterruptedException(USED_NICKNAME_ERROR, null, BAD_REQUEST);
         }
-        UserJpa user = userResourceService.fetchUserJpa(sample.getId());
+        UserJpa user = userResourceService.fetchJpa(sample.getId());
         getMapper(UserJpaMapper.class).update(sample, user);
         return getMapper(UserMapper.class).map(user);
     }
 
     @Transactional
     public Image updatePhoto(Long id, MultipartFile photo) {
-        UserJpa user = userResourceService.fetchUserJpa(id);
+        UserJpa user = userResourceService.fetchJpa(id);
         ofNullable(photo).ifPresentOrElse(file -> updatePhoto(user, file), () -> deletePhoto(user));
         return getMapper(ImageMapper.class).map(user.getAvatar());
     }

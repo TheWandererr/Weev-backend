@@ -1,11 +1,15 @@
 package com.pivo.weev.backend.rest.controller;
 
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.CREATED_DATE;
+import static com.pivo.weev.backend.domain.persistance.utils.PageableUtils.build;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.canceled;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.declined;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.onModeration;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.published;
 import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MEET_REQUESTS_PER_PAGE;
 import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.MEET_TEMPLATES_PER_PAGE;
+import static com.pivo.weev.backend.rest.utils.Constants.PageableParams.NOTIFICATIONS_PER_PAGE;
+import static com.pivo.weev.backend.utils.Constants.ErrorCodes.ID_FORMAT_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK_ERROR;
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -13,13 +17,17 @@ import com.pivo.weev.backend.domain.model.common.Image;
 import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.model.meet.MeetJoinRequest;
 import com.pivo.weev.backend.domain.model.meet.SearchParams;
-import com.pivo.weev.backend.domain.model.meet.SearchParams.PageCriteria;
+import com.pivo.weev.backend.domain.model.messaging.chat.ChatSnapshot;
 import com.pivo.weev.backend.domain.model.user.Device;
 import com.pivo.weev.backend.domain.model.user.Device.Settings;
+import com.pivo.weev.backend.domain.model.user.Notification;
 import com.pivo.weev.backend.domain.model.user.User;
+import com.pivo.weev.backend.domain.persistance.utils.Constants.Columns;
 import com.pivo.weev.backend.domain.service.meet.MeetRequestsService;
 import com.pivo.weev.backend.domain.service.meet.MeetSearchService;
 import com.pivo.weev.backend.domain.service.meet.MeetTemplatesService;
+import com.pivo.weev.backend.domain.service.messaging.ChatService;
+import com.pivo.weev.backend.domain.service.messaging.NotificationService;
 import com.pivo.weev.backend.domain.service.user.DeviceService;
 import com.pivo.weev.backend.domain.service.user.ProfileService;
 import com.pivo.weev.backend.domain.service.user.UserResourceService;
@@ -27,29 +35,36 @@ import com.pivo.weev.backend.rest.annotation.ResourceOwner;
 import com.pivo.weev.backend.rest.mapping.domain.DeviceMapper;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
 import com.pivo.weev.backend.rest.mapping.domain.UserMapper;
+import com.pivo.weev.backend.rest.mapping.rest.ChatRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.DeviceSettingsRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.ImageRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.MeetCompactedRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.MeetJoinRequestRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.MeetTemplateRestMapper;
+import com.pivo.weev.backend.rest.mapping.rest.NotificationRestMapper;
 import com.pivo.weev.backend.rest.mapping.rest.ProfileRestMapper;
 import com.pivo.weev.backend.rest.model.common.PageRest;
 import com.pivo.weev.backend.rest.model.meet.ImageRest;
 import com.pivo.weev.backend.rest.model.meet.MeetCompactedRest;
 import com.pivo.weev.backend.rest.model.meet.MeetJoinRequestRest;
 import com.pivo.weev.backend.rest.model.meet.MeetTemplateRest;
+import com.pivo.weev.backend.rest.model.messaging.ChatSnapshotRest;
+import com.pivo.weev.backend.rest.model.request.ChatsSearchRequest;
 import com.pivo.weev.backend.rest.model.request.DeviceSettingUpdateRequest;
 import com.pivo.weev.backend.rest.model.request.MeetsSearchRequest;
 import com.pivo.weev.backend.rest.model.request.ProfileUpdateRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
+import com.pivo.weev.backend.rest.model.response.ChatSnapshotsResponse;
 import com.pivo.weev.backend.rest.model.response.DeviceSettingResponse;
 import com.pivo.weev.backend.rest.model.response.ImageResponse;
 import com.pivo.weev.backend.rest.model.response.MeetJoinRequestsResponse;
 import com.pivo.weev.backend.rest.model.response.MeetTemplatesResponse;
 import com.pivo.weev.backend.rest.model.response.MeetsSearchResponse;
 import com.pivo.weev.backend.rest.model.response.NicknameAvailabilityResponse;
+import com.pivo.weev.backend.rest.model.response.NotificationsResponse;
 import com.pivo.weev.backend.rest.model.response.ProfileResponse;
 import com.pivo.weev.backend.rest.model.user.DeviceSettingsRest;
+import com.pivo.weev.backend.rest.model.user.NotificationRest;
 import com.pivo.weev.backend.rest.model.user.ProfileRest;
 import com.pivo.weev.backend.rest.validation.annotation.ValidImage;
 import jakarta.validation.Valid;
@@ -58,11 +73,13 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,6 +99,8 @@ public class UsersController {
     private final MeetRequestsService meetRequestsService;
     private final MeetTemplatesService meetTemplatesService;
     private final DeviceService deviceService;
+    private final ChatService chatService;
+    private final NotificationService notificationService;
 
     @GetMapping("/nickname/availability")
     public BaseResponse isNicknameAvailable(@RequestParam @NotBlank(message = MUST_BE_NOT_BLANK_ERROR) String nickname) {
@@ -135,7 +154,7 @@ public class UsersController {
     @ResourceOwner
     @GetMapping("/{userId}/meets/{meetId}/joining/requests/{page}")
     public MeetJoinRequestsResponse getMeetJoinRequests(@PathVariable Long userId, @PathVariable Long meetId, @PathVariable @Min(0) Integer page) {
-        Page<MeetJoinRequest> joinRequests = meetRequestsService.getMeetJoinRequests(meetId, new PageCriteria(page, MEET_REQUESTS_PER_PAGE));
+        Page<MeetJoinRequest> joinRequests = meetRequestsService.getMeetJoinRequests(meetId, build(page, MEET_REQUESTS_PER_PAGE, new String[]{}));
         List<MeetJoinRequestRest> restJoinRequests = getMapper(MeetJoinRequestRestMapper.class).map(joinRequests.getContent());
         PageRest<MeetJoinRequestRest> pageRest = new PageRest<>(restJoinRequests, joinRequests.getNumber());
         return new MeetJoinRequestsResponse(pageRest, joinRequests.getTotalElements(), joinRequests.getTotalPages());
@@ -169,23 +188,43 @@ public class UsersController {
     @ResourceOwner
     @GetMapping("/{id}/meets/templates/{page}")
     public MeetTemplatesResponse getTemplates(@PathVariable Long id, @PathVariable @Min(0) Integer page) {
-        Page<Meet> templatesPage = meetTemplatesService.getMeetsTemplates(id, page, MEET_TEMPLATES_PER_PAGE);
+        Pageable pageable = build(page, MEET_TEMPLATES_PER_PAGE, new String[]{CREATED_DATE});
+        Page<Meet> templatesPage = meetTemplatesService.getMeetsTemplates(id, pageable);
         List<MeetTemplateRest> restTemplates = getMapper(MeetTemplateRestMapper.class).map(templatesPage.getContent());
         PageRest<MeetTemplateRest> pageRest = new PageRest<>(restTemplates, templatesPage.getNumber());
         return new MeetTemplatesResponse(pageRest, templatesPage.getTotalElements(), templatesPage.getTotalPages());
     }
 
     @ResourceOwner
-    @DeleteMapping("{id}/meets/templates/{templateId}")
+    @DeleteMapping("/{id}/meets/templates/{templateId}")
     public BaseResponse deleteTemplate(@PathVariable Long id, @PathVariable Long templateId) {
         meetTemplatesService.deleteTemplate(id, templateId);
         return new BaseResponse();
     }
 
     @ResourceOwner
-    @DeleteMapping("{id}/meets/templates")
+    @DeleteMapping("/{id}/meets/templates")
     public BaseResponse deleteTemplate(@PathVariable Long id) {
         meetTemplatesService.deleteAllTemplates(id);
         return new BaseResponse();
+    }
+
+    @ResourceOwner
+    @PostMapping("/{id}/chats/search")
+    public ChatSnapshotsResponse getChats(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id,
+                                          @RequestBody ChatsSearchRequest request) {
+        List<ChatSnapshot> chatSnapshots = chatService.getChatSnapshots(id, request.getChatsOrdinals());
+        List<ChatSnapshotRest> restChats = getMapper(ChatRestMapper.class).map(chatSnapshots);
+        return new ChatSnapshotsResponse(restChats);
+    }
+
+    @ResourceOwner
+    @GetMapping("/{id}/notifications/{page}")
+    public NotificationsResponse getNotifications(@PathVariable Long id, @PathVariable @Min(0) Integer page) {
+        Pageable pageable = build(page, NOTIFICATIONS_PER_PAGE, new String[]{Columns.CREATED_DATE});
+        Page<Notification> notificationsPage = notificationService.getNotifications(id, pageable);
+        List<NotificationRest> restNotifications = getMapper(NotificationRestMapper.class).map(notificationsPage.getContent());
+        PageRest<NotificationRest> pageRest = new PageRest<>(restNotifications, notificationsPage.getNumber());
+        return new NotificationsResponse(pageRest, notificationsPage.getTotalElements(), notificationsPage.getTotalPages());
     }
 }

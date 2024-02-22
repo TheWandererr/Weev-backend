@@ -16,17 +16,15 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ImageCompressingService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImageCompressingService.class);
 
     private final ApplicationLoggingHelper loggingHelper;
     private final ConfigService configsWrapper;
@@ -39,7 +37,7 @@ public class ImageCompressingService {
             String reason = ofNullable(exception.getCause())
                     .map(Throwable::getMessage)
                     .orElse(null);
-            LOGGER.error(loggingHelper.buildLoggingError(exception, null));
+            log.error(loggingHelper.buildLoggingError(exception, null));
             throw new FlowInterruptedException(FILE_COMPRESSING_ERROR, reason, NOT_ACCEPTABLE);
         }
     }

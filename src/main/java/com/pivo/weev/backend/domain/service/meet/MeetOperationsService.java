@@ -1,9 +1,9 @@
 package com.pivo.weev.backend.domain.service.meet;
 
-import static com.pivo.weev.backend.domain.model.meet.Restrictions.Availability.PUBLIC;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.CANCELED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.HAS_MODERATION_INSTANCE;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
+import static com.pivo.weev.backend.domain.utils.Constants.MessagingPayload.MEET;
 import static com.pivo.weev.backend.domain.utils.Constants.NotificationTopics.MEET_CANCELLATION;
 import static com.pivo.weev.backend.utils.CollectionUtils.findFirst;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToSet;
@@ -11,30 +11,32 @@ import static com.pivo.weev.backend.utils.Constants.ErrorCodes.SUBCATEGORY_NOT_F
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.mapstruct.factory.Mappers.getMapper;
 
+import com.pivo.weev.backend.domain.mapping.domain.MeetPayloadMapper;
+import com.pivo.weev.backend.domain.mapping.domain.UserPayloadMapper;
 import com.pivo.weev.backend.domain.mapping.jpa.MeetJpaMapper;
 import com.pivo.weev.backend.domain.model.common.MapPoint;
+import com.pivo.weev.backend.domain.model.event.PushNotificationEvent;
+import com.pivo.weev.backend.domain.model.event.payload.UserPayload;
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.meet.CreatableMeet;
-import com.pivo.weev.backend.domain.model.meet.Restrictions.Availability;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.CategoryJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.model.meet.RestrictionsJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.SubcategoryJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetCategoryRepository;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.MeetRepository;
 import com.pivo.weev.backend.domain.service.LocationService;
 import com.pivo.weev.backend.domain.service.TimeZoneService;
-import com.pivo.weev.backend.domain.service.event.ApplicationEventFactory;
-import com.pivo.weev.backend.domain.service.event.model.PushNotificationEvent;
-import com.pivo.weev.backend.domain.service.message.NotificationService;
+import com.pivo.weev.backend.domain.service.event.factory.ApplicationEventFactory;
+import com.pivo.weev.backend.domain.service.messaging.NotificationService;
 import com.pivo.weev.backend.domain.service.user.UserResourceService;
 import com.pivo.weev.backend.domain.service.validation.MeetOperationsValidator;
 import java.time.ZoneId;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -80,12 +82,11 @@ public class MeetOperationsService {
     }
 
     private MeetJpa preparePersistableMeet(CreatableMeet sample) {
-        UserJpa creator = userResourceService.fetchUserJpa(getUserId());
+        UserJpa creator = userResourceService.fetchJpa(getUserId());
         CategoryJpa category = resolveCategory(sample);
         SubcategoryJpa subcategory = resolveSubcategory(category, sample);
         LocationJpa location = locationService.resolveLocation(sample);
-        MeetJpa meetJpa = new MeetJpa(creator, category, subcategory);
-        meetJpa.setLocation(location);
+        MeetJpa meetJpa = new MeetJpa(creator, category, subcategory, location);
         getMapper(MeetJpaMapper.class).map(sample, meetJpa);
         meetPhotoService.updatePhoto(sample, meetJpa);
         return meetJpa;
@@ -104,7 +105,7 @@ public class MeetOperationsService {
     public void update(CreatableMeet sample) {
         setTimeZones(sample);
         MeetJpa updatableTarget = meetRepository.fetch(sample.getId());
-        meetOperationsValidator.validateUpdate(updatableTarget, sample);
+        meetOperationsValidator.validateUpdate(getUserId(), updatableTarget, sample);
 
         MeetJpa meet = preparePersistableMeet(sample);
         meet.setUpdatableTarget(updatableTarget);
@@ -133,7 +134,7 @@ public class MeetOperationsService {
 
     @Transactional
     public void cancel(MeetJpa cancellable, boolean forced) {
-        meetOperationsValidator.validateCancellation(cancellable, forced);
+        meetOperationsValidator.validateCancellation(getUserId(), cancellable, forced);
 
         Set<UserJpa> dissolvedMembers = cancellable.dissolve();
         notifyAll(cancellable, dissolvedMembers, MEET_CANCELLATION);
@@ -144,21 +145,26 @@ public class MeetOperationsService {
     }
 
     @Transactional
-    public void cancelAll(Collection<MeetJpa> cancellable, boolean forced) {
-        cancellable.forEach(meet -> meetOperationsValidator.validateCancellation(meet, forced));
-        Set<Long> cancellableIds = mapToSet(cancellable, SequencedPersistable::getId);
+    public void cancelAll(UserJpa creator, boolean forced) {
+        List<MeetJpa> cancellable = meetRepository.findAllPublishedActiveByCreatorId(creator.getId());
+        cancellable.forEach(meet -> meetOperationsValidator.validateCancellation(getUserId(), meet, forced));
         cancellable.forEach(meet -> {
             Set<UserJpa> dissolvedMembers = meet.dissolve();
             notifyAll(meet, dissolvedMembers, MEET_CANCELLATION);
             meet.setStatus(CANCELED);
             meet.getRequests().clear();
         });
+
+        Set<Long> cancellableIds = mapToSet(cancellable, SequencedPersistable::getId);
         meetRepository.deleteAllByUpdatableTargetId(cancellableIds);
     }
 
     private void notifyAll(MeetJpa meet, Set<UserJpa> recipients, String topic) {
         notificationService.notifyAll(meet, recipients, topic);
-        PushNotificationEvent event = applicationEventFactory.buildNotificationEvent(meet, recipients, topic);
+
+        Map<String, Object> payload = Map.of(MEET, getMapper(MeetPayloadMapper.class).map(meet));
+        Set<UserPayload> recipientsPayload = getMapper(UserPayloadMapper.class).map(recipients);
+        PushNotificationEvent event = applicationEventFactory.buildPushNotificationEvent(recipientsPayload, topic, payload);
         applicationEventPublisher.publishEvent(event);
     }
 
@@ -171,21 +177,35 @@ public class MeetOperationsService {
     }
 
     @Transactional
-    public void join(Long meetId, Long joinerId) {
+    public void join(Long meetId) {
         MeetJpa meet = meetRepository.fetch(meetId);
-        meetOperationsValidator.validateJoin(meet, joinerId, PUBLIC);
-        UserJpa joiner = userResourceService.fetchUserJpa(joinerId);
+        join(meet, Optional.empty(), false);
+    }
+
+    private void join(MeetJpa meet, Optional<UserJpa> joinerOptional, boolean viaRequest) {
+        Long joinerId = getUserId();
+        meetOperationsValidator.validateJoin(meet, joinerId, viaRequest);
+        UserJpa joiner = joinerOptional.orElseGet(() -> userResourceService.fetchJpa(joinerId));
         meet.addMember(joiner);
     }
 
+    @Transactional
     public void joinViaRequest(MeetJpa meet, UserJpa joiner) {
-        RestrictionsJpa restrictions = meet.getRestrictions();
-        meetOperationsValidator.validateJoin(meet, joiner.getId(), Availability.valueOf(restrictions.getAvailability()));
-        meet.addMember(joiner);
+        join(meet, Optional.of(joiner), true);
     }
 
-    public void leaveAll(List<MeetJpa> memberMeets, UserJpa leaver, boolean forced) {
-        memberMeets.forEach(meet -> meetOperationsValidator.validateLeave(meet, leaver, forced));
-        memberMeets.forEach(meet -> meet.removeMember(leaver));
+    @Transactional
+    public void leaveAll(UserJpa leaver) {
+        List<MeetJpa> meets = meetRepository.findAllActiveByMemberId(leaver.getId());
+        meets.forEach(meet -> meetOperationsValidator.validateLeave(meet, leaver.getId()));
+        meets.forEach(meet -> meet.removeMember(leaver));
+    }
+
+    @Transactional
+    public void leave(Long meetId) {
+        MeetJpa meet = meetRepository.fetch(meetId);
+        Long leaver = getUserId();
+        meetOperationsValidator.validateLeave(meet, leaver);
+        meet.removeMember(userResourceService.fetchJpa(leaver));
     }
 }

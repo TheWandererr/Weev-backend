@@ -15,8 +15,8 @@ public class AuthTokensDetailsRepository extends GenericRepository<Long, AuthTok
         super(repository, ResourceName.AUTH_TOKEN_DETAILS);
     }
 
-    public AuthTokensDetailsJpa findByUserIdAndDeviceId(Long userId, String deviceId) {
-        return repository.findByDevice_User_IdAndDevice_InternalId(userId, deviceId);
+    public AuthTokensDetailsJpa findByUserIdAndDeviceInternalId(Long userId, String deviceId) {
+        return repository.findByUserIdAndDeviceInternalId(userId, deviceId);
     }
 
     public List<AuthTokensDetailsJpa> findAllExpired() {
@@ -28,10 +28,10 @@ public class AuthTokensDetailsRepository extends GenericRepository<Long, AuthTok
     }
 
     public void deleteByUserIdAndDeviceId(Long userId, String deviceId) {
-        repository.deleteByDevice_User_IdAndDevice_InternalId(userId, deviceId);
+        repository.deleteByUserIdAndDeviceInternalId(userId, deviceId);
     }
 
     public void deleteAllByUserId(Long userId) {
-        repository.deleteAllByDevice_User_Id(userId);
+        repository.deleteAllByUserId(userId);
     }
 }

@@ -21,7 +21,7 @@ public class AuthOperationsValidator {
     private final UserResourceService userResourceService;
 
     public void validateContactsAvailability(Contacts contacts) {
-        userResourceService.findUserJpa(contacts)
+        userResourceService.findJpa(contacts)
                            .ifPresent(existingUser -> {
                                String code = defineContactsInaccessibilityError(existingUser, contacts);
                                throw new FlowInterruptedException(code);
@@ -36,7 +36,7 @@ public class AuthOperationsValidator {
     }
 
     public void validateRegistrationAvailability(RegisteredUserSnapshot registeredUserSnapshot) {
-        userResourceService.findUserJpa(registeredUserSnapshot)
+        userResourceService.findJpa(registeredUserSnapshot)
                            .ifPresent(existingUser -> {
                                String code = defineRegistrationInaccessibilityError(existingUser, registeredUserSnapshot);
                                throw new FlowInterruptedException(code, null, BAD_REQUEST);

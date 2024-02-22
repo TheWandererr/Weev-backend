@@ -1,23 +1,21 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.meet;
 
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Discriminators.MEET_NOTIFICATION;
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static java.util.Objects.nonNull;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa;
-import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.type.SqlTypes;
 
 @Entity
 @Getter
@@ -28,12 +26,9 @@ public class MeetNotificationJpa extends NotificationJpa {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "meet_id", updatable = false)
     private MeetJpa meet;
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = EAGER, cascade = {PERSIST, MERGE})
     @JoinColumn(name = "declination_reason_id", updatable = false)
     private DeclinationReasonJpa declinationReasonJpa;
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(updatable = false)
-    private Map<String, Object> details = new HashMap<>();
 
     @Override
     public boolean equals(Object o) {

@@ -2,7 +2,7 @@ package com.pivo.weev.backend.domain.persistance.jpa.model.meet;
 
 import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
-import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.FetchType.EAGER;
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
 import jakarta.persistence.Column;
@@ -20,6 +20,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.proxy.HibernateProxy;
 
 @Entity
@@ -33,8 +35,9 @@ import org.hibernate.proxy.HibernateProxy;
 @DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.STRING)
 public class MeetRequestJpa extends SequencedPersistable<Long> {
 
-    @ManyToOne(fetch = LAZY, cascade = {MERGE, PERSIST}, optional = false)
+    @ManyToOne(fetch = EAGER, cascade = {MERGE, PERSIST}, optional = false)
     @JoinColumn(name = "meet_id")
+    @Fetch(FetchMode.JOIN)
     private MeetJpa meet;
     @Column
     private Instant expiresAt;

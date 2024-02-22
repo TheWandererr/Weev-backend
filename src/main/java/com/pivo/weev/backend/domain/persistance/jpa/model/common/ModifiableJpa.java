@@ -22,7 +22,7 @@ public abstract class ModifiableJpa<PK extends Serializable> extends SequencedPe
 
     @CreationTimestamp
     @Column(name = CREATED_DATE)
-    private Instant createdDate;
+    private Instant createdDate = Instant.now();
 
     @UpdateTimestamp
     @Column(name = MODIFIED_DATE)

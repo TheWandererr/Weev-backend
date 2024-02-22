@@ -8,7 +8,6 @@ import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.U
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
-import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -62,7 +61,7 @@ public class UserJpa extends ModifiableJpa<Long> {
     @Length(max = 20)
     @Column(length = 20, name = USER_PHONE_NUMBER, unique = true)
     private String phoneNumber;
-    @ManyToOne(fetch = EAGER, cascade = ALL)
+    @ManyToOne(fetch = LAZY, cascade = ALL)
     @JoinColumn(name = "role_id")
     private UserRoleJpa role;
     private Boolean active = false;
@@ -79,7 +78,7 @@ public class UserJpa extends ModifiableJpa<Long> {
     )
     @ManyToMany(cascade = {MERGE, PERSIST}, fetch = LAZY)
     private Set<MeetJpa> participatedMeets = new HashSet<>();
-    @OneToOne(cascade = ALL, orphanRemoval = true)
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinColumn(name = "avatar_id")
     private CloudResourceJpa avatar;
     @OneToMany(fetch = LAZY, mappedBy = "creator", cascade = {PERSIST, MERGE})

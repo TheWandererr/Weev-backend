@@ -4,9 +4,11 @@ import static com.pivo.weev.backend.utils.StreamUtils.flatMap;
 import static com.pivo.weev.backend.utils.StreamUtils.flatStream;
 import static com.pivo.weev.backend.utils.StreamUtils.map;
 import static com.pivo.weev.backend.utils.StreamUtils.nullableStream;
+import static com.pivo.weev.backend.utils.StreamUtils.parallelStream;
 import static com.pivo.weev.backend.utils.StreamUtils.select;
 import static com.pivo.weev.backend.utils.StreamUtils.stream;
 import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,19 +50,19 @@ public class CollectionUtils {
     }
 
     public static <T> List<T> selectToList(Collection<T> collection, Predicate<? super T> condition) {
-        return select(collection, condition).collect(Collectors.toList());
+        return select(collection, condition).collect(toList());
     }
 
     public static <S, T> List<S> selectToList(Collection<T> collection, Predicate<? super T> condition, Function<T, S> mapper) {
-        return select(collection, condition).map(mapper).collect(Collectors.toList());
+        return select(collection, condition).map(mapper).collect(toList());
     }
 
     public static <S, T> List<T> mapToList(Collection<S> collection, Function<S, T> mapper) {
-        return map(collection, mapper).collect(Collectors.toList());
+        return map(collection, mapper).collect(toList());
     }
 
     public static <S, T> List<T> mapToList(Collection<S> collection, Function<S, T> mapper, Predicate<? super T> condition) {
-        return map(collection, mapper).filter(condition).collect(Collectors.toList());
+        return map(collection, mapper).filter(condition).collect(toList());
     }
 
     public static <S, T> Set<T> mapToSet(Collection<S> collection, Function<S, T> mapper) {
@@ -72,11 +74,15 @@ public class CollectionUtils {
     }
 
     public static <S, T> List<T> flatMapToList(Collection<S> collection, Function<? super S, ? extends Stream<? extends T>> mapper) {
-        return flatMap(collection, mapper).collect(Collectors.toList());
+        return flatMap(collection, mapper).collect(toList());
+    }
+
+    public static <S, T> Set<T> flatMapToSet(Collection<S> collection, Function<? super S, ? extends Stream<? extends T>> mapper) {
+        return flatMap(collection, mapper).collect(Collectors.toSet());
     }
 
     public static <T> List<T> list(Collection<T> collection) {
-        return nullableStream(collection).collect(Collectors.toList());
+        return nullableStream(collection).collect(toList());
     }
 
     public static <T> Set<T> set(Collection<T> collection) {
@@ -85,7 +91,7 @@ public class CollectionUtils {
 
     @SafeVarargs
     public static <T> List<T> union(Collection<T>... collections) {
-        return flatStream(collections).collect(Collectors.toList());
+        return flatStream(collections).collect(toList());
     }
 
     public static <T> Optional<T> findFirst(Collection<T> collection, Predicate<? super T> condition) {
@@ -140,6 +146,10 @@ public class CollectionUtils {
         return stream(source).collect(collector);
     }
 
+    public static <R, A, T> R collectAsync(Collection<T> source, Collector<? super T, A, R> collector) {
+        return parallelStream(source).collect(collector);
+    }
+
     public static <T> Set<T> newHashSet(Collection<T> collection) {
         return set(collection);
     }
@@ -153,5 +163,12 @@ public class CollectionUtils {
             return false;
         }
         return stream(collection).allMatch(condition);
+    }
+
+    public static <T> List<T> subList(Collection<T> collection, long offset, long limit) {
+        return stream(collection)
+                .skip(offset)
+                .limit(limit)
+                .collect(toList());
     }
 }

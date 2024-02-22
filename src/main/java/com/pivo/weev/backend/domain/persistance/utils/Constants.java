@@ -86,18 +86,33 @@ public class Constants {
     }
 
     @UtilityClass
-    public static final class FirebaseDatabase {
+    public static final class FirebaseFirestore {
 
-        public static final class Children {
+        @UtilityClass
+        public static final class Collections {
 
             public static final String CHATS = "chats";
+            public static final String MESSAGES = "messages";
+            public static final String USER_CHATS_REFERENCES = "user_chats_references";
         }
 
-        public static final class References {
+        @UtilityClass
+        public static final class Fields {
 
-            public static final String COMMON = "common/storage";
+            public static final String CHAT_IDS = "chatIds";
+            public static final String CREATED_AT = "createdAt";
+            public static final String LAST_UPDATE = "lastUpdate";
+            public static final String ID = "id";
+            public static final String CHAT_ID = "chatId";
+            public static final String MESSAGES = "messages";
+
         }
 
+        @UtilityClass
+        public static final class ChatPrefixes {
+
+            public static final String GROUP = "group$";
+        }
 
     }
 }

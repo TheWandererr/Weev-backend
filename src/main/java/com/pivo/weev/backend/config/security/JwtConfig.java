@@ -7,9 +7,9 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.AuthTokensDetailsRepository;
-import com.pivo.weev.backend.domain.service.jwt.JWTClaimsVerifier;
-import com.pivo.weev.backend.domain.service.jwt.RSAKeyService;
-import com.pivo.weev.backend.rest.service.jwt.JwtAuthenticityVerifier;
+import com.pivo.weev.backend.domain.service.jwt.JwtAuthenticityVerifier;
+import com.pivo.weev.backend.domain.service.jwt.JwtClaimsVerifier;
+import com.pivo.weev.backend.domain.service.jwt.RsaKeyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,12 +22,12 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 @RequiredArgsConstructor
 public class JwtConfig {
 
-    private final RSAKeyService rsaKeyService;
+    private final RsaKeyService rsaKeyService;
 
     @Bean
     public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(rsaKeyService.getPublicKey())
-                               .jwtProcessorCustomizer(customizer -> customizer.setJWTClaimsSetVerifier(new JWTClaimsVerifier()))
+                               .jwtProcessorCustomizer(customizer -> customizer.setJWTClaimsSetVerifier(new JwtClaimsVerifier()))
                                .build();
     }
 

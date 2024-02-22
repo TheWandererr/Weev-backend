@@ -11,14 +11,12 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ImageValidator implements ConstraintValidator<ValidImage, MultipartFile> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImageValidator.class);
 
     private final ApplicationLoggingHelper loggingHelper;
 
@@ -38,7 +36,7 @@ public class ImageValidator implements ConstraintValidator<ValidImage, Multipart
                 return false;
             }
         } catch (IOException exception) {
-            LOGGER.error(loggingHelper.buildLoggingError(exception, null));
+            log.error(loggingHelper.buildLoggingError(exception, null));
             return false;
         }
         return true;

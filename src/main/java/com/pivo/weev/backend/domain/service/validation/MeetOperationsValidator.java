@@ -6,7 +6,6 @@ import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.DECLINED;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.HAS_MODERATION_INSTANCE;
 import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus.ON_MODERATION;
-import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.LOCAL_END_DATE_TIME;
 import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.LOCAL_START_DATE_TIME;
 import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.MEMBERS_LIMIT;
@@ -28,12 +27,10 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.model.meet.CreatableMeet;
-import com.pivo.weev.backend.domain.model.meet.Restrictions.Availability;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetRequestJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus;
 import com.pivo.weev.backend.domain.persistance.jpa.model.meet.RestrictionsJpa;
-import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Set;
@@ -43,7 +40,7 @@ import org.springframework.stereotype.Service;
 public class MeetOperationsValidator {
 
     private static final Set<MeetStatus> CANCELLABLE_MEET_STATUSES = Set.of(ON_MODERATION, HAS_MODERATION_INSTANCE, CONFIRMED);
-    private static final Set<MeetStatus> LEAVABLE_MEET_STATUSES = Set.of(ON_MODERATION, HAS_MODERATION_INSTANCE, CONFIRMED);
+    private static final Set<MeetStatus> LEAVEABLE_MEET_STATUSES = Set.of(HAS_MODERATION_INSTANCE, CONFIRMED);
     private static final Set<MeetStatus> UPDATABLE_MEET_STATUSES = Set.of(ON_MODERATION, HAS_MODERATION_INSTANCE, CONFIRMED, DECLINED, CANCELED);
     private static final Set<MeetStatus> DELETABLE_MEET_STATUSES = Set.of(CANCELED, DECLINED);
 
@@ -69,7 +66,7 @@ public class MeetOperationsValidator {
      * это не скрытый ивент (созданный для обновления другого ивента)
      * проверяем статусы
      * */
-    public void validateUpdate(MeetJpa updatable, CreatableMeet validatable) {
+    public void validateUpdate(Long requester, MeetJpa updatable, CreatableMeet validatable) {
         Instant startInstant = toInstant(validatable.getLocalStartDateTime(), validatable.getStartTimeZoneId());
         if (!now().plus(3, HOURS).isBefore(startInstant)) {
             throw new FlowInterruptedException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
@@ -78,7 +75,7 @@ public class MeetOperationsValidator {
         if (membersLimit > 0 && updatable.getMembers().size() > membersLimit) {
             throw new FlowInterruptedException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, MEMBERS_LIMIT));
         }
-        if (!Objects.equals(getUserId(), updatable.getCreator().getId())) {
+        if (!Objects.equals(requester, updatable.getCreator().getId())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
         if (nonNull(updatable.getUpdatableTarget())) {
@@ -95,12 +92,12 @@ public class MeetOperationsValidator {
      * это не скрытый ивент (созданный для обновления другого ивента)
      * проверяем статусы
      * */
-    public void validateCancellation(MeetJpa cancellable, boolean forced) {
+    public void validateCancellation(Long requester, MeetJpa cancellable, boolean forced) {
         Instant startInstant = toInstant(cancellable.getLocalStartDateTime(), cancellable.getStartTimeZoneId());
         if (!forced && !now().plus(3, HOURS).isBefore(startInstant)) {
             throw new FlowInterruptedException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
         }
-        if (!Objects.equals(getUserId(), cancellable.getCreator().getId())) {
+        if (!Objects.equals(requester, cancellable.getCreator().getId())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
         if (nonNull(cancellable.getUpdatableTarget())) {
@@ -125,10 +122,11 @@ public class MeetOperationsValidator {
      * в ивенте должны быть места
      * юзер не должен быть участником
      */
-    public void validateJoin(MeetJpa meet, Long joinerId, Availability expectedAvailability) {
+    public void validateJoin(MeetJpa meet, Long joinerId, boolean viaRequest) {
         validateJoinAvailability(meet, joinerId);
         RestrictionsJpa restrictions = meet.getRestrictions();
-        if (!expectedAvailability.name().equals(restrictions.getAvailability())) {
+        String availability = restrictions.getAvailability();
+        if (RESTRICTED.name().equals(availability) && !viaRequest) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
     }
@@ -166,19 +164,19 @@ public class MeetOperationsValidator {
      * юзер не должен быть участником
      */
     public void validateJoinRequestCreation(MeetJpa meet, Long joinerId) {
-        validateJoin(meet, joinerId, RESTRICTED);
+        validateJoin(meet, joinerId, true);
     }
 
     /**
      * Заявка должна быть актуальной
      * Заявку принимает владелец ивента
      */
-    public void validateJoinRequestConfirmation(MeetRequestJpa request) {
+    public void validateJoinRequestConfirmation(MeetRequestJpa request, Long authorId) {
         if (request.isExpired()) {
             throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, MEET_JOIN_REQUEST_IS_EXPIRED, FORBIDDEN);
         }
         MeetJpa meet = request.getMeet();
-        if (!Objects.equals(getUserId(), meet.getCreator().getId())) {
+        if (!Objects.equals(authorId, meet.getCreator().getId())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
     }
@@ -186,19 +184,19 @@ public class MeetOperationsValidator {
     /**
      * Заявку отклоняет владелец ивента
      */
-    public void validateJoinRequestDeclination(MeetRequestJpa request) {
+    public void validateJoinRequestDeclination(MeetRequestJpa request, Long authorId) {
         MeetJpa meet = request.getMeet();
-        if (!Objects.equals(getUserId(), meet.getCreator().getId())) {
+        if (!Objects.equals(authorId, meet.getCreator().getId())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
     }
 
-    public void validateLeave(MeetJpa meet, UserJpa leaver, boolean forced) {
-        Instant startInstant = toInstant(meet.getLocalStartDateTime(), meet.getStartTimeZoneId());
+    public void validateLeave(MeetJpa meet, Long leaver) {
+        /*Instant startInstant = toInstant(meet.getLocalStartDateTime(), meet.getStartTimeZoneId());
         if (!forced && !now().plus(1, HOURS).isBefore(startInstant)) {
             throw new FlowInterruptedException(format(FIELD_VALIDATION_FAILED_ERROR_PATTERN, LOCAL_START_DATE_TIME));
-        }
-        if (Objects.equals(leaver.getId(), meet.getCreator().getId())) {
+        }*/
+        if (Objects.equals(leaver, meet.getCreator().getId())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
         if (meet.isEnded()) {
@@ -207,7 +205,7 @@ public class MeetOperationsValidator {
         if (nonNull(meet.getUpdatableTarget())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
-        if (!LEAVABLE_MEET_STATUSES.contains(meet.getStatus())) {
+        if (!LEAVEABLE_MEET_STATUSES.contains(meet.getStatus())) {
             throw new FlowInterruptedException(ACCESS_DENIED_ERROR, null, FORBIDDEN);
         }
     }

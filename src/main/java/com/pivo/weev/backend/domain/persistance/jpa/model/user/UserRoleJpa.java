@@ -7,7 +7,6 @@ import static java.util.Objects.nonNull;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.SequencedPersistable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -16,6 +15,8 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.proxy.HibernateProxy;
 
 @Entity
@@ -27,7 +28,8 @@ public class UserRoleJpa extends SequencedPersistable<Long> {
 
     @Column(unique = true)
     private String name;
-    @OneToMany(fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true, mappedBy = "role")
+    @OneToMany(cascade = ALL, orphanRemoval = true, mappedBy = "role")
+    @Fetch(FetchMode.JOIN)
     private Set<AuthorityJpa> authorities;
 
     public Set<AuthorityJpa> getAuthorities() {

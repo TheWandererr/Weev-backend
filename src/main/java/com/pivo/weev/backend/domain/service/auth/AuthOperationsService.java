@@ -34,7 +34,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.VerificationRequestRepository;
 import com.pivo.weev.backend.domain.service.config.ConfigService;
 import com.pivo.weev.backend.domain.service.jwt.JwtHolder;
-import com.pivo.weev.backend.domain.service.message.DocumentService;
+import com.pivo.weev.backend.domain.service.messaging.DocumentService;
 import com.pivo.weev.backend.domain.service.user.UserDeactivationService;
 import com.pivo.weev.backend.domain.service.user.UserPasswordService;
 import com.pivo.weev.backend.domain.service.user.UserResourceService;
@@ -169,7 +169,7 @@ public class AuthOperationsService {
 
     @Transactional
     public String requestPasswordResetVerification(String username) {
-        UserJpa user = userResourceService.findUserJpa(username)
+        UserJpa user = userResourceService.findJpa(username)
                                           .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_ERROR + TITLE));
         Contacts contacts = getMapper(ContactsMapper.class).map(user);
         VerificationRequestJpa verificationRequest = requestVerification(contacts, Optional.of(user), FORGOT_PASSWORD);
@@ -178,7 +178,7 @@ public class AuthOperationsService {
 
     @Transactional
     public void setNewPassword(String newPassword, String username, String verificationCode) {
-        UserJpa user = userResourceService.findUserJpa(username)
+        UserJpa user = userResourceService.findJpa(username)
                                           .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_ERROR + TITLE));
         completeVerification(user, verificationCode);
         userPasswordService.updatePassword(user, newPassword, user.hasEmail());
@@ -188,7 +188,7 @@ public class AuthOperationsService {
     @Transactional
     public String requestChangePasswordVerification() {
         Jwt jwt = jwtHolder.getToken();
-        UserJpa user = userResourceService.fetchUserJpa(getUserId(jwt));
+        UserJpa user = userResourceService.fetchJpa(getUserId(jwt));
         Contacts contacts = getMapper(ContactsMapper.class).map(user);
         VerificationRequestJpa verificationRequest = requestVerification(contacts, Optional.of(user), CHANGE_PASSWORD);
         return verificationRequest.hasEmail() ? EMAIL : PHONE_NUMBER;
@@ -197,7 +197,7 @@ public class AuthOperationsService {
     @Transactional
     public void changePassword(String oldPassword, String newPassword, String verificationCode) {
         Jwt jwt = jwtHolder.getToken();
-        UserJpa user = userResourceService.fetchUserJpa(getUserId(jwt));
+        UserJpa user = userResourceService.fetchJpa(getUserId(jwt));
         completeVerification(user, verificationCode);
         userPasswordService.updatePassword(user, oldPassword, newPassword);
         logout(user.getId(), true);
@@ -206,7 +206,7 @@ public class AuthOperationsService {
     @Transactional
     public String requestAccountDeletionVerification() {
         Jwt jwt = jwtHolder.getToken();
-        UserJpa user = userResourceService.fetchUserJpa(getUserId(jwt));
+        UserJpa user = userResourceService.fetchJpa(getUserId(jwt));
         Contacts contacts = getMapper(ContactsMapper.class).map(user);
         VerificationRequestJpa verificationRequest = requestVerification(contacts, Optional.of(user), DELETE_ACCOUNT);
         return verificationRequest.hasEmail() ? EMAIL : PHONE_NUMBER;
@@ -214,7 +214,7 @@ public class AuthOperationsService {
 
     @Transactional
     public void deleteUser(Long id, String verificationCode) {
-        UserJpa user = userResourceService.fetchUserJpa(id);
+        UserJpa user = userResourceService.fetchJpa(id);
         completeVerification(user, verificationCode);
         logout(user.getId(), true);
         userDeactivationService.deactivate(user);

@@ -1,9 +1,5 @@
 package com.pivo.weev.backend.rest.model.meet;
 
-import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.MEET_UTC_START_DATE_TIME;
-import static com.pivo.weev.backend.utils.ArrayUtils.isEmpty;
-import static com.pivo.weev.backend.utils.ArrayUtils.toArray;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import lombok.Getter;
@@ -14,7 +10,6 @@ import lombok.Setter;
 public class SearchContextRest {
 
     private VisibilityCriteriaRest visibilityCriteria;
-    private PageCriteriaRest pageCriteria;
     private Long authorId;
 
     public boolean hasAuthorId() {
@@ -36,9 +31,6 @@ public class SearchContextRest {
     public static SearchContextRest onModeration() {
         SearchContextRest context = new SearchContextRest();
         context.setVisibilityCriteria(VisibilityCriteriaRest.onModeration());
-        PageCriteriaRest pageCriteria = new PageCriteriaRest();
-        pageCriteria.setSortFields(toArray(MEET_UTC_START_DATE_TIME));
-        context.setPageCriteria(pageCriteria);
         return context;
     }
 
@@ -93,24 +85,6 @@ public class SearchContextRest {
             VisibilityCriteriaRest criteria = new VisibilityCriteriaRest();
             criteria.setDeclined(true);
             return criteria;
-        }
-    }
-
-    @Getter
-    @Setter
-    public static class PageCriteriaRest {
-
-        private String[] sortFields;
-
-        public String[] getSortFields() {
-            if (isNull(sortFields)) {
-                sortFields = new String[]{};
-            }
-            return sortFields;
-        }
-
-        public boolean hasSortFields() {
-            return !isEmpty(getSortFields());
         }
     }
 }

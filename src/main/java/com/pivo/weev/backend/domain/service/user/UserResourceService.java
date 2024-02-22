@@ -16,6 +16,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserRoleJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UserRolesRepository;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper.UsersRepository;
 import com.pivo.weev.backend.domain.persistance.jpa.specification.builder.UserSpecificationBuilder.UsernameType;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -31,27 +32,32 @@ public class UserResourceService {
 
     private final UserPasswordService userPasswordService;
 
-    public Optional<UserJpa> findUserJpa(Contacts contacts) {
+    public Optional<UserJpa> findJpa(Contacts contacts) {
         Specification<UserJpa> specification = buildUserSearchSpecification(null, contacts.getEmail(), contacts.getPhoneNumber());
         return usersRepository.find(specification);
     }
 
-    public Optional<UserJpa> findUserJpa(RegisteredUserSnapshot registeredUserSnapshot) {
+    public Optional<UserJpa> findJpa(RegisteredUserSnapshot registeredUserSnapshot) {
         Contacts contacts = registeredUserSnapshot.getContacts();
         Specification<UserJpa> specification = buildUserSearchSpecification(registeredUserSnapshot.getNickname(), contacts.getEmail(), contacts.getPhoneNumber());
         return usersRepository.find(specification);
     }
 
-    public Optional<UserJpa> findUserJpa(String username) {
-        return findUserJpa(username, ANY);
+    public Optional<UserJpa> findJpa(String username) {
+        return findJpa(username, ANY);
     }
 
-    public Optional<UserJpa> findUserJpa(String username, UsernameType usernameType) {
+    public Optional<UserJpa> findJpa(String username, UsernameType usernameType) {
         Specification<UserJpa> specification = buildUserSearchSpecification(username, usernameType);
         return usersRepository.find(specification);
     }
 
-    public UserJpa fetchUserJpa(Long id) {
+    public UserJpa fetchJpa(String username, UsernameType usernameType) {
+        Specification<UserJpa> specification = buildUserSearchSpecification(username, usernameType);
+        return usersRepository.fetch(specification);
+    }
+
+    public UserJpa fetchJpa(Long id) {
         return usersRepository.fetch(id);
     }
 
@@ -59,6 +65,10 @@ public class UserResourceService {
     public User fetchUser(Long id) {
         UserJpa user = usersRepository.fetch(id);
         return getMapper(UserMapper.class).map(user);
+    }
+
+    public List<UserJpa> fetchAllJpa(Iterable<Long> ids) {
+        return usersRepository.findAll(ids);
     }
 
     public void createUser(RegisteredUserSnapshot registeredUserSnapshot) {

@@ -6,17 +6,18 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import ch.hsr.geohash.BoundingBox;
-import java.util.Objects;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @Getter
 @Setter
 public class SearchParams {
 
-    private PageCriteria pageCriteria = new PageCriteria();
+    private Pageable pageable;
     private MapCriteria mapCriteria;
     private VisibilityCriteria visibilityCriteria = new VisibilityCriteria();
     private FieldsCriteria fieldsCriteria;
@@ -34,24 +35,8 @@ public class SearchParams {
         return nonNull(fieldsCriteria);
     }
 
-    public Integer getPage() {
-        return getPageCriteria().getPage();
-    }
-
-    public Integer getPageSize() {
-        return getPageCriteria().getPageSize();
-    }
-
-    public String[] getSortFields() {
-        return getPageCriteria().getSortFields();
-    }
-
     public int getZoom() {
         return hasMapCriteria() ? getMapCriteria().getZoom() : 0;
-    }
-
-    public boolean hasSortFields() {
-        return getPageCriteria().hasSortFields();
     }
 
     public boolean hasRestrictions() {
@@ -60,6 +45,18 @@ public class SearchParams {
 
     public boolean hasAuthorId() {
         return nonNull(authorId);
+    }
+
+    public boolean hasPageable() {
+        return nonNull(pageable);
+    }
+
+    public boolean hasSort() {
+        if (hasPageable()) {
+            Sort sort = getPageable().getSort();
+            return sort.isSorted();
+        }
+        return false;
     }
 
     @Getter
@@ -140,9 +137,5 @@ public class SearchParams {
         public boolean hasRestrictions() {
             return nonNull(restrictions);
         }
-    }
-
-    public int getHash() {
-        return Objects.hash(pageCriteria, mapCriteria, visibilityCriteria, fieldsCriteria, authorId);
     }
 }

@@ -1,32 +1,93 @@
 package com.pivo.weev.backend.integration.firebase.service;
 
-import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseDatabase.Children.CHATS;
-import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseDatabase.References.COMMON;
-import static org.mapstruct.factory.Mappers.getMapper;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Collections.CHATS;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Collections.USER_CHATS_REFERENCES;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Fields.CHAT_IDS;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Fields.CREATED_AT;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Fields.LAST_UPDATE;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseFirestore.Fields.MESSAGES;
+import static com.pivo.weev.backend.utils.AsyncUtils.async;
+import static java.time.Instant.now;
+import static java.util.Objects.nonNull;
 
-import com.pivo.weev.backend.domain.model.meet.Meet;
-import com.pivo.weev.backend.domain.model.user.User;
-import com.pivo.weev.backend.integration.firebase.client.DatabaseClient;
-import com.pivo.weev.backend.integration.firebase.model.chat.Chat;
-import com.pivo.weev.backend.integration.mapping.domain.UserMapper;
+import com.pivo.weev.backend.integration.firebase.client.FirestoreClient;
+import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChatMessage;
+import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChatSnapshot;
+import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseUserChatsReference;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class FirebaseChatService {
 
-    private final DatabaseClient databaseClient;
+    private final FirestoreClient firestoreClient;
+    private final ThreadPoolTaskExecutor firebaseFirestoreExecutor;
 
-    public void createChat(User creator, Meet meet) {
-        Chat chat = new Chat();
-        chat.setCreatorId(String.valueOf(creator.getId()));
-        chat.addUser(getMapper(UserMapper.class).map(creator));
-        chat.setTopic(meet.getHeader());
-        chat.setId(String.valueOf(meet.getId()));
-        if (meet.hasPhoto()) {
-            chat.setAvatarUrl(meet.getPhoto().getUrl());
-        }
-        databaseClient.save(COMMON, CHATS, chat.getId(), chat);
+    @Async("firebaseFirestoreExecutor")
+    public void saveFirebaseChatInfo(FirebaseChatSnapshot firebaseChatSnapshot, Long userId) {
+        createChatSnapshot(firebaseChatSnapshot);
+        findUserChatsReference(userId).thenAccept(existingUserChatsReference -> {
+            if (nonNull(existingUserChatsReference)) {
+                existingUserChatsReference.addReference(firebaseChatSnapshot.getId());
+                updateUserChatsReference(existingUserChatsReference);
+            } else {
+                createUserChatsReference(new FirebaseUserChatsReference(userId, List.of(firebaseChatSnapshot.getId())));
+            }
+        });
+    }
+
+    private void createChatSnapshot(FirebaseChatSnapshot firebaseChatSnapshot) {
+        firestoreClient.save(CHATS, firebaseChatSnapshot.getId(), firebaseChatSnapshot);
+    }
+
+    public CompletableFuture<FirebaseUserChatsReference> findUserChatsReference(Long userId) {
+        return firestoreClient.find(USER_CHATS_REFERENCES, userId.toString(), FirebaseUserChatsReference.class);
+    }
+
+    private void updateUserChatsReference(FirebaseUserChatsReference userChatsReference) {
+        firestoreClient.update(USER_CHATS_REFERENCES, userChatsReference.getUserId().toString(), Map.of(CHAT_IDS, userChatsReference.getChatIds()));
+    }
+
+    private void createUserChatsReference(FirebaseUserChatsReference userChatsReference) {
+        firestoreClient.save(USER_CHATS_REFERENCES, userChatsReference.getUserId().toString(), userChatsReference);
+    }
+
+    @Async("firebaseFirestoreExecutor")
+    public void pushMessage(String chatId, FirebaseChatMessage message) {
+        findLastMessage(chatId)
+                .thenAccept(lastMessage -> pushMessage(chatId, lastMessage, message));
+    }
+
+    private void pushMessage(String chatId, FirebaseChatMessage lastMessage, FirebaseChatMessage newMessage) {
+        setOrdinalForNextMessage(newMessage, lastMessage);
+        firestoreClient.save(CHATS, chatId, MESSAGES, newMessage, () -> firestoreClient.update(CHATS, chatId, Map.of(LAST_UPDATE, now().toEpochMilli())));
+    }
+
+    @Async("firebaseFirestoreExecutor")
+    public CompletableFuture<FirebaseChatMessage> findLastMessage(String chatId) {
+        return firestoreClient.find(CHATS, chatId, MESSAGES, CREATED_AT, FirebaseChatMessage.class);
+    }
+
+    private void setOrdinalForNextMessage(FirebaseChatMessage nextMessage, FirebaseChatMessage lastMessage) {
+        Long ordinal = nonNull(lastMessage) ? lastMessage.getOrdinal() + 1 : 1;
+        nextMessage.setOrdinal(ordinal);
+    }
+
+    @Async("firebaseFirestoreExecutor")
+    public CompletableFuture<List<FirebaseChatSnapshot>> getChats(Long userId) {
+        return findUserChatsReference(userId)
+                .thenCompose(reference -> async(firebaseFirestoreExecutor, () -> firestoreClient.findAll(CHATS, reference.getChatIds(), LAST_UPDATE, FirebaseChatSnapshot.class)))
+                .join();
+    }
+
+    @Async("firebaseFirestoreExecutor")
+    public CompletableFuture<List<FirebaseChatMessage>> getChatMessages(String chatId, Integer offset, Integer limit) {
+        return firestoreClient.findAll(CHATS, chatId, MESSAGES, CREATED_AT, offset, limit, FirebaseChatMessage.class);
     }
 }

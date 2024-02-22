@@ -21,15 +21,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationSuccessHandler implements org.springframework.security.web.authentication.AuthenticationSuccessHandler {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationSuccessHandler.class);
 
     private final ObjectMapper mapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
@@ -46,18 +44,18 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
         try {
             LoginDetails loginDetails = getLoginDetails(authentication);
             AuthTokens authTokens = authTokensService.generateTokens(loginDetails);
-            updateTokenDetails(loginDetails, authTokens);
+            updateOrCreateTokenDetails(loginDetails, authTokens);
             UserSnapshotRest user = getMapper(UserSnapshotRestMapper.class).map(authTokens.getAccessToken());
             LoginResponse loginResponse = new LoginResponse(authTokens.getAccessTokenValue(), authTokens.getRefreshTokenValue(), user);
             writeResponse(loginResponse, response, OK, mapper);
         } catch (Exception exception) {
-            LOGGER.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
+            log.error(applicationLoggingHelper.buildLoggingError(exception, null, false));
             BaseResponse loginResponse = new BaseResponse(ResponseMessage.UNAUTHORIZED);
             writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, mapper);
         }
     }
 
-    private void updateTokenDetails(LoginDetails loginDetails, AuthTokens authTokens) {
+    private void updateOrCreateTokenDetails(LoginDetails loginDetails, AuthTokens authTokens) {
         boolean updated = authTokensDetailsService.updateTokensDetails(loginDetails, authTokens);
         if (!updated) {
             authTokensDetailsService.createTokensDetails(loginDetails, authTokens);

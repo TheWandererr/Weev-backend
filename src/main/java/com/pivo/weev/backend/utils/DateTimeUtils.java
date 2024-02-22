@@ -14,9 +14,17 @@ public class DateTimeUtils {
         return localDateTime.toInstant(offset);
     }
 
+    public static Instant toInstant(Long epochMilli) {
+        return Instant.ofEpochMilli(epochMilli);
+    }
+
     private static ZoneOffset getOffset(LocalDateTime localDateTime, String localTimeZoneId) {
         return ZoneId.of(localTimeZoneId)
                      .getRules()
                      .getOffset(localDateTime);
+    }
+
+    public static Long toEpochMilli(Instant instant) {
+        return instant.toEpochMilli();
     }
 }

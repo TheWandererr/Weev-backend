@@ -4,6 +4,7 @@ import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static com.pivo.weev.backend.utils.Randomizer.uuid;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
+import com.pivo.weev.backend.domain.persistance.jpa.model.user.DeviceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import java.util.Collection;
 import java.util.List;
@@ -12,7 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public record LoginDetails(UserJpa user,
-                           String deviceId,
+                           DeviceJpa device,
                            String issuer,
                            String serial,
                            String username,
@@ -52,27 +53,46 @@ public record LoginDetails(UserJpa user,
 
     @Override
     public boolean isEnabled() {
-        return active() && !user.isDeleted();
+        return active();
     }
 
     public Long getUserId() {
         return user.getId();
     }
 
-    public static LoginDetails from(UserJpa user, String username, String deviceId, String issuer) {
+    public String getDeviceId() {
+        return device.getInternalId();
+    }
+
+    public boolean isNewDevice() {
+        return device.isCreated();
+    }
+
+    public DeviceJpa getDevice() {
+        return device;
+    }
+
+    public String getNickname() {
+        return user.getNickname();
+    }
+
+    public static LoginDetails from(UserJpa user, DeviceJpa device, String username, String issuer) {
         List<SimpleGrantedAuthority> simpleGrantedAuthorities = mapToList(
                 user.getRole().getAuthorities(),
                 authorityJpa -> new SimpleGrantedAuthority(authorityJpa.getValue())
         );
+        boolean active = isTrue(user.getActive()) && !user.isDeleted();
         return new LoginDetails(
                 user,
-                deviceId,
+                device,
                 issuer,
                 uuid(),
                 username,
                 user.getPassword(),
-                isTrue(user.getActive()),
+                active,
                 simpleGrantedAuthorities
         );
     }
+
+
 }

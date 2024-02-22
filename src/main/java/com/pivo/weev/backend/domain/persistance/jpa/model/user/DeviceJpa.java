@@ -30,24 +30,21 @@ import org.hibernate.proxy.HibernateProxy;
 @NoArgsConstructor
 public class DeviceJpa extends SequencedPersistable<Long> {
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = LAZY, optional = false)
+    @JoinColumn(name = "user_id", updatable = false)
     private UserJpa user;
     @Column(name = DEVICE_INTERNAL_ID, nullable = false)
     private String internalId;
-    @OneToOne(cascade = ALL, orphanRemoval = true, optional = false)
+    @OneToOne(cascade = ALL, orphanRemoval = true, optional = false, fetch = LAZY)
     @JoinColumn(name = "settings_id")
     private DeviceSettingsJpa settings = new DeviceSettingsJpa();
-
-    public DeviceJpa(UserJpa user, String internalId) {
-        this.internalId = internalId;
-        this.user = user;
-    }
+    private transient boolean created;
 
     public DeviceJpa(UserJpa user, String internalId, String lang) {
         this.user = user;
         this.internalId = internalId;
         this.settings = new DeviceSettingsJpa(lang);
+        this.created = true;
     }
 
     public boolean hasPushNotificationToken() {

@@ -1,6 +1,5 @@
 package com.pivo.weev.backend.rest.controller;
 
-import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.published;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.ID_FORMAT_ERROR;
@@ -114,8 +113,14 @@ public class MeetsController {
 
     @PutMapping("/{id}/joining")
     public MeetJoinResponse join(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
-        meetOperationsService.join(id, getUserId());
+        meetOperationsService.join(id);
         return new MeetJoinResponse(true);
+    }
+
+    @PutMapping("/{id}/leaving")
+    public BaseResponse leave(@Min(value = 1, message = ID_FORMAT_ERROR) @PathVariable Long id) {
+        meetOperationsService.leave(id);
+        return new BaseResponse();
     }
 
     @PostMapping("/{id}/joining/requests")

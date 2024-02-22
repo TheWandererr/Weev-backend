@@ -1,7 +1,5 @@
 package com.pivo.weev.backend.domain.service.meet;
 
-import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.CREATED_DATE;
-import static com.pivo.weev.backend.domain.persistance.utils.PageableUtils.build;
 import static com.pivo.weev.backend.domain.utils.AuthUtils.getUserId;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
 import static org.mapstruct.factory.Mappers.getMapper;
@@ -37,8 +35,7 @@ public class MeetTemplatesService {
     private final MeetRepository meetRepository;
 
     @Transactional
-    public Page<Meet> getMeetsTemplates(Long userId, Integer page, Integer pageSize) {
-        Pageable pageable = build(page, pageSize, new String[]{CREATED_DATE});
+    public Page<Meet> getMeetsTemplates(Long userId, Pageable pageable) {
         Page<MeetTemplateJpa> jpaPage = meetTemplateRepository.findAllByUserId(userId, pageable);
         List<Meet> content = getMapper(MeetMapper.class).mapTemplates(jpaPage.getContent());
         return new PageImpl<>(content, jpaPage.getPageable(), jpaPage.getTotalElements());
@@ -60,7 +57,7 @@ public class MeetTemplatesService {
     }
 
     private MeetJpa createAuthorsCopy(MeetJpa meet) {
-        UserJpa user = userResourceService.fetchUserJpa(getUserId());
+        UserJpa user = userResourceService.fetchJpa(getUserId());
         MeetJpa meetCopy = SerializationUtils.clone(meet);
         meetCopy.setCreator(user);
         return meetCopy;

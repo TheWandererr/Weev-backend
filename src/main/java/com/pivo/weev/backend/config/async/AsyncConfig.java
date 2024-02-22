@@ -23,8 +23,23 @@ public class AsyncConfig {
     }
 
     @Bean
-    public ThreadPoolTaskExecutor pushNotificationsExecutor(ExecutorProperties pushNotificationsExecutorProperties, TaskDecorator taskDecorator) {
-        return initExecutor(pushNotificationsExecutorProperties, taskDecorator);
+    public ThreadPoolTaskExecutor firebasePushNotificationsExecutor(ExecutorProperties firebasePushNotificationsExecutorProperties, TaskDecorator taskDecorator) {
+        return initExecutor(firebasePushNotificationsExecutorProperties, taskDecorator);
+    }
+
+    @Bean
+    public ThreadPoolTaskExecutor firebaseFirestoreExecutor(ExecutorProperties firebaseFirestoreExecutorProperties, TaskDecorator taskDecorator) {
+        return initExecutor(firebaseFirestoreExecutorProperties, taskDecorator);
+    }
+
+    @Bean
+    public ThreadPoolTaskExecutor jwtExecutor(ExecutorProperties jwtExecutorProperties, TaskDecorator taskDecorator) {
+        return initExecutor(jwtExecutorProperties, taskDecorator);
+    }
+
+    @Bean
+    public ThreadPoolTaskExecutor webSocketExecutor(ExecutorProperties webSocketExecutorProperties, TaskDecorator taskDecorator) {
+        return initExecutor(webSocketExecutorProperties, taskDecorator);
     }
 
     @Bean
@@ -40,8 +55,26 @@ public class AsyncConfig {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "application.push.notification.async.executor")
-    public ExecutorProperties pushNotificationsExecutorProperties() {
+    @ConfigurationProperties(prefix = "application.firebase.push.notification.async.executor")
+    public ExecutorProperties firebasePushNotificationsExecutorProperties() {
+        return new ExecutorProperties();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "application.firebase.firestore.async.executor")
+    public ExecutorProperties firebaseFirestoreExecutorProperties() {
+        return new ExecutorProperties();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "application.jwt.async.executor")
+    public ExecutorProperties jwtExecutorProperties() {
+        return new ExecutorProperties();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "application.web.socket.async.executor")
+    public ExecutorProperties webSocketExecutorProperties() {
         return new ExecutorProperties();
     }
 

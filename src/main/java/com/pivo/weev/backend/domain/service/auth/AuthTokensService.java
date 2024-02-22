@@ -4,7 +4,7 @@ import static com.pivo.weev.backend.utils.Constants.ErrorCodes.AUTHORIZATION_TOK
 
 import com.pivo.weev.backend.domain.model.auth.AuthTokens;
 import com.pivo.weev.backend.domain.model.auth.LoginDetails;
-import com.pivo.weev.backend.domain.service.jwt.JWTProvider;
+import com.pivo.weev.backend.domain.service.jwt.JwtGenerator;
 import com.pivo.weev.backend.domain.service.jwt.JwtHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,15 +17,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AuthTokensService {
 
-    private final JWTProvider jwtProvider;
+    private final JwtGenerator jwtGenerator;
     private final LoginDetailsService loginDetailsService;
     private final AuthTokensDetailsService authTokensDetailsService;
     private final JwtHolder jwtHolder;
 
     public AuthTokens generateTokens(LoginDetails loginDetails) {
-        Jwt accessToken = jwtProvider.provideAccessToken(loginDetails);
-        Jwt refreshToken = jwtProvider.provideRefreshToken(loginDetails);
-        return new AuthTokens(accessToken, refreshToken);
+        return jwtGenerator.generateTokens(loginDetails);
     }
 
     public AuthTokens refreshTokens() {

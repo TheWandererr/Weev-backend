@@ -1,7 +1,6 @@
 package com.pivo.weev.backend.domain.service.meet;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.specification.builder.MeetSpecificationBuilder.buildMeetsSearchSpecification;
-import static com.pivo.weev.backend.domain.persistance.utils.PageableUtils.build;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -39,7 +38,7 @@ public class MeetSearchService {
     }
 
     private <T> Page<T> search(SearchParams searchParams, Function<List<MeetJpa>, List<T>> mapper) {
-        Pageable pageable = build(searchParams.getPage(), searchParams.getPageSize(), searchParams.getSortFields());
+        Pageable pageable = searchParams.getPageable();
         Specification<MeetJpa> specification = buildMeetsSearchSpecification(searchParams);
         Page<MeetJpa> jpaPage = meetRepository.findAll(specification, pageable);
         List<T> content = mapper.apply(jpaPage.getContent());
@@ -51,6 +50,11 @@ public class MeetSearchService {
         return meetRepository.findById(id)
                              .map(meet -> getMapper(MeetMapper.class).map(meet))
                              .orElse(null);
+    }
+
+    @Transactional
+    public MeetJpa fetchJpa(Long id) {
+        return meetRepository.fetch(id);
     }
 
     @Transactional

@@ -43,14 +43,19 @@ public final class Constants {
         public static final String MEET_NEW_JOIN_REQUEST = "meet.new.join.request";
         public static final String MEET_JOIN_REQUEST_CONFIRMATION = "meet.join.request.confirmation";
         public static final String MEET_JOIN_REQUEST_DECLINATION = "meet.join.request.declination";
+        public static final String CHAT_CREATED = "chat.created";
+        public static final String CHAT_NEW_MESSAGE = "chat.new.message";
     }
 
     @UtilityClass
-    public static final class NotificationDetails {
+    public static final class MessagingPayload {
 
-        public static final String REQUESTER_ID = "requester_id";
-        public static final String REQUESTER_NICKNAME = "requester_nickname";
         public static final String DECLINATION_REASON = "declination_reason";
+        public static final String CHAT = "chat";
+        public static final String TEXT = "text";
+        public static final String MESSAGE = "message";
+        public static final String USER = "user";
+        public static final String MEET = "meet";
     }
 
     @UtilityClass

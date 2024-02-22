@@ -21,18 +21,22 @@ public final class AsyncUtils {
         return supplyAsync(supplier, executor).exceptionally(errorHandler);
     }
 
-    public static CompletableFuture<Void> async(Executor executor, Runnable task, Function<Throwable, Void> errorHandler) {
-        return runAsync(task, executor).exceptionally(errorHandler);
+    public static CompletableFuture<Void> async(Executor executor, Runnable runnable, Function<Throwable, Void> errorHandler) {
+        return runAsync(runnable, executor).exceptionally(errorHandler);
     }
 
     public static <R> List<R> collectAll(Executor executor, List<Supplier<R>> suppliers, Function<Throwable, R> errorHandler) {
         List<CompletableFuture<R>> futures = mapToList(suppliers, supplier -> async(executor, supplier, errorHandler));
+        return collectAll(futures);
+    }
+
+    public static <R> List<R> collectAll(List<CompletableFuture<R>> futures) {
         return allOf(futures.toArray(CompletableFuture[]::new))
                 .thenApply(execution -> joinAll(futures))
                 .join();
     }
 
-    private static <R> List<R> joinAll(List<CompletableFuture<R>> futures) {
+    public static <R> List<R> joinAll(List<CompletableFuture<R>> futures) {
         return futures.stream()
                       .map(CompletableFuture::join)
                       .filter(Objects::nonNull)
@@ -40,7 +44,7 @@ public final class AsyncUtils {
     }
 
     public static void runAll(Executor executor, List<Runnable> runnables, Function<Throwable, Void> errorHandler) {
-        List<CompletableFuture<Void>> futures = mapToList(runnables, supplier -> async(executor, supplier, errorHandler));
+        List<CompletableFuture<Void>> futures = mapToList(runnables, runnable -> async(executor, runnable, errorHandler));
         allOf(futures.toArray(CompletableFuture[]::new)).join();
     }
 }

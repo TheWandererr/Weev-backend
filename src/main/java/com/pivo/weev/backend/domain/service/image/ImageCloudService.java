@@ -6,7 +6,7 @@ import com.google.cloud.storage.Blob;
 import com.pivo.weev.backend.domain.model.common.CloudResource;
 import com.pivo.weev.backend.domain.model.file.UploadableImage;
 import com.pivo.weev.backend.integration.firebase.service.FirebaseCloudStorageService;
-import com.pivo.weev.backend.integration.mapping.domain.CloudResourceMapper;
+import com.pivo.weev.backend.integration.mapping.domain.cloud.CloudResourceMapper;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;

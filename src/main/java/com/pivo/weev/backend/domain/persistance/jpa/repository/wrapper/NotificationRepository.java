@@ -4,6 +4,8 @@ import static com.pivo.weev.backend.domain.persistance.jpa.model.common.Resource
 
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.INotificationRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -11,5 +13,9 @@ public class NotificationRepository extends GenericRepository<Long, Notification
 
     protected NotificationRepository(INotificationRepository repository) {
         super(repository, NOTIFICATION);
+    }
+
+    public Page<NotificationJpa> findAllByRecipientId(Long id, Pageable pageable) {
+        return repository.findAllByRecipientId(id, pageable);
     }
 }

@@ -13,16 +13,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 @RequiredArgsConstructor
+@Slf4j
 public class UnauthorizedHandler implements AuthenticationEntryPoint {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UnauthorizedHandler.class);
 
     private final ObjectMapper mapper;
     private final ApplicationLoggingHelper applicationLoggingHelper;
@@ -33,7 +31,7 @@ public class UnauthorizedHandler implements AuthenticationEntryPoint {
             throws IOException, ServletException {
         NotificationRest notification = notificationRestFactory.unauthorized();
         BaseResponse loginResponse = new BaseResponse(notification, UNAUTHORIZED);
-        LOGGER.error(applicationLoggingHelper.buildLoggingError(authException, null, false));
+        log.error(applicationLoggingHelper.buildLoggingError(authException, null, false));
         writeResponse(loginResponse, response, HttpStatus.UNAUTHORIZED, mapper);
     }
 }
