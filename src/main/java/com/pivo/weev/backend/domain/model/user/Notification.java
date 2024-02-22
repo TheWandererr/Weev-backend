@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class Notification {
 
+    private Long id;
     private String topic;
     private String type;
     private boolean viewed;
