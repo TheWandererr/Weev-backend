@@ -26,6 +26,7 @@ import com.pivo.weev.backend.domain.persistance.jpa.model.user.UserJpa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
@@ -46,7 +47,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.proxy.HibernateProxy;
 
 @Entity
-@Table(name = "meets")
+@Table(name = "meets", indexes = @Index(columnList = "creator_id", unique = true))
 @SequenceGenerator(sequenceName = "meet_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
@@ -99,7 +100,7 @@ public class MeetJpa extends ModifiableJpa<Long> {
 
     public MeetJpa(UserJpa creator, CategoryJpa category, SubcategoryJpa subcategory, LocationJpa location) {
         this.creator = creator;
-        creator.getCreatedMeets().add(this);
+        // creator.getCreatedMeets().add(this);
         this.category = category;
         this.subcategory = subcategory;
         this.location = location;
@@ -166,10 +167,10 @@ public class MeetJpa extends ModifiableJpa<Long> {
 
     public Set<UserJpa> dissolve() {
         Set<UserJpa> membersCopy = new HashSet<>(this.members);
-        for (UserJpa member : this.members) {
+       /* for (UserJpa member : this.members) {
             member.getParticipatedMeets().remove(this);
-        }
-        this.members.clear();
+        }*/
+        getMembers().clear();
         return membersCopy;
     }
 
@@ -187,7 +188,7 @@ public class MeetJpa extends ModifiableJpa<Long> {
             throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, MEET_CAPACITY_EXCEEDED);
         }
         getMembers().add(user);
-        user.getParticipatedMeets().add(this);
+        // user.getParticipatedMeets().add(this);
     }
 
     public void removeMember(UserJpa user) {
@@ -195,7 +196,7 @@ public class MeetJpa extends ModifiableJpa<Long> {
             return;
         }
         getMembers().remove(user);
-        user.getParticipatedMeets().remove(this);
+        // user.getParticipatedMeets().remove(this);
     }
 
     public boolean hasCreator(Long id) {

@@ -7,7 +7,6 @@ import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_NULL_ERROR;
 import static java.util.Objects.isNull;
 
-import com.pivo.weev.backend.rest.model.meet.EntryFeeRest;
 import com.pivo.weev.backend.rest.model.meet.LocationRest;
 import com.pivo.weev.backend.rest.model.meet.RestrictionsRest;
 import com.pivo.weev.backend.rest.validation.annotation.NullableNotBlank;
@@ -45,7 +44,6 @@ public class MeetSaveRequest {
     @ValidImage
     private MultipartFile photo;
     private boolean updatePhoto;
-    private EntryFeeRest entryFee;
     private RestrictionsRest restrictions = RestrictionsRest.withDefaults();
     @NotNull(message = MUST_BE_NOT_NULL_ERROR)
     private LocalDateTime localStartDateTime;

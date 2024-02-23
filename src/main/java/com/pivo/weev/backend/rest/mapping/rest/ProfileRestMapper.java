@@ -4,7 +4,7 @@ import com.pivo.weev.backend.domain.model.user.User;
 import com.pivo.weev.backend.rest.model.user.ProfileRest;
 import org.mapstruct.Mapper;
 
-@Mapper(uses = {ImageRestMapper.class})
+@Mapper(uses = {ImageRestMapper.class, MeetsStatisticsMapper.class})
 public interface ProfileRestMapper {
 
     ProfileRest map(User source);

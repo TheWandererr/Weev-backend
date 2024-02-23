@@ -20,8 +20,7 @@ public class User extends Identifiable {
     private String nickname;
     private Contacts contacts;
     private Image avatar;
-    private int participatedMeets;
-    private int createdMeets;
+    private MeetsStatistics meetsStatistics;
     private boolean deleted;
     private List<Device> devices;
 

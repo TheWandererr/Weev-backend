@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.rest.model.user;
 
+import com.pivo.weev.backend.domain.model.user.MeetsStatistics;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,5 @@ import lombok.Setter;
 public class ProfileRest extends UserSnapshotRest {
 
     private String name;
-    private int participatedMeets;
-    private int createdMeets;
+    private MeetsStatistics meetsStatistics;
 }

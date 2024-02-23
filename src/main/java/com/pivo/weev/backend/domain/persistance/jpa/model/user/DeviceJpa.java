@@ -2,6 +2,7 @@ package com.pivo.weev.backend.domain.persistance.jpa.model.user;
 
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.DEVICE_INTERNAL_ID;
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -35,8 +36,8 @@ public class DeviceJpa extends SequencedPersistable<Long> {
     private UserJpa user;
     @Column(name = DEVICE_INTERNAL_ID, nullable = false)
     private String internalId;
-    @OneToOne(cascade = ALL, orphanRemoval = true, optional = false, fetch = LAZY)
-    @JoinColumn(name = "settings_id")
+    @OneToOne(cascade = ALL, orphanRemoval = true, optional = false, fetch = EAGER)
+    @JoinColumn(name = "settings_id", updatable = false)
     private DeviceSettingsJpa settings = new DeviceSettingsJpa();
     private transient boolean created;
 

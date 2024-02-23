@@ -13,7 +13,6 @@ import lombok.Setter;
 public class MeetDetailedRest extends MeetCompactedRest {
 
     private String description;
-    private EntryFeeRest entryFee;
     private RestrictionsRest restrictions;
     @JsonFormat(pattern = YYYY_MM_DD_HH_MM_DATE_TIME_PATTERN)
     private LocalDateTime localEndDateTime;

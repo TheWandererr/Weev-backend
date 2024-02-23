@@ -30,7 +30,6 @@ public class Meet extends Identifiable {
     private int membersLimit;
     private String description;
     private Image photo;
-    private EntryFee entryFee;
     private Restrictions restrictions;
     private LocalDateTime localStartDateTime;
     private String startTimeZoneId;

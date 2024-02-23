@@ -9,10 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper(
-        imports = {DateTimeUtils.class, LocationJpaMapper.class, RestrictionsJpaMapper.class, EntryFeeJpaMapper.class}, uses = {RestrictionsJpaMapper.class},
-        unmappedTargetPolicy = IGNORE
-)
+@Mapper(imports = {DateTimeUtils.class}, uses = {RestrictionsJpaMapper.class, LocationJpaMapper.class, RestrictionsJpaMapper.class}, unmappedTargetPolicy = IGNORE)
 public interface MeetJpaMapper {
 
     @Mapping(target = "id", ignore = true)

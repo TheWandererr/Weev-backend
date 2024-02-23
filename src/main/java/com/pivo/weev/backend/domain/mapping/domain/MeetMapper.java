@@ -10,7 +10,7 @@ import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
 
 @DecoratedWith(MeetMapperDecorator.class)
-@Mapper(uses = {CategoryMapper.class, SubcategoryMapper.class, UserMapper.class, LocationMapper.class, EntryFeeMapper.class, ImageMapper.class, RestrictionsMapper.class})
+@Mapper(uses = {CategoryMapper.class, SubcategoryMapper.class, UserMapper.class, LocationMapper.class, ImageMapper.class, RestrictionsMapper.class})
 public interface MeetMapper {
 
     Meet map(MeetJpa source);

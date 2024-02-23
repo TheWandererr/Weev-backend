@@ -167,7 +167,7 @@ public class UsersController {
 
     @GetMapping("/{id}")
     public ProfileResponse getProfile(@PathVariable Long id) {
-        User user = userResourceService.fetchUser(id);
+        User user = profileService.getProfile(id);
         ProfileRest profile = getMapper(ProfileRestMapper.class).map(user);
         return new ProfileResponse(profile);
     }
@@ -192,7 +192,7 @@ public class UsersController {
 
     @ResourceOwner
     @GetMapping("/{id}/meets/templates/{page}")
-    public MeetTemplatesResponse getTemplates(@PathVariable Long id, @PathVariable @Min(0) Integer page) {
+    public MeetTemplatesResponse getMeetTemplates(@PathVariable Long id, @PathVariable @Min(0) Integer page) {
         Pageable pageable = build(page, MEET_TEMPLATES_PER_PAGE, new String[]{CREATED_AT});
         Page<Meet> templatesPage = meetTemplatesService.getMeetsTemplates(id, pageable);
         List<MeetTemplateRest> restTemplates = getMapper(MeetTemplateRestMapper.class).map(templatesPage.getContent());
@@ -202,14 +202,14 @@ public class UsersController {
 
     @ResourceOwner
     @DeleteMapping("/{id}/meets/templates/{templateId}")
-    public BaseResponse deleteTemplate(@PathVariable Long id, @PathVariable Long templateId) {
+    public BaseResponse deleteMeetTemplate(@PathVariable Long id, @PathVariable Long templateId) {
         meetTemplatesService.deleteTemplate(id, templateId);
         return new BaseResponse();
     }
 
     @ResourceOwner
     @DeleteMapping("/{id}/meets/templates")
-    public BaseResponse deleteTemplate(@PathVariable Long id) {
+    public BaseResponse deleteAllMeetTemplates(@PathVariable Long id) {
         meetTemplatesService.deleteAllTemplates(id);
         return new BaseResponse();
     }

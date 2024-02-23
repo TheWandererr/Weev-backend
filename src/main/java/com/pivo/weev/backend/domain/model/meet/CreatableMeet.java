@@ -20,7 +20,6 @@ public class CreatableMeet extends Identifiable {
     private String description;
     private MultipartFile photo;
     private boolean updatePhoto;
-    private EntryFee entryFee;
     private Restrictions restrictions;
     private LocalDateTime localStartDateTime;
     private String startTimeZoneId;

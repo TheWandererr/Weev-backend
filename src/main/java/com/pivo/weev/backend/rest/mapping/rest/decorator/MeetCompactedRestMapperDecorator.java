@@ -15,12 +15,13 @@ public abstract class MeetCompactedRestMapperDecorator implements MeetCompactedR
 
     @Override
     public MeetCompactedRest map(Meet source) {
-        MeetCompactedRest mapped = delegate.map(source);
+        MeetCompactedRest destination = delegate.map(source);
+        destination.setMembersCount(source.getMembers().size());
         boolean hasHiddenData = hasHiddenData(source);
         if (hasHiddenData) {
-            LocationRest location = mapped.getLocation();
-            mapped.setLocation(new LocationRest(location.getCountry(), location.getCity()));
+            LocationRest location = destination.getLocation();
+            destination.setLocation(new LocationRest(location.getCountry(), location.getCity()));
         }
-        return mapped;
+        return destination;
     }
 }

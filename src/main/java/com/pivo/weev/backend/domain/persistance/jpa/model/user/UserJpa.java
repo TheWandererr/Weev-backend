@@ -33,7 +33,10 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Check;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
 import org.hibernate.proxy.HibernateProxy;
@@ -61,8 +64,10 @@ public class UserJpa extends ModifiableJpa<Long> {
     @Length(max = 20)
     @Column(length = 20, name = USER_PHONE_NUMBER, unique = true)
     private String phoneNumber;
-    @ManyToOne(fetch = LAZY, cascade = ALL)
-    @JoinColumn(name = "role_id")
+    @ManyToOne(cascade = ALL, optional = false)
+    @JoinColumn(name = "role_id", nullable = false)
+    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 10)
     private UserRoleJpa role;
     private Boolean active = false;
     @GenericGenerator(name = "meet_member_id_generator", type = SequenceStyleGenerator.class)
@@ -132,5 +137,13 @@ public class UserJpa extends ModifiableJpa<Long> {
         getNotifications().clear();
         setActive(false);
         setDeleted(true);
+    }
+
+    private Set<MeetJpa> getCreatedMeets() {
+        return createdMeets;
+    }
+
+    private Set<MeetJpa> getParticipatedMeets() {
+        return participatedMeets;
     }
 }
