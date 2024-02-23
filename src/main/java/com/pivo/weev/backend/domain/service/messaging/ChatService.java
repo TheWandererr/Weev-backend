@@ -22,8 +22,8 @@ import com.pivo.weev.backend.domain.mapping.domain.ChatUserMapper;
 import com.pivo.weev.backend.domain.mapping.domain.MeetPayloadMapper;
 import com.pivo.weev.backend.domain.mapping.domain.UserPayloadMapper;
 import com.pivo.weev.backend.domain.model.event.PushNotificationEvent;
-import com.pivo.weev.backend.domain.model.event.WebSocketEvent;
-import com.pivo.weev.backend.domain.model.event.WebSocketEvent.EventType;
+import com.pivo.weev.backend.domain.model.event.WebSocketMessageEvent;
+import com.pivo.weev.backend.domain.model.event.WebSocketMessageEvent.EventType;
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage;
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatSnapshot;
 import com.pivo.weev.backend.domain.model.messaging.chat.UserMessage;
@@ -77,8 +77,8 @@ public class ChatService {
         ChatSnapshotPayload chatPayload = getMapper(ChatSnapshotPayloadMapper.class).map(firebaseChatSnapshot);
         notificationService.notify(meet, creator, CHAT_CREATED, Map.of(MessagingPayload.CHAT, chatPayload));
 
-        WebSocketEvent webSocketEvent = applicationEventFactory.buildWebSocketEvent(chatPayload, creator.getNickname(), EventType.CHAT_CREATED);
-        applicationEventPublisher.publishEvent(webSocketEvent);
+        WebSocketMessageEvent webSocketMessageEvent = applicationEventFactory.buildWebSocketEvent(chatPayload, creator.getNickname(), EventType.CHAT_CREATED);
+        applicationEventPublisher.publishEvent(webSocketMessageEvent);
     }
 
     private FirebaseChatSnapshot buildSnapshot(UserJpa creator, MeetJpa meet) {

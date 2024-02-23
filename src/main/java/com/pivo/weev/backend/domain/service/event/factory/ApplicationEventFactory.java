@@ -4,8 +4,8 @@ import static com.pivo.weev.backend.websocket.utils.Constants.PayloadKeys.CHAT;
 import static java.util.Collections.singleton;
 
 import com.pivo.weev.backend.domain.model.event.PushNotificationEvent;
-import com.pivo.weev.backend.domain.model.event.WebSocketEvent;
-import com.pivo.weev.backend.domain.model.event.WebSocketEvent.EventType;
+import com.pivo.weev.backend.domain.model.event.WebSocketMessageEvent;
+import com.pivo.weev.backend.domain.model.event.WebSocketMessageEvent.EventType;
 import com.pivo.weev.backend.domain.model.messaging.payload.ChatSnapshotPayload;
 import com.pivo.weev.backend.domain.model.messaging.payload.UserPayload;
 import com.pivo.weev.backend.websocket.utils.Constants.UserDestinations;
@@ -25,8 +25,8 @@ public class ApplicationEventFactory {
         return buildPushNotificationEvent(singleton(recipient), topic, payload);
     }
 
-    public WebSocketEvent buildWebSocketEvent(ChatSnapshotPayload payload, String recipient, EventType eventType) {
-        WebSocketEvent.WebSocketMessageModel model = new WebSocketEvent.WebSocketMessageModel(eventType, recipient, UserDestinations.UPDATES, Map.of(CHAT, payload));
-        return new WebSocketEvent(model);
+    public WebSocketMessageEvent buildWebSocketEvent(ChatSnapshotPayload payload, String recipient, EventType eventType) {
+        WebSocketMessageEvent.WebSocketMessageModel model = new WebSocketMessageEvent.WebSocketMessageModel(eventType, recipient, UserDestinations.UPDATES, Map.of(CHAT, payload));
+        return new WebSocketMessageEvent(model);
     }
 }

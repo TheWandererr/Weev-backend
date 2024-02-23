@@ -1,4 +1,4 @@
-package com.pivo.weev.backend.config.rabbit.properties;
+package com.pivo.weev.backend.config.messaging.rabbit.properties;
 
 import lombok.Getter;
 import lombok.Setter;

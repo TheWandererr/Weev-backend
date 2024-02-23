@@ -1,6 +1,6 @@
-package com.pivo.weev.backend.config.rabbit;
+package com.pivo.weev.backend.config.messaging.rabbit;
 
-import com.pivo.weev.backend.config.rabbit.properties.RabbitProperties;
+import com.pivo.weev.backend.config.messaging.rabbit.properties.RabbitProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

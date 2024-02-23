@@ -6,7 +6,7 @@ import static com.pivo.weev.backend.websocket.utils.Constants.STOMP_ENDPOINT;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pivo.weev.backend.config.rabbit.properties.RabbitProperties;
+import com.pivo.weev.backend.config.messaging.rabbit.properties.RabbitProperties;
 import com.pivo.weev.backend.websocket.interceptor.AuthInterceptor;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

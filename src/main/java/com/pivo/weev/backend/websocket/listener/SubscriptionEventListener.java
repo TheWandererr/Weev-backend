@@ -4,6 +4,7 @@ import static com.pivo.weev.backend.domain.persistance.utils.Constants.FirebaseF
 import static com.pivo.weev.backend.utils.Constants.Symbols.DOT;
 import static com.pivo.weev.backend.websocket.model.EventMessageWs.subscribed;
 import static com.pivo.weev.backend.websocket.utils.Constants.SubscriptionDestinations.CHAT;
+import static com.pivo.weev.backend.websocket.utils.Constants.SubscriptionDestinations.UPDATES;
 import static com.pivo.weev.backend.websocket.utils.StompUtils.getDestination;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -15,7 +16,6 @@ import com.pivo.weev.backend.domain.model.messaging.chat.EventMessage;
 import com.pivo.weev.backend.domain.service.websocket.SubscriptionService;
 import com.pivo.weev.backend.websocket.mapping.ws.MessageWsMapper;
 import com.pivo.weev.backend.websocket.model.MessageWs;
-import com.pivo.weev.backend.websocket.utils.Constants.SubscriptionDestinations;
 import com.pivo.weev.backend.websocket.utils.Constants.UserDestinations;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 @Component
 @RequiredArgsConstructor
-public class UpdatesSubscriptionListener {
+public class SubscriptionEventListener {
 
     private final SimpMessagingTemplate template;
     private final SubscriptionService subscriptionService;
@@ -39,7 +39,7 @@ public class UpdatesSubscriptionListener {
         }
         Principal user = event.getUser();
         String nickname = ofNullable(user).map(Principal::getName).orElse(EMPTY);
-        if (SubscriptionDestinations.UPDATES.equals(destination)) {
+        if (UPDATES.equals(destination)) {
             handleUpdatesSubscription(nickname);
         } else if (destination.startsWith(CHAT)) {
             String chatId = substringAfterLast(destination, DOT);

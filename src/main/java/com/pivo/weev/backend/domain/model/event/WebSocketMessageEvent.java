@@ -11,9 +11,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
 
-public class WebSocketEvent extends ApplicationEvent {
+public class WebSocketMessageEvent extends ApplicationEvent {
 
-    public WebSocketEvent(Object source) {
+    public WebSocketMessageEvent(Object source) {
         super(source);
         if (!(source instanceof WebSocketMessageModel)) {
             throw new IllegalArgumentException();
