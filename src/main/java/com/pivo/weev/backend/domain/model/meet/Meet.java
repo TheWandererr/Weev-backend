@@ -37,10 +37,10 @@ public class Meet extends Identifiable {
     private LocalDateTime localEndDateTime;
     private String endTimeZoneId;
     private Instant utcEndDateTime;
-    private Set<User> members;
+    private Set<Long> members;
     private String status;
 
-    public Set<User> getMembers() {
+    public Set<Long> getMembers() {
         if (isNull(members)) {
             members = new HashSet<>();
         }
@@ -60,7 +60,7 @@ public class Meet extends Identifiable {
     }
 
     public boolean hasMember(Long memberId) {
-        return nonNull(memberId) && isPresent(getMembers(), member -> Objects.equals(member.getId(), memberId));
+        return nonNull(memberId) && isPresent(getMembers(), member -> Objects.equals(member, memberId));
     }
 
     public boolean hasRestrictions() {
