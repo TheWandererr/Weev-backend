@@ -22,7 +22,6 @@ public class NotificationFactory {
         meetNotification.setMeet(meet);
         meetNotification.setType(IMPORTANT);
         meetNotification.setRecipient(recipient);
-        meetNotification.setViewed(false);
         meetNotification.setTopic(topic);
         meetNotification.setDetails(details);
         return meetNotification;

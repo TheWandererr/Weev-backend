@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.model.messaging.chat;
 
-import static com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage.Type.MESSAGE;
+import static com.pivo.weev.backend.domain.model.messaging.WsMessage.Type.MESSAGE;
 
 import lombok.Getter;
 import lombok.Setter;

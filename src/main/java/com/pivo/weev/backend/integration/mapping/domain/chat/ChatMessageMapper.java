@@ -2,8 +2,8 @@ package com.pivo.weev.backend.integration.mapping.domain.chat;
 
 import static java.util.Objects.isNull;
 
+import com.pivo.weev.backend.domain.model.messaging.WsMessage.Type;
 import com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage;
-import com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage.Type;
 import com.pivo.weev.backend.domain.model.messaging.chat.EventMessage;
 import com.pivo.weev.backend.domain.model.messaging.chat.UserMessage;
 import com.pivo.weev.backend.integration.firebase.model.chat.FirebaseChatMessage;

@@ -13,7 +13,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MessageFactory {
+public class WsMessageFactory {
 
     public EventMessageWs createMessage(WebSocketMessageModel messageModel) {
         EventMessageWs message = new EventMessageWs();

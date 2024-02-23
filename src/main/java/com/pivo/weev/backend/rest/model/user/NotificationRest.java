@@ -14,7 +14,7 @@ public class NotificationRest {
     private Long id;
     private String topic;
     private String type;
-    private boolean viewed;
+    private boolean read;
     private Map<String, Object> details;
 
     public Map<String, Object> getDetails() {

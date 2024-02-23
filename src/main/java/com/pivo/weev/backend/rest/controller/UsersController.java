@@ -55,6 +55,7 @@ import com.pivo.weev.backend.rest.model.request.MeetsSearchRequest;
 import com.pivo.weev.backend.rest.model.request.ProfileUpdateRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
 import com.pivo.weev.backend.rest.model.response.ChatSnapshotsResponse;
+import com.pivo.weev.backend.rest.model.response.CountResponse;
 import com.pivo.weev.backend.rest.model.response.DeviceSettingResponse;
 import com.pivo.weev.backend.rest.model.response.ImageResponse;
 import com.pivo.weev.backend.rest.model.response.MeetJoinRequestsResponse;
@@ -226,5 +227,12 @@ public class UsersController {
         List<NotificationRest> restNotifications = getMapper(NotificationRestMapper.class).map(notificationsPage.getContent());
         PageRest<NotificationRest> pageRest = new PageRest<>(restNotifications, notificationsPage.getNumber());
         return new NotificationsResponse(pageRest, notificationsPage.getTotalElements(), notificationsPage.getTotalPages());
+    }
+
+    @ResourceOwner
+    @GetMapping("/{id}/notifications/unread/count")
+    public CountResponse getUnreadNotificationsCount(@PathVariable Long id) {
+        int count = notificationService.getUnreadNotificationsCount(id);
+        return new CountResponse(count);
     }
 }

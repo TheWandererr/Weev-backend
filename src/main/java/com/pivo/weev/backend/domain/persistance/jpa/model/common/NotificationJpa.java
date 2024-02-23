@@ -13,6 +13,7 @@ import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Index;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -29,7 +30,7 @@ import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.SqlTypes;
 
 @Entity
-@Table(name = "notifications")
+@Table(name = "notifications", indexes = @Index(columnList = "recipient_id"))
 @SequenceGenerator(sequenceName = "notification_id_sequence", allocationSize = 1, name = "sequence_generator")
 @Getter
 @Setter
@@ -47,7 +48,7 @@ public class NotificationJpa extends ModifiableJpa<Long> {
     @Enumerated(EnumType.STRING)
     private Type type;
     @Column
-    private Boolean viewed = false;
+    private Boolean read = false;
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(updatable = false)
     private Map<String, Object> details = new HashMap<>();

@@ -59,4 +59,8 @@ public class NotificationService {
         List<Notification> content = getMapper(NotificationMapper.class).map(jpaPage.getContent());
         return new PageImpl<>(content, jpaPage.getPageable(), jpaPage.getTotalElements());
     }
+
+    public int getUnreadNotificationsCount(Long userId) {
+        return notificationRepository.countAllUnreadByRecipientId(userId);
+    }
 }

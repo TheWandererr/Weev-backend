@@ -1,36 +1,21 @@
 package com.pivo.weev.backend.domain.model.messaging.chat;
 
 
-import static com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage.Type.EVENT;
-import static com.pivo.weev.backend.domain.model.messaging.chat.ChatMessage.Type.UNDEFINED;
+import static com.pivo.weev.backend.domain.model.messaging.WsMessage.Type.MESSAGE;
 
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
+import com.pivo.weev.backend.domain.model.messaging.WsMessage;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ChatMessage {
+public class ChatMessage extends WsMessage {
 
     private String chatId;
-    private String text;
-    private Instant createdAt = Instant.now();
-    private Map<String, Object> payload = new HashMap<>();
     private Long ordinal;
 
-    public boolean isEvent() {
-        return EVENT == getType();
-    }
-
-    public enum Type {
-        EVENT,
-        MESSAGE,
-        UNDEFINED
-    }
-
+    @Override
     protected Type getType() {
-        return UNDEFINED;
+        return MESSAGE;
     }
 }

@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface INotificationRepository extends IGenericRepository<Long, NotificationJpa> {
 
-    @Query("select n from NotificationJpa n where n.recipient.id = ?1")
+    @Query(value = "select n.* from notifcations n where n.recipient_id = ?1", nativeQuery = true)
     Page<NotificationJpa> findAllByRecipientId(Long id, Pageable pageable);
+
+    @Query(value = "select count(n) from notifications n where n.recipient_id = ?1 and n.read = false", nativeQuery = true)
+    Integer countAllUnreadByRecipientId(Long id);
 }

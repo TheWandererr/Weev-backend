@@ -18,4 +18,8 @@ public class NotificationRepository extends GenericRepository<Long, Notification
     public Page<NotificationJpa> findAllByRecipientId(Long id, Pageable pageable) {
         return repository.findAllByRecipientId(id, pageable);
     }
+
+    public int countAllUnreadByRecipientId(Long userId) {
+        return repository.countAllUnreadByRecipientId(userId);
+    }
 }
