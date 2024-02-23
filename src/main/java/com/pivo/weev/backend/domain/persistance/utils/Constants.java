@@ -17,8 +17,8 @@ public class Constants {
     public static final class Columns {
 
         public static final String ID = "id";
-        public static final String CREATED_DATE = "createdDate";
-        public static final String MODIFIED_DATE = "modifiedDate";
+        public static final String CREATED_AT = "createdAt";
+        public static final String MODIFIED_AT = "modifiedAt";
 
         public static final String USER_NICKNAME = "nickname";
         public static final String USER_NAME = "name";

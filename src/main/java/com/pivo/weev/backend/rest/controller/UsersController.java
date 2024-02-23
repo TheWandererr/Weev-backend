@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.rest.controller;
 
-import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.CREATED_DATE;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.CREATED_AT;
 import static com.pivo.weev.backend.domain.persistance.utils.PageableUtils.build;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.canceled;
 import static com.pivo.weev.backend.rest.model.meet.SearchContextRest.declined;
@@ -14,6 +14,7 @@ import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MUST_BE_NOT_BLANK
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.model.common.Image;
+import com.pivo.weev.backend.domain.model.common.InstantPeriod;
 import com.pivo.weev.backend.domain.model.meet.Meet;
 import com.pivo.weev.backend.domain.model.meet.MeetJoinRequest;
 import com.pivo.weev.backend.domain.model.meet.SearchParams;
@@ -33,6 +34,7 @@ import com.pivo.weev.backend.domain.service.user.ProfileService;
 import com.pivo.weev.backend.domain.service.user.UserResourceService;
 import com.pivo.weev.backend.rest.annotation.ResourceOwner;
 import com.pivo.weev.backend.rest.mapping.domain.DeviceMapper;
+import com.pivo.weev.backend.rest.mapping.domain.PeriodMapper;
 import com.pivo.weev.backend.rest.mapping.domain.SearchParamsMapper;
 import com.pivo.weev.backend.rest.mapping.domain.UserMapper;
 import com.pivo.weev.backend.rest.mapping.rest.ChatRestMapper;
@@ -51,6 +53,7 @@ import com.pivo.weev.backend.rest.model.meet.MeetTemplateRest;
 import com.pivo.weev.backend.rest.model.messaging.ChatSnapshotRest;
 import com.pivo.weev.backend.rest.model.request.ChatsSearchRequest;
 import com.pivo.weev.backend.rest.model.request.DeviceSettingUpdateRequest;
+import com.pivo.weev.backend.rest.model.request.InstantPeriodRequest;
 import com.pivo.weev.backend.rest.model.request.MeetsSearchRequest;
 import com.pivo.weev.backend.rest.model.request.ProfileUpdateRequest;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
@@ -75,6 +78,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -189,7 +193,7 @@ public class UsersController {
     @ResourceOwner
     @GetMapping("/{id}/meets/templates/{page}")
     public MeetTemplatesResponse getTemplates(@PathVariable Long id, @PathVariable @Min(0) Integer page) {
-        Pageable pageable = build(page, MEET_TEMPLATES_PER_PAGE, new String[]{CREATED_DATE});
+        Pageable pageable = build(page, MEET_TEMPLATES_PER_PAGE, new String[]{CREATED_AT});
         Page<Meet> templatesPage = meetTemplatesService.getMeetsTemplates(id, pageable);
         List<MeetTemplateRest> restTemplates = getMapper(MeetTemplateRestMapper.class).map(templatesPage.getContent());
         PageRest<MeetTemplateRest> pageRest = new PageRest<>(restTemplates, templatesPage.getNumber());
@@ -222,7 +226,7 @@ public class UsersController {
     @ResourceOwner
     @GetMapping("/{id}/notifications/{page}")
     public NotificationsResponse getNotifications(@PathVariable Long id, @PathVariable @Min(0) Integer page) {
-        Pageable pageable = build(page, NOTIFICATIONS_PER_PAGE, new String[]{Columns.CREATED_DATE});
+        Pageable pageable = build(page, NOTIFICATIONS_PER_PAGE, new String[]{Columns.CREATED_AT}, Direction.DESC);
         Page<Notification> notificationsPage = notificationService.getNotifications(id, pageable);
         List<NotificationRest> restNotifications = getMapper(NotificationRestMapper.class).map(notificationsPage.getContent());
         PageRest<NotificationRest> pageRest = new PageRest<>(restNotifications, notificationsPage.getNumber());
@@ -234,5 +238,13 @@ public class UsersController {
     public CountResponse getUnreadNotificationsCount(@PathVariable Long id) {
         int count = notificationService.getUnreadNotificationsCount(id);
         return new CountResponse(count);
+    }
+
+    @ResourceOwner
+    @PutMapping("/{id}/notifications/reading")
+    public BaseResponse markNotificationsAsRead(@PathVariable Long id, @RequestBody InstantPeriodRequest request) {
+        InstantPeriod period = getMapper(PeriodMapper.class).map(request.getPeriod());
+        notificationService.markAllAsRead(id, period);
+        return new BaseResponse();
     }
 }

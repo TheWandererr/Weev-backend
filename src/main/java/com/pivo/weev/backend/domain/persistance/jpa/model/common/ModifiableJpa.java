@@ -1,7 +1,7 @@
 package com.pivo.weev.backend.domain.persistance.jpa.model.common;
 
-import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.CREATED_DATE;
-import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.MODIFIED_DATE;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.CREATED_AT;
+import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.MODIFIED_AT;
 import static java.util.Objects.nonNull;
 
 import jakarta.persistence.Column;
@@ -21,12 +21,12 @@ import org.hibernate.proxy.HibernateProxy;
 public abstract class ModifiableJpa<PK extends Serializable> extends SequencedPersistable<PK> {
 
     @CreationTimestamp
-    @Column(name = CREATED_DATE)
-    private Instant createdDate = Instant.now();
+    @Column(name = CREATED_AT)
+    private Instant createdAt = Instant.now();
 
     @UpdateTimestamp
-    @Column(name = MODIFIED_DATE)
-    private Instant modifiedDate;
+    @Column(name = MODIFIED_AT)
+    private Instant modifiedAT;
 
     @Override
     public boolean equals(Object o) {

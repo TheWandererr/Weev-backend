@@ -2,6 +2,7 @@ package com.pivo.weev.backend.domain.persistance.jpa.repository.wrapper;
 
 import static com.pivo.weev.backend.domain.persistance.jpa.model.common.ResourceName.NOTIFICATION;
 
+import com.pivo.weev.backend.domain.model.common.InstantPeriod;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.repository.INotificationRepository;
 import org.springframework.data.domain.Page;
@@ -21,5 +22,9 @@ public class NotificationRepository extends GenericRepository<Long, Notification
 
     public int countAllUnreadByRecipientId(Long userId) {
         return repository.countAllUnreadByRecipientId(userId);
+    }
+
+    public void setReadByRecipientIdAndPeriod(Long userId, InstantPeriod period) {
+        repository.setReadByRecipientIdAndPeriod(userId, period.getStart(), period.getEnd());
     }
 }

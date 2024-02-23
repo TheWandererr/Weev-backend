@@ -4,6 +4,7 @@ import static com.pivo.weev.backend.utils.CollectionUtils.mapToSet;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 import com.pivo.weev.backend.domain.mapping.domain.NotificationMapper;
+import com.pivo.weev.backend.domain.model.common.InstantPeriod;
 import com.pivo.weev.backend.domain.model.user.Notification;
 import com.pivo.weev.backend.domain.persistance.jpa.NotificationFactory;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.NotificationJpa;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +56,7 @@ public class NotificationService {
         notificationRepository.saveAll(notifications);
     }
 
+    @Transactional
     public Page<Notification> getNotifications(Long userId, Pageable pageable) {
         Page<NotificationJpa> jpaPage = notificationRepository.findAllByRecipientId(userId, pageable);
         List<Notification> content = getMapper(NotificationMapper.class).map(jpaPage.getContent());
@@ -62,5 +65,10 @@ public class NotificationService {
 
     public int getUnreadNotificationsCount(Long userId) {
         return notificationRepository.countAllUnreadByRecipientId(userId);
+    }
+
+    @Transactional
+    public void markAllAsRead(Long userId, InstantPeriod period) {
+        notificationRepository.setReadByRecipientIdAndPeriod(userId, period);
     }
 }

@@ -2,6 +2,7 @@ package com.pivo.weev.backend.rest.model.user;
 
 import static java.util.Objects.isNull;
 
+import com.pivo.weev.backend.domain.model.common.Modifiable;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NotificationRest {
+public class NotificationRest extends Modifiable {
 
     private Long id;
     private String topic;
