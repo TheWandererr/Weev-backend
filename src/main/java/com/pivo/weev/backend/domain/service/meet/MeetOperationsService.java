@@ -36,7 +36,6 @@ import com.pivo.weev.backend.domain.service.validation.MeetOperationsValidator;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -136,7 +135,8 @@ public class MeetOperationsService {
     public void cancel(MeetJpa cancellable, boolean forced) {
         meetOperationsValidator.validateCancellation(getUserId(), cancellable, forced);
 
-        Set<UserJpa> dissolvedMembers = cancellable.dissolve();
+        Set<UserJpa> dissolvedMembers = cancellable.getMembers();
+        dissolve(cancellable);
         notifyAll(cancellable, dissolvedMembers, MEET_CANCELLATION);
 
         cancellable.getRequests().clear();
@@ -149,7 +149,8 @@ public class MeetOperationsService {
         List<MeetJpa> cancellable = meetRepository.findAllPublishedActiveByCreatorId(creator.getId());
         cancellable.forEach(meet -> meetOperationsValidator.validateCancellation(getUserId(), meet, forced));
         cancellable.forEach(meet -> {
-            Set<UserJpa> dissolvedMembers = meet.dissolve();
+            Set<UserJpa> dissolvedMembers = meet.getMembers();
+            dissolve(meet);
             notifyAll(meet, dissolvedMembers, MEET_CANCELLATION);
             meet.setStatus(CANCELED);
             meet.getRequests().clear();
@@ -157,6 +158,10 @@ public class MeetOperationsService {
 
         Set<Long> cancellableIds = mapToSet(cancellable, SequencedPersistable::getId);
         meetRepository.deleteAllByUpdatableTargetId(cancellableIds);
+    }
+
+    private void dissolve(MeetJpa meet) {
+        meetRepository.dissolveMembers(meet.getId());
     }
 
     private void notifyAll(MeetJpa meet, Set<UserJpa> recipients, String topic) {
@@ -179,26 +184,28 @@ public class MeetOperationsService {
     @Transactional
     public void join(Long meetId) {
         MeetJpa meet = meetRepository.fetch(meetId);
-        join(meet, Optional.empty(), false);
+        join(meet, getUserId(), false);
     }
 
-    private void join(MeetJpa meet, Optional<UserJpa> joinerOptional, boolean viaRequest) {
-        Long joinerId = getUserId();
+    private void join(MeetJpa meet, Long joinerId, boolean viaRequest) {
         meetOperationsValidator.validateJoin(meet, joinerId, viaRequest);
-        UserJpa joiner = joinerOptional.orElseGet(() -> userResourceService.fetchJpa(joinerId));
-        meet.addMember(joiner);
+        addMember(meet.getId(), joinerId);
+    }
+
+    private void addMember(Long meetId, Long userId) {
+        meetRepository.addMember(meetId, userId);
     }
 
     @Transactional
     public void joinViaRequest(MeetJpa meet, UserJpa joiner) {
-        join(meet, Optional.of(joiner), true);
+        join(meet, joiner.getId(), true);
     }
 
     @Transactional
     public void leaveAll(UserJpa leaver) {
         List<MeetJpa> meets = meetRepository.findAllActiveByMemberId(leaver.getId());
         meets.forEach(meet -> meetOperationsValidator.validateLeave(meet, leaver.getId()));
-        meets.forEach(meet -> meet.removeMember(leaver));
+        meets.forEach(meet -> removeMember(meet.getId(), leaver.getId()));
     }
 
     @Transactional
@@ -206,6 +213,10 @@ public class MeetOperationsService {
         MeetJpa meet = meetRepository.fetch(meetId);
         Long leaver = getUserId();
         meetOperationsValidator.validateLeave(meet, leaver);
-        meet.removeMember(userResourceService.fetchJpa(leaver));
+        removeMember(meetId, leaver);
+    }
+
+    private void removeMember(Long meetId, Long userId) {
+        meetRepository.removeMember(meetId, userId);
     }
 }

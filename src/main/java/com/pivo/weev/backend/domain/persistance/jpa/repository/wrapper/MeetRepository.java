@@ -49,4 +49,16 @@ public class MeetRepository extends GenericRepository<Long, MeetJpa, IMeetReposi
     public List<MeetJpa> findAllActiveByMemberId(Long memberId) {
         return repository.findAllByMember_IdAndUtcEndDateTimeAfter(memberId, Instant.now());
     }
+
+    public void dissolveMembers(Long id) {
+        repository.dissolveMembers(id);
+    }
+
+    public void addMember(Long meetId, Long userId) {
+        repository.addMember(meetId, userId);
+    }
+
+    public void removeMember(Long meetId, Long userId) {
+        repository.removeMember(meetId, userId);
+    }
 }

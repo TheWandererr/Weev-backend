@@ -31,4 +31,16 @@ public interface IMeetRepository extends IGenericRepository<Long, MeetJpa> {
 
     @Query(value = "select m.* from meets m inner join meet_members mb on mb.meet_id = m.id where mb.user_id = ?1 and m.utc_end_date_time > ?2", nativeQuery = true)
     List<MeetJpa> findAllByMember_IdAndUtcEndDateTimeAfter(Long id, Instant now);
+
+    @Modifying
+    @Query(value = "DELETE FROM meet_members mm where mm.meet_id = ?1", nativeQuery = true)
+    void dissolveMembers(Long meetId);
+
+    @Modifying
+    @Query(value = "INSERT INTO meet_members values (?2, ?1)", nativeQuery = true)
+    void addMember(Long meetId, Long userId);
+
+    @Modifying
+    @Query(value = "DELETE FROM meet_members mm WHERE mm.user_id = ?2 AND mm.meet_id = ?1", nativeQuery = true)
+    void removeMember(Long meetId, Long userId);
 }

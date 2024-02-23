@@ -5,9 +5,7 @@ import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.M
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.MEET_UTC_END_DATE_TIME;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Columns.MEET_UTC_START_DATE_TIME;
 import static com.pivo.weev.backend.utils.Constants.Amount.INFINITY;
-import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
 import static com.pivo.weev.backend.utils.Constants.MeetAvailabilities.PRIVATE;
-import static com.pivo.weev.backend.utils.Constants.Reasons.MEET_CAPACITY_EXCEEDED;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.MERGE;
 import static jakarta.persistence.CascadeType.PERSIST;
@@ -18,7 +16,6 @@ import static java.time.Instant.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-import com.pivo.weev.backend.domain.model.exception.FlowInterruptedException;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.CloudResourceJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.LocationJpa;
 import com.pivo.weev.backend.domain.persistance.jpa.model.common.ModifiableJpa;
@@ -100,7 +97,7 @@ public class MeetJpa extends ModifiableJpa<Long> {
 
     public MeetJpa(UserJpa creator, CategoryJpa category, SubcategoryJpa subcategory, LocationJpa location) {
         this.creator = creator;
-        // creator.getCreatedMeets().add(this);
+        // this.creator.getCreatedMeets().add(this);
         this.category = category;
         this.subcategory = subcategory;
         this.location = location;
@@ -165,38 +162,10 @@ public class MeetJpa extends ModifiableJpa<Long> {
         return nonNull(membersLimit) && !INFINITY.equals(membersLimit);
     }
 
-    public Set<UserJpa> dissolve() {
-        Set<UserJpa> membersCopy = new HashSet<>(this.members);
-       /* for (UserJpa member : this.members) {
-            member.getParticipatedMeets().remove(this);
-        }*/
-        getMembers().clear();
-        return membersCopy;
-    }
-
     public Set<UserJpa> getMembersWithCreator() {
         Set<UserJpa> users = new HashSet<>(this.members);
         users.add(creator);
         return users;
-    }
-
-    public void addMember(UserJpa user) {
-        if (isNull(user)) {
-            return;
-        }
-        if (hasMembersLimit() && getMembers().size() == membersLimit) {
-            throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, MEET_CAPACITY_EXCEEDED);
-        }
-        getMembers().add(user);
-        // user.getParticipatedMeets().add(this);
-    }
-
-    public void removeMember(UserJpa user) {
-        if (isNull(user)) {
-            return;
-        }
-        getMembers().remove(user);
-        // user.getParticipatedMeets().remove(this);
     }
 
     public boolean hasCreator(Long id) {

@@ -9,12 +9,10 @@ import static com.pivo.weev.backend.domain.persistance.jpa.model.meet.MeetStatus
 import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.LOCAL_END_DATE_TIME;
 import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.LOCAL_START_DATE_TIME;
 import static com.pivo.weev.backend.domain.utils.Constants.ValidatableFields.MEMBERS_LIMIT;
-import static com.pivo.weev.backend.utils.CollectionUtils.isPresent;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.ACCESS_DENIED_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.FIELD_VALIDATION_FAILED_ERROR_PATTERN;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.MEET_IS_FINISHED_ERROR;
 import static com.pivo.weev.backend.utils.Constants.ErrorCodes.OPERATION_IMPOSSIBLE_ERROR;
-import static com.pivo.weev.backend.utils.Constants.Reasons.MEET_ALREADY_JOINED;
 import static com.pivo.weev.backend.utils.Constants.Reasons.MEET_CAPACITY_EXCEEDED;
 import static com.pivo.weev.backend.utils.Constants.Reasons.MEET_JOIN_REQUEST_IS_EXPIRED;
 import static com.pivo.weev.backend.utils.DateTimeUtils.toInstant;
@@ -151,9 +149,9 @@ public class MeetOperationsValidator {
                 throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, MEET_CAPACITY_EXCEEDED);
             }
         }
-        if (isPresent(meet.getMembers(), member -> Objects.equals(member.getId(), joinerId))) {
+        /*if (isPresent(meet.getMembers(), member -> Objects.equals(member.getId(), joinerId))) {
             throw new FlowInterruptedException(OPERATION_IMPOSSIBLE_ERROR, MEET_ALREADY_JOINED);
-        }
+        }*/
     }
 
     /*
