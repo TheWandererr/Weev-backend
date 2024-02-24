@@ -5,8 +5,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Constants {
 
-    public static final String APPLICATION_NAME = "Weev";
-
     @UtilityClass
     public static final class Symbols {
 

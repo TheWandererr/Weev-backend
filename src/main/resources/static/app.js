@@ -1,7 +1,7 @@
 const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8080/ws',
     connectHeaders: {
-        authorization: '',
+        authorization: 'eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJib2IyMjkiLCJhdWQiOiIvYXBpIiwic2VyaWFsIjoiYmZkYzM3NDctNjc2Mi00ZDZhLThkNmItMzRhNDM5OTVhMGMwIiwic2NvcGUiOiJyZWFkIHdyaXRlIiwiaXNzIjoiL2F1dGgvbG9naW4iLCJuaWNrbmFtZSI6ImJvYjIyOSIsImV4cCI6MTcwODc2OTIxNCwiaWF0IjoxNzA4NzY1NjE0LCJkZXZpY2VJZCI6IjAwMDAiLCJ1c2VySWQiOjR9.al0eDDmuiN-5pkqM8LLzyHeJPhs6I70BzG1kK-096N77XX71ZXTIVI8J4fnQITJEVqDJgoj0o9WuptxB-Z54Aqf4IjhrjEx41xDe829pFKbqBTkX5PKHmoIf5XRMyCRKiYv59K5ffojJWI-pby2rWJJCdVIZC88uZo8yYClr0s0b9Rn0cT_pqK9SCq8I1rY3TNiC9k6kTLVlML5urQ-8fQpsR4VlSqCYOUCUM9qYyhdgo7MxDTZF6ESBKk87hoRRuox2usiFfq23uP88kYNzuWPwEfeNYAGid30bIm49eIUh5PgmglHKMVrr4SqoIBWSUB24Pq_Q240C9k-mTIq1mw',
         deviceId : '0000'
     }
 });
@@ -13,7 +13,7 @@ stompClient.onConnect = (frame) => {
         console.log(greeting);
         showGreeting(JSON.stringify(greeting.body));
     });
-    stompClient.subscribe('/topic/chats.group$26', (hello) => {
+    stompClient.subscribe('/topic/chats.group$999', (hello) => {
         console.log(hello);
         showGreeting(JSON.stringify(hello.body));
     });
@@ -52,7 +52,7 @@ function disconnect() {
 
 function sendName() {
     stompClient.publish({
-        destination: "/app/chats.group$26.message",
+        destination: "/app/chats.group$999.message",
         body: JSON.stringify({'text': $("#name").val()})
     });
 }

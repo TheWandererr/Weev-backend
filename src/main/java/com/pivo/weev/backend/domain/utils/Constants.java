@@ -96,4 +96,16 @@ public final class Constants {
                                                                                                        DELETE_ACCOUNT, EMAIL_VERIFICATION_DELETE_ACCOUNT_FTL);
         }
     }
+
+    @UtilityClass
+    public static final class UserStates {
+
+        public static final String DELETED = "deleted";
+    }
+
+    @UtilityClass
+    public static final class ChatMessageStates {
+
+        public static final String DELETED = "deleted.message";
+    }
 }

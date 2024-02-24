@@ -11,7 +11,8 @@ public class EventMessage extends ChatMessage {
 
     public enum Event {
         SUBSCRIBED,
-        CHAT_CREATED
+        CHAT_CREATED,
+        DELETED
     }
 
     @Override

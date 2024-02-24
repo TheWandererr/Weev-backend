@@ -1,6 +1,6 @@
 package com.pivo.weev.backend.domain.model.messaging;
 
-import static com.pivo.weev.backend.domain.model.messaging.WsMessage.Type.EVENT;
+import static com.pivo.weev.backend.domain.model.messaging.CommonMessage.Type.EVENT;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class WsMessage {
+public abstract class CommonMessage {
 
     private String text;
     private Instant createdAt = Instant.now();

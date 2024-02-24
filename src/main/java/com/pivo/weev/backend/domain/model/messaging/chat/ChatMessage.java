@@ -1,15 +1,15 @@
 package com.pivo.weev.backend.domain.model.messaging.chat;
 
 
-import static com.pivo.weev.backend.domain.model.messaging.WsMessage.Type.MESSAGE;
+import static com.pivo.weev.backend.domain.model.messaging.CommonMessage.Type.MESSAGE;
 
-import com.pivo.weev.backend.domain.model.messaging.WsMessage;
+import com.pivo.weev.backend.domain.model.messaging.CommonMessage;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ChatMessage extends WsMessage {
+public class ChatMessage extends CommonMessage {
 
     private String chatId;
     private Long ordinal;

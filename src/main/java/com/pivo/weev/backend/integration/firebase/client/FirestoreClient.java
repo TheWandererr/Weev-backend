@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.EventListener;
+import com.google.cloud.firestore.Filter;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
@@ -69,6 +70,27 @@ public class FirestoreClient {
         api.collection(collection)
            .document(reference)
            .update(updates);
+    }
+
+    public void update(String collection, String reference, String childCollection, Filter filter, Object updates) {
+        Map<String, Object> fields = objectMapper.convertValue(updates, new TypeReference<>() {
+        });
+        api.collection(collection)
+           .document(reference)
+           .collection(childCollection)
+           .where(filter)
+           .limit(1)
+           .addSnapshotListener((snapshot, exception) -> {
+               if (checkError(exception)) {
+                   return;
+               }
+               if (nonNull(snapshot)) {
+                   QueryDocumentSnapshot first = first(snapshot.getDocuments());
+                   if (nonNull(first)) {
+                       first.getReference().update(fields);
+                   }
+               }
+           });
     }
 
     public <T> CompletableFuture<T> find(String collection, String reference, Class<T> type) {
@@ -151,6 +173,16 @@ public class FirestoreClient {
            .orderBy(orderBy, DESCENDING)
            .offset(offset)
            .limit(limit)
+           .addSnapshotListener(snapshotListener);
+        return future;
+    }
+
+    public <T> CompletableFuture<List<T>> findAll(String collection, String reference, String childCollection, Class<T> type) {
+        CompletableFuture<List<T>> future = new CompletableFuture<>();
+        EventListener<QuerySnapshot> snapshotListener = createSnapshotsListener(type, future);
+        api.collection(collection)
+           .document(reference)
+           .collection(childCollection)
            .addSnapshotListener(snapshotListener);
         return future;
     }

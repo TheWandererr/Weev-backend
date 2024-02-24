@@ -9,6 +9,7 @@ import static com.pivo.weev.backend.utils.AsyncUtils.collectAll;
 import static com.pivo.weev.backend.utils.CollectionUtils.collect;
 import static com.pivo.weev.backend.utils.CollectionUtils.mapToList;
 import static com.pivo.weev.backend.utils.StreamUtils.parallelStream;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -177,5 +178,16 @@ public class ChatService {
         return firebaseChatService.getChatMessages(chatId, offset, limit)
                                   .thenApply(messages -> getMapper(ChatMessageMapper.class).map(messages))
                                   .join();
+    }
+
+    public void handleUserDeactivation(Long userId) {
+        firebaseChatService.findUserChatsReference(userId)
+                           .thenAcceptAsync(ref -> {
+                               if (nonNull(ref)) {
+                                   var messagesFuture = mapToList(ref.getChatIds(), firebaseChatService::getChatMessages);
+                                   var chatsMessages = collectAll(messagesFuture);
+                                   firebaseChatService.deleteChatsMessages(userId, chatsMessages);
+                               }
+                           });
     }
 }

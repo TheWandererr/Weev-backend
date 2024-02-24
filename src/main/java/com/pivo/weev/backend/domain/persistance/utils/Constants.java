@@ -105,6 +105,7 @@ public class Constants {
             public static final String ID = "id";
             public static final String CHAT_ID = "chatId";
             public static final String MESSAGES = "messages";
+            public static final String ORDINAL = "ordinal";
 
         }
 
