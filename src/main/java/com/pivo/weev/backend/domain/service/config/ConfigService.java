@@ -5,6 +5,7 @@ import static com.pivo.weev.backend.domain.persistance.utils.Constants.Configs.I
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Configs.REFRESH_TOKEN_EXPIRES_AMOUNT;
 import static com.pivo.weev.backend.domain.persistance.utils.Constants.Configs.VERIFICATION_REQUEST_VALIDITY_PERIOD;
 import static java.util.Objects.isNull;
+import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.math.NumberUtils.toLong;
 
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -76,5 +78,14 @@ public class ConfigService {
             log.error(loggingHelper.buildLoggingError(exception, null, false));
             return Optional.empty();
         }
+    }
+
+    public Map<String, Parameter> getParameters(String keyRegex) {
+        Pattern pattern = compile(keyRegex);
+        return remoteConfigClient.getParameters()
+                                 .entrySet()
+                                 .stream()
+                                 .filter(entry -> pattern.matcher(entry.getKey()).matches())
+                                 .collect(toMap(Entry::getKey, Entry::getValue));
     }
 }
