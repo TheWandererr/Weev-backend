@@ -51,15 +51,9 @@ public class Constants {
     }
 
     @UtilityClass
-    public static final class Cookies {
-
-        public static final String DEVICE_ID = "deviceId";
-    }
-
-    @UtilityClass
     public static final class Headers {
 
-        public static final String DEVICE_ID = "deviceId";
+        public static final String DEVICE_ID = "X-DeviceId";
     }
 
     @UtilityClass

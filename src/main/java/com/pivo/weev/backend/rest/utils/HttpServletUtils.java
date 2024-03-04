@@ -1,5 +1,6 @@
 package com.pivo.weev.backend.rest.utils;
 
+import static com.pivo.weev.backend.rest.utils.Constants.Headers.DEVICE_ID;
 import static com.pivo.weev.backend.utils.ArrayUtils.findFirst;
 import static com.pivo.weev.backend.utils.ArrayUtils.first;
 import static com.pivo.weev.backend.utils.StreamUtils.map;
@@ -15,7 +16,6 @@ import static org.springframework.security.oauth2.core.OAuth2AccessToken.TokenTy
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pivo.weev.backend.rest.model.response.BaseResponse;
-import com.pivo.weev.backend.rest.utils.Constants.Cookies;
 import com.pivo.weev.backend.utils.ArrayUtils;
 import com.pivo.weev.backend.utils.CollectionUtils;
 import jakarta.servlet.ServletOutputStream;
@@ -96,7 +96,7 @@ public class HttpServletUtils {
     }
 
     public static Optional<String> getDeviceId(HttpServletRequest request) {
-        return getCookie(request, Cookies.DEVICE_ID);
+        return getHeader(request, DEVICE_ID);
     }
 
     public static Map<String, String> getCookies(HttpServletRequest request) {
