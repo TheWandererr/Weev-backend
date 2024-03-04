@@ -117,7 +117,7 @@ public class WebSecurityConfig {
                              JwtAuthenticityVerifierFilter.class
         );
 
-        http.cors(AbstractHttpConfigurer::disable);
+        http.cors(withDefaults());
         http.csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
