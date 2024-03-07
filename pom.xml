@@ -14,7 +14,7 @@
     <name>WeevBackend</name>
     <description>WeevBackend</description>
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <spring.boot.starter.version>3.2.2</spring.boot.starter.version>
         <spring-security-oauth2.version>6.2.1</spring-security-oauth2.version>
         <apache.common.lang.version>3.12.0</apache.common.lang.version>
