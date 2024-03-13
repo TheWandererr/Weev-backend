@@ -36,6 +36,7 @@ public class JwtDecoderFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        clearThreadContextData();
         String authorization = getAuthorizationValue(request);
         if (isNotBlank(authorization)) {
             try {
@@ -45,11 +46,13 @@ public class JwtDecoderFilter extends OncePerRequestFilter {
                 handleUnauthorized(response, exception.getMessage());
                 return;
             }
-        } else {
-            jwtHolder.clear();
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void clearThreadContextData() {
+        jwtHolder.clear();
     }
 
     private void handleUnauthorized(HttpServletResponse response, String failure) throws IOException {
