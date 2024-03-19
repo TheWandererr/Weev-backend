@@ -14,7 +14,7 @@ public interface IAuthTokenDetailsRepository extends IGenericRepository<Long, Au
     List<AuthTokensDetailsJpa> findAllByExpiresAtBefore(Instant instant);
 
     @Modifying
-    @Query(value = "DELETE FROM auth_tokens_details td INNER JOIN devices d ON d.id = td.device_id WHERE d.user_id = ?1 AND d.internal_id = ?2", nativeQuery = true)
+    @Query(value = "DELETE FROM AuthTokensDetailsJpa th WHERE th.device.user.id = ?1 AND th.device.internalId = ?2")
     void deleteByUserIdAndDeviceInternalId(Long userId, String deviceId);
 
     @Modifying

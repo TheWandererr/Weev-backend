@@ -5,7 +5,6 @@ import com.pivo.weev.backend.domain.service.config.ConfigService;
 import com.pivo.weev.backend.rest.model.request.ConfigsSearchRequest;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/configs")
-@PreAuthorize("hasAnyAuthority('SCOPE_write')")
 @RequiredArgsConstructor
 public class ConfigsController {
 
